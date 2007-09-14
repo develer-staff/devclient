@@ -20,13 +20,13 @@ class TestLoader(unittest.TestCase):
 
     def testLoadClasses(self):
         self.loader._loadModules()
-        classes = self.loader.loadClasses(['AbstractFactory'])
+        classes = self.loader._loadClasses(['AbstractFactory'])
         self.assert_('AbstractFactory' in classes)
 
     def testLoadClassesFailure(self):
         self.loader._loadModules()
         self.assertRaises(core.ClassNotFoundException,
-                          self.loader.loadClasses,
+                          self.loader._loadClasses,
                           ['FakeFactory'])
 
 

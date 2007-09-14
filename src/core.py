@@ -2,18 +2,18 @@
 #-*- coding: utf-8 -*-
 #
 
-# 1. caricamento configurazione
-# 2. caricamento classi
-
 import os
 import sys
 import os.path
 
-class ClassNotFoundException(Exception):
+class DevClientException(Exception):
+    pass
+
+class ClassNotFoundException(DevClientException):
     pass
 
 class Loader(object):
-    def __init__(self,config):
+    def __init__(self, config):
         self.__config = config
 
     def _loadModules(self):
@@ -26,7 +26,7 @@ class Loader(object):
 
         self.modules = set(modules)
 
-    def loadClasses(self, classes):
+    def _loadClasses(self, classes):
 
         def findParent(element, level):
             for parent in element.__bases__:
@@ -67,8 +67,10 @@ if __name__ == '__main__':
     config = {'module_path': 'modules'}
     classes = ['AbstractFactory']
 
-    loader = Loader()
-    loader.loadClasses()
+    loader = Loader(config)
+    classes =  loader.load(classes)
+
+    print classes
 
 
 
