@@ -43,7 +43,7 @@ class Loader(object):
         for src in self.modules:
             __import__(src)
             for el, val in sys.modules[src].__dict__.iteritems():
-                if type(val).__name__ in ['type','classobj']:
+                if type(val).__name__ in ['type','classobj', 'wrappertype']:
                     if el in classes and cdict[el][1] == 0:
                         cdict[el] = [val, 0]
                     else:
@@ -65,12 +65,14 @@ class Loader(object):
 
 if __name__ == '__main__':
     config = {'module_path': 'modules'}
-    classes = ['AbstractFactory']
+    classes = ['Socket', 'Thread', 'Gui']
 
     loader = Loader(config)
-    classes =  loader.load(classes)
+    classes = loader.load(classes)
 
     print classes
+
+    classes['Thread'](classes)
 
 
 

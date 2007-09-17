@@ -16,12 +16,12 @@ class TestLoader(unittest.TestCase):
 
     def testLoadModules(self):
         self.loader._loadModules()
-        self.assert_('abstract_factory' in self.loader.modules)
+        self.assert_('thread_abstract' in self.loader.modules)
 
     def testLoadClasses(self):
         self.loader._loadModules()
-        classes = self.loader._loadClasses(['AbstractFactory'])
-        self.assert_('AbstractFactory' in classes)
+        classes = self.loader._loadClasses(['Thread'])
+        self.assert_('Thread' in classes)
 
     def testLoadClassesFailure(self):
         self.loader._loadModules()
