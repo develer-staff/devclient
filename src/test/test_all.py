@@ -1,7 +1,7 @@
 import unittest
 
-import test_core
+import test_loader
 
-suite_core = unittest.makeSuite(test_core.TestLoader)
-alltests = unittest.TestSuite((suite_core))
+suite_loader = unittest.makeSuite(test_loader.TestLoader)
+alltests = unittest.TestSuite((suite_loader))
 unittest.TextTestRunner(verbosity=2).run(alltests)

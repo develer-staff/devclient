@@ -20,12 +20,21 @@ class Thread(object):
 
     def run(self):
         sock = self.classes['Socket']()
+
         while 1:
-            time.sleep(1)
-            self.q_app_gui.put((event_type.MSG, sock.read()))
+            time.sleep(0.2)
+            if sock.connected:
+                data = sock.read()
+                if data:
+                    self.q_app_gui.put((event_type.MSG, data))
+
             try:
                 cmd, msg = self.q_gui_app.get(0)
-                if cmd == event_type.END_APP:
+                if cmd == event_type.MSG and sock.connected:
+                    sock.write(msg)
+                elif cmd == event_type.END_APP:
                     return
+                elif cmd == event_type.CONNECT:
+                    sock.connect("localhost", 5000) #FIX
             except Queue.Empty:
                 pass

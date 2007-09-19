@@ -3,6 +3,9 @@
 
 class Socket(object):
 
+    def __init__(self):
+        self.connected = 0
+
     def connect(self, host, port):
         pass
 

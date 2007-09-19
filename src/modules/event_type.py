@@ -3,3 +3,4 @@
 
 MSG = 1
 END_APP = 2
+CONNECT = 3

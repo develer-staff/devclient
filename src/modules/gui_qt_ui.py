@@ -2,12 +2,11 @@
 
 # Form implementation generated from reading ui file 'gui_qt.ui'
 #
-# Created: Tue Sep 18 22:45:24 2007
-#      by: PyQt4 UI code generator 4.0.1
+# Created: Wed Sep 19 22:41:24 2007
+#      by: PyQt4 UI code generator 4.3
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_DevClient(object):
@@ -44,27 +43,28 @@ class Ui_DevClient(object):
         self.menuClient.setObjectName("menuClient")
         DevClient.setMenuBar(self.menubar)
 
-        self.actionConnetti = QtGui.QAction(DevClient)
-        self.actionConnetti.setObjectName("actionConnetti")
+        self.actionConnect = QtGui.QAction(DevClient)
+        self.actionConnect.setObjectName("actionConnect")
 
-        self.actionDisconnetti = QtGui.QAction(DevClient)
-        self.actionDisconnetti.setObjectName("actionDisconnetti")
+        self.actionDisconnect = QtGui.QAction(DevClient)
+        self.actionDisconnect.setObjectName("actionDisconnect")
 
-        self.actionEsci = QtGui.QAction(DevClient)
-        self.actionEsci.setObjectName("actionEsci")
-        self.menuClient.addAction(self.actionConnetti)
-        self.menuClient.addAction(self.actionDisconnetti)
+        self.actionExit = QtGui.QAction(DevClient)
+        self.actionExit.setObjectName("actionExit")
+        self.menuClient.addAction(self.actionConnect)
+        self.menuClient.addAction(self.actionDisconnect)
         self.menuClient.addSeparator()
-        self.menuClient.addAction(self.actionEsci)
+        self.menuClient.addAction(self.actionExit)
         self.menubar.addAction(self.menuClient.menuAction())
 
         self.retranslateUi(DevClient)
-        QtCore.QObject.connect(self.actionEsci,QtCore.SIGNAL("activated()"),DevClient.close)
+        QtCore.QObject.connect(self.actionExit,QtCore.SIGNAL("activated()"),DevClient.close)
         QtCore.QMetaObject.connectSlotsByName(DevClient)
 
     def retranslateUi(self, DevClient):
         DevClient.setWindowTitle(QtGui.QApplication.translate("DevClient", "DevClient", None, QtGui.QApplication.UnicodeUTF8))
         self.menuClient.setTitle(QtGui.QApplication.translate("DevClient", "Client", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionConnetti.setText(QtGui.QApplication.translate("DevClient", "Connetti", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionDisconnetti.setText(QtGui.QApplication.translate("DevClient", "Disconnetti", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionEsci.setText(QtGui.QApplication.translate("DevClient", "Esci", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionConnect.setText(QtGui.QApplication.translate("DevClient", "Connetti", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionDisconnect.setText(QtGui.QApplication.translate("DevClient", "Disconnetti", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionExit.setText(QtGui.QApplication.translate("DevClient", "Esci", None, QtGui.QApplication.UnicodeUTF8))
+

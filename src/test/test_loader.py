@@ -5,14 +5,15 @@
 import sys
 import unittest
 
-sys.path.append('..')
+sys.path.append('../modules')
 
-import core
+import exception
+from loader import Loader
 
 class TestLoader(unittest.TestCase):
     def setUp(self):
-        config = {'module_path': '../modules'}
-        self.loader = core.Loader(config)
+        config = {'main': {'module_path': '../modules'}}
+        self.loader = Loader(config)
 
     def testLoadModules(self):
         self.loader._loadModules()
@@ -25,9 +26,9 @@ class TestLoader(unittest.TestCase):
 
     def testLoadClassesFailure(self):
         self.loader._loadModules()
-        self.assertRaises(core.ClassNotFoundException,
+        self.assertRaises(exception.ClassNotFound,
                           self.loader._loadClasses,
-                          ['FakeFactory'])
+                          ['Fake'])
 
 
 if __name__ == '__main__':

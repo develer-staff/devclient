@@ -20,20 +20,36 @@ class QGui(Gui, QtGui.QMainWindow, Ui_DevClient):
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 
-        QtCore.QObject.connect(self.actionEsci, QtCore.SIGNAL("activated()"),
+        QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL("activated()"),
                                self._endApplication)
+
+        QtCore.QObject.connect(self.actionConnect, QtCore.SIGNAL("activated()"),
+                               self._connect)
+
+        QtCore.QObject.connect(self.textInput, QtCore.SIGNAL("returnPressed()"),
+                               self._sendText)
 
         timer = QtCore.QTimer(self)
         self.connect(timer, QtCore.SIGNAL("timeout()"), self._processIncoming)
-        timer.start(200)
+        timer.start(100)
+
+        self.textInput.setFocus()
+
+    def _connect(self):
+        self.q_gui_app.put((event_type.CONNECT,""))
 
     def _endApplication(self):
         self.q_gui_app.put((event_type.END_APP,""))
 
+    def _sendText(self):
+        self.q_gui_app.put((event_type.MSG, self.textInput.displayText()))
+        self.textInput.clear()
+
     def _processIncoming(self):
         try:
             cmd, msg = self.q_app_gui.get(0)
-            self.textOutput.append(msg)
+            if msg:
+                self.textOutput.append(msg)
         except Queue.Empty:
             pass
 
