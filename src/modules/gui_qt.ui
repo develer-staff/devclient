@@ -1,0 +1,96 @@
+<ui version="4.0" >
+ <class>DevClient</class>
+ <widget class="QMainWindow" name="DevClient" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>680</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>DevClient</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <widget class="QWidget" name="" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>771</width>
+      <height>631</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QTextBrowser" name="textOutput" />
+     </item>
+     <item>
+      <widget class="QLineEdit" name="textInput" />
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuClient" >
+    <property name="title" >
+     <string>Client</string>
+    </property>
+    <addaction name="actionConnetti" />
+    <addaction name="actionDisconnetti" />
+    <addaction name="separator" />
+    <addaction name="actionEsci" />
+   </widget>
+   <addaction name="menuClient" />
+  </widget>
+  <action name="actionConnetti" >
+   <property name="text" >
+    <string>Connetti</string>
+   </property>
+  </action>
+  <action name="actionDisconnetti" >
+   <property name="text" >
+    <string>Disconnetti</string>
+   </property>
+  </action>
+  <action name="actionEsci" >
+   <property name="text" >
+    <string>Esci</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionEsci</sender>
+   <signal>activated()</signal>
+   <receiver>DevClient</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>399</x>
+     <y>339</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
