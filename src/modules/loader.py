@@ -7,10 +7,14 @@ import sys
 import exception
 
 class Loader(object):
+    """
+    Load classes and its modules.
+    """
+
     def __init__(self, config):
         self.__config = config
 
-    def _loadModules(self):
+    def _findModules(self):
         module_path = self.__config['main']['module_path']
 
         modules = os.listdir(module_path)
@@ -47,11 +51,16 @@ class Loader(object):
         classes_found = {}
         for el in classes:
             if not cdict[el][0]:
-                raise exception.ClassNotFound()
+                raise exception.ClassNotFound("Cannot find class %s" % el)
             classes_found[el] = cdict[el][0]
 
         return classes_found
 
     def load(self, classes):
-        self._loadModules()
+        """
+        Load classes defined in the list passed by argument and return a
+        dictionary on the form {<className>: <classRef> }
+        """
+
+        self._findModules()
         return self._loadClasses(classes)

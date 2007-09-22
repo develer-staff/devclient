@@ -15,17 +15,17 @@ class TestLoader(unittest.TestCase):
         config = {'main': {'module_path': '../modules'}}
         self.loader = Loader(config)
 
-    def testLoadModules(self):
-        self.loader._loadModules()
+    def testFindModules(self):
+        self.loader._findModules()
         self.assert_('thread_abstract' in self.loader.modules)
 
     def testLoadClasses(self):
-        self.loader._loadModules()
+        self.loader._findModules()
         classes = self.loader._loadClasses(['Thread'])
         self.assert_('Thread' in classes)
 
     def testLoadClassesFailure(self):
-        self.loader._loadModules()
+        self.loader._findModules()
         self.assertRaises(exception.ClassNotFound,
                           self.loader._loadClasses,
                           ['Fake'])
