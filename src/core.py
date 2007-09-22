@@ -7,6 +7,9 @@ import os.path
 import ConfigParser
 
 def readConfiguration(filename):
+    """
+    Read configuration file and return a dictionary of the form [section][option]
+    """
 
     config = ConfigParser.SafeConfigParser()
     config.read(filename)

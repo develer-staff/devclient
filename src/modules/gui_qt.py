@@ -20,13 +20,13 @@ class QGui(Gui, QtGui.QMainWindow, Ui_DevClient):
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 
-        QtCore.QObject.connect(self.actionExit, QtCore.SIGNAL("activated()"),
+        self.connect(self.actionExit, QtCore.SIGNAL("activated()"),
                                self._endApplication)
 
-        QtCore.QObject.connect(self.actionConnect, QtCore.SIGNAL("activated()"),
+        self.connect(self.actionConnect, QtCore.SIGNAL("activated()"),
                                self._connect)
 
-        QtCore.QObject.connect(self.textInput, QtCore.SIGNAL("returnPressed()"),
+        self.connect(self.textInput, QtCore.SIGNAL("returnPressed()"),
                                self._sendText)
 
         timer = QtCore.QTimer(self)
