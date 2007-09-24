@@ -6,17 +6,19 @@ import Queue
 
 from PyQt4 import QtCore, QtGui
 
-from gui_abstract import Gui
-from gui_qt_ui import Ui_DevClient
+from gui_ui import Ui_DevClient
 import event_type
 
-class QGui(Gui, QtGui.QMainWindow, Ui_DevClient):
+class Gui(QtGui.QMainWindow, Ui_DevClient):
+    """
+    The Gui class written with Qt, that inherits the real gui interface
+    designed by Qt-designer.
+    """
     def __init__(self, q_app_gui, q_gui_app):
         self.q_app_gui = q_app_gui
         self.q_gui_app = q_gui_app
 
         self.app = QtGui.QApplication(sys.argv)
-        Gui.__init__(self)
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 
