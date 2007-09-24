@@ -14,6 +14,7 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
     The Gui class written with Qt, that inherits the real gui interface
     designed by Qt-designer.
     """
+
     def __init__(self, q_app_gui, q_gui_app):
         self.q_app_gui = q_app_gui
         self.q_gui_app = q_gui_app
