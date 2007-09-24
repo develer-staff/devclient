@@ -4,14 +4,20 @@
 import sys
 import time
 import Queue
+import threading
 
 import event_type
 
-class Thread(object):
+class Thread(threading.Thread):
+    """
+    Class to manage thread interaction between gui and application.
+    """
+
     def __init__(self, classes):
+        threading.Thread.__init__(self)
         self.classes = classes
-        self.q_app_gui = Queue.Queue() # eventi dall'app alla gui
-        self.q_gui_app = Queue.Queue() # eventi dalla gui all'app
+        self.q_app_gui = Queue.Queue() # events from app to gui
+        self.q_gui_app = Queue.Queue() # events from gui to app
 
         self.gui = self.classes['Gui'](self.q_app_gui, self.q_gui_app)
 
@@ -35,6 +41,6 @@ class Thread(object):
                 elif cmd == event_type.END_APP:
                     return
                 elif cmd == event_type.CONNECT:
-                    sock.connect("localhost", 5000) #FIX
+                    sock.connect("dde.homelinux.com", 5000) #FIX
             except Queue.Empty:
                 pass

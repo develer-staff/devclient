@@ -3,11 +3,13 @@
 
 import telnetlib
 
-from socket_abstract import Socket
+class Socket(object):
+    """
+    Provide an asynchronous interface to socket operation.
+    """
 
-class TSocket(Socket):
     def __init__(self):
-        Socket.__init__(self)
+        self.connected = 0
         self.t = telnetlib.Telnet()
 
     def connect(self, host, port):
@@ -29,4 +31,6 @@ class TSocket(Socket):
             self.t.close()
             self.connected = 0
 
+    def __del__(self):
+        self.disconnect()
 
