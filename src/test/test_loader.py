@@ -17,7 +17,7 @@ class TestLoader(unittest.TestCase):
 
     def testFindModules(self):
         self.loader._findModules()
-        self.assert_('thread_abstract' in self.loader.modules)
+        self.assert_('thread_module' in self.loader.modules)
 
     def testLoadClasses(self):
         self.loader._findModules()

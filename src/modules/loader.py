@@ -22,7 +22,6 @@ class Loader(object):
                    if os.path.isfile(os.path.join(module_path, x)) \
                    and os.path.splitext(x)[1] in ('.py', '.pyc')]
 
-        print set(modules)
         self.modules = set(modules)
 
     def _loadClasses(self, classes):
@@ -43,7 +42,6 @@ class Loader(object):
             __import__(src)
             for el, val in sys.modules[src].__dict__.iteritems():
                 if type(val).__name__ in ['type','classobj', 'wrappertype']:
-                    print "classe %s" % el
                     if el in classes and cdict[el][1] == 0:
                         cdict[el] = [val, 0]
                     else:
