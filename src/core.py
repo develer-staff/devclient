@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     from loader import Loader
 
-    classes = ['Socket', 'Thread', 'Gui', 'Application']
+    classes = ['Socket', 'Thread', 'Gui', 'Application', 'Parser']
     classes = Loader(config).load(classes)
 
     print classes

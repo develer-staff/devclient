@@ -2,5 +2,6 @@
 #-*- coding: utf-8 -*-
 
 MSG = 1
-END_APP = 2
-CONNECT = 3
+MODEL = 2
+END_APP = 3
+CONNECT = 4

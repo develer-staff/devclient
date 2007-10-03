@@ -7,7 +7,7 @@ import Queue
 from PyQt4 import QtCore, QtGui
 
 from gui_ui import Ui_DevClient
-import event_type
+import event_type, viewer
 
 class Gui(QtGui.QMainWindow, Ui_DevClient):
     """
@@ -37,6 +37,7 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         timer.start(100)
 
         self.textInput.setFocus()
+        self.mainViewer = viewer.Viewer()
 
     def _connect(self):
         self.q_gui_app.put((event_type.CONNECT,""))
@@ -51,8 +52,8 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
     def _processIncoming(self):
         try:
             cmd, msg = self.q_app_gui.get(0)
-            if msg:
-                self.textOutput.append(msg)
+            if cmd == event_type.MODEL:
+                self.textOutput.append(self.mainViewer.process(msg))
         except Queue.Empty:
             pass
 
