@@ -6,5 +6,5 @@ class Model(object):
     Rappresent a model of data that can be viewed by a viewer.
     """
     def __init__(self):
-        self.mainText = []            
+        self.mainText = []
 

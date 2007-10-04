@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Wed Sep 19 22:41:24 2007
-#      by: PyQt4 UI code generator 4.3
+# Created: Thu Oct  4 22:23:11 2007
+#      by: PyQt4 UI code generator 4.1
 #
 # WARNING! All changes made in this file will be lost!
 
+import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_DevClient(object):
@@ -17,20 +18,21 @@ class Ui_DevClient(object):
         self.centralwidget = QtGui.QWidget(DevClient)
         self.centralwidget.setObjectName("centralwidget")
 
-        self.widget = QtGui.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(10,10,771,631))
-        self.widget.setObjectName("widget")
+        self.layoutWidget = QtGui.QWidget(self.centralwidget)
+        self.layoutWidget.setGeometry(QtCore.QRect(10,10,771,631))
+        self.layoutWidget.setObjectName("layoutWidget")
 
-        self.vboxlayout = QtGui.QVBoxLayout(self.widget)
+        self.vboxlayout = QtGui.QVBoxLayout(self.layoutWidget)
         self.vboxlayout.setMargin(0)
         self.vboxlayout.setSpacing(6)
         self.vboxlayout.setObjectName("vboxlayout")
 
-        self.textOutput = QtGui.QTextBrowser(self.widget)
+        self.textOutput = QtGui.QTextEdit(self.layoutWidget)
+        self.textOutput.setMouseTracking(False)
         self.textOutput.setObjectName("textOutput")
         self.vboxlayout.addWidget(self.textOutput)
 
-        self.textInput = QtGui.QLineEdit(self.widget)
+        self.textInput = QtGui.QLineEdit(self.layoutWidget)
         self.textInput.setObjectName("textInput")
         self.vboxlayout.addWidget(self.textInput)
         DevClient.setCentralWidget(self.centralwidget)
