@@ -19,7 +19,7 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         self.q_app_gui = q_app_gui
         self.q_gui_app = q_gui_app
 
-        self.app = QtGui.QApplication(sys.argv)
+        self.app = QtGui.QApplication([])
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 

@@ -21,14 +21,19 @@ def readConfiguration(filename):
 
 if __name__ == '__main__':
 
+    os.chdir(os.path.join(os.getcwd(), os.path.dirname(sys.argv[0])))
     config = readConfiguration("../etc/devclient.cfg")
 
-    sys.path.append(os.path.join(os.getcwd(), config['main']['module_path']))
+    module_path = os.path.join(os.getcwd(), config['main']['module_path'])
+    sys.path.append(module_path)
 
     from loader import Loader
 
     classes = ['Socket', 'Thread', 'Gui', 'Application', 'Parser']
     classes = Loader(config).load(classes)
+
+    # Set current path on module path for external resources like images
+    os.chdir(module_path)
 
     print classes
 
