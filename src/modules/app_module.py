@@ -19,11 +19,11 @@ class Application(object):
         self.sock = self.classes['Socket']()
 
     def mainLoop(self):
-        
+
         parser = self.classes['Parser']()
-        
+
         while 1:
-            time.sleep(0.2)
+            time.sleep(0.1)
             if self.sock.connected:
                 data = self.sock.read()
                 if data:
@@ -36,7 +36,7 @@ class Application(object):
                     self.sock.write(msg)
                 elif cmd == event_type.END_APP:
                     return
-                elif cmd == event_type.CONNECT:
-                    self.sock.connect("localhost", 6666) 
+                elif cmd == event_type.CONNECT and not self.sock.connected:
+                    self.sock.connect("localhost", 6666)
             except Queue.Empty:
                 pass
