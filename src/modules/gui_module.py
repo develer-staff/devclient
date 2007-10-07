@@ -36,6 +36,7 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         self.connect(timer, QtCore.SIGNAL("timeout()"), self._processIncoming)
         timer.start(100)
 
+        self.textOutput.document().setDefaultFont(QtGui.QFont("Monospace", 9))
         self.textInput.setFocus()
         self.mainViewer = viewer.Viewer()
 
