@@ -50,7 +50,7 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         self.q_gui_app.put((event_type.END_APP,""))
 
     def _sendText(self):
-        self.q_gui_app.put((event_type.MSG, self.textInput.displayText()))
+        self.q_gui_app.put((event_type.MSG, str(self.textInput.displayText())))
         self.textInput.clear()
 
     def _processIncoming(self):
