@@ -10,11 +10,11 @@ class Viewer(object):
         self.lastRow = None
 
     def process(self, model):
-        if self.lastRow and model.mainText.count(self.lastRow):
-            new_text = model.mainText[model.mainText.index(self.lastRow) + 1 : ]
+        if self.lastRow is not None:
+            new_text = model.main_text[self.lastRow + 1 : ]
         else:
-            new_text = model.mainText
+            new_text = model.main_text
 
-        self.lastRow = model.mainText[-1]
+        self.lastRow = len(model.main_text) - 1
         return ''.join(new_text)
 

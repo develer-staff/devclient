@@ -12,5 +12,5 @@ class Parser(object):
         self.model = Model()
 
     def parse(self, data):
-        self.model.mainText.append(data.rstrip('\r\n'))
+        self.model.mainTextAppend(data.rstrip('\r\n'))
 
