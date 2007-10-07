@@ -39,6 +39,10 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         self.textInput.setFocus()
         self.mainViewer = viewer.Viewer()
 
+    def closeEvent(self, event):
+        self._endApplication()
+        event.accept()
+
     def _connect(self):
         self.q_gui_app.put((event_type.CONNECT,""))
 
