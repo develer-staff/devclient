@@ -14,14 +14,30 @@
   </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
     <property name="spacing" >
      <number>6</number>
     </property>
+    <property name="leftMargin" >
+     <number>9</number>
+    </property>
+    <property name="topMargin" >
+     <number>9</number>
+    </property>
+    <property name="rightMargin" >
+     <number>9</number>
+    </property>
+    <property name="bottomMargin" >
+     <number>9</number>
+    </property>
     <item>
-     <widget class="QTextEdit" name="textOutput" />
+     <widget class="QTextEdit" name="textOutput" >
+      <property name="enabled" >
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet" >
+       <string>QTextEdit { background-color: #FFFFFF; }</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLineEdit" name="textInput" />
@@ -45,7 +61,10 @@
     </size>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionConnect" />
    <addaction name="actionOption" />

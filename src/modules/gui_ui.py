@@ -2,12 +2,11 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sat Oct  6 00:07:15 2007
-#      by: PyQt4 UI code generator 4.1
+# Created: Tue Oct 09 00:16:52 2007
+#      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
 class Ui_DevClient(object):
@@ -19,11 +18,12 @@ class Ui_DevClient(object):
         self.centralwidget.setObjectName("centralwidget")
 
         self.vboxlayout = QtGui.QVBoxLayout(self.centralwidget)
-        self.vboxlayout.setMargin(9)
         self.vboxlayout.setSpacing(6)
+        self.vboxlayout.setMargin(9)
         self.vboxlayout.setObjectName("vboxlayout")
 
         self.textOutput = QtGui.QTextEdit(self.centralwidget)
+        self.textOutput.setEnabled(False)
         self.textOutput.setObjectName("textOutput")
         self.vboxlayout.addWidget(self.textOutput)
 
@@ -33,11 +33,12 @@ class Ui_DevClient(object):
         DevClient.setCentralWidget(self.centralwidget)
 
         self.toolBar = QtGui.QToolBar(DevClient)
+        self.toolBar.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         self.toolBar.setMovable(False)
         self.toolBar.setOrientation(QtCore.Qt.Horizontal)
         self.toolBar.setIconSize(QtCore.QSize(32,32))
         self.toolBar.setObjectName("toolBar")
-        DevClient.addToolBar(self.toolBar)
+        DevClient.addToolBar(QtCore.Qt.TopToolBarArea,self.toolBar)
 
         self.actionConnect = QtGui.QAction(DevClient)
         self.actionConnect.setIcon(QtGui.QIcon("../../images/connect.png"))
@@ -57,6 +58,7 @@ class Ui_DevClient(object):
 
     def retranslateUi(self, DevClient):
         DevClient.setWindowTitle(QtGui.QApplication.translate("DevClient", "DevClient", None, QtGui.QApplication.UnicodeUTF8))
+        self.textOutput.setStyleSheet(QtGui.QApplication.translate("DevClient", "QTextEdit { background-color: #FFFFFF; }", None, QtGui.QApplication.UnicodeUTF8))
         self.actionConnect.setText(QtGui.QApplication.translate("DevClient", "Connetti", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExit.setText(QtGui.QApplication.translate("DevClient", "Esci", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOption.setText(QtGui.QApplication.translate("DevClient", "Opzioni", None, QtGui.QApplication.UnicodeUTF8))
