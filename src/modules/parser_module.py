@@ -10,11 +10,11 @@ class Parser(object):
     The Parser class build a Model of data received.
     """
 
-    __normal_color = ['000000','aa0000', '00aa00', 'aaaa00', '0000aa',
-                      'aa00aa', '00aaaa', 'aaaaaa']
+    _normal_color = ['000000','aa0000', '00aa00', 'aaaa00', '0000aa',
+                     'aa00aa', '00aaaa', 'aaaaaa']
 
-    __bright_color = ['444444','ff4444', '44ff44', 'ffff44', '4444ff',
-                      'ff44ff', '44ffff', 'ffffff']
+    _bright_color = ['444444','ff4444', '44ff44', 'ffff44', '4444ff',
+                     'ff44ff', '44ffff', 'ffffff']
 
     def __init__(self):
         self.model = Model()
@@ -50,13 +50,13 @@ class Parser(object):
 
         if fg is not None:
             if attr:
-                color = self.__bright_color[fg]
+                color = self._bright_color[fg]
             else:
-                color = self.__normal_color[fg]
+                color = self._normal_color[fg]
             style.append('color:#' + color)
 
         if bg is not None:
-            style.append('background-color:#' + self.__normal_color[bg])
+            style.append('background-color:#' + self._normal_color[bg])
 
         return ';'.join(style)
 
