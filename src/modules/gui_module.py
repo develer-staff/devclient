@@ -23,10 +23,10 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 
-        self.connect(self.actionExit, QtCore.SIGNAL("activated()"),
+        self.connect(self.actionExit, QtCore.SIGNAL("triggered()"),
                                self._endApplication)
 
-        self.connect(self.actionConnect, QtCore.SIGNAL("activated()"),
+        self.connect(self.actionConnect, QtCore.SIGNAL("triggered()"),
                                self._connect)
 
         self.connect(self.textInput, QtCore.SIGNAL("returnPressed()"),
