@@ -30,12 +30,6 @@ class Parser(object):
         data = self._replaceAnsiColor(data)
         self.model.mainTextAppend(data)
 
-    def __getColor(self, index, attribute):
-        if attribute:
-            return self.__bright_color[index]
-        else:
-            return self.__normal_color[index]
-
     def _getStyle(self, ansi_code):
 
         attr = 0
@@ -55,10 +49,14 @@ class Parser(object):
         style = []
 
         if fg is not None:
-            style.append('color:#' + self.__getColor(fg, attr))
+            if attr:
+                color = self.__bright_color[fg]
+            else:
+                color = self.__normal_color[fg]
+            style.append('color:#' + color)
 
         if bg is not None:
-            style.append('background-color:#' + self.__getColor(bg, attr))
+            style.append('background-color:#' + self.__normal_color[bg])
 
         return ';'.join(style)
 
