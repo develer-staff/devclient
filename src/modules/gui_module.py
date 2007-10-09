@@ -36,6 +36,7 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         self.connect(timer, QtCore.SIGNAL("timeout()"), self._processIncoming)
         timer.start(100)
 
+        self.textOutput.setReadOnly(True)
         self.textOutput.document().setDefaultFont(QtGui.QFont("Monospace", 9))
         self.textInput.setFocus()
         self.mainViewer = viewer.Viewer()
@@ -58,7 +59,8 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         try:
             cmd, msg = self.q_app_gui.get(0)
             if cmd == event_type.MODEL:
-                self.textOutput.append(self.mainViewer.process(msg))
+                self.textOutput.insertHtml(self.mainViewer.process(msg))
+                self.textOutput.moveCursor(QtGui.QTextCursor.End)
         except Queue.Empty:
             pass
 

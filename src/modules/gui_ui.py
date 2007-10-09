@@ -23,7 +23,6 @@ class Ui_DevClient(object):
         self.vboxlayout.setObjectName("vboxlayout")
 
         self.textOutput = QtGui.QTextEdit(self.centralwidget)
-        self.textOutput.setEnabled(False)
         self.textOutput.setObjectName("textOutput")
         self.vboxlayout.addWidget(self.textOutput)
 
