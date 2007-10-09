@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
+import copy
 import time
 import Queue
 
@@ -28,7 +29,8 @@ class Application(object):
                 data = self.sock.read()
                 if data:
                     parser.parse(data)
-                    self.q_app_gui.put((event_type.MODEL, parser.model))
+                    self.q_app_gui.put((event_type.MODEL, \
+                                        copy.deepcopy(parser.model)))
 
             try:
                 cmd, msg = self.q_gui_app.get(0)
