@@ -2,7 +2,6 @@
 #-*- coding: utf-8 -*-
 
 import copy
-import time
 import Queue
 
 import event_type
@@ -24,7 +23,7 @@ class Application(object):
         parser = self.classes['Parser']()
 
         while 1:
-            time.sleep(0.1)
+
             if self.sock.connected:
                 data = self.sock.read()
                 if data:
@@ -37,6 +36,7 @@ class Application(object):
                 if cmd == event_type.MSG and self.sock.connected:
                     self.sock.write(msg)
                 elif cmd == event_type.END_APP:
+                    self.sock.disconnect()
                     return
                 elif cmd == event_type.CONNECT and not self.sock.connected:
                     self.sock.connect("localhost", 6666)

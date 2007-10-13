@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import telnetlib
+import select
 
 class Socket(object):
     """
@@ -20,8 +21,13 @@ class Socket(object):
 
     def read(self):
         """
-        Read data from socket without blocking and return a unicode string.
+        Read data from socket (wait a maximum of 0.1s) and return a unicode
+        string.
         """
+
+        # As there is only one socket it is possible to use telnetlib function
+        # instead socket function. This allow to avoid parsing of IAC and Co..
+        select.select([self.t.get_socket()], [], [], .1)
 
         try:
             return unicode(self.t.read_very_eager(), self.encoding)
