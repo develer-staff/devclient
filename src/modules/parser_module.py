@@ -18,6 +18,8 @@ class Parser(object):
 
     def __init__(self):
         self.model = Model()
+        self.fg_color = None
+        self.bg_color = None
 
     def parse(self, data):
         """
@@ -53,10 +55,17 @@ class Parser(object):
                 color = self._bright_color[fg]
             else:
                 color = self._normal_color[fg]
-            style.append('color:#' + color)
+
+            self.fg_color = color
+
+        if self.fg_color is not None:
+            style.append('color:#' + self.fg_color)
 
         if bg is not None:
-            style.append('background-color:#' + self._normal_color[bg])
+            self.bg_color = self._normal_color[bg]
+
+        if self.bg_color is not None:
+            style.append('background-color:#' + self.bg_color)
 
         return ';'.join(style)
 
