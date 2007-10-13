@@ -37,7 +37,6 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         timer.start(100)
 
         self.textOutput.setReadOnly(True)
-        self.textOutput.document().setDefaultFont(QtGui.QFont("Monospace", 9))
         self.textInput.setFocus()
         self.mainViewer = viewer.Viewer()
 
@@ -46,10 +45,10 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         event.accept()
 
     def _connect(self):
-        self.q_gui_app.put((event_type.CONNECT,""))
+        self.q_gui_app.put((event_type.CONNECT, ""))
 
     def _endApplication(self):
-        self.q_gui_app.put((event_type.END_APP,""))
+        self.q_gui_app.put((event_type.END_APP, ""))
 
     def _sendText(self):
         self.q_gui_app.put((event_type.MSG, unicode(self.textInput.text())))
