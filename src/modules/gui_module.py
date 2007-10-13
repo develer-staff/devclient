@@ -36,7 +36,6 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         self.connect(timer, QtCore.SIGNAL("timeout()"), self._processIncoming)
         timer.start(100)
 
-        self.textOutput.setReadOnly(True)
         self.textInput.setFocus()
         self.mainViewer = viewer.Viewer()
 

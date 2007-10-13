@@ -25,6 +25,9 @@
       <property name="styleSheet" >
        <string>QTextEdit { background-color: #FFFFFF; font: 10pt "Courier"}</string>
       </property>
+      <property name="readOnly" >
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item>

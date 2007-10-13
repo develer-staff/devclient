@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Fri Oct 12 21:30:14 2007
+# Created: Sat Oct 13 15:17:39 2007
 #      by: PyQt4 UI code generator 4.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -24,6 +24,7 @@ class Ui_DevClient(object):
         self.vboxlayout.setObjectName("vboxlayout")
 
         self.textOutput = QtGui.QTextEdit(self.centralwidget)
+        self.textOutput.setReadOnly(True)
         self.textOutput.setObjectName("textOutput")
         self.vboxlayout.addWidget(self.textOutput)
 
@@ -58,7 +59,7 @@ class Ui_DevClient(object):
 
     def retranslateUi(self, DevClient):
         DevClient.setWindowTitle(QtGui.QApplication.translate("DevClient", "DevClient", None, QtGui.QApplication.UnicodeUTF8))
-        self.textOutput.setStyleSheet(QtGui.QApplication.translate("DevClient", "QTextEdit { background-color: #FFFFFF; font: 9pt \"Monospace\"}", None, QtGui.QApplication.UnicodeUTF8))
+        self.textOutput.setStyleSheet(QtGui.QApplication.translate("DevClient", "QTextEdit { background-color: #FFFFFF; font: 10pt \"Courier\"}", None, QtGui.QApplication.UnicodeUTF8))
         self.actionConnect.setText(QtGui.QApplication.translate("DevClient", "Connetti", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExit.setText(QtGui.QApplication.translate("DevClient", "Esci", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOption.setText(QtGui.QApplication.translate("DevClient", "Opzioni", None, QtGui.QApplication.UnicodeUTF8))
