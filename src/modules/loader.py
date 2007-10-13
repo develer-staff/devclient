@@ -39,8 +39,8 @@ class Loader(object):
 
         cdict = dict(zip(classes, [[None, 0] for x in xrange(len(classes))]))
         for src in self.modules:
-            __import__(src)
-            for el, val in sys.modules[src].__dict__.iteritems():
+            __import__('modules.' + src)
+            for el, val in sys.modules['modules.' + src].__dict__.iteritems():
                 if type(val).__name__ in ['type','classobj', 'wrappertype']:
                     if el in classes and cdict[el][1] == 0:
                         cdict[el] = [val, 0]

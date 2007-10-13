@@ -5,10 +5,9 @@
 import sys
 import unittest
 
-sys.path.append('../modules')
+sys.path.append('..')
 
-import exception
-from parser_module import Parser
+from modules.parser import Parser
 
 class TestParser(unittest.TestCase):
 

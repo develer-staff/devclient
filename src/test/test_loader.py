@@ -5,10 +5,10 @@
 import sys
 import unittest
 
-sys.path.append('../modules')
+sys.path.append('..')
 
-import exception
-from loader import Loader
+import modules.exception as exception
+from modules.loader import Loader
 
 class TestLoader(unittest.TestCase):
     def setUp(self):
@@ -17,7 +17,7 @@ class TestLoader(unittest.TestCase):
 
     def testFindModules(self):
         self.loader._findModules()
-        self.assert_('thread_module' in self.loader.modules)
+        self.assert_('thread' in self.loader.modules)
 
     def testLoadClasses(self):
         self.loader._findModules()

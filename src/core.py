@@ -27,7 +27,7 @@ if __name__ == '__main__':
     module_path = os.path.join(os.getcwd(), config['main']['module_path'])
     sys.path.append(module_path)
 
-    from loader import Loader
+    from modules.loader import Loader
 
     classes = ['Socket', 'Thread', 'Gui', 'Application', 'Parser']
     classes = Loader(config).load(classes)

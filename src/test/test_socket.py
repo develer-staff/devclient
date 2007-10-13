@@ -6,9 +6,9 @@ import unittest
 import os
 import time
 
-sys.path.append('../modules')
+sys.path.append('..')
 
-from socket_module import Socket
+from modules.socket import Socket
 
 class TestSocket(unittest.TestCase):
     def setUp(self):
