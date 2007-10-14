@@ -8,7 +8,13 @@ import ConfigParser
 
 def readConfiguration(filename):
     """
-    Read configuration file and return a dictionary of the form [section][option]
+    Read configuration file
+
+    :Parameters:
+      `filename` : `str`
+       the path of config file
+
+    :return: a dictionary of the form [section][option]
     """
 
     config = ConfigParser.SafeConfigParser()
@@ -19,7 +25,12 @@ def readConfiguration(filename):
 
     return conf
 
-if __name__ == '__main__':
+def main():
+    """
+    The function is the client entry point. It read configuration file, load
+    all modules and start the client with the appropriate modules for 
+    application and gui.
+    """
 
     os.chdir(os.path.join(os.getcwd(), os.path.dirname(sys.argv[0])))
     config = readConfiguration("../etc/devclient.cfg")
@@ -38,6 +49,9 @@ if __name__ == '__main__':
     print classes
 
     classes['Thread'](classes)
+
+if __name__ == '__main__':
+    main()
 
 
 

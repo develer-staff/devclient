@@ -60,7 +60,7 @@ class Loader(object):
     def load(self, classes):
         """
         Load classes defined in the list passed by argument and return a
-        dictionary on the form {<className>: <classRef> }
+        dictionary of the form {<className>: <classRef> }
         """
 
         self._findModules()

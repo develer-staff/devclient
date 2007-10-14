@@ -14,8 +14,8 @@ class Thread(threading.Thread):
     def __init__(self, classes):
         threading.Thread.__init__(self)
         self.classes = classes
-        self.q_app_gui = Queue.Queue() # events from app to gui
-        self.q_gui_app = Queue.Queue() # events from gui to app
+        self.q_app_gui = Queue.Queue() #: events from app to gui
+        self.q_gui_app = Queue.Queue() #: events from gui to app
 
         self.gui = self.classes['Gui'](self.q_app_gui, self.q_gui_app)
 
