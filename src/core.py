@@ -11,8 +11,8 @@ def readConfiguration(filename):
     Read configuration file
 
     :Parameters:
-      `filename` : `str`
-       the path of config file
+      filename : str
+         the path of config file
 
     :return: a dictionary of the form [section][option]
     """
@@ -28,7 +28,7 @@ def readConfiguration(filename):
 def main():
     """
     The function is the client entry point. It read configuration file, load
-    all modules and start the client with the appropriate modules for 
+    all modules and start the client with the appropriate classes for
     application and gui.
     """
 

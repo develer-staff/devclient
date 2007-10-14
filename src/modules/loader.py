@@ -12,9 +12,23 @@ class Loader(object):
     """
 
     def __init__(self, config):
+        """
+        Create a `Loader` instance that can be used to load appropriate
+        modules and classes for application and gui.
+
+        :Parameters:
+          config : dict
+            the loaded configuration
+        """
+
         self.__config = config
 
     def _findModules(self):
+        """
+        Extract a list of modules in the module path, and save it in
+        an attribute of instance called modules.
+        """
+
         module_path = self.__config['main']['module_path']
 
         modules = os.listdir(module_path)
@@ -59,8 +73,13 @@ class Loader(object):
 
     def load(self, classes):
         """
-        Load classes defined in the list passed by argument and return a
-        dictionary of the form {<className>: <classRef> }
+        Find all modules and load the right classes.
+
+        :Parameters:
+          classes : list
+            the name of classes to load
+
+        :return: a dictionary of the form {<className>: <classRef> }
         """
 
         self._findModules()
