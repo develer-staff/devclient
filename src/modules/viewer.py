@@ -7,14 +7,14 @@ class Viewer(object):
     """
 
     def __init__(self):
-        self.lastRow = None
+        self.last_row = None
 
     def process(self, model):
-        if self.lastRow is not None:
-            new_text = model.main_text[self.lastRow + 1 : ]
-        else:
-            new_text = model.main_text
+        new_text = model.main_text.get(self.last_row)
 
-        self.lastRow = len(model.main_text) - 1
+        if self.last_row is None:
+            self.last_row = len(new_text) - 1
+        else:
+            self.last_row += len(new_text)
         return ''.join(new_text)
 

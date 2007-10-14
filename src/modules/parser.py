@@ -30,7 +30,7 @@ class Parser(object):
         data = data.replace('\n', '<br>')
         data = data.replace(' ', '&nbsp;')
         data = self._replaceAnsiColor(data)
-        self.model.mainTextAppend(data)
+        self.model.main_text.append(data)
 
     def _getStyle(self, ansi_code):
 

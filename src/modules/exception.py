@@ -17,3 +17,9 @@ class ClassNotFound(DevClient):
 
     def __str__(self):
         return self.message
+
+class BufferUnderSize(DevClient):
+    """
+    Handling error on losing data because buffer size is not sufficient.
+    """
+    pass
