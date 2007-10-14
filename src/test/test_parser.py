@@ -17,24 +17,26 @@ class TestParser(unittest.TestCase):
     def testParseText(self):
         txt = 'hello'
         self.parser.parse(txt)
-        self.assert_(txt == self.parser.model.main_text[0])
+        self.assert_([txt] == self.parser.model.main_text.get())
 
     def testParseTextMultiline(self):
         txt = 'hello\nworld'
         self.parser.parse(txt)
-        self.assert_(txt.replace('\n','<br>') == self.parser.model.main_text[0])
+        self.assert_([txt.replace('\n','<br>')] == \
+                     self.parser.model.main_text.get())
 
     def testParseMultiText(self):
         txt1, txt2 = 'hello', 'world'
         self.parser.parse(txt1)
         self.parser.parse(txt2)
         self.assert_('%s<br>%s' % (txt1, txt2) == \
-                     '<br>'.join(self.parser.model.main_text))
+                     '<br>'.join(self.parser.model.main_text.get()))
 
     def testParseSpace(self):
         txt = 'hello world'
         self.parser.parse(txt)
-        self.assert_(txt.replace(' ','&nbsp;') == self.parser.model.main_text[0])
+        self.assert_([txt.replace(' ','&nbsp;')] == \
+                     self.parser.model.main_text.get())
 
     def testGetStyle1(self):
         self.assert_("color:#%s" % self.parser._normal_color[1] == \
