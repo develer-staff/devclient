@@ -8,10 +8,22 @@ import event_type
 
 class Thread(threading.Thread):
     """
-    Class to manage thread interaction between gui and application.
+    Class to manage thread interaction between `Gui` and `Application`.
+    The gui part run in main thread while application part run
+    in secondary thread.
     """
 
     def __init__(self, classes):
+        """
+        Create the `Thread` instance, the queues to exchange message
+        between gui and app and run the gui part.
+
+        :Parameters:
+          classes : dict
+            a dictionary of the form {<className>: <classRef> } that
+            contains all the specific classes use in client.
+        """
+
         threading.Thread.__init__(self)
         self.classes = classes
         self.q_app_gui = Queue.Queue() #: events from app to gui
@@ -23,6 +35,10 @@ class Thread(threading.Thread):
         self.gui.mainLoop()
 
     def run(self):
+        """
+        Run the application part.
+        """
+
         app = self.classes['Application'](self.classes, self.q_app_gui,
                                           self.q_gui_app)
         app.mainLoop()
