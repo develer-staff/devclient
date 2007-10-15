@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
+import re
 import sys
 import Queue
 
@@ -53,12 +54,41 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         self.q_gui_app.put((event_type.MSG, unicode(self.textInput.text())))
         self.textInput.clear()
 
+    def _setOutputColors(self, bg, fg):
+        """
+        Set output default colors.
+        """
+
+        style = str(self.textOutput.styleSheet())
+        m = re.search('QTextEdit\s*{(.*)}', style)
+        if m:
+            oldstyle = m.group(1)
+            tmp = [el.split(':') for el in oldstyle.split(';')]
+            d = dict([(k.strip(), v.strip()) for k, v in tmp])
+        else:
+            oldstyle = None
+            d = {}
+
+        if bg: d['background-color'] = '#' + bg
+        if fg: d['color'] = '#' + fg
+
+        newstyle = ';'.join([k + ':' + v for k,v in d.iteritems()])
+
+        if oldstyle:
+            self.textOutput.setStyleSheet(style.replace(oldstyle, newstyle))
+        else:
+            self.textOutput.setStyleSheet('QTextEdit {%s}' % style)
+
     def _processIncoming(self):
         try:
             cmd, msg = self.q_app_gui.get(0)
             if cmd == event_type.MODEL:
-                self.textOutput.insertHtml(self.mainViewer.process(msg))
+                text, bg, fg = self.mainViewer.process(msg)
+                self.textOutput.insertHtml(text)
                 self.textOutput.moveCursor(QtGui.QTextCursor.End)
+                if bg or fg:
+                    self._setOutputColors(bg, fg)
+
         except Queue.Empty:
             pass
 

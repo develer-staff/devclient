@@ -18,8 +18,6 @@ class Parser(object):
 
     def __init__(self):
         self.model = Model()
-        self.fg_color = None
-        self.bg_color = None
 
     def parse(self, data):
         """
@@ -32,7 +30,7 @@ class Parser(object):
         data = self._replaceAnsiColor(data)
         self.model.main_text.append(data)
 
-    def _getStyle(self, ansi_code):
+    def _evalStyle(self, ansi_code):
 
         attr = 0
         fg = None
@@ -56,16 +54,17 @@ class Parser(object):
             else:
                 color = self._normal_color[fg]
 
-            self.fg_color = color
-
-        if self.fg_color is not None:
-            style.append('color:#' + self.fg_color)
+            if self.model.main_fgcolor is None:
+                self.model.main_fgcolor = color
+            elif color != self.model.main_fgcolor:
+                style.append('color:#' + color)
 
         if bg is not None:
-            self.bg_color = self._normal_color[bg]
-
-        if self.bg_color is not None:
-            style.append('background-color:#' + self.bg_color)
+            color = self._normal_color[bg]
+            if self.model.main_bgcolor is None:
+                self.model.main_bgcolor = color
+            elif color != self.model.main_bgcolor:
+                style.append('background-color:#' + color)
 
         return ';'.join(style)
 
@@ -92,9 +91,12 @@ class Parser(object):
             if m:
                 ansi_code = m.group(1)
                 if m.group(2) == COLOR_TOKEN:
-                    style = self._getStyle(ansi_code)
-                    res += '<span style="%s">%s</span>' % \
-                        (style, s[len(ansi_code) + 1 : ])
+                    style = self._evalStyle(ansi_code)
+                    if style:
+                        res += '<span style="%s">%s</span>' % \
+                            (style, s[len(ansi_code) + 1 : ])
+                    else:
+                        res += s[len(ansi_code) + 1 : ]
                 else:
                     res += s[len(ansi_code) + 1 : ]
             else:

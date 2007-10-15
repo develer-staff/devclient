@@ -38,33 +38,56 @@ class TestParser(unittest.TestCase):
         self.assert_([txt.replace(' ','&nbsp;')] ==
                      self.parser.model.main_text.get())
 
-    def testGetStyle1(self):
-        self.assert_("color:#%s" % self.parser._normal_color[1] ==
-                     self.parser._getStyle('31'))
+    def testEvalStyle1(self):
+        self.parser._evalStyle('31')
+        self.assert_(self.parser._normal_color[1] ==
+                     self.parser.model.main_fgcolor)
 
-    def testGetStyle2(self):
-        self.assert_("background-color:#%s" % self.parser._normal_color[2] ==
-                     self.parser._getStyle('0;42'))
+    def testEvalStyle2(self):
+        self.parser._evalStyle('0;42')
+        self.assert_(self.parser._normal_color[2] ==
+                     self.parser.model.main_bgcolor)
 
-    def testGetStyle3(self):
-        styles = self.parser._getStyle('35;40').split(';')
-        bg = "background-color:#%s" % self.parser._normal_color[0]
-        fg = "color:#%s" % self.parser._normal_color[5]
-        self.assert_(set([bg, fg]) == set(styles))
+    def testEvalStyle3(self):
+        self.parser._evalStyle('35;40')
+        self.assert_(self.parser._normal_color[0] ==
+                     self.parser.model.main_bgcolor)
+        self.assert_(self.parser._normal_color[5] ==
+                     self.parser.model.main_fgcolor)
 
-    def testGetStyle4(self):
-        styles = self.parser._getStyle('1;36;41').split(';')
-        bg = "background-color:#%s" % self.parser._normal_color[1]
-        fg = "color:#%s" % self.parser._bright_color[6]
-        self.assert_(set([bg, fg]) == set(styles))
+    def testEvalStyle4(self):
+        self.parser._evalStyle('1;36;41')
+        self.assert_(self.parser._normal_color[1] ==
+                     self.parser.model.main_bgcolor)
+        self.assert_(self.parser._bright_color[6] ==
+                     self.parser.model.main_fgcolor)
+
+    def testEvalStyle5(self):
+        self.parser._evalStyle('0;42')
+        style = self.parser._evalStyle('0;42')
+        self.assert_(style == '')
+
+    def testEvalStyle6(self):
+        self.parser._evalStyle('0;42')
+        style = self.parser._evalStyle('0;41')
+        self.assert_(style == 'background-color:#%s' %
+                               self.parser._normal_color[1])
 
     def testReplaceAnsiColor(self):
         txt = '\x1b[33mhello'
         res = self.parser._replaceAnsiColor(txt)
 
-        self.assert_(res == '<span style="color:#%s">hello</span>' %
+        self.assert_(res == 'hello')
+        self.assert_(self.parser.model.main_fgcolor ==
                      self.parser._normal_color[3])
 
+    def testReplaceAnsiColor2(self):
+        self.parser._evalStyle('31')
+        txt = '\x1b[33mhello'
+        res = self.parser._replaceAnsiColor(txt)
+
+        self.assert_(res == '<span style="color:#%s">hello</span>' %
+                     self.parser._normal_color[3])
 
 if __name__ == '__main__':
     unittest.main()

@@ -65,4 +65,6 @@ class Model(object):
 
     def __init__(self):
         self.main_text = CircularList(100)
+        self.main_bgcolor = None
+        self.main_fgcolor = None
 
