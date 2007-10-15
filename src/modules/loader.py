@@ -32,8 +32,8 @@ class Loader(object):
         module_path = self.__config['main']['module_path']
 
         modules = os.listdir(module_path)
-        modules = [os.path.splitext(x)[0] for x in modules \
-                   if os.path.isfile(os.path.join(module_path, x)) \
+        modules = [os.path.splitext(x)[0] for x in modules
+                   if os.path.isfile(os.path.join(module_path, x))
                    and os.path.splitext(x)[1] in ('.py', '.pyc')]
 
         self.modules = set(modules)

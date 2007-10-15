@@ -28,7 +28,7 @@ class Application(object):
                 data = self.sock.read()
                 if data:
                     parser.parse(data)
-                    self.q_app_gui.put((event_type.MODEL, \
+                    self.q_app_gui.put((event_type.MODEL,
                                         copy.deepcopy(parser.model)))
 
             try:
