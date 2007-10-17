@@ -69,6 +69,33 @@ class Parser(object):
         return ';'.join(style)
 
     def _replaceAnsiColor(self, data):
+        """
+        Replace ansi color code with equivalent html color.
+
+        The following table show the conversion rules between ansi and html
+        color code:
+
+        ================  ======  ======== ================  ======  ========
+        **Normal Color**  *Ansi*    *Html* **Bright color**  *Ansi*    *Html*
+        ----------------  ------  -------- ----------------  ------  --------
+                   Black      30   #000000        Dark Gray    1;30   #444444
+        ----------------  ------  -------- ----------------  ------  --------
+                     Red      31   #aa0000        Light Red    1;31   #ff4444
+        ----------------  ------  -------- ----------------  ------  --------
+                   Green      32   #00aa00      Light Green    1;32   #44ff44
+        ----------------  ------  -------- ----------------  ------  --------
+                    Blue      33   #0000aa       Light Blue    1;33   #4444ff
+        ----------------  ------  -------- ----------------  ------  --------
+                    Cyan      34   #00aaaa       Light Cyan    1;34   #44ffff
+        ----------------  ------  -------- ----------------  ------  --------
+                  Purple      35   #aa00aa     Light Purple    1;35   #ff44ff
+        ----------------  ------  -------- ----------------  ------  --------
+                   Brown      36   #aaaa00           Yellow    1;36   #ffff44
+        ----------------  ------  -------- ----------------  ------  --------
+              Light Gray      37   #aaaaaa            White    1;37   #ffffff
+        ================  ======  ======== ================  ======  ========
+
+        """
 
         START_TOKEN = chr(27) + '['
         COLOR_TOKEN = 'm'
