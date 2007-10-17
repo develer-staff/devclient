@@ -17,7 +17,11 @@ class Parser(object):
                      'ff44ff', '44ffff', 'ffffff']
 
     def __init__(self):
-        self.model = Model()
+        """
+        Create the `Parser` instance.
+        """
+
+        self.model = Model()  #: the `Model` instance.
         self._incomplete_seq = None
 
     def parse(self, data):

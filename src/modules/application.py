@@ -14,6 +14,15 @@ class Application(object):
     def __init__(self, classes, q_app_gui, q_gui_app):
         """
         Create the `Application` instance.
+
+        :Parameters:
+          classes : dict
+            a dictionary of the form {<className>: <classRef> } that
+            contains all the specific classes use in client.
+          q_app_gui : Queue
+            a Queue used to send message from `Application` to `Gui`
+          q_gui_app : Queue
+            a Queue used to send message from `Gui` to `Application`
         """
 
         self.classes = classes

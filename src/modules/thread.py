@@ -25,14 +25,14 @@ class Thread(threading.Thread):
         """
 
         threading.Thread.__init__(self)
-        self.classes = classes
-        self.q_app_gui = Queue.Queue() #: events from app to gui
-        self.q_gui_app = Queue.Queue() #: events from gui to app
+        self.classes = classes  #: the dictionary of classes
+        self.q_app_gui = Queue.Queue()  #: events from app to gui
+        self.q_gui_app = Queue.Queue()  #: events from gui to app
 
-        self.gui = self.classes['Gui'](self.q_app_gui, self.q_gui_app)
+        gui = self.classes['Gui'](self.q_app_gui, self.q_gui_app)
 
         self.start()
-        self.gui.mainLoop()
+        gui.mainLoop()
 
     def run(self):
         """
