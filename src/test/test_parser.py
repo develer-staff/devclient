@@ -32,6 +32,17 @@ class TestParser(unittest.TestCase):
         self.assert_('%s<br>%s' % (txt1, txt2) ==
                      '<br>'.join(self.parser.model.main_text.get()))
 
+    def testParseMultiText2(self):
+        txt1, txt2 = 'hello\x1b[0;', '33mworld'
+        self.parser.parse(txt1)
+        self.parser.parse(txt2)
+
+        self.assert_('hello<br>world' ==
+                     '<br>'.join(self.parser.model.main_text.get()))
+
+        self.assert_(self.parser._normal_color[3] ==
+                     self.parser.model.main_fgcolor)
+
     def testParseSpace(self):
         txt = 'hello world'
         self.parser.parse(txt)

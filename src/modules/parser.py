@@ -18,6 +18,7 @@ class Parser(object):
 
     def __init__(self):
         self.model = Model()
+        self._incomplete_seq = None
 
     def parse(self, data):
         """
@@ -105,6 +106,10 @@ class Parser(object):
         ANSI_CODE = [COLOR_TOKEN]
         ANSI_CODE.extend(ANSI_CODE_UNSUPPORTED)
 
+        if self._incomplete_seq:
+            data = self._incomplete_seq + data
+            self._incomplete_seq = None
+
         parts = data.split(START_TOKEN)
 
         if len(parts) == 1:
@@ -113,7 +118,7 @@ class Parser(object):
         res = parts[0]
         reg = re.compile('(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
 
-        for s in parts[1:]:
+        for i, s in enumerate(parts[1:]):
             m = reg.match(s)
             if m:
                 ansi_code = m.group(1)
@@ -127,7 +132,10 @@ class Parser(object):
                 else:
                     res += s[len(ansi_code) + 1 : ]
             else:
-                res += s
+                if i == len(parts) - 2:
+                    self._incomplete_seq = START_TOKEN + s
+                else:
+                    res += s
 
         return res
 
