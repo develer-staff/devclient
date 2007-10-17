@@ -12,6 +12,10 @@ class Application(object):
     """
 
     def __init__(self, classes, q_app_gui, q_gui_app):
+        """
+        Create the `Application` instance.
+        """
+
         self.classes = classes
         self.q_app_gui = q_app_gui
         self.q_gui_app = q_gui_app
@@ -19,6 +23,12 @@ class Application(object):
         self.sock = self.classes['Socket']()
 
     def mainLoop(self):
+        """
+        Realize the main loop of application.
+
+        Manage `Socket` input/output and take care of exchange messages with
+        the `Gui` part.
+        """
 
         parser = self.classes['Parser']()
 

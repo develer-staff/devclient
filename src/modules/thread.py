@@ -9,14 +9,14 @@ import event_type
 class Thread(threading.Thread):
     """
     Class to manage thread interaction between `Gui` and `Application`.
+
     The gui part run in main thread while application part run
     in secondary thread.
     """
 
     def __init__(self, classes):
         """
-        Create the `Thread` instance, the queues to exchange message
-        between gui and app and run the gui part.
+        Create the `Thread` instance and run the gui part.
 
         :Parameters:
           classes : dict
