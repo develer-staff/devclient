@@ -6,6 +6,7 @@ import sys
 import Queue
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import SIGNAL
 
 from gui_ui import Ui_DevClient
 import event_type
@@ -26,20 +27,20 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 
-        self.connect(self.actionExit, QtCore.SIGNAL("triggered()"),
+        self.connect(self.actionExit, SIGNAL("triggered()"),
                                self._endApplication)
 
-        self.connect(self.actionConnect, QtCore.SIGNAL("triggered()"),
+        self.connect(self.actionConnect, SIGNAL("triggered()"),
                                self._connect)
 
-        self.connect(self.actionOption, QtCore.SIGNAL("triggered()"),
+        self.connect(self.actionOption, SIGNAL("triggered()"),
                                self._showOption)
 
-        self.connect(self.textInput, QtCore.SIGNAL("returnPressed()"),
+        self.connect(self.textInput, SIGNAL("returnPressed()"),
                                self._sendText)
 
         timer = QtCore.QTimer(self)
-        self.connect(timer, QtCore.SIGNAL("timeout()"), self._processIncoming)
+        self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
         timer.start(100)
 
         self.textInput.setFocus()
