@@ -8,7 +8,9 @@ import Queue
 from PyQt4 import QtCore, QtGui
 
 from gui_ui import Ui_DevClient
-import event_type, viewer
+import event_type
+import viewer
+import gui_option
 
 class Gui(QtGui.QMainWindow, Ui_DevClient):
     """
@@ -30,6 +32,9 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         self.connect(self.actionConnect, QtCore.SIGNAL("triggered()"),
                                self._connect)
 
+        self.connect(self.actionOption, QtCore.SIGNAL("triggered()"),
+                               self._showOption)
+
         self.connect(self.textInput, QtCore.SIGNAL("returnPressed()"),
                                self._sendText)
 
@@ -43,6 +48,10 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
     def closeEvent(self, event):
         self._endApplication()
         event.accept()
+
+    def _showOption(self):
+        opt = gui_option.GuiOption(self)
+        opt.show()
 
     def _connect(self):
         self.q_gui_app.put((event_type.CONNECT, ""))

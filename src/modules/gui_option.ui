@@ -1,0 +1,311 @@
+<ui version="4.0" >
+ <class>option</class>
+ <widget class="QDialog" name="option" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>310</width>
+    <height>310</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Opzioni</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <widget class="QTabWidget" name="tabWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>310</width>
+     <height>310</height>
+    </rect>
+   </property>
+   <property name="sizePolicy" >
+    <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="currentIndex" >
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="tab_conn" >
+    <attribute name="title" >
+     <string>Connessioni</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayout" >
+     <property name="geometry" >
+      <rect>
+       <x>13</x>
+       <y>10</y>
+       <width>281</width>
+       <height>271</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_name_conn" >
+        <property name="text" >
+         <string> Nome</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" colspan="2" >
+       <widget class="QLineEdit" name="name_conn" />
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_host_conn" >
+        <property name="text" >
+         <string> Host</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" colspan="2" >
+       <widget class="QLineEdit" name="host_conn" />
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="label_port_conn" >
+        <property name="text" >
+         <string> Porta</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3" >
+       <widget class="QLineEdit" name="port_conn" >
+        <property name="maxLength" >
+         <number>8</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>640</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="4" column="0" colspan="4" >
+       <widget class="QCheckBox" name="default_conn" >
+        <property name="text" >
+         <string>Imposta come predefinita</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="4" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>60</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>60</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="6" column="2" >
+       <widget class="QPushButton" name="save_conn" >
+        <property name="text" >
+         <string>Salva</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="2" >
+       <widget class="QComboBox" name="list_conn" >
+        <item>
+         <property name="text" >
+          <string>Crea Nuova</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="6" column="3" >
+       <widget class="QPushButton" name="delete_conn" >
+        <property name="text" >
+         <string>Elimina</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2" >
+       <widget class="QLabel" name="label_conn" >
+        <property name="text" >
+         <string> Connessione</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_style" >
+    <attribute name="title" >
+     <string>Aspetto</string>
+    </attribute>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="geometry" >
+      <rect>
+       <x>9</x>
+       <y>9</y>
+       <width>291</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title" >
+      <string>Colori di default</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget" >
+      <property name="geometry" >
+       <rect>
+        <x>10</x>
+        <y>9</y>
+        <width>171</width>
+        <height>101</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QPushButton" name="bg_button_style" >
+         <property name="text" >
+          <string>Sfondo</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QLineEdit" name="bg_style" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maxLength" >
+          <number>7</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QPushButton" name="fg_button_style" >
+         <property name="text" >
+          <string>Testo</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QLineEdit" name="fg_style" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>80</width>
+           <height>20</height>
+          </size>
+         </property>
+         <property name="maxLength" >
+          <number>7</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QPushButton" name="save_style" >
+     <property name="geometry" >
+      <rect>
+       <x>210</x>
+       <y>250</y>
+       <width>91</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string>Salva</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>list_conn</tabstop>
+  <tabstop>name_conn</tabstop>
+  <tabstop>host_conn</tabstop>
+  <tabstop>port_conn</tabstop>
+  <tabstop>default_conn</tabstop>
+  <tabstop>save_conn</tabstop>
+  <tabstop>delete_conn</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>bg_button_style</tabstop>
+  <tabstop>bg_style</tabstop>
+  <tabstop>fg_button_style</tabstop>
+  <tabstop>fg_style</tabstop>
+  <tabstop>save_style</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
