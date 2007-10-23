@@ -2,65 +2,64 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sat Oct 13 15:17:39 2007
-#      by: PyQt4 UI code generator 4.1
+# Created: Tue Oct 23 22:51:41 2007
+#      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
 
-import sys
 from PyQt4 import QtCore, QtGui
 
-class Ui_DevClient(object):
-    def setupUi(self, DevClient):
-        DevClient.setObjectName("DevClient")
-        DevClient.resize(QtCore.QSize(QtCore.QRect(0,0,800,600).size()).expandedTo(DevClient.minimumSizeHint()))
+class Ui_dev_client(object):
+    def setupUi(self, dev_client):
+        dev_client.setObjectName("dev_client")
+        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,800,600).size()).expandedTo(dev_client.minimumSizeHint()))
 
-        self.centralwidget = QtGui.QWidget(DevClient)
+        self.centralwidget = QtGui.QWidget(dev_client)
         self.centralwidget.setObjectName("centralwidget")
 
         self.vboxlayout = QtGui.QVBoxLayout(self.centralwidget)
-        self.vboxlayout.setMargin(9)
         self.vboxlayout.setSpacing(6)
+        self.vboxlayout.setMargin(9)
         self.vboxlayout.setObjectName("vboxlayout")
 
-        self.textOutput = QtGui.QTextEdit(self.centralwidget)
-        self.textOutput.setReadOnly(True)
-        self.textOutput.setObjectName("textOutput")
-        self.vboxlayout.addWidget(self.textOutput)
+        self.text_output = QtGui.QTextEdit(self.centralwidget)
+        self.text_output.setReadOnly(True)
+        self.text_output.setObjectName("text_output")
+        self.vboxlayout.addWidget(self.text_output)
 
-        self.textInput = QtGui.QLineEdit(self.centralwidget)
-        self.textInput.setObjectName("textInput")
-        self.vboxlayout.addWidget(self.textInput)
-        DevClient.setCentralWidget(self.centralwidget)
+        self.text_input = QtGui.QLineEdit(self.centralwidget)
+        self.text_input.setObjectName("text_input")
+        self.vboxlayout.addWidget(self.text_input)
+        dev_client.setCentralWidget(self.centralwidget)
 
-        self.toolBar = QtGui.QToolBar(DevClient)
+        self.toolBar = QtGui.QToolBar(dev_client)
         self.toolBar.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         self.toolBar.setMovable(False)
         self.toolBar.setOrientation(QtCore.Qt.Horizontal)
         self.toolBar.setIconSize(QtCore.QSize(32,32))
         self.toolBar.setObjectName("toolBar")
-        DevClient.addToolBar(self.toolBar)
+        dev_client.addToolBar(QtCore.Qt.TopToolBarArea,self.toolBar)
 
-        self.actionConnect = QtGui.QAction(DevClient)
-        self.actionConnect.setIcon(QtGui.QIcon("../../images/connect.png"))
-        self.actionConnect.setObjectName("actionConnect")
+        self.action_connect = QtGui.QAction(dev_client)
+        self.action_connect.setIcon(QtGui.QIcon("../../images/connect.png"))
+        self.action_connect.setObjectName("action_connect")
 
-        self.actionExit = QtGui.QAction(DevClient)
-        self.actionExit.setObjectName("actionExit")
+        self.action_exit = QtGui.QAction(dev_client)
+        self.action_exit.setObjectName("action_exit")
 
-        self.actionOption = QtGui.QAction(DevClient)
-        self.actionOption.setIcon(QtGui.QIcon("../../images/option.png"))
-        self.actionOption.setObjectName("actionOption")
-        self.toolBar.addAction(self.actionConnect)
-        self.toolBar.addAction(self.actionOption)
+        self.action_option = QtGui.QAction(dev_client)
+        self.action_option.setIcon(QtGui.QIcon("../../images/option.png"))
+        self.action_option.setObjectName("action_option")
+        self.toolBar.addAction(self.action_connect)
+        self.toolBar.addAction(self.action_option)
 
-        self.retranslateUi(DevClient)
-        QtCore.QMetaObject.connectSlotsByName(DevClient)
+        self.retranslateUi(dev_client)
+        QtCore.QMetaObject.connectSlotsByName(dev_client)
 
-    def retranslateUi(self, DevClient):
-        DevClient.setWindowTitle(QtGui.QApplication.translate("DevClient", "DevClient", None, QtGui.QApplication.UnicodeUTF8))
-        self.textOutput.setStyleSheet(QtGui.QApplication.translate("DevClient", "QTextEdit { background-color: #FFFFFF; font: 10pt \"Courier\"}", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionConnect.setText(QtGui.QApplication.translate("DevClient", "Connetti", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionExit.setText(QtGui.QApplication.translate("DevClient", "Esci", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOption.setText(QtGui.QApplication.translate("DevClient", "Opzioni", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, dev_client):
+        dev_client.setWindowTitle(QtGui.QApplication.translate("dev_client", "DevClient", None, QtGui.QApplication.UnicodeUTF8))
+        self.text_output.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #FFFFFF; font: 10pt \"Courier\"}", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_connect.setText(QtGui.QApplication.translate("dev_client", "Connetti", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_exit.setText(QtGui.QApplication.translate("dev_client", "Esci", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_option.setText(QtGui.QApplication.translate("dev_client", "Opzioni", None, QtGui.QApplication.UnicodeUTF8))
 

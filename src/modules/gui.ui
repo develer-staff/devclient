@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>DevClient</class>
- <widget class="QMainWindow" name="DevClient" >
+ <class>dev_client</class>
+ <widget class="QMainWindow" name="dev_client" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -14,14 +14,23 @@
   </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
     <property name="spacing" >
      <number>6</number>
     </property>
+    <property name="leftMargin" >
+     <number>9</number>
+    </property>
+    <property name="topMargin" >
+     <number>9</number>
+    </property>
+    <property name="rightMargin" >
+     <number>9</number>
+    </property>
+    <property name="bottomMargin" >
+     <number>9</number>
+    </property>
     <item>
-     <widget class="QTextEdit" name="textOutput" >
+     <widget class="QTextEdit" name="text_output" >
       <property name="styleSheet" >
        <string>QTextEdit { background-color: #FFFFFF; font: 10pt "Courier"}</string>
       </property>
@@ -31,7 +40,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="textInput" />
+     <widget class="QLineEdit" name="text_input" />
     </item>
    </layout>
   </widget>
@@ -52,12 +61,15 @@
     </size>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
    </attribute>
-   <addaction name="actionConnect" />
-   <addaction name="actionOption" />
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_connect" />
+   <addaction name="action_option" />
   </widget>
-  <action name="actionConnect" >
+  <action name="action_connect" >
    <property name="icon" >
     <iconset>../../images/connect.png</iconset>
    </property>
@@ -65,12 +77,12 @@
     <string>Connetti</string>
    </property>
   </action>
-  <action name="actionExit" >
+  <action name="action_exit" >
    <property name="text" >
     <string>Esci</string>
    </property>
   </action>
-  <action name="actionOption" >
+  <action name="action_option" >
    <property name="icon" >
     <iconset>../../images/option.png</iconset>
    </property>

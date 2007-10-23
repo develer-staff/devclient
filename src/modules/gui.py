@@ -1,4 +1,4 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
 #-*- coding: utf-8 -*-
 
 import re
@@ -8,12 +8,12 @@ import Queue
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import SIGNAL
 
-from gui_ui import Ui_DevClient
+from gui_ui import Ui_dev_client
 import event_type
 import viewer
 import gui_option
 
-class Gui(QtGui.QMainWindow, Ui_DevClient):
+class Gui(QtGui.QMainWindow, Ui_dev_client):
     """
     The Gui class written with Qt, that inherits the real gui interface
     designed by Qt-designer.
@@ -27,23 +27,23 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 
-        self.connect(self.actionExit, SIGNAL("triggered()"),
+        self.connect(self.action_exit, SIGNAL("triggered()"),
                                self._endApplication)
 
-        self.connect(self.actionConnect, SIGNAL("triggered()"),
+        self.connect(self.action_connect, SIGNAL("triggered()"),
                                self._connect)
 
-        self.connect(self.actionOption, SIGNAL("triggered()"),
+        self.connect(self.action_option, SIGNAL("triggered()"),
                                self._showOption)
 
-        self.connect(self.textInput, SIGNAL("returnPressed()"),
+        self.connect(self.text_input, SIGNAL("returnPressed()"),
                                self._sendText)
 
         timer = QtCore.QTimer(self)
         self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
         timer.start(100)
 
-        self.textInput.setFocus()
+        self.text_input.setFocus()
         self.mainViewer = viewer.Viewer()
 
     def closeEvent(self, event):
@@ -61,15 +61,15 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         self.q_gui_app.put((event_type.END_APP, ""))
 
     def _sendText(self):
-        self.q_gui_app.put((event_type.MSG, unicode(self.textInput.text())))
-        self.textInput.clear()
+        self.q_gui_app.put((event_type.MSG, unicode(self.text_input.text())))
+        self.text_input.clear()
 
     def _setOutputColors(self, bg, fg):
         """
         Set output default colors.
         """
 
-        style = str(self.textOutput.styleSheet())
+        style = str(self.text_output.styleSheet())
         m = re.search('QTextEdit\s*{(.*)}', style)
         if m:
             oldstyle = m.group(1)
@@ -85,17 +85,17 @@ class Gui(QtGui.QMainWindow, Ui_DevClient):
         newstyle = ';'.join([k + ':' + v for k,v in d.iteritems()])
 
         if oldstyle:
-            self.textOutput.setStyleSheet(style.replace(oldstyle, newstyle))
+            self.text_output.setStyleSheet(style.replace(oldstyle, newstyle))
         else:
-            self.textOutput.setStyleSheet('QTextEdit {%s}' % style)
+            self.text_output.setStyleSheet('QTextEdit {%s}' % style)
 
     def _processIncoming(self):
         try:
             cmd, msg = self.q_app_gui.get(0)
             if cmd == event_type.MODEL:
                 text, bg, fg = self.mainViewer.process(msg)
-                self.textOutput.insertHtml(text)
-                self.textOutput.moveCursor(QtGui.QTextCursor.End)
+                self.text_output.insertHtml(text)
+                self.text_output.moveCursor(QtGui.QTextCursor.End)
                 if bg or fg:
                     self._setOutputColors(bg, fg)
 
