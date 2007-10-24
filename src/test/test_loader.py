@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 
@@ -12,7 +12,7 @@ from modules.loader import Loader
 
 class TestLoader(unittest.TestCase):
     def setUp(self):
-        config = {'main': {'module_path': '../modules'}}
+        config = {'modules': {'path': '../modules'}}
         self.loader = Loader(config)
 
     def testFindModules(self):

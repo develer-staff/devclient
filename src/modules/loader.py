@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
 import os
@@ -29,7 +29,7 @@ class Loader(object):
         an attribute of instance called modules.
         """
 
-        module_path = self.__config['main']['module_path']
+        module_path = self.__config['modules']['path']
 
         modules = os.listdir(module_path)
         modules = [os.path.splitext(x)[0] for x in modules

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Tue Oct 23 22:51:41 2007
+# Created: Wed Oct 24 22:14:57 2007
 #      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -41,14 +41,14 @@ class Ui_dev_client(object):
         dev_client.addToolBar(QtCore.Qt.TopToolBarArea,self.toolBar)
 
         self.action_connect = QtGui.QAction(dev_client)
-        self.action_connect.setIcon(QtGui.QIcon("../../images/connect.png"))
+        self.action_connect.setIcon(QtGui.QIcon("../../resources/images/connect.png"))
         self.action_connect.setObjectName("action_connect")
 
         self.action_exit = QtGui.QAction(dev_client)
         self.action_exit.setObjectName("action_exit")
 
         self.action_option = QtGui.QAction(dev_client)
-        self.action_option.setIcon(QtGui.QIcon("../../images/option.png"))
+        self.action_option.setIcon(QtGui.QIcon("../../resources/images/option.png"))
         self.action_option.setObjectName("action_option")
         self.toolBar.addAction(self.action_connect)
         self.toolBar.addAction(self.action_option)
@@ -59,7 +59,7 @@ class Ui_dev_client(object):
     def retranslateUi(self, dev_client):
         dev_client.setWindowTitle(QtGui.QApplication.translate("dev_client", "DevClient", None, QtGui.QApplication.UnicodeUTF8))
         self.text_output.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #FFFFFF; font: 10pt \"Courier\"}", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_connect.setText(QtGui.QApplication.translate("dev_client", "Connetti", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_exit.setText(QtGui.QApplication.translate("dev_client", "Esci", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_option.setText(QtGui.QApplication.translate("dev_client", "Opzioni", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_connect.setText(QtGui.QApplication.translate("dev_client", "Connect", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_exit.setText(QtGui.QApplication.translate("dev_client", "Exit", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_option.setText(QtGui.QApplication.translate("dev_client", "Option", None, QtGui.QApplication.UnicodeUTF8))
 

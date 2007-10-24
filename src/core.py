@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
 import os
@@ -17,26 +17,30 @@ def readConfiguration(filename):
     :return: a dictionary of the form [section][option]
     """
 
+    def changePath(k, v):
+        if k == 'path':
+            v = os.path.abspath(os.path.join(os.getcwd(), v))
+        return v
+
     config = ConfigParser.SafeConfigParser()
     config.read(filename)
     conf = {}
-    for sect in config.sections():
-        conf[sect] = dict(config.items(sect))
+    for s in config.sections():
+        conf[s] = dict([(k, changePath(k, v)) for k, v in config.items(s)])
 
     return conf
 
 def main():
     """
-    The function is the client entry point. It read configuration file, load
-    all modules and start the client with the appropriate classes for
+    The function is the client entry point. It reads configuration file, loads
+    all modules and starts the client with the appropriate classes for
     application and gui.
     """
-
+    
     os.chdir(os.path.join(os.getcwd(), os.path.dirname(sys.argv[0])))
     config = readConfiguration("../etc/devclient.cfg")
 
-    module_path = os.path.join(os.getcwd(), config['main']['module_path'])
-    sys.path.append(module_path)
+    sys.path.append(config['modules']['path'])
 
     from modules.loader import Loader
 
@@ -44,11 +48,11 @@ def main():
     classes = Loader(config).load(classes)
 
     # Set current path on module path for external resources like images
-    os.chdir(module_path)
+    os.chdir(config['modules']['path'])
 
     print classes
 
-    classes['Thread'](classes)
+    classes['Thread'](classes, config)
 
 if __name__ == '__main__':
     main()

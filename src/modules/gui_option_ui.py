@@ -2,14 +2,14 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Mon Oct 22 19:54:54 2007
+# Created: Wed Oct 24 22:58:12 2007
 #      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
 
-class Ui_gui_option(object):
+class Ui_option(object):
     def setupUi(self, option):
         option.setObjectName("option")
         option.resize(QtCore.QSize(QtCore.QRect(0,0,310,310).size()).expandedTo(option.minimumSizeHint()))
@@ -163,19 +163,19 @@ class Ui_gui_option(object):
         option.setTabOrder(self.fg_style,self.save_style)
 
     def retranslateUi(self, option):
-        option.setWindowTitle(QtGui.QApplication.translate("option", "Opzioni", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_name_conn.setText(QtGui.QApplication.translate("option", " Nome", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_host_conn.setText(QtGui.QApplication.translate("option", " Host", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_port_conn.setText(QtGui.QApplication.translate("option", " Porta", None, QtGui.QApplication.UnicodeUTF8))
-        self.default_conn.setText(QtGui.QApplication.translate("option", "Imposta come predefinita", None, QtGui.QApplication.UnicodeUTF8))
-        self.save_conn.setText(QtGui.QApplication.translate("option", "Salva", None, QtGui.QApplication.UnicodeUTF8))
-        self.list_conn.addItem(QtGui.QApplication.translate("option", "Crea Nuova", None, QtGui.QApplication.UnicodeUTF8))
-        self.delete_conn.setText(QtGui.QApplication.translate("option", "Elimina", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_conn.setText(QtGui.QApplication.translate("option", " Connessione", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_conn), QtGui.QApplication.translate("option", "Connessioni", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox.setTitle(QtGui.QApplication.translate("option", "Colori di default", None, QtGui.QApplication.UnicodeUTF8))
-        self.bg_button_style.setText(QtGui.QApplication.translate("option", "Sfondo", None, QtGui.QApplication.UnicodeUTF8))
-        self.fg_button_style.setText(QtGui.QApplication.translate("option", "Testo", None, QtGui.QApplication.UnicodeUTF8))
-        self.save_style.setText(QtGui.QApplication.translate("option", "Salva", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_style), QtGui.QApplication.translate("option", "Aspetto", None, QtGui.QApplication.UnicodeUTF8))
+        option.setWindowTitle(QtGui.QApplication.translate("option", "Option", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_name_conn.setText(QtGui.QApplication.translate("option", "Name", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_host_conn.setText(QtGui.QApplication.translate("option", "Host", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_port_conn.setText(QtGui.QApplication.translate("option", "Port", None, QtGui.QApplication.UnicodeUTF8))
+        self.default_conn.setText(QtGui.QApplication.translate("option", "Make default", None, QtGui.QApplication.UnicodeUTF8))
+        self.save_conn.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.list_conn.addItem(QtGui.QApplication.translate("option", "Create New", None, QtGui.QApplication.UnicodeUTF8))
+        self.delete_conn.setText(QtGui.QApplication.translate("option", "Delete", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_conn.setText(QtGui.QApplication.translate("option", "Connection", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_conn), QtGui.QApplication.translate("option", "Connections", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox.setTitle(QtGui.QApplication.translate("option", "Default color", None, QtGui.QApplication.UnicodeUTF8))
+        self.bg_button_style.setText(QtGui.QApplication.translate("option", "Background", None, QtGui.QApplication.UnicodeUTF8))
+        self.fg_button_style.setText(QtGui.QApplication.translate("option", "Text", None, QtGui.QApplication.UnicodeUTF8))
+        self.save_style.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_style), QtGui.QApplication.translate("option", "Style", None, QtGui.QApplication.UnicodeUTF8))
 

@@ -71,23 +71,23 @@
   </widget>
   <action name="action_connect" >
    <property name="icon" >
-    <iconset>../../images/connect.png</iconset>
+    <iconset>../../resources/images/connect.png</iconset>
    </property>
    <property name="text" >
-    <string>Connetti</string>
+    <string>Connect</string>
    </property>
   </action>
   <action name="action_exit" >
    <property name="text" >
-    <string>Esci</string>
+    <string>Exit</string>
    </property>
   </action>
   <action name="action_option" >
    <property name="icon" >
-    <iconset>../../images/option.png</iconset>
+    <iconset>../../resources/images/option.png</iconset>
    </property>
    <property name="text" >
-    <string>Opzioni</string>
+    <string>Option</string>
    </property>
   </action>
  </widget>

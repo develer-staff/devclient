@@ -19,25 +19,31 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     designed by Qt-designer.
     """
 
-    def __init__(self, q_app_gui, q_gui_app):
+    def __init__(self, config, q_app_gui, q_gui_app):
+        self.config = config
         self.q_app_gui = q_app_gui
         self.q_gui_app = q_gui_app
 
         self.app = QtGui.QApplication([])
+
+        translator = QtCore.QTranslator()
+        translator.load(config['translation']['path'])
+        QtGui.QApplication.installTranslator(translator)
+        
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 
         self.connect(self.action_exit, SIGNAL("triggered()"),
-                               self._endApplication)
+                     self._endApplication)
 
         self.connect(self.action_connect, SIGNAL("triggered()"),
-                               self._connect)
+                     self._connect)
 
         self.connect(self.action_option, SIGNAL("triggered()"),
-                               self._showOption)
+                     self._showOption)
 
         self.connect(self.text_input, SIGNAL("returnPressed()"),
-                               self._sendText)
+                     self._sendText)
 
         timer = QtCore.QTimer(self)
         self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
@@ -51,7 +57,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         event.accept()
 
     def _showOption(self):
-        opt = gui_option.GuiOption(self)
+        opt = gui_option.GuiOption(self, self.config)
         opt.show()
 
     def _connect(self):
