@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
+<defaultcodec></defaultcodec>
 <context>
     <name>dev_client</name>
     <message>
@@ -103,7 +104,7 @@
     <message>
         <location filename="../../src/modules/gui_option.py" line="73"/>
         <source>The following fields are required</source>
-        <translation>E necessario specificare i campi</translation>
+        <translation>E&apos; necessario specificare i campi</translation>
     </message>
 </context>
 </TS>

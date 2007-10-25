@@ -15,11 +15,6 @@ class GuiOption(QtGui.QDialog, Ui_option):
 
     def __init__(self, parent, config):
         self.config = config
-        # FIX!
-        translator = QtCore.QTranslator()
-        translator.load(config['translation']['path'])
-        QApplication.installTranslator(translator)
-        
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
@@ -59,11 +54,6 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self.fg_style.setText(color.name())
 
     def _checkConnectionFields(self):
-        #FIX!
-        translator = QtCore.QTranslator()
-        translator.load(self.config['translation']['path'])
-        QApplication.installTranslator(translator)
-
         msg = []
         for text, field in self.conn_fields.iteritems():
                 if not field.text():

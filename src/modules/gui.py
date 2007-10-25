@@ -26,9 +26,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self.app = QtGui.QApplication([])
 
-        translator = QtCore.QTranslator()
-        translator.load(config['translation']['path'])
-        QtGui.QApplication.installTranslator(translator)
+        self.translator = QtCore.QTranslator()
+        self.translator.load(config['translation']['path'])
+        QtGui.QApplication.installTranslator(self.translator)
         
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
