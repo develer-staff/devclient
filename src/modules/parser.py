@@ -126,7 +126,7 @@ class Parser(object):
             m = reg.match(s)
             if m:
                 ansi_code = m.group(1)
-                if m.group(2) == COLOR_TOKEN:
+                if m.group(2) == COLOR_TOKEN and ansi_code:
                     style = self._evalStyle(ansi_code)
                     if style:
                         res += '<span style="%s">%s</span>' % \

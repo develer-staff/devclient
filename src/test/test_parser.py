@@ -100,5 +100,10 @@ class TestParser(unittest.TestCase):
         self.assert_(res == '<span style="color:#%s">hello</span>' %
                      self.parser._normal_color[3])
 
+    def testReplaceEmptyColor(self):
+        txt = '\x1b[mhello'
+        res = self.parser._replaceAnsiColor(txt)
+        self.assert_(res == 'hello')
+
 if __name__ == '__main__':
     unittest.main()
