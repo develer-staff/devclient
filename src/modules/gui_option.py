@@ -56,7 +56,7 @@ class GuiOption(QtGui.QDialog, Ui_option):
         msg = []
         for text, field in self.conn_fields.iteritems():
                 if not field.text():
-                    msg.append(str(text))
+                    msg.append(unicode(text))
 
         if msg:
             window = QApplication.translate("option", "Connection", None,

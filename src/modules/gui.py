@@ -75,7 +75,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         Set output default colors.
         """
 
-        style = str(self.text_output.styleSheet())
+        style = unicode(self.text_output.styleSheet())
         m = re.search('QTextEdit\s*{(.*)}', style)
         if m:
             oldstyle = m.group(1)
