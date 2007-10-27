@@ -97,7 +97,6 @@ class TestParser(unittest.TestCase):
     def testReplaceAnsiColor(self):
         txt = '\x1b[33mhello'
         res = self.parser._replaceAnsiColor(txt)
-        print 'res:', res
         self.assert_(res == 'hello')
         self.assert_(self.parser.model.main_fgcolor ==
                      self.parser._normal_color[3])
