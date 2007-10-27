@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-#
 
 import sys
 import unittest
@@ -34,6 +33,17 @@ class TestParser(unittest.TestCase):
 
     def testParseMultiText2(self):
         txt1, txt2 = 'hello\x1b[0;', '33mworld'
+        self.parser.parse(txt1)
+        self.parser.parse(txt2)
+
+        self.assert_('hello<br>world' ==
+                     '<br>'.join(self.parser.model.main_text.get()))
+
+        self.assert_(self.parser._normal_color[3] ==
+                     self.parser.model.main_fgcolor)
+
+    def testParseMultiText3(self):
+        txt1, txt2 = 'hello\x1b', '[0;33mworld'
         self.parser.parse(txt1)
         self.parser.parse(txt2)
 
@@ -87,7 +97,7 @@ class TestParser(unittest.TestCase):
     def testReplaceAnsiColor(self):
         txt = '\x1b[33mhello'
         res = self.parser._replaceAnsiColor(txt)
-
+        print 'res:', res
         self.assert_(res == 'hello')
         self.assert_(self.parser.model.main_fgcolor ==
                      self.parser._normal_color[3])

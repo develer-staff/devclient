@@ -102,7 +102,7 @@ class Parser(object):
 
         """
 
-        START_TOKEN = chr(27) + '['
+        START_TOKEN = chr(27)
         COLOR_TOKEN = 'm'
         ANSI_CODE_UNSUPPORTED = ['H', 'f', 'A', 'B', 'C', 'D', 'R', 's', 'u',
                                  'J', 'K', 'h', 'l', 'p']
@@ -120,22 +120,25 @@ class Parser(object):
             return parts[0]
 
         res = parts[0]
-        reg = re.compile('(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
+        reg = re.compile('\[(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
 
         for i, s in enumerate(parts[1:]):
             m = reg.match(s)
             if m:
                 ansi_code = m.group(1)
+                code_length = len(ansi_code) + len(COLOR_TOKEN) + len('[')
                 if m.group(2) == COLOR_TOKEN and ansi_code:
                     style = self._evalStyle(ansi_code)
                     if style:
                         res += '<span style="%s">%s</span>' % \
-                            (style, s[len(ansi_code) + 1 : ])
+                            (style, s[code_length:])
                     else:
-                        res += s[len(ansi_code) + 1 : ]
+                        res += s[code_length:]
                 else:
-                    res += s[len(ansi_code) + 1 : ]
+                    res += s[code_length:]
             else:
+                # i == len() -2 is the last element of list because the loop
+                # starts at second element
                 if i == len(parts) - 2:
                     self._incomplete_seq = START_TOKEN + s
                 else:
