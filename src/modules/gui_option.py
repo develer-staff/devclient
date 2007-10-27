@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python
+#!/usr/bin/python
 #-*- coding: utf-8 -*-
 
 from PyQt4 import QtCore, QtGui
@@ -13,8 +13,7 @@ class GuiOption(QtGui.QDialog, Ui_option):
     The Gui dialog for setup option.
     """
 
-    def __init__(self, parent, config):
-        self.config = config
+    def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
@@ -26,7 +25,7 @@ class GuiOption(QtGui.QDialog, Ui_option):
                                       QApplication.UnicodeUTF8)
         port = QApplication.translate("option", "Port", None,
                                       QApplication.UnicodeUTF8)
-        
+
         self.conn_fields = {name: self.name_conn,
                             host: self.host_conn,
                             port: self.port_conn}

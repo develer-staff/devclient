@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python
+#!/usr/bin/python
 #-*- coding: utf-8 -*-
 
 import re
@@ -8,6 +8,7 @@ import Queue
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import SIGNAL
 
+from conf import config
 from gui_ui import Ui_dev_client
 import event_type
 import viewer
@@ -19,8 +20,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     designed by Qt-designer.
     """
 
-    def __init__(self, config, q_app_gui, q_gui_app):
-        self.config = config
+    def __init__(self, q_app_gui, q_gui_app):
         self.q_app_gui = q_app_gui
         self.q_gui_app = q_gui_app
 
@@ -29,7 +29,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.translator = QtCore.QTranslator()
         self.translator.load(config['translation']['path'])
         QtGui.QApplication.installTranslator(self.translator)
-        
+
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 
@@ -57,7 +57,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         event.accept()
 
     def _showOption(self):
-        opt = gui_option.GuiOption(self, self.config)
+        opt = gui_option.GuiOption(self)
         opt.show()
 
     def _connect(self):

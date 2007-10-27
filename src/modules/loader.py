@@ -1,27 +1,23 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
 import os
 import sys
 
 import exception
+from conf import config
 
 class Loader(object):
     """
     Load classes and its modules.
     """
 
-    def __init__(self, config):
+    def __init__(self):
         """
         Create a `Loader` instance that can be used to load appropriate
         modules and classes for application and gui.
-
-        :Parameters:
-          config : dict
-            the loaded configuration
         """
 
-        self.__config = config
 
     def _findModules(self):
         """
@@ -29,7 +25,7 @@ class Loader(object):
         an attribute of instance called modules.
         """
 
-        module_path = self.__config['modules']['path']
+        module_path = config['modules']['path']
 
         modules = os.listdir(module_path)
         modules = [os.path.splitext(x)[0] for x in modules
