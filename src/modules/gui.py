@@ -46,7 +46,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         timer = QtCore.QTimer(self)
         self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
-        timer.start(20)
+        timer.start(10)
 
         self.text_input.setFocus()
         self.mainViewer = viewer.Viewer()
@@ -68,7 +68,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         connections = storage.Storage().connections()
         if connections:
             conn = [el for el in connections if el[3] == 1]
-            if not conn:  # if not defined a default connection take the first
+            # if is not defined a default connection take the first
+            if not conn:
                 conn = connections
 
             self.q_gui_app.put((event_type.CONNECT, (conn[0][1], conn[0][2])))
@@ -118,6 +119,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             cmd, msg = self.q_app_gui.get(0)
             if cmd == event_type.MODEL:
                 text, bg, fg = self.mainViewer.process(msg)
+                self.text_output.moveCursor(QtGui.QTextCursor.End)
                 self.text_output.insertHtml(text)
                 self.text_output.moveCursor(QtGui.QTextCursor.End)
                 if bg or fg:
