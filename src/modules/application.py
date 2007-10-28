@@ -39,7 +39,7 @@ class Application(object):
         the `Gui` part.
         """
 
-        parser = self.classes['Parser']()
+        parser = None
 
         while 1:
 
@@ -58,6 +58,7 @@ class Application(object):
                     self.sock.disconnect()
                     return
                 elif cmd == event_type.CONNECT and not self.sock.connected:
+                    parser = self.classes['Parser']()
                     self.sock.connect(*msg)
             except Queue.Empty:
                 pass

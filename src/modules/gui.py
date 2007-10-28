@@ -49,7 +49,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         timer.start(10)
 
         self.text_input.setFocus()
-        self.mainViewer = viewer.Viewer()
 
     def _installTranslator(self):
         self.translator = QtCore.QTranslator()
@@ -73,6 +72,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 conn = connections
 
             self.q_gui_app.put((event_type.CONNECT, (conn[0][1], conn[0][2])))
+            self.text_output.clear()
+            self.mainViewer = viewer.Viewer()
         else:
             window = QApplication.translate("dev_client", "Connect",
                                             None, QApplication.UnicodeUTF8)
