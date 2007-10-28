@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-#
 
 import sys
 import unittest
@@ -8,7 +7,6 @@ import unittest
 sys.path.append('..')
 
 import conf
-
 import modules.exception as exception
 from modules.loader import Loader
 
@@ -31,7 +29,6 @@ class TestLoader(unittest.TestCase):
         self.assertRaises(exception.ClassNotFound,
                           self.loader._loadClasses,
                           ['Fake'])
-
 
 if __name__ == '__main__':
     unittest.main()

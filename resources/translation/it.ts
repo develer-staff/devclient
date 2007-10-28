@@ -106,5 +106,10 @@
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
+    <message>
+        <location filename="../../src/modules/gui_option.py" line="73"/>
+        <source>Connection name must be unique</source>
+        <translation>Il nome della connessione deve essere unico</translation>
+    </message>
 </context>
 </TS>

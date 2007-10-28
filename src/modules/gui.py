@@ -25,10 +25,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.q_gui_app = q_gui_app
 
         self.app = QtGui.QApplication([])
-
-        self.translator = QtCore.QTranslator()
-        self.translator.load(config['translation']['path'])
-        QtGui.QApplication.installTranslator(self.translator)
+        self._installTranslator()
 
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
@@ -47,10 +44,15 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         timer = QtCore.QTimer(self)
         self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
-        timer.start(100)
+        timer.start(20)
 
         self.text_input.setFocus()
         self.mainViewer = viewer.Viewer()
+
+    def _installTranslator(self):
+        self.translator = QtCore.QTranslator()
+        self.translator.load(config['translation']['path'])
+        QtGui.QApplication.installTranslator(self.translator)
 
     def closeEvent(self, event):
         self._endApplication()
