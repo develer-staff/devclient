@@ -10,14 +10,10 @@ from conf import config
 class Loader(object):
     """
     Load classes and its modules.
+
+    The loader instance can be used to load appropriate modules and classes
+    for application and gui.
     """
-
-    def __init__(self):
-        """
-        Create a `Loader` instance that can be used to load appropriate
-        modules and classes for application and gui.
-        """
-
 
     def _findModules(self):
         """

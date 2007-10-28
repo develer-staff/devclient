@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 
@@ -7,13 +7,15 @@ import unittest
 
 sys.path.append('..')
 
+import conf
+
 import modules.exception as exception
 from modules.loader import Loader
 
 class TestLoader(unittest.TestCase):
     def setUp(self):
-        config = {'modules': {'path': '../modules'}}
-        self.loader = Loader(config)
+        conf.config['modules'] = {'path': '../modules'}
+        self.loader = Loader()
 
     def testFindModules(self):
         self.loader._findModules()
