@@ -7,12 +7,14 @@ import Queue
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QApplication
 
+import viewer
+import storage
+import gui_option
+import event_type
 from conf import config
 from gui_ui import Ui_dev_client
-import event_type
-import viewer
-import gui_option
 
 class Gui(QtGui.QMainWindow, Ui_dev_client):
     """
@@ -63,7 +65,21 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         opt.show()
 
     def _connect(self):
-        self.q_gui_app.put((event_type.CONNECT, ""))
+        connections = storage.Storage().connections()
+        if connections:
+            conn = [el for el in connections if el[3] == 1]
+            if not conn:  # if not defined a default connection take the first
+                conn = connections
+
+            self.q_gui_app.put((event_type.CONNECT, (conn[0][1], conn[0][2])))
+        else:
+            window = QApplication.translate("dev_client", "Connect",
+                                            None, QApplication.UnicodeUTF8)
+
+            msg = QApplication.translate("dev_client",
+                                "There aren't connections defined",
+                                None, QApplication.UnicodeUTF8)
+            QtGui.QMessageBox.warning(self, window, msg)
 
     def _endApplication(self):
         self.q_gui_app.put((event_type.END_APP, ""))

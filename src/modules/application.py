@@ -58,6 +58,6 @@ class Application(object):
                     self.sock.disconnect()
                     return
                 elif cmd == event_type.CONNECT and not self.sock.connected:
-                    self.sock.connect("localhost", 6666)
+                    self.sock.connect(*msg)
             except Queue.Empty:
                 pass

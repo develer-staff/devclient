@@ -28,6 +28,11 @@
         <source>Option</source>
         <translation>Opzioni</translation>
     </message>
+    <message>
+        <location filename="../../src/modules/gui.py" line="79"/>
+        <source>There aren't connections defined</source>
+        <translation>Non ci sono connessioni definite</translation>
+    </message>
 </context>
 <context>
     <name>option</name>
@@ -107,7 +112,7 @@
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="73"/>
+        <location filename="../../src/modules/gui_option.py" line="136"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
