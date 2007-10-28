@@ -27,6 +27,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.q_gui_app = q_gui_app
 
         self.app = QtGui.QApplication([])
+        print [str(x) for x in list(QtGui.QStyleFactory.keys())]
+        self.app.setStyle(QtGui.QStyleFactory.create("Cleanlooks"))
         self._installTranslator()
 
         QtGui.QMainWindow.__init__(self)
