@@ -29,9 +29,14 @@
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui.py" line="79"/>
+        <location filename="../../src/modules/gui.py" line="63"/>
         <source>There aren't connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
+    </message>
+    <message>
+        <location filename="../../src/modules/gui.py" line="67"/>
+        <source>Unable to establish connection</source>
+        <translation>Impossibile stabilire la connessione</translation>
     </message>
 </context>
 <context>
@@ -47,17 +52,17 @@
         <translation>Connessioni</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="28"/>
+        <location filename="../../src/modules/gui_option.py" line="39"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="30"/>
+        <location filename="../../src/modules/gui_option.py" line="41"/>
         <source>Host</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="33"/>
+        <location filename="../../src/modules/gui_option.py" line="43"/>
         <source>Port</source>
         <translation>Porta</translation>
     </message>
@@ -102,17 +107,17 @@
         <translation>Testo</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="69"/>
+        <location filename="../../src/modules/gui_option.py" line="46"/>
         <source>Connection</source>
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="73"/>
+        <location filename="../../src/modules/gui_option.py" line="48"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="136"/>
+        <location filename="../../src/modules/gui_option.py" line="50"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>

@@ -4,6 +4,7 @@
 import copy
 import Queue
 
+import exception
 import event_type
 
 class Application(object):
@@ -59,6 +60,9 @@ class Application(object):
                     return
                 elif cmd == event_type.CONNECT and not self.sock.connected:
                     parser = self.classes['Parser']()
-                    self.sock.connect(*msg)
+                    try:
+                        self.sock.connect(*msg)
+                    except exception.ConnectionRefused:
+                        self.q_app_gui.put((event_type.CONNECTION_REFUSED, ""))
             except Queue.Empty:
                 pass

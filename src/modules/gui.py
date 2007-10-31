@@ -50,11 +50,23 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         timer.start(10)
 
         self.text_input.setFocus()
+        self._translateText()
 
     def _installTranslator(self):
         self.translator = QtCore.QTranslator()
         self.translator.load(config['translation']['path'])
         QtGui.QApplication.installTranslator(self.translator)
+
+    def _translateText(self):
+        self._text = {}
+        self._text['Connect'] = QApplication.translate("dev_client", "Connect",
+            None, QApplication.UnicodeUTF8)
+
+        self._text['NoConn'] = QApplication.translate("dev_client",
+            "There aren't connections defined", None, QApplication.UnicodeUTF8)
+
+        self._text['ConnError'] = QApplication.translate("dev_client",
+            "Unable to establish connection", None, QApplication.UnicodeUTF8)
 
     def closeEvent(self, event):
         self._endApplication()
@@ -76,13 +88,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self.text_output.clear()
             self.mainViewer = viewer.Viewer()
         else:
-            window = QApplication.translate("dev_client", "Connect",
-                                            None, QApplication.UnicodeUTF8)
-
-            msg = QApplication.translate("dev_client",
-                                "There aren't connections defined",
-                                None, QApplication.UnicodeUTF8)
-            QtGui.QMessageBox.warning(self, window, msg)
+            QtGui.QMessageBox.warning(self, self._text['Connect'],
+                                      self._text['NoConn'])
 
     def _endApplication(self):
         self.q_gui_app.put((event_type.END_APP, ""))
@@ -126,6 +133,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 self.text_output.moveCursor(QtGui.QTextCursor.End)
                 if bg or fg:
                     self._setOutputColors(bg, fg)
+            elif cmd == event_type.CONNECTION_REFUSED:
+                QtGui.QMessageBox.warning(self, self._text['Connect'],
+                                      self._text['ConnError'])
 
         except Queue.Empty:
             pass

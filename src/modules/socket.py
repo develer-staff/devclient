@@ -4,6 +4,8 @@
 import telnetlib
 import select
 
+import exception
+
 class Socket(object):
     """
     Provide an asynchronous interface to socket operation.
@@ -16,7 +18,10 @@ class Socket(object):
         self.t = telnetlib.Telnet()
 
     def connect(self, host, port):
-        self.t.open(host, port)
+        try:
+            self.t.open(host, port)
+        except:
+            raise exception.ConnectionRefused()
         self.connected = 1
 
     def read(self):

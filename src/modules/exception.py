@@ -23,3 +23,9 @@ class BufferUnderSize(DevClient):
     Handling error on losing data because buffer size is not sufficient.
     """
     pass
+
+class ConnectionRefused(DevClient):
+    """
+    Handling error on establish connection.
+    """
+    pass

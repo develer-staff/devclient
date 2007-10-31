@@ -22,6 +22,7 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self._setupSignal()
         self.storage = Storage()
         self._loadConnections()
+        self._translateText()
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
@@ -32,6 +33,22 @@ class GuiOption(QtGui.QDialog, Ui_option):
 
         self.connect(self.list_conn, SIGNAL("currentIndexChanged(QString)"),
                      self._loadConnection)
+
+    def _translateText(self):
+        self._text = {}
+        self._text['name'] = QApplication.translate("option", "Name", None,
+                                                    QApplication.UnicodeUTF8)
+        self._text['host'] = QApplication.translate("option", "Host", None,
+                                                    QApplication.UnicodeUTF8)
+        self._text['port'] = QApplication.translate("option", "Port", None,
+                                                    QApplication.UnicodeUTF8)
+
+        self._text['connection'] = QApplication.translate("option",
+            "Connection", None, QApplication.UnicodeUTF8)
+        self._text['req_fields'] = QApplication.translate("option",
+            "The following fields are required", None, QApplication.UnicodeUTF8)
+        self._text['unique_name'] = QApplication.translate("option",
+            "Connection name must be unique", None, QApplication.UnicodeUTF8)
 
     def _chooseBgColor(self):
         color = QtGui.QColorDialog.getColor()
@@ -79,32 +96,19 @@ class GuiOption(QtGui.QDialog, Ui_option):
         Check validity of connection fields.
         """
 
-        name = QApplication.translate("option", "Name", None,
-                                      QApplication.UnicodeUTF8)
-        host = QApplication.translate("option", "Host", None,
-                                      QApplication.UnicodeUTF8)
-        port = QApplication.translate("option", "Port", None,
-                                      QApplication.UnicodeUTF8)
         msg = []
 
-        conn_fields = {name: self.name_conn,
-                       host: self.host_conn,
-                       port: self.port_conn}
+        conn_fields = {self._text['name']: self.name_conn,
+                       self._text['host']: self.host_conn,
+                       self._text['port']: self.port_conn}
 
         for text, field in conn_fields.iteritems():
                 if not field.text():
                     msg.append(unicode(text))
 
         if msg:
-            window = QApplication.translate("option", "Connection", None,
-                                            QApplication.UnicodeUTF8)
-
-            title = QApplication.translate("option",
-                                           "The following fields are required",
-                                           None, QApplication.UnicodeUTF8)
-
-            QtGui.QMessageBox.warning(self, window, "%s:\n%s" %
-                                                    (title, '\n'.join(msg)))
+            QtGui.QMessageBox.warning(self, self._text['connection'],
+                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
             return False
         return True
 
@@ -130,14 +134,8 @@ class GuiOption(QtGui.QDialog, Ui_option):
         if not self.list_conn.currentIndex():
             if [el[0] for el in self.connections if
                 el[0] == self.name_conn.text()]:
-                window = QApplication.translate("option", "Connection", None,
-                                QApplication.UnicodeUTF8)
-
-                msg = QApplication.translate("option",
-                                             "Connection name must be unique",
-                                             None, QApplication.UnicodeUTF8)
-
-                QtGui.QMessageBox.warning(self, window, msg)
+                QtGui.QMessageBox.warning(self, self._text['connection'],
+                                          self._text['unique_name'])
             else:
                 self.list_conn.addItem(self.name_conn.text())
                 self.connections.append(conn)
