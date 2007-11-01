@@ -34,6 +34,8 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self.connect(self.list_conn, SIGNAL("currentIndexChanged(QString)"),
                      self._loadConnection)
 
+        self.connect(self.connect_conn, clicked, self._connectReq)
+
     def _translateText(self):
         self._text = {}
         self._text['name'] = QApplication.translate("option", "Name", None,
@@ -58,6 +60,12 @@ class GuiOption(QtGui.QDialog, Ui_option):
         color = QtGui.QColorDialog.getColor()
         self.fg_style.setText(color.name())
 
+    def _connectReq(self):
+        self.emit(SIGNAL('connectReq(const QString &, int)'),
+                  self.host_conn.text(),
+                  int(self.port_conn.text()))
+        self.close()
+
     def _loadConnections(self):
         """
         Load all connections.
@@ -79,12 +87,15 @@ class GuiOption(QtGui.QDialog, Ui_option):
 
         if conn:
             n, h, p, d = conn[0]
+            connect = True
         else:
             n, h, p, d = ('', '', '', QtCore.Qt.Unchecked)
+            connect = False
 
         self.name_conn.setText(n)
         self.host_conn.setText(h)
         self.port_conn.setText(unicode(p))
+        self.connect_conn.setEnabled(connect)
 
         if d:
             self.default_conn.setCheckState(QtCore.Qt.Checked)

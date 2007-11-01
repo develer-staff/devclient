@@ -39,13 +39,13 @@
     <attribute name="title" >
      <string>Connections</string>
     </attribute>
-    <widget class="QWidget" name="gridLayout" >
+    <widget class="QWidget" name="layoutWidget" >
      <property name="geometry" >
       <rect>
-       <x>13</x>
-       <y>10</y>
+       <x>15</x>
+       <y>21</y>
        <width>281</width>
-       <height>271</height>
+       <height>191</height>
       </rect>
      </property>
      <layout class="QGridLayout" >
@@ -55,15 +55,21 @@
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_name_conn" >
-        <property name="text" >
-         <string>Name</string>
+      <item row="2" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="2" colspan="2" >
-       <widget class="QLineEdit" name="name_conn" />
+        <property name="sizeType" >
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>60</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item row="2" column="0" >
        <widget class="QLabel" name="label_host_conn" >
@@ -75,10 +81,17 @@
       <item row="2" column="2" colspan="2" >
        <widget class="QLineEdit" name="host_conn" />
       </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="label_port_conn" >
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_name_conn" >
         <property name="text" >
-         <string>Port</string>
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2" >
+       <widget class="QLabel" name="label_conn" >
+        <property name="text" >
+         <string>Connection</string>
         </property>
        </widget>
       </item>
@@ -89,18 +102,8 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1" colspan="2" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>640</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+      <item row="1" column="2" colspan="2" >
+       <widget class="QLineEdit" name="name_conn" />
       </item>
       <item row="4" column="0" colspan="4" >
        <widget class="QCheckBox" name="default_conn" >
@@ -125,6 +128,38 @@
         </property>
        </spacer>
       </item>
+      <item row="3" column="1" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>150</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="label_port_conn" >
+        <property name="text" >
+         <string>Port</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="2" >
+       <widget class="QComboBox" name="list_conn" >
+        <item>
+         <property name="text" >
+          <string>Create New</string>
+         </property>
+        </item>
+       </widget>
+      </item>
       <item row="1" column="1" >
        <spacer>
         <property name="orientation" >
@@ -141,49 +176,45 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget" >
+     <property name="geometry" >
+      <rect>
+       <x>35</x>
+       <y>240</y>
+       <width>261</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="connect_conn" >
+        <property name="enabled" >
+         <bool>false</bool>
         </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Fixed</enum>
+        <property name="text" >
+         <string>Connect</string>
         </property>
-        <property name="sizeHint" >
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
-      <item row="6" column="2" >
+      <item>
        <widget class="QPushButton" name="save_conn" >
         <property name="text" >
          <string>Save</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" colspan="2" >
-       <widget class="QComboBox" name="list_conn" >
-        <item>
-         <property name="text" >
-          <string>Create New</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="6" column="3" >
+      <item>
        <widget class="QPushButton" name="delete_conn" >
         <property name="text" >
          <string>Delete</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2" >
-       <widget class="QLabel" name="label_conn" >
-        <property name="text" >
-         <string>Connection</string>
         </property>
        </widget>
       </item>
@@ -219,7 +250,7 @@
      <property name="title" >
       <string>Default color</string>
      </property>
-     <widget class="QWidget" name="" >
+     <widget class="QWidget" name="layoutWidget" >
       <property name="geometry" >
        <rect>
         <x>13</x>
@@ -291,7 +322,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="" >
+     <widget class="QWidget" name="layoutWidget" >
       <property name="geometry" >
        <rect>
         <x>12</x>

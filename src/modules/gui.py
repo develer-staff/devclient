@@ -74,22 +74,30 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _showOption(self):
         opt = gui_option.GuiOption(self)
+        self.connect(opt, SIGNAL("connectReq(const QString &, int)"),
+                     self._connect)
         opt.show()
 
-    def _connect(self):
-        connections = storage.Storage().connections()
-        if connections:
-            conn = [el for el in connections if el[3] == 1]
-            # if is not defined a default connection take the first
-            if not conn:
-                conn = connections
+    def _connect(self, host=None, port=None):
+        if not host:
+            connections = storage.Storage().connections()
+            if connections:
+                conn = [el for el in connections if el[3] == 1]
+                # if is not defined a default connection take the first
+                if not conn:
+                    conn = connections
 
-            self.q_gui_app.put((event_type.CONNECT, (conn[0][1], conn[0][2])))
-            self.text_output.clear()
-            self.mainViewer = viewer.Viewer()
+                host = conn[0][1]
+                port = conn[0][2]
+            else:
+                QtGui.QMessageBox.warning(self, self._text['Connect'],
+                                          self._text['NoConn'])
         else:
-            QtGui.QMessageBox.warning(self, self._text['Connect'],
-                                      self._text['NoConn'])
+            host = unicode(host)
+
+        self.q_gui_app.put((event_type.CONNECT, (host, port)))
+        self.text_output.clear()
+        self.mainViewer = viewer.Viewer()
 
     def _endApplication(self):
         self.q_gui_app.put((event_type.END_APP, ""))

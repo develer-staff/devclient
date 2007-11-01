@@ -47,7 +47,7 @@
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="38"/>
+        <location filename="../../src/modules/gui_option.ui" line="40"/>
         <source>Connections</source>
         <translation>Connessioni</translation>
     </message>
@@ -67,42 +67,42 @@
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="100"/>
+        <location filename="../../src/modules/gui_option.ui" line="111"/>
         <source>Make default</source>
         <translation>Imposta come predefinita</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="288"/>
+        <location filename="../../src/modules/gui_option.ui" line="210"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="163"/>
+        <location filename="../../src/modules/gui_option.ui" line="158"/>
         <source>Create New</source>
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="171"/>
+        <location filename="../../src/modules/gui_option.ui" line="217"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="187"/>
+        <location filename="../../src/modules/gui_option.ui" line="226"/>
         <source>Style</source>
         <translation>Aspetto</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="199"/>
+        <location filename="../../src/modules/gui_option.ui" line="251"/>
         <source>Default color</source>
         <translation>Colori di default</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="214"/>
+        <location filename="../../src/modules/gui_option.ui" line="292"/>
         <source>Background</source>
         <translation>Sfondo</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="246"/>
+        <location filename="../../src/modules/gui_option.ui" line="364"/>
         <source>Text</source>
         <translation>Testo</translation>
     </message>
@@ -120,6 +120,11 @@
         <location filename="../../src/modules/gui_option.py" line="50"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
+    </message>
+    <message>
+        <location filename="../../src/modules/gui_option.ui" line="203"/>
+        <source>Connect</source>
+        <translation>Connetti</translation>
     </message>
 </context>
 </TS>
