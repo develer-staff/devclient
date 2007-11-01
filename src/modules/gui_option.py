@@ -103,8 +103,8 @@ class GuiOption(QtGui.QDialog, Ui_option):
                        self._text['port']: self.port_conn}
 
         for text, field in conn_fields.iteritems():
-                if not field.text():
-                    msg.append(unicode(text))
+            if not field.text():
+                msg.append(unicode(text))
 
         if msg:
             QtGui.QMessageBox.warning(self, self._text['connection'],

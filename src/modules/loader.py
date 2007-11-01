@@ -39,7 +39,7 @@ class Loader(object):
                 elif len(parent.__bases__) > 0:
                     base, level = findParent(parent, level + 1)
                     if level != -1:
-                        return (base,level)
+                        return (base, level)
 
             return ('', -1)
 
@@ -47,7 +47,7 @@ class Loader(object):
         for src in self.modules:
             __import__('modules.' + src)
             for el, val in sys.modules['modules.' + src].__dict__.iteritems():
-                if type(val).__name__ in ['type','classobj', 'wrappertype']:
+                if type(val).__name__ in ['type', 'classobj', 'wrappertype']:
                     if el in classes and cdict[el][1] == 0:
                         cdict[el] = [val, 0]
                     else:

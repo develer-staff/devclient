@@ -37,8 +37,8 @@ class Socket(object):
         try:
             return unicode(self.t.read_very_eager(), self.encoding)
         except EOFError:
-           self.disconnect()
-           return unicode('')
+            self.disconnect()
+            return unicode('')
 
     def write(self, msg):
         self.t.write(msg.encode(self.encoding) + "\n")

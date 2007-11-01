@@ -10,10 +10,10 @@ class Parser(object):
     The Parser class build a Model of data received.
     """
 
-    _normal_color = ['000000','aa0000', '00aa00', 'aaaa00', '0000aa',
+    _normal_color = ['000000', 'aa0000', '00aa00', 'aaaa00', '0000aa',
                      'aa00aa', '00aaaa', 'aaaaaa']
 
-    _bright_color = ['444444','ff4444', '44ff44', 'ffff44', '4444ff',
+    _bright_color = ['444444', 'ff4444', '44ff44', 'ffff44', '4444ff',
                      'ff44ff', '44ffff', 'ffffff']
 
     def __init__(self):

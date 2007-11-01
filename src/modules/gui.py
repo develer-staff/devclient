@@ -116,7 +116,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         if bg: d['background-color'] = '#' + bg
         if fg: d['color'] = '#' + fg
 
-        newstyle = ';'.join([k + ':' + v for k,v in d.iteritems()])
+        newstyle = ';'.join([k + ':' + v for k, v in d.iteritems()])
 
         if oldstyle:
             self.text_output.setStyleSheet(style.replace(oldstyle, newstyle))
