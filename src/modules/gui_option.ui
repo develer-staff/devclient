@@ -20,14 +20,12 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>310</width>
+     <width>316</width>
      <height>310</height>
     </rect>
    </property>
    <property name="sizePolicy" >
-    <sizepolicy>
-     <hsizetype>0</hsizetype>
-     <vsizetype>0</vsizetype>
+    <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -42,181 +40,232 @@
     <widget class="QWidget" name="layoutWidget" >
      <property name="geometry" >
       <rect>
-       <x>15</x>
-       <y>21</y>
-       <width>281</width>
-       <height>191</height>
+       <x>10</x>
+       <y>10</y>
+       <width>291</width>
+       <height>266</height>
       </rect>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="2" column="1" >
+      <item row="0" column="0" colspan="2" >
+       <layout class="QGridLayout" >
+        <item row="0" column="0" colspan="2" >
+         <widget class="QLabel" name="label_conn" >
+          <property name="text" >
+           <string>Connection</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" colspan="2" >
+         <widget class="QComboBox" name="list_conn" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <item>
+           <property name="text" >
+            <string>Create New</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="label_name_conn" >
+          <property name="minimumSize" >
+           <size>
+            <width>45</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize" >
+           <size>
+            <width>45</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Name</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>45</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="2" colspan="2" >
+         <widget class="QLineEdit" name="name_conn" />
+        </item>
+        <item row="2" column="0" >
+         <widget class="QLabel" name="label_host_conn" >
+          <property name="minimumSize" >
+           <size>
+            <width>45</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize" >
+           <size>
+            <width>45</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Host</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>45</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="2" colspan="2" >
+         <widget class="QLineEdit" name="host_conn" />
+        </item>
+        <item row="3" column="0" >
+         <widget class="QLabel" name="label_port_conn" >
+          <property name="minimumSize" >
+           <size>
+            <width>45</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize" >
+           <size>
+            <width>45</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Port</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="2" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>135</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="3" column="3" >
+         <widget class="QLineEdit" name="port_conn" >
+          <property name="maxLength" >
+           <number>8</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="4" >
+         <widget class="QCheckBox" name="default_conn" >
+          <property name="text" >
+           <string>Make default</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" colspan="2" >
        <spacer>
         <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Fixed</enum>
+         <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeHint" >
          <size>
-          <width>60</width>
-          <height>20</height>
+          <width>271</width>
+          <height>30</height>
          </size>
         </property>
        </spacer>
       </item>
       <item row="2" column="0" >
-       <widget class="QLabel" name="label_host_conn" >
-        <property name="text" >
-         <string>Host</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2" colspan="2" >
-       <widget class="QLineEdit" name="host_conn" />
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_name_conn" >
-        <property name="text" >
-         <string>Name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2" >
-       <widget class="QLabel" name="label_conn" >
-        <property name="text" >
-         <string>Connection</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="3" >
-       <widget class="QLineEdit" name="port_conn" >
-        <property name="maxLength" >
-         <number>8</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" colspan="2" >
-       <widget class="QLineEdit" name="name_conn" />
-      </item>
-      <item row="4" column="0" colspan="4" >
-       <widget class="QCheckBox" name="default_conn" >
-        <property name="text" >
-         <string>Make default</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="4" >
        <spacer>
         <property name="orientation" >
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Fixed</enum>
+         <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeHint" >
          <size>
           <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="3" column="1" colspan="2" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>150</width>
           <height>20</height>
          </size>
         </property>
        </spacer>
       </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="label_port_conn" >
-        <property name="text" >
-         <string>Port</string>
+      <item row="2" column="1" >
+       <layout class="QHBoxLayout" >
+        <property name="spacing" >
+         <number>6</number>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="2" colspan="2" >
-       <widget class="QComboBox" name="list_conn" >
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
         <item>
-         <property name="text" >
-          <string>Create New</string>
-         </property>
+         <widget class="QPushButton" name="connect_conn" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="text" >
+           <string>Connect</string>
+          </property>
+         </widget>
         </item>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QWidget" name="layoutWidget" >
-     <property name="geometry" >
-      <rect>
-       <x>35</x>
-       <y>240</y>
-       <width>261</width>
-       <height>29</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="connect_conn" >
-        <property name="enabled" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>Connect</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="save_conn" >
-        <property name="text" >
-         <string>Save</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="delete_conn" >
-        <property name="text" >
-         <string>Delete</string>
-        </property>
-       </widget>
+        <item>
+         <widget class="QPushButton" name="save_conn" >
+          <property name="text" >
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="delete_conn" >
+          <property name="text" >
+           <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -228,9 +277,9 @@
     <widget class="QPushButton" name="save_style" >
      <property name="geometry" >
       <rect>
-       <x>210</x>
-       <y>250</y>
-       <width>91</width>
+       <x>205</x>
+       <y>245</y>
+       <width>82</width>
        <height>25</height>
       </rect>
      </property>
@@ -241,10 +290,10 @@
     <widget class="QGroupBox" name="groupBox" >
      <property name="geometry" >
       <rect>
-       <x>9</x>
-       <y>9</y>
-       <width>291</width>
-       <height>111</height>
+       <x>15</x>
+       <y>20</y>
+       <width>276</width>
+       <height>106</height>
       </rect>
      </property>
      <property name="title" >
@@ -253,25 +302,17 @@
      <widget class="QWidget" name="layoutWidget" >
       <property name="geometry" >
        <rect>
-        <x>13</x>
-        <y>20</y>
-        <width>178</width>
-        <height>29</height>
+        <x>10</x>
+        <y>12</y>
+        <width>186</width>
+        <height>86</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
         <widget class="QPushButton" name="bg_button_style" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>0</hsizetype>
-           <vsizetype>0</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -279,13 +320,7 @@
          <property name="minimumSize" >
           <size>
            <width>90</width>
-           <height>27</height>
-          </size>
-         </property>
-         <property name="maximumSize" >
-          <size>
-           <width>90</width>
-           <height>27</height>
+           <height>0</height>
           </size>
          </property>
          <property name="text" >
@@ -293,12 +328,10 @@
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="1" >
         <widget class="QLineEdit" name="bg_style" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>0</hsizetype>
-           <vsizetype>0</vsizetype>
+          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -320,30 +353,10 @@
          </property>
         </widget>
        </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="layoutWidget" >
-      <property name="geometry" >
-       <rect>
-        <x>12</x>
-        <y>70</y>
-        <width>178</width>
-        <height>29</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
+       <item row="1" column="0" >
         <widget class="QPushButton" name="fg_button_style" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>0</hsizetype>
-           <vsizetype>0</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -351,13 +364,7 @@
          <property name="minimumSize" >
           <size>
            <width>90</width>
-           <height>27</height>
-          </size>
-         </property>
-         <property name="maximumSize" >
-          <size>
-           <width>90</width>
-           <height>27</height>
+           <height>0</height>
           </size>
          </property>
          <property name="text" >
@@ -365,12 +372,10 @@
          </property>
         </widget>
        </item>
-       <item>
+       <item row="1" column="1" >
         <widget class="QLineEdit" name="fg_style" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>0</hsizetype>
-           <vsizetype>0</vsizetype>
+          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -394,6 +399,231 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_alias" >
+    <attribute name="title" >
+     <string>Alias</string>
+    </attribute>
+    <widget class="QWidget" name="layoutWidget" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>291</width>
+       <height>266</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" colspan="2" >
+       <layout class="QGridLayout" >
+        <item row="0" column="0" colspan="2" >
+         <widget class="QLabel" name="label_conn_alias" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>66</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Connection</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" colspan="2" >
+         <widget class="QComboBox" name="list_conn_alias" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="label_alias_alias" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>66</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Alias</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" colspan="2" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>80</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="3" >
+         <widget class="QComboBox" name="list_alias" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" >
+         <widget class="QLabel" name="label_label_alias" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>66</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Label</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>80</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="3" >
+         <widget class="QLineEdit" name="label_alias" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" >
+         <widget class="QLabel" name="label_body_alias" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize" >
+           <size>
+            <width>66</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>Body</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="3" >
+         <widget class="QLineEdit" name="body_alias" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>271</width>
+          <height>66</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>91</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="1" >
+       <layout class="QHBoxLayout" >
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="save_alias" >
+          <property name="text" >
+           <string>Save</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="delete_alias" >
+          <property name="text" >
+           <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>
@@ -415,4 +645,21 @@
  </tabstops>
  <resources/>
  <connections/>
+ <designerdata>
+  <property name="gridDeltaX" >
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY" >
+   <number>5</number>
+  </property>
+  <property name="gridSnapX" >
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY" >
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible" >
+   <bool>true</bool>
+  </property>
+ </designerdata>
 </ui>
