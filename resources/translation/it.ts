@@ -14,7 +14,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui.ui" line="77"/>
+        <location filename="../../src/modules/gui.py" line="65"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
@@ -29,12 +29,12 @@
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui.py" line="63"/>
-        <source>There aren't connections defined</source>
+        <location filename="../../src/modules/gui.py" line="68"/>
+        <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui.py" line="67"/>
+        <location filename="../../src/modules/gui.py" line="71"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -47,84 +47,105 @@
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="40"/>
+        <location filename="../../src/modules/gui_option.ui" line="38"/>
         <source>Connections</source>
         <translation>Connessioni</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="39"/>
+        <location filename="../../src/modules/gui_option.py" line="45"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="41"/>
+        <location filename="../../src/modules/gui_option.py" line="47"/>
         <source>Host</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="43"/>
+        <location filename="../../src/modules/gui_option.py" line="50"/>
         <source>Port</source>
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="111"/>
+        <location filename="../../src/modules/gui_option.ui" line="195"/>
         <source>Make default</source>
         <translation>Imposta come predefinita</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="210"/>
+        <location filename="../../src/modules/gui_option.ui" line="613"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="158"/>
+        <location filename="../../src/modules/gui_option.ui" line="69"/>
         <source>Create New</source>
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="217"/>
+        <location filename="../../src/modules/gui_option.ui" line="620"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="226"/>
+        <location filename="../../src/modules/gui_option.ui" line="275"/>
         <source>Style</source>
         <translation>Aspetto</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="251"/>
+        <location filename="../../src/modules/gui_option.ui" line="300"/>
         <source>Default color</source>
         <translation>Colori di default</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="292"/>
+        <location filename="../../src/modules/gui_option.ui" line="327"/>
         <source>Background</source>
         <translation>Sfondo</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="364"/>
+        <location filename="../../src/modules/gui_option.ui" line="371"/>
         <source>Text</source>
         <translation>Testo</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="46"/>
+        <location filename="../../src/modules/gui_option.py" line="52"/>
         <source>Connection</source>
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="48"/>
+        <location filename="../../src/modules/gui_option.py" line="54"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="50"/>
+        <location filename="../../src/modules/gui_option.py" line="57"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="203"/>
+        <location filename="../../src/modules/gui_option.ui" line="250"/>
         <source>Connect</source>
         <translation>Connetti</translation>
+    </message>
+    <message>
+        <location filename="../../src/modules/gui_option.ui" line="464"/>
+        <source>Alias</source>
+        <translation>Alias</translation>
+    </message>
+    <message>
+        <location filename="../../src/modules/gui_option.ui" line="512"/>
+        <source>Label</source>
+        <translation>Etichetta</translation>
+    </message>
+    <message>
+        <location filename="../../src/modules/gui_option.ui" line="554"/>
+        <source>Body</source>
+        <translation>Corpo</translation>
+    </message>
+    <message>
+        <location filename="../../src/modules/gui_option.py" line="61"/>
+        <source>Create New</source>
+        <comment>alias</comment>
+        <translation>Crea nuovo</translation>
     </message>
 </context>
 </TS>

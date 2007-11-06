@@ -15,7 +15,7 @@
   <property name="modal" >
    <bool>true</bool>
   </property>
-  <widget class="QTabWidget" name="tabWidget" >
+  <widget class="QTabWidget" name="tab_widget" >
    <property name="geometry" >
     <rect>
      <x>0</x>
@@ -636,7 +636,7 @@
   <tabstop>default_conn</tabstop>
   <tabstop>save_conn</tabstop>
   <tabstop>delete_conn</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>tab_widget</tabstop>
   <tabstop>bg_button_style</tabstop>
   <tabstop>bg_style</tabstop>
   <tabstop>fg_button_style</tabstop>

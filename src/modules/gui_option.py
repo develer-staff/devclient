@@ -35,6 +35,18 @@ class GuiOption(QtGui.QDialog, Ui_option):
                      self._loadConnection)
 
         self.connect(self.connect_conn, clicked, self._connectReq)
+        self.connect(self.tab_widget, SIGNAL("currentChanged(int)"),
+                     self._syncTabs)
+
+        self._signalConnAlias(True)
+
+    def _signalConnAlias(self, conn):
+        f = self.connect
+        if not conn:
+            f = self.disconnect
+
+        f(self.list_conn_alias, SIGNAL("currentIndexChanged(QString)"),
+          self._loadAlias)
 
     def _translateText(self):
         self._text = {}
@@ -51,6 +63,33 @@ class GuiOption(QtGui.QDialog, Ui_option):
             "The following fields are required", None, QApplication.UnicodeUTF8)
         self._text['unique_name'] = QApplication.translate("option",
             "Connection name must be unique", None, QApplication.UnicodeUTF8)
+
+        self._text['new_alias'] = QApplication.translate("option",
+            "Create New", "alias", QApplication.UnicodeUTF8)
+
+    def _syncTabs(self, idx):
+        curr_tab = self.tab_widget.currentWidget().objectName()
+        if curr_tab == "tab_alias":
+            self._signalConnAlias(False)
+
+            self.list_conn_alias.clear()
+            for text in (self.label_alias, self.body_alias):
+                text.setText("")
+
+            self._signalConnAlias(True)
+
+            # syncronize connections list, with the exception of first
+            # element, "create new"
+            for i in range(self.list_conn.count() - 1):
+                self.list_conn_alias.addItem(self.list_conn.itemText(i + 1))
+
+            objs = (self.list_alias, self.label_alias, self.body_alias)
+            for o in objs:
+                o.setEnabled(bool(self.list_conn_alias.count()))
+
+    def _loadAlias(self, conn):
+        self.list_alias.clear()
+        self.list_alias.addItem(self._text['new_alias'])
 
     def _chooseBgColor(self):
         color = QtGui.QColorDialog.getColor()

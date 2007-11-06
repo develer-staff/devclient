@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui_option.ui'
+# Form implementation generated from reading ui file 'modules/gui_option.ui'
 #
-# Created: Tue Nov  6 21:47:46 2007
+# Created: Tue Nov  6 21:56:14 2007
 #      by: PyQt4 UI code generator 4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,15 +15,15 @@ class Ui_option(object):
         option.resize(QtCore.QSize(QtCore.QRect(0,0,310,310).size()).expandedTo(option.minimumSizeHint()))
         option.setModal(True)
 
-        self.tabWidget = QtGui.QTabWidget(option)
-        self.tabWidget.setGeometry(QtCore.QRect(0,0,316,310))
+        self.tab_widget = QtGui.QTabWidget(option)
+        self.tab_widget.setGeometry(QtCore.QRect(0,0,316,310))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
-        self.tabWidget.setSizePolicy(sizePolicy)
-        self.tabWidget.setObjectName("tabWidget")
+        sizePolicy.setHeightForWidth(self.tab_widget.sizePolicy().hasHeightForWidth())
+        self.tab_widget.setSizePolicy(sizePolicy)
+        self.tab_widget.setObjectName("tab_widget")
 
         self.tab_conn = QtGui.QWidget()
         self.tab_conn.setObjectName("tab_conn")
@@ -121,7 +121,7 @@ class Ui_option(object):
         self.delete_conn.setObjectName("delete_conn")
         self.hboxlayout.addWidget(self.delete_conn)
         self.gridlayout.addLayout(self.hboxlayout,2,1,1,1)
-        self.tabWidget.addTab(self.tab_conn,"")
+        self.tab_widget.addTab(self.tab_conn,"")
 
         self.tab_style = QtGui.QWidget()
         self.tab_style.setObjectName("tab_style")
@@ -188,7 +188,7 @@ class Ui_option(object):
         self.fg_style.setMaxLength(7)
         self.fg_style.setObjectName("fg_style")
         self.gridlayout2.addWidget(self.fg_style,1,1,1,1)
-        self.tabWidget.addTab(self.tab_style,"")
+        self.tab_widget.addTab(self.tab_style,"")
 
         self.tab_alias = QtGui.QWidget()
         self.tab_alias.setObjectName("tab_alias")
@@ -304,10 +304,10 @@ class Ui_option(object):
         self.delete_alias.setObjectName("delete_alias")
         self.hboxlayout1.addWidget(self.delete_alias)
         self.gridlayout3.addLayout(self.hboxlayout1,2,1,1,1)
-        self.tabWidget.addTab(self.tab_alias,"")
+        self.tab_widget.addTab(self.tab_alias,"")
 
         self.retranslateUi(option)
-        self.tabWidget.setCurrentIndex(0)
+        self.tab_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(option)
         option.setTabOrder(self.list_conn,self.name_conn)
         option.setTabOrder(self.name_conn,self.host_conn)
@@ -315,8 +315,8 @@ class Ui_option(object):
         option.setTabOrder(self.port_conn,self.default_conn)
         option.setTabOrder(self.default_conn,self.save_conn)
         option.setTabOrder(self.save_conn,self.delete_conn)
-        option.setTabOrder(self.delete_conn,self.tabWidget)
-        option.setTabOrder(self.tabWidget,self.bg_button_style)
+        option.setTabOrder(self.delete_conn,self.tab_widget)
+        option.setTabOrder(self.tab_widget,self.bg_button_style)
         option.setTabOrder(self.bg_button_style,self.bg_style)
         option.setTabOrder(self.bg_style,self.fg_button_style)
         option.setTabOrder(self.fg_button_style,self.fg_style)
@@ -333,17 +333,17 @@ class Ui_option(object):
         self.connect_conn.setText(QtGui.QApplication.translate("option", "Connect", None, QtGui.QApplication.UnicodeUTF8))
         self.save_conn.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.delete_conn.setText(QtGui.QApplication.translate("option", "Delete", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_conn), QtGui.QApplication.translate("option", "Connections", None, QtGui.QApplication.UnicodeUTF8))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_conn), QtGui.QApplication.translate("option", "Connections", None, QtGui.QApplication.UnicodeUTF8))
         self.save_style.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("option", "Default color", None, QtGui.QApplication.UnicodeUTF8))
         self.bg_button_style.setText(QtGui.QApplication.translate("option", "Background", None, QtGui.QApplication.UnicodeUTF8))
         self.fg_button_style.setText(QtGui.QApplication.translate("option", "Text", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_style), QtGui.QApplication.translate("option", "Style", None, QtGui.QApplication.UnicodeUTF8))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_style), QtGui.QApplication.translate("option", "Style", None, QtGui.QApplication.UnicodeUTF8))
         self.label_conn_alias.setText(QtGui.QApplication.translate("option", "Connection", None, QtGui.QApplication.UnicodeUTF8))
         self.label_alias_alias.setText(QtGui.QApplication.translate("option", "Alias", None, QtGui.QApplication.UnicodeUTF8))
         self.label_label_alias.setText(QtGui.QApplication.translate("option", "Label", None, QtGui.QApplication.UnicodeUTF8))
         self.label_body_alias.setText(QtGui.QApplication.translate("option", "Body", None, QtGui.QApplication.UnicodeUTF8))
         self.save_alias.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.delete_alias.setText(QtGui.QApplication.translate("option", "Delete", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_alias), QtGui.QApplication.translate("option", "Alias", None, QtGui.QApplication.UnicodeUTF8))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_alias), QtGui.QApplication.translate("option", "Alias", None, QtGui.QApplication.UnicodeUTF8))
 
