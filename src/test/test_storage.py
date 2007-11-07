@@ -10,18 +10,24 @@ sys.path.append('..')
 import conf
 from modules.storage import Storage
 
-class TestStorage(unittest.TestCase):
+class TestBase(unittest.TestCase):
+
     def setUp(self):
-        abspath = os.path.abspath('../../resources/storage/dbtest.sqlite')
+        abspath = os.path.abspath('../../data/storage/dbtest.sqlite')
         conf.config['storage'] = {'path': abspath}
 
         if os.path.exists(conf.config['storage']['path']):
             os.unlink(conf.config['storage']['path'])
-        self.storage = Storage()
 
     def tearDown(self):
         if os.path.exists(conf.config['storage']['path']):
             os.unlink(conf.config['storage']['path'])
+
+class TestStorage(TestBase):
+
+    def setUp(self):
+        super(TestStorage, self).setUp()
+        self.storage = Storage()
 
     def testEmptyConnections(self):
         self.assert_(self.storage.connections() == [])
@@ -64,17 +70,7 @@ class TestStorage(unittest.TestCase):
         self.storage.saveConnections(conn)
         self.assert_(self.storage.connections() == conn)
 
-class TestStorage2(unittest.TestCase):
-    def setUp(self):
-        abspath = os.path.abspath('../../resources/storage/dbtest.sqlite')
-        conf.config['storage'] = {'path': abspath}
-
-        if os.path.exists(conf.config['storage']['path']):
-            os.unlink(conf.config['storage']['path'])
-
-    def tearDown(self):
-        if os.path.exists(conf.config['storage']['path']):
-            os.unlink(conf.config['storage']['path'])
+class TestStorage2(TestBase):
 
     def testMultiConnections(self):
         conn = [('name','host', 111, 0)]
