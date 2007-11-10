@@ -42,7 +42,7 @@ class Storage(object):
 
         if build:
             c = self.conn.cursor()
-            c.execute('''create table connections(id integer primary key
+            c.execute('''CREATE TABLE connections(id integer primary key
                                                              autoincrement,
                                                   name text,
                                                   host text,
@@ -67,9 +67,12 @@ class Storage(object):
         if not cursor:
             cursor = self.conn.cursor()
 
-        logger.debug('sql: ' + sql)
-        logger.debug('params:' + str(params))
         cursor.execute(sql, params)
+
+        for p in params:
+            sql = sql.replace('?', "'" + str(p) + "'", 1)
+        logger.debug('sql: ' + sql)
+
         return cursor
 
     def connections(self):
@@ -79,7 +82,7 @@ class Storage(object):
         :return: a list of tuples (id, name, host, port, default)
         """
 
-        data = [row for row in self._execQuery('select * from connections')]
+        data = [row for row in self._execQuery('SELECT * FROM connections')]
         return data
 
     def addConnection(self, conn):
@@ -93,20 +96,20 @@ class Storage(object):
         """
 
         c = self.conn.cursor()
-        self._execQuery('''insert into connections (name, host, port, def)
-                           values(?, ?, ?, ?)''', conn[1:], c)
+        self._execQuery('INSERT INTO connections (name, host, port, def)' +
+                        'VALUES(?, ?, ?, ?)', conn[1:], c)
 
-        conn[0] = self._execQuery('select id from connections where name = ?',
+        conn[0] = self._execQuery('SELECT id FROM connections WHERE name = ?',
                                   (conn[1],), c).fetchone()[0]
 
         logger.debug('id connection obtained: ' + str(conn[0]))
 
     def deleteConnection(self, conn):
-        self._execQuery('delete from connections where id = ?', (conn[0],))
+        self._execQuery('DELETE FROM connections WHERE id = ?', (conn[0],))
 
     def updateConnection(self, conn):
         params = conn[1:]
         params.append(conn[0])
-        self._execQuery('''update connections set name = ?, host = ?, port = ?,
-                           def = ? where id = ?''', params)
+        self._execQuery('UPDATE connections SET name = ?, host = ?, port = ?,' +
+                        'def = ? WHERE id = ?', params)
 
