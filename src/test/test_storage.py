@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -52,50 +52,49 @@ class TestStorage(TestBase):
     def testEmptyConnections(self):
         self.assert_(self.storage.connections() == [])
 
-    def testConnections(self):
-        conn = [('name','host', 111, 1)]
-        self.storage.saveConnections(conn)
-        self.assert_(self.storage.connections() == conn)
+    def addConnection(self):
+        conn = (0, 'name','host', 111, 1)
+        self.storage.addConnection(list(conn))
+        self.assert_(self.storage.connections()[0][1:] == conn[1:])
 
-    def testConnections2(self):
-        conn = [('name','host', 111, 1)]
-        self.storage.saveConnections(conn)
+    def addConnection2(self):
+        conn = [0, 'name','host', 111, 1]
+        self.storage.addConnection(conn)
+        self.assert_(self.storage.connections()[0] == conn)
 
-        conn.extend([('name2','host2', 222, 1)])
-        self.storage.saveConnections(conn)
-        self.assert_(self.storage.connections() == conn)
+    def addConnection3(self):
+        conn = [0, 'name','host', 111, 1]
+        self.storage.addConnection(conn)
 
-    def testConnections3(self):
-        conn = [('name','host', 111, 1)]
-        self.storage.saveConnections(conn)
+        conn2 = [0, 'name2','host2', 222, 1]
+        self.storage.addConnection(conn2)
+        connections = [tuple(conn), tuple(conn2)]
+        self.assert_(self.storage.connections() == connections)
 
-        conn = [('test','host', 111, 1)]
-        self.storage.saveConnections(conn)
-        self.assert_(self.storage.connections() == conn)
+    def updateConnection(self):
+        conn = [0, 'name','host', 111, 1]
+        self.storage.addConnection(conn)
 
-    def testConnections4(self):
-        conn = [('name1','host1', 111, 0),
-                ('name2','host2', 112, 1),
-                ('name3','host3', 113, 0)]
-        self.storage.saveConnections(conn)
-        self.assert_(self.storage.connections() == conn)
+        conn[1] = 'new_name'
+        self.storage.updateConnection(conn)
+        self.assert_(self.storage.connections()[0] == conn)
 
-    def testConnections5(self):
-        conn = [('name1','host1', 111, 0),
-                ('name2','host2', 112, 1),
-                ('name3','host3', 113, 1)]
-        self.storage.saveConnections(conn)
+    def deleteConnection(self):
+        conn = [0, 'name','host', 111, 1]
+        self.storage.addConnection(conn)
 
-        del conn[1]
-        self.storage.saveConnections(conn)
-        self.assert_(self.storage.connections() == conn)
+        conn2 = [0, 'name2','host2', 222, 1]
+        self.storage.addConnection(conn2)
+
+        self.storage.deleteConnection(conn2)
+        self.assert_(self.storage.connections()[0] == conn)
 
 class TestStorage2(TestBase):
 
-    def testMultiConnections(self):
-        conn = [('name','host', 111, 0)]
-        Storage().saveConnections(conn)
-        self.assert_(Storage().connections() == conn)
+    def testMultiConnection(self):
+        conn = [0, 'name','host', 111, 0]
+        Storage().addConnection(conn)
+        self.assert_(Storage().connections()[0] == tuple(conn))
 
 if __name__ == '__main__':
     unittest.main()

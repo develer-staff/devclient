@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 from PyQt4 import QtCore, QtGui
@@ -131,7 +131,8 @@ class GuiOption(QtGui.QDialog, Ui_option):
         """
 
         self.connections = self.storage.connections()
-        self.list_conn.addItems([el[0] for el in self.connections])
+        for el in self.connections:
+            self.list_conn.addItem(el[1], QtCore.QVariant(el[0]))
 
     def _loadConnection(self, name):
         """
@@ -142,10 +143,10 @@ class GuiOption(QtGui.QDialog, Ui_option):
             the name of connection to load
         """
 
-        conn = [el for el in self.connections if el[0] == name]
+        conn = [el for el in self.connections if el[1] == name]
 
         if conn:
-            n, h, p, d = conn[0]
+            n, h, p, d = conn[0][1:]
             connect = True
         else:
             n, h, p, d = ('', '', '', QtCore.Qt.Unchecked)
@@ -190,16 +191,27 @@ class GuiOption(QtGui.QDialog, Ui_option):
         if not self._checkConnectionFields():
             return
 
+        if not self.list_conn.currentIndex():
+            id_conn = 0
+        else:
+            data = self.list_conn.itemData(self.list_conn.currentIndex())
+            id_conn = data.toInt()[0]
+
         make_default = self.default_conn.checkState() == QtCore.Qt.Checked
 
         if make_default:
-            self.connections = [(n, h, p, 0) for n, h, p, d in
-                                self.connections]
+            for idx, conn in enumerate(self.connections):
+                if conn[0] != id_conn and conn[4]:
+                    c = list(conn)
+                    c[4] = 0
+                    self.storage.updateConnection(c)
+                    self.connections[idx] = tuple(c)
 
-        conn = (unicode(self.name_conn.text()),
+        conn = [id_conn,
+                unicode(self.name_conn.text()),
                 unicode(self.host_conn.text()),
                 int(self.port_conn.text()),
-                int(make_default))
+                int(make_default)]
 
         if not self.list_conn.currentIndex():
             if [el[0] for el in self.connections if
@@ -207,13 +219,15 @@ class GuiOption(QtGui.QDialog, Ui_option):
                 QtGui.QMessageBox.warning(self, self._text['connection'],
                                           self._text['unique_name'])
             else:
-                self.list_conn.addItem(self.name_conn.text())
+                self.storage.addConnection(conn)
+                self.list_conn.addItem(self.name_conn.text(),
+                                       QtCore.QVariant(conn[0]))
                 self.connections.append(conn)
         else:
             self.connections[self.list_conn.currentIndex() - 1] = conn
-            self.list_conn.setItemText(self.list_conn.currentIndex(), conn[0])
+            self.list_conn.setItemText(self.list_conn.currentIndex(), conn[1])
+            self.storage.updateConnection(conn)
 
-        self.storage.saveConnections(self.connections)
         self.list_conn.setCurrentIndex(0)
         self._loadConnection('')
 
@@ -225,7 +239,7 @@ class GuiOption(QtGui.QDialog, Ui_option):
         if not self.list_conn.currentIndex():
             return
 
-        del self.connections[self.list_conn.currentIndex() - 1]
-        self.storage.saveConnections(self.connections)
+        index = self.list_conn.currentIndex() - 1
+        self.storage.deleteConnection(self.connections[index])
         self.list_conn.removeItem(self.list_conn.currentIndex())
-
+        del self.connections[index]
