@@ -263,8 +263,8 @@ class GuiOption(QtGui.QDialog, Ui_option):
                 int(make_default)]
 
         if not self.list_conn.currentIndex():
-            if [el[0] for el in self.connections if
-                el[0] == self.name_conn.text()]:
+            if [el[1] for el in self.connections if
+                el[1] == self.name_conn.text()]:
                 QtGui.QMessageBox.warning(self, self._text['connection'],
                                           self._text['unique_name'])
             else:
