@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
-<defaultcodec></defaultcodec>
 <context>
     <name>dev_client</name>
     <message>
@@ -14,7 +13,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui.py" line="65"/>
+        <location filename="../../src/modules/gui.py" line="85"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
@@ -29,12 +28,12 @@
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui.py" line="68"/>
+        <location filename="../../src/modules/gui.py" line="88"/>
         <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui.py" line="71"/>
+        <location filename="../../src/modules/gui.py" line="91"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -52,17 +51,17 @@
         <translation>Connessioni</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="45"/>
+        <location filename="../../src/modules/gui_option.py" line="79"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="47"/>
+        <location filename="../../src/modules/gui_option.py" line="81"/>
         <source>Host</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="50"/>
+        <location filename="../../src/modules/gui_option.py" line="84"/>
         <source>Port</source>
         <translation>Porta</translation>
     </message>
@@ -107,17 +106,17 @@
         <translation>Testo</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="52"/>
+        <location filename="../../src/modules/gui_option.py" line="86"/>
         <source>Connection</source>
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="54"/>
+        <location filename="../../src/modules/gui_option.py" line="88"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="57"/>
+        <location filename="../../src/modules/gui_option.py" line="91"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
@@ -127,22 +126,22 @@
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="464"/>
+        <location filename="../../src/modules/gui_option.py" line="95"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="512"/>
+        <location filename="../../src/modules/gui_option.py" line="97"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.ui" line="554"/>
+        <location filename="../../src/modules/gui_option.py" line="100"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/modules/gui_option.py" line="61"/>
+        <location filename="../../src/modules/gui_option.py" line="93"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>

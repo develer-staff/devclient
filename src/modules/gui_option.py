@@ -90,6 +90,12 @@ class GuiOption(QtGui.QDialog, Ui_option):
 
         self._text['new_alias'] = QApplication.translate("option",
             "Create New", "alias", QApplication.UnicodeUTF8)
+        self._text['alias'] = QApplication.translate("option",
+            "Alias", None, QApplication.UnicodeUTF8)
+        self._text['label'] = QApplication.translate("option", "Label", None,
+                                                    QApplication.UnicodeUTF8)
+        self._text['body'] = QApplication.translate("option", "Body", None,
+                                                    QApplication.UnicodeUTF8)
 
     def _syncTabs(self, idx):
         curr_tab = self.tab_widget.currentWidget().objectName()
@@ -127,7 +133,30 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self.label_alias.setText(l)
         self.body_alias.setText(b)
 
+    def _checkAliasFields(self):
+        """
+        Check validity of alias fields.
+        """
+
+        msg = []
+
+        alias_fields = {self._text['label']: self.label_alias,
+                        self._text['body']: self.body_alias}
+
+        for text, field in alias_fields.iteritems():
+            if not field.text():
+                msg.append(unicode(text))
+
+        if msg:
+            QtGui.QMessageBox.warning(self, self._text['alias'],
+                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
+            return False
+        return True
+
     def _saveAlias(self):
+
+        if not self._checkAliasFields():
+            return
 
         alias = (unicode(self.label_alias.text()),
                  unicode(self.body_alias.text()))
