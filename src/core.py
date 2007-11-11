@@ -28,6 +28,7 @@ import logging
 
 import conf
 from conf import config
+from modules.thread import Thread
 
 def setupLogger():
     """
@@ -68,19 +69,10 @@ def main():
     setupLogger()
     logging.debug('*** START DEVCLIENT ***')
 
-    from modules.loader import Loader
-    sys.path.append(config['modules']['path'])
-
-    classes = ['Thread', 'Gui', 'Application']
-    classes = Loader().load(classes)
-
     # Set current path on module path for external resources like images
     os.chdir(config['modules']['path'])
 
-    for name, ref in classes.iteritems():
-        logging.debug('class: '+ name + ' object: ' + str(ref))
-
-    classes['Thread'](classes)
+    Thread()
 
 if __name__ == '__main__':
     main()

@@ -18,11 +18,14 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import Queue
 import threading
+
+from modules.application import Application
+from modules.gui import Gui
 
 import event_type
 
@@ -34,22 +37,17 @@ class Thread(threading.Thread):
     in secondary thread.
     """
 
-    def __init__(self, classes):
+    def __init__(self):
         """
         Create the `Thread` instance and run the gui part.
 
-        :Parameters:
-          classes : dict
-            a dictionary of the form {<className>: <classRef> } that
-            contains all the specific classes used in client.
         """
 
         threading.Thread.__init__(self)
-        self.classes = classes  #: the dictionary of classes
         self.q_app_gui = Queue.Queue()  #: events from app to gui
         self.q_gui_app = Queue.Queue()  #: events from gui to app
 
-        gui = self.classes['Gui'](self.q_app_gui, self.q_gui_app)
+        gui = Gui(self.q_app_gui, self.q_gui_app)
 
         self.start()
         gui.mainLoop()
@@ -59,6 +57,5 @@ class Thread(threading.Thread):
         Run the application part.
         """
 
-        app = self.classes['Application'](self.classes, self.q_app_gui,
-                                          self.q_gui_app)
+        app = Application(self.q_app_gui, self.q_gui_app)
         app.mainLoop()
