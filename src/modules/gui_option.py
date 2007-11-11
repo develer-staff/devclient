@@ -59,6 +59,8 @@ class GuiOption(QtGui.QDialog, Ui_option):
                      self._syncTabs)
 
         self._signalConnAlias(True)
+        self.connect(self.save_alias, clicked, self._saveAlias)
+        self.connect(self.delete_alias, clicked, self._deleteAlias)
 
     def _signalConnAlias(self, conn):
         f = self.connect
@@ -66,7 +68,9 @@ class GuiOption(QtGui.QDialog, Ui_option):
             f = self.disconnect
 
         f(self.list_conn_alias, SIGNAL("currentIndexChanged(QString)"),
-          self._loadAlias)
+          self._loadAliases)
+
+        f(self.list_alias, SIGNAL("currentIndexChanged(int)"), self._loadAlias)
 
     def _translateText(self):
         self._text = {}
@@ -91,25 +95,70 @@ class GuiOption(QtGui.QDialog, Ui_option):
         curr_tab = self.tab_widget.currentWidget().objectName()
         if curr_tab == "tab_alias":
             self._signalConnAlias(False)
-
             self.list_conn_alias.clear()
-            for text in (self.label_alias, self.body_alias):
-                text.setText("")
-
-            self._signalConnAlias(True)
 
             # syncronize connections list, with the exception of first
             # element, "create new"
             for i in range(self.list_conn.count() - 1):
                 self.list_conn_alias.addItem(self.list_conn.itemText(i + 1))
 
+            self._signalConnAlias(True)
+            self._loadAliases(unicode(self.list_conn_alias.currentText()))
+
             objs = (self.list_alias, self.label_alias, self.body_alias)
             for o in objs:
                 o.setEnabled(bool(self.list_conn_alias.count()))
 
-    def _loadAlias(self, conn):
+    def _loadAliases(self, conn):
+        self._signalConnAlias(False)
         self.list_alias.clear()
         self.list_alias.addItem(self._text['new_alias'])
+        self.aliases = self.storage.aliases(unicode(conn))
+        self.list_alias.addItems([l for l, b in self.aliases])
+        self._signalConnAlias(True)
+        self._loadAlias(0)
+
+    def _loadAlias(self, idx):
+        if not idx:
+            l, b = '', ''
+        else:
+            l, b = self.aliases[idx - 1]
+
+        self.label_alias.setText(l)
+        self.body_alias.setText(b)
+
+    def _saveAlias(self):
+
+        alias = (unicode(self.label_alias.text()),
+                 unicode(self.body_alias.text()))
+
+        list_idx = self.list_alias.currentIndex()
+        if not list_idx:
+            self.aliases.append(alias)
+            self.list_alias.addItem(alias[0])
+        else:
+            self.aliases[list_idx - 1] = alias
+            self.list_alias.setItemText(list_idx, alias[0])
+
+        self.storage.saveAliases(unicode(self.list_conn_alias.currentText()),
+                                 self.aliases)
+
+        self.list_alias.setCurrentIndex(0)
+        self._loadAlias(0)
+
+    def _deleteAlias(self):
+
+        list_idx = self.list_alias.currentIndex()
+        if not list_idx:
+            return
+
+        del self.aliases[list_idx - 1]
+        self.list_alias.removeItem(list_idx)
+        self.storage.saveAliases(unicode(self.list_conn_alias.currentText()),
+                                 self.aliases)
+
+        self.list_alias.setCurrentIndex(0)
+        self._loadAlias(0)
 
     def _chooseBgColor(self):
         color = QtGui.QColorDialog.getColor()

@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 class DevClient(Exception):
@@ -47,5 +47,11 @@ class BufferUnderSize(DevClient):
 class ConnectionRefused(DevClient):
     """
     Handling error on establish connection.
+    """
+    pass
+
+class ConnectionNotFound(DevClient):
+    """
+    Class for handling error on finding connection to load.
     """
     pass

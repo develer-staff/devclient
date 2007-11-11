@@ -28,6 +28,7 @@ import unittest
 sys.path.append('..')
 
 import conf
+import modules.exception as exception
 from modules.storage import Storage
 
 class TestBase(unittest.TestCase):
@@ -53,26 +54,26 @@ class TestStorage(TestBase):
         self.assert_(self.storage.connections() == [])
 
     def testAddConnection(self):
-        conn = (0, 'name','host', 111, 1)
+        conn = (0, 'name', 'host', 111, 1)
         self.storage.addConnection(list(conn))
         self.assert_(self.storage.connections()[0][1:] == conn[1:])
 
     def testAddConnection2(self):
-        conn = [0, 'name','host', 111, 1]
+        conn = [0, 'name', 'host', 111, 1]
         self.storage.addConnection(conn)
         self.assert_(self.storage.connections()[0] == tuple(conn))
 
     def testAddConnection3(self):
-        conn = [0, 'name','host', 111, 1]
+        conn = [0, 'name', 'host', 111, 1]
         self.storage.addConnection(conn)
 
-        conn2 = [0, 'name2','host2', 222, 1]
+        conn2 = [0, 'name2', 'host2', 222, 1]
         self.storage.addConnection(conn2)
         connections = [tuple(conn), tuple(conn2)]
         self.assert_(self.storage.connections() == connections)
 
     def testUpdateConnection(self):
-        conn = [0, 'name','host', 111, 1]
+        conn = [0, 'name', 'host', 111, 1]
         self.storage.addConnection(conn)
 
         conn[1] = 'new_name'
@@ -80,14 +81,85 @@ class TestStorage(TestBase):
         self.assert_(self.storage.connections()[0] == tuple(conn))
 
     def testDeleteConnection(self):
-        conn = [0, 'name','host', 111, 1]
+        conn = [0, 'name', 'host', 111, 1]
         self.storage.addConnection(conn)
 
-        conn2 = [0, 'name2','host2', 222, 1]
+        conn2 = [0, 'name2', 'host2', 222, 1]
         self.storage.addConnection(conn2)
 
         self.storage.deleteConnection(conn2)
         self.assert_(self.storage.connections()[0] == tuple(conn))
+
+    def testEmptyAliases(self):
+        self.assert_(self.storage.aliases('conn_name') == [])
+
+    def testSaveAliases(self):
+        conn_name = 'conn'
+        aliases = [('label', 'body')]
+
+        self.assertRaises(exception.ConnectionNotFound,
+                          self.storage.saveAliases,
+                          conn_name, aliases)
+
+    def testSaveAliases2(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        aliases = [('label', 'body')]
+        self.storage.saveAliases(conn_name, aliases)
+        self.assert_(self.storage.aliases(conn_name) == aliases)
+
+    def testSaveAliases3(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        aliases = [('label1', 'body1'), ('label2', 'body2')]
+        self.storage.saveAliases(conn_name, aliases)
+        self.assert_(self.storage.aliases(conn_name) == aliases)
+
+    def testSaveAliases4(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        aliases = [('label1', 'body1')]
+        self.storage.saveAliases(conn_name, aliases)
+
+        aliases.append(('label2', 'body2'))
+        self.storage.saveAliases(conn_name, aliases)
+        self.assert_(self.storage.aliases(conn_name) == aliases)
+
+    def testSaveAliases5(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        aliases = [('label1', 'body1')]
+        self.storage.saveAliases(conn_name, aliases)
+
+        aliases[0] = ('label2', 'body2')
+        self.storage.saveAliases(conn_name, aliases)
+        self.assert_(self.storage.aliases(conn_name) == aliases)
+
+    def testSaveAliases6(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        aliases = [('label1', 'body1'), ('label2', 'body2')]
+        self.storage.saveAliases(conn_name, aliases)
+
+        del aliases[0]
+        self.storage.saveAliases(conn_name, aliases)
+        self.assert_(self.storage.aliases(conn_name) == aliases)
+
 
 class TestStorage2(TestBase):
 

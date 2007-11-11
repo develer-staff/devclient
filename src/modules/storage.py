@@ -25,6 +25,7 @@ import os.path
 import sqlite3
 import logging
 
+import exception
 from conf import config
 
 logger = logging.getLogger('storage')
@@ -48,6 +49,9 @@ class Storage(object):
                                                   host text,
                                                   port integer,
                                                   def integer)''')
+
+            c.execute('''CREATE TABLE aliases(id_conn integer, label text,
+                                              body text)''')
 
     def _execQuery(self, sql, params=(), cursor=None):
         """
@@ -112,4 +116,36 @@ class Storage(object):
         params.append(conn[0])
         self._execQuery('UPDATE connections SET name = ?, host = ?, port = ?,' +
                         'def = ? WHERE id = ?', params)
+
+    def aliases(self, conn_name):
+        """
+        Load the list of alias for a connection.
+
+        :Parameters:
+          conn_name : str
+            the name of connection.
+
+        :return: a list of tuples (label, body)
+        """
+
+        c = self._execQuery('SELECT label, body FROM aliases AS a ' +
+                            'JOIN connections AS c ON a.id_conn = c.id ' +
+                            'WHERE c.name = ?', (conn_name,))
+        return [row for row in c]
+
+    def saveAliases(self, conn_name, aliases):
+
+        c = self.conn.cursor()
+        row = self._execQuery('SELECT id FROM connections WHERE name = ?',
+                              (conn_name,), c).fetchone()
+
+        if not row:
+            raise exception.ConnectionNotFound
+
+        self._execQuery('DELETE FROM aliases WHERE id_conn = ?', (row[0],))
+
+        for alias in aliases:
+            self._execQuery('INSERT INTO aliases VALUES(?, ?, ?)',
+                            (row[0], alias[0], alias[1]), c)
+
 
