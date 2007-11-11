@@ -112,6 +112,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             else:
                 QtGui.QMessageBox.warning(self, self._text['Connect'],
                                           self._text['NoConn'])
+                return
         else:
             host = unicode(host)
 
