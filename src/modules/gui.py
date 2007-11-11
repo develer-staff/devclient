@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import re
@@ -107,8 +107,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 if not conn:
                     conn = connections
 
-                host = conn[0][1]
-                port = conn[0][2]
+                host = conn[0][2]
+                port = conn[0][3]
             else:
                 QtGui.QMessageBox.warning(self, self._text['Connect'],
                                           self._text['NoConn'])
