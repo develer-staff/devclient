@@ -157,9 +157,6 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self.storage.saveAliases(unicode(self.list_conn_alias.currentText()),
                                  self.aliases)
 
-        self.list_alias.setCurrentIndex(0)
-        self._loadAlias(0)
-
     def _chooseBgColor(self):
         color = QtGui.QColorDialog.getColor()
         self.bg_style.setText(color.name())
