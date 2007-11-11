@@ -18,12 +18,14 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import copy
 import Queue
 
+from modules.parser import Parser
+from modules.socket import Socket
 import exception
 import event_type
 
@@ -50,7 +52,7 @@ class Application(object):
         self.q_app_gui = q_app_gui
         self.q_gui_app = q_gui_app
 
-        self.sock = self.classes['Socket']()
+        self.sock = Socket()
 
     def mainLoop(self):
         """
@@ -79,7 +81,7 @@ class Application(object):
                     self.sock.disconnect()
                     return
                 elif cmd == event_type.CONNECT and not self.sock.connected:
-                    parser = self.classes['Parser']()
+                    parser = Parser()
                     try:
                         self.sock.connect(*msg)
                     except exception.ConnectionRefused:

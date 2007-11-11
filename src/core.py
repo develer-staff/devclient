@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import os
@@ -71,7 +71,7 @@ def main():
     from modules.loader import Loader
     sys.path.append(config['modules']['path'])
 
-    classes = ['Socket', 'Thread', 'Gui', 'Application', 'Parser']
+    classes = ['Thread', 'Gui', 'Application']
     classes = Loader().load(classes)
 
     # Set current path on module path for external resources like images
