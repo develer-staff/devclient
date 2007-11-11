@@ -52,17 +52,17 @@ class TestStorage(TestBase):
     def testEmptyConnections(self):
         self.assert_(self.storage.connections() == [])
 
-    def addConnection(self):
+    def testAddConnection(self):
         conn = (0, 'name','host', 111, 1)
         self.storage.addConnection(list(conn))
         self.assert_(self.storage.connections()[0][1:] == conn[1:])
 
-    def addConnection2(self):
+    def testAddConnection2(self):
         conn = [0, 'name','host', 111, 1]
         self.storage.addConnection(conn)
-        self.assert_(self.storage.connections()[0] == conn)
+        self.assert_(self.storage.connections()[0] == tuple(conn))
 
-    def addConnection3(self):
+    def testAddConnection3(self):
         conn = [0, 'name','host', 111, 1]
         self.storage.addConnection(conn)
 
@@ -71,15 +71,15 @@ class TestStorage(TestBase):
         connections = [tuple(conn), tuple(conn2)]
         self.assert_(self.storage.connections() == connections)
 
-    def updateConnection(self):
+    def testUpdateConnection(self):
         conn = [0, 'name','host', 111, 1]
         self.storage.addConnection(conn)
 
         conn[1] = 'new_name'
         self.storage.updateConnection(conn)
-        self.assert_(self.storage.connections()[0] == conn)
+        self.assert_(self.storage.connections()[0] == tuple(conn))
 
-    def deleteConnection(self):
+    def testDeleteConnection(self):
         conn = [0, 'name','host', 111, 1]
         self.storage.addConnection(conn)
 
@@ -87,7 +87,7 @@ class TestStorage(TestBase):
         self.storage.addConnection(conn2)
 
         self.storage.deleteConnection(conn2)
-        self.assert_(self.storage.connections()[0] == conn)
+        self.assert_(self.storage.connections()[0] == tuple(conn))
 
 class TestStorage2(TestBase):
 
