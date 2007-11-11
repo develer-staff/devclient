@@ -26,8 +26,8 @@ import sys
 import os.path
 import logging
 
-import conf
-from conf import config
+import devclient.conf as conf
+from devclient.conf import config
 from devclient.thread import Thread
 
 def setupLogger():
