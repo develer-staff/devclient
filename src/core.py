@@ -28,7 +28,7 @@ import logging
 
 import conf
 from conf import config
-from modules.thread import Thread
+from devclient.thread import Thread
 
 def setupLogger():
     """
@@ -59,10 +59,9 @@ def setupLogger():
 
 def main():
     """
-    The function is the client entry point. It loads configuration,
-    all modules and starts the client with the appropriate classes for
-    application and gui.
+    The function is the client entry point.
     """
+
     os.chdir(os.path.join(os.getcwd(), os.path.dirname(sys.argv[0])))
     conf.loadConfiguration("../etc/devclient.cfg")
 
@@ -70,7 +69,7 @@ def main():
     logging.debug('*** START DEVCLIENT ***')
 
     # Set current path on module path for external resources like images
-    os.chdir(config['modules']['path'])
+    os.chdir(config['devclient']['path'])
 
     Thread()
 

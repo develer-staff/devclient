@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -28,7 +28,7 @@ import time
 
 sys.path.append('..')
 
-from modules.socket import Socket
+from devclient.socket import Socket
 
 class TestSocket(unittest.TestCase):
     def setUp(self):

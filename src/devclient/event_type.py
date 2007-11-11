@@ -18,5 +18,11 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
+
+MSG = 1
+MODEL = 2
+END_APP = 3
+CONNECT = 4
+CONNECTION_REFUSED = 5

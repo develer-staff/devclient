@@ -24,8 +24,8 @@ __docformat__ = 'restructuredtext'
 import copy
 import Queue
 
-from modules.parser import Parser
-from modules.socket import Socket
+from parser import Parser
+from socket import Socket
 import exception
 import event_type
 

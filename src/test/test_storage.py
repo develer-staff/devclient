@@ -28,8 +28,8 @@ import unittest
 sys.path.append('..')
 
 import conf
-import modules.exception as exception
-from modules.storage import Storage
+import devclient.exception as exception
+from devclient.storage import Storage
 
 class TestBase(unittest.TestCase):
 

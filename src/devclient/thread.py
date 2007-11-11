@@ -24,8 +24,8 @@ __docformat__ = 'restructuredtext'
 import Queue
 import threading
 
-from modules.application import Application
-from modules.gui import Gui
+from application import Application
+from gui import Gui
 
 import event_type
 
@@ -40,7 +40,6 @@ class Thread(threading.Thread):
     def __init__(self):
         """
         Create the `Thread` instance and run the gui part.
-
         """
 
         threading.Thread.__init__(self)

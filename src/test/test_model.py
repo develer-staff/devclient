@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -26,8 +26,8 @@ import unittest
 
 sys.path.append('..')
 
-import modules.exception as exception
-from modules.model import CircularList
+import devclient.exception as exception
+from devclient.model import CircularList
 
 class TestCircularList(unittest.TestCase):
     def setUp(self):
