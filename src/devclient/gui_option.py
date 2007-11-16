@@ -195,9 +195,8 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self.fg_style.setText(color.name())
 
     def _connectReq(self):
-        self.emit(SIGNAL('connectReq(const QString &, int)'),
-                  self.host_conn.text(),
-                  int(self.port_conn.text()))
+        id_conn = self.connections[self.list_conn.currentIndex() - 1][0]
+        self.emit(SIGNAL('connectReq(int)'), id_conn)
         self.close()
 
     def _loadConnections(self):
