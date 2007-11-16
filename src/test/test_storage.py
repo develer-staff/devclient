@@ -27,7 +27,7 @@ import unittest
 
 sys.path.append('..')
 
-import conf
+import devclient.conf as conf
 import devclient.exception as exception
 from devclient.storage import Storage
 
