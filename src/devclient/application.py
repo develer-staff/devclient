@@ -26,6 +26,7 @@ import Queue
 
 from parser import Parser
 from socket import Socket
+from alias import Alias
 import exception
 import event_type
 
@@ -58,7 +59,7 @@ class Application(object):
         the `Gui` part.
         """
 
-        parser = None
+        parser, alias = None, None
 
         while 1:
 
@@ -72,14 +73,15 @@ class Application(object):
             try:
                 cmd, msg = self.q_gui_app.get(0)
                 if cmd == event_type.MSG and self.sock.connected:
-                    self.sock.write(msg)
+                    self.sock.write(alias.check(msg))
                 elif cmd == event_type.END_APP:
                     self.sock.disconnect()
                     return
                 elif cmd == event_type.CONNECT and not self.sock.connected:
                     parser = Parser()
+                    alias = Alias(msg[0])
                     try:
-                        self.sock.connect(*msg)
+                        self.sock.connect(*msg[1:])
                     except exception.ConnectionRefused:
                         self.q_app_gui.put((event_type.CONNECTION_REFUSED, ""))
             except Queue.Empty:

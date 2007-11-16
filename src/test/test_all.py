@@ -27,13 +27,15 @@ import test_socket
 import test_parser
 import test_model
 import test_storage
+import test_alias
 
 socket = unittest.makeSuite(test_socket.TestSocket)
 parser = unittest.makeSuite(test_parser.TestParser)
 model  = unittest.makeSuite(test_model.TestCircularList)
 storage = unittest.makeSuite(test_storage.TestStorage)
 storage2 = unittest.makeSuite(test_storage.TestStorage2)
+alias = unittest.makeSuite(test_alias.TestAlias)
 
-alltests = unittest.TestSuite((socket, parser,
+alltests = unittest.TestSuite((socket, parser, alias,
                                model, storage, storage2))
 unittest.TextTestRunner(verbosity=2).run(alltests)

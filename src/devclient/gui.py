@@ -112,10 +112,11 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             if not conn:
                 conn = connections
 
+        name = conn[0][1]
         host = conn[0][2]
         port = conn[0][3]
 
-        self.q_gui_app.put((event_type.CONNECT, (host, port)))
+        self.q_gui_app.put((event_type.CONNECT, (name, host, port)))
         self.text_output.clear()
         self.mainViewer = viewer.Viewer()
 
