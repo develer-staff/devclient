@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 from storage import Storage
@@ -34,7 +34,7 @@ class Alias(object):
         Check if a message contains an alias and replace its label with body.
 
         Loop on aliases to find if the message starts with a label, then replace
-        the label with body and placeholder with the positional argument.
+        the label with body and placeholders with the positional arguments.
 
         :Parameters:
           msg : str
@@ -56,6 +56,9 @@ class Alias(object):
 
                     for el in tokens:
                         body = body.replace(self._PLACEHOLDER, el, 1)
+
+                    # delete the placeholders that exceed
+                    body = body.replace(self._PLACEHOLDER, '')
 
                 msg = body + txt
                 break

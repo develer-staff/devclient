@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -77,6 +77,12 @@ class TestAlias(unittest.TestCase):
         self.storage.saveAliases(self.conn_name, aliases)
         self.assert_(Alias(self.conn_name).check("h Gianni meet") ==
                      "hello Gianni, nice to meet you")
+
+    def testCheck6(self):
+        aliases = [('h', "hello %s, nice to %s you")]
+        self.storage.saveAliases(self.conn_name, aliases)
+        self.assert_(Alias(self.conn_name).check("h Gianni") ==
+                     "hello Gianni, nice to  you")
 
 if __name__ == '__main__':
     unittest.main()
