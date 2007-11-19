@@ -35,6 +35,7 @@ import gui_option
 import event_type
 from conf import config
 from gui_ui import Ui_dev_client
+from history import History
 
 class Gui(QtGui.QMainWindow, Ui_dev_client):
     """
@@ -49,6 +50,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.app = QtGui.QApplication([])
         self.app.setStyle(QtGui.QStyleFactory.create("Cleanlooks"))
         self._installTranslator()
+
+        self.history = History()
 
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
@@ -65,12 +68,26 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.connect(self.text_input, SIGNAL("returnPressed()"),
                      self._sendText)
 
+        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Up),
+                        self, self._onKeyUp)
+
+        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Down),
+                        self, self._onKeyDown)
+
         timer = QtCore.QTimer(self)
         self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
         timer.start(10)
 
         self.text_input.setFocus()
         self._translateText()
+
+    def _onKeyUp(self):
+        if self.text_input.hasFocus():
+            self.text_input.setText(self.history.getPrev())
+
+    def _onKeyDown(self):
+        if self.text_input.hasFocus():
+            self.text_input.setText(self.history.getNext())
 
     def _installTranslator(self):
         self.translator = QtCore.QTranslator()
@@ -119,11 +136,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.q_gui_app.put((event_type.CONNECT, (name, host, port)))
         self.text_output.clear()
         self.mainViewer = viewer.Viewer()
+        self.history.clear()
 
     def _endApplication(self):
         self.q_gui_app.put((event_type.END_APP, ""))
 
     def _sendText(self):
+        self.history.add(self.text_input.text())
         self.q_gui_app.put((event_type.MSG, unicode(self.text_input.text())))
         self.text_input.clear()
 
