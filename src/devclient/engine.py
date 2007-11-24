@@ -76,10 +76,10 @@ def main(argv, cfg_file):
         """
 
         level = {'CRITICAL': logging.CRITICAL,
-                'ERROR': logging.ERROR,
-                'WARNING': logging.WARNING,
-                'INFO': logging.INFO,
-                'DEBUG': logging.DEBUG }
+                 'ERROR': logging.ERROR,
+                 'WARNING': logging.WARNING,
+                 'INFO': logging.INFO,
+                 'DEBUG': logging.DEBUG }
 
         format = '%(asctime)s %(levelname)s %(message)s'
         datefmt = '%d %b %Y %H:%M:%S'

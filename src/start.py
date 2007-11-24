@@ -18,6 +18,10 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
+"""
+This module is the client startup.
+"""
+
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
