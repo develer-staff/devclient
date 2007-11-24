@@ -26,10 +26,10 @@ import exception
 class CircularList(object):
 
     def __init__(self, max_size):
-        self._max_size = max_size #: the maximum size of _data
-        self._last_idx = 0 #: the index of last element append to _data
-        self._counter = 0 #: the total number of element append to data
-        self._data = [] #: the real data container
+        self._max_size = max_size  #: the maximum size of _data
+        self._last_idx = 0  #: the index of last element append to _data
+        self._counter = 0  #: the total number of element append to data
+        self._data = []  #: the real data container
 
     def append(self, el):
         """
@@ -74,9 +74,9 @@ class CircularList(object):
 
             last_row = (last_row + 1) % self._max_size
             if last_row < self._last_idx:
-                return self._data[last_row : self._last_idx]
+                return self._data[last_row:self._last_idx]
             else:
-                return self._data[last_row : ] + self._data[ : self._last_idx]
+                return self._data[last_row:] + self._data[:self._last_idx]
 
 class Model(object):
     """

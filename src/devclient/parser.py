@@ -180,7 +180,15 @@ class Parser(object):
 
 
 class DdEParser(Parser):
-    pass
+    def parse(self, data):
+        super(DdEParser, self).parse(data)
+        self._parsePrompt()
+
+    def _parsePrompt(self):
+        text = '\n'.join(self.model.main_text.get())
+        reg = re.compile('PF:(?\d+)/(\d+) Mn:(\d+)/(\d+) Mv:(\d+)/(\d+) Al:.*? Exp:\d+>')
+        reg.findall(text)
+        print reg
 
 class ClesParser(Parser):
     pass
