@@ -166,3 +166,9 @@ class Parser(object):
 
         return res
 
+
+class DdEParser(Parser):
+    pass
+
+class ClesParser(Parser):
+    pass
