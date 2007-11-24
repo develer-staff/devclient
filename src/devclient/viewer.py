@@ -41,5 +41,6 @@ class Viewer(object):
         else:
             self.last_row += len(new_text)
 
+        print model.prompt
         return (''.join(new_text), bgcolor, fgcolor)
 

@@ -88,4 +88,5 @@ class Model(object):
         self.main_html = CircularList(100)
         self.main_bgcolor = None
         self.main_fgcolor = None
+        self.prompt = None
 
