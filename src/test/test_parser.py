@@ -42,22 +42,20 @@ class TestParser(unittest.TestCase):
         txt = 'hello\nworld'
         self.parser.parse(txt)
         self.assert_([txt.replace('\n','<br>')] ==
-                     self.parser.model.main_text.get())
+                     self.parser.model.main_html.get())
 
     def testParseMultiText(self):
         txt1, txt2 = 'hello', 'world'
         self.parser.parse(txt1)
         self.parser.parse(txt2)
-        self.assert_('%s<br>%s' % (txt1, txt2) ==
-                     '<br>'.join(self.parser.model.main_text.get()))
+        self.assert_([txt1, txt2] == self.parser.model.main_html.get())
 
     def testParseMultiText2(self):
         txt1, txt2 = 'hello\x1b[0;', '33mworld'
         self.parser.parse(txt1)
         self.parser.parse(txt2)
 
-        self.assert_('hello<br>world' ==
-                     '<br>'.join(self.parser.model.main_text.get()))
+        self.assert_(['hello', 'world'] == self.parser.model.main_text.get())
 
         self.assert_(self.parser._normal_color[3] ==
                      self.parser.model.main_fgcolor)
@@ -67,8 +65,7 @@ class TestParser(unittest.TestCase):
         self.parser.parse(txt1)
         self.parser.parse(txt2)
 
-        self.assert_('hello<br>world' ==
-                     '<br>'.join(self.parser.model.main_text.get()))
+        self.assert_(['hello', 'world'] == self.parser.model.main_text.get())
 
         self.assert_(self.parser._normal_color[3] ==
                      self.parser.model.main_fgcolor)
@@ -77,7 +74,7 @@ class TestParser(unittest.TestCase):
         txt = 'hello world'
         self.parser.parse(txt)
         self.assert_([txt.replace(' ','&nbsp;')] ==
-                     self.parser.model.main_text.get())
+                     self.parser.model.main_html.get())
 
     def testEvalStyle1(self):
         self.parser._evalStyle('31')
@@ -116,23 +113,30 @@ class TestParser(unittest.TestCase):
 
     def testReplaceAnsiColor(self):
         txt = '\x1b[33mhello'
-        res = self.parser._replaceAnsiColor(txt)
-        self.assert_(res == 'hello')
+        html_res, text_res = self.parser._replaceAnsiColor(txt)
+        self.assert_(text_res == 'hello' and html_res == 'hello')
         self.assert_(self.parser.model.main_fgcolor ==
                      self.parser._normal_color[3])
 
     def testReplaceAnsiColor2(self):
         self.parser._evalStyle('31')
         txt = '\x1b[33mhello'
-        res = self.parser._replaceAnsiColor(txt)
+        html_res, text_res = self.parser._replaceAnsiColor(txt)
 
-        self.assert_(res == '<span style="color:#%s">hello</span>' %
+        self.assert_(html_res == '<span style="color:#%s">hello</span>' %
                      self.parser._normal_color[3])
+
+    def testReplaceAnsiColor3(self):
+        self.parser._evalStyle('31')
+        txt = '\x1b[33mhello'
+        html_res, text_res = self.parser._replaceAnsiColor(txt)
+
+        self.assert_(text_res == 'hello')
 
     def testReplaceEmptyColor(self):
         txt = '\x1b[mhello'
-        res = self.parser._replaceAnsiColor(txt)
-        self.assert_(res == 'hello')
+        html_res, text_res = self.parser._replaceAnsiColor(txt)
+        self.assert_(html_res == 'hello' and text_res == 'hello')
 
 if __name__ == '__main__':
     unittest.main()

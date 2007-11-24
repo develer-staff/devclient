@@ -49,11 +49,18 @@ class Parser(object):
         Parse data and build the Model object.
         """
 
-        data = data.replace('\r', '')
-        data = data.replace('\n', '<br>')
-        data = data.replace(' ', '&nbsp;')
-        data = self._replaceAnsiColor(data)
-        self.model.main_text.append(data)
+        # spaces must be replace with html code before calling
+        # _replaceAnsiColor to prevent replacing inside html tag.
+        for t, r in (('\r', ''), (' ', '&nbsp;')):
+            data = data.replace(t, r)
+
+        html_data, text_data = self._replaceAnsiColor(data)
+
+        html_data = html_data.replace('\n', '<br>')
+        text_data = text_data.replace('&nbsp;', ' ')
+
+        self.model.main_text.append(text_data)
+        self.model.main_html.append(html_data)
 
     def _evalStyle(self, ansi_code):
 
@@ -120,6 +127,7 @@ class Parser(object):
               Light Gray      37   #aaaaaa            White    1;37   #ffffff
         ================  ======  ======== ================  ======  ========
 
+        :return: a pair of (html_data, text_data)
         """
 
         START_TOKEN = chr(27)
@@ -137,9 +145,9 @@ class Parser(object):
         parts = data.split(START_TOKEN)
 
         if len(parts) == 1:
-            return parts[0]
+            return parts[0], parts[0]
 
-        res = parts[0]
+        html_res = text_res = parts[0]
         reg = re.compile('\[(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
 
         for i, s in enumerate(parts[1:]):
@@ -150,21 +158,25 @@ class Parser(object):
                 if m.group(2) == COLOR_TOKEN and ansi_code:
                     style = self._evalStyle(ansi_code)
                     if style:
-                        res += '<span style="%s">%s</span>' % \
+                        html_res += '<span style="%s">%s</span>' % \
                             (style, s[code_length:])
+                        text_res += s[code_length:]
                     else:
-                        res += s[code_length:]
+                        html_res += s[code_length:]
+                        text_res += s[code_length:]
                 else:
-                    res += s[code_length:]
+                    html_res += s[code_length:]
+                    text_res += s[code_length:]
             else:
-                # i == len() -2 is the last element of list because the loop
+                # i == len() - 2 is the last element of list because the loop
                 # starts at second element
                 if i == len(parts) - 2:
                     self._incomplete_seq = START_TOKEN + s
                 else:
-                    res += s
+                    html_res += s
+                    text_res += s
 
-        return res
+        return html_res, text_res
 
 
 class DdEParser(Parser):

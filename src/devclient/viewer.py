@@ -30,7 +30,7 @@ class Viewer(object):
         self.last_row = None
 
     def process(self, model):
-        new_text = model.main_text.get(self.last_row)
+        new_text = model.main_html.get(self.last_row)
         bgcolor = None
         fgcolor = None
 
