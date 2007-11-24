@@ -21,40 +21,9 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import Queue
-import threading
+import sys
 
-from application import Application
-from gui import Gui
+import devclient.engine
 
-import event_type
-
-class Thread(threading.Thread):
-    """
-    Class to manage thread interaction between `Gui` and `Application`.
-
-    The gui part run in main thread while application part run
-    in secondary thread.
-    """
-
-    def __init__(self):
-        """
-        Create the `Thread` instance and run the gui part.
-        """
-
-        threading.Thread.__init__(self)
-        self.q_app_gui = Queue.Queue()  #: events from app to gui
-        self.q_gui_app = Queue.Queue()  #: events from gui to app
-
-        gui = Gui(self.q_app_gui, self.q_gui_app)
-
-        self.start()
-        gui.mainLoop()
-
-    def run(self):
-        """
-        Run the application part.
-        """
-
-        app = Application(self.q_app_gui, self.q_gui_app)
-        app.mainLoop()
+if __name__ == '__main__':
+    devclient.engine.main(sys.argv, "../etc/devclient.cfg")
