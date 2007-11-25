@@ -184,12 +184,22 @@ class SmaugParser(Parser):
     Parse data and build a model specific for Smaug type of MUD
     """
 
+    def __init__(self):
+        super(SmaugParser, self).__init__()
+        self.last_row = None
+
     def parse(self, data):
         super(SmaugParser, self).parse(data)
         self._parsePrompt()
 
     def _parsePrompt(self):
-        text = '\n'.join(self.model.main_text.get())
+        new_text = self.model.main_text.get(self.last_row)
+        if self.last_row is None:
+            self.last_row = len(new_text) - 1
+        else:
+            self.last_row += len(new_text)
+
+        text = '\n'.join(new_text)
         reg = re.compile('Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+)' +
                          '.*?\>', re.I)
         m = reg.findall(text)
