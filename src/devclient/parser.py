@@ -190,7 +190,8 @@ class SmaugParser(Parser):
 
     def _parsePrompt(self):
         text = '\n'.join(self.model.main_text.get())
-        reg = re.compile('PF:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>')
+        reg = re.compile('Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+)' +
+                         '.*?\>', re.I)
         m = reg.findall(text)
         if m:
             p = m[-1]

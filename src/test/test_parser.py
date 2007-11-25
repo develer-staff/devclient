@@ -172,5 +172,12 @@ class TestSmaugParser(unittest.TestCase):
         self.parser._parsePrompt()
         self.assert_(self.parser.model.prompt == stats)
 
+    def testPrompt4(self):
+        stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
+        p = 'pf:  %(Hp)s mn:  %(Mn)s Mv:  %(Mv)s>' % stats
+        self.parser.model.main_text.append(p)
+        self.parser._parsePrompt()
+        self.assert_(self.parser.model.prompt == stats)
+
 if __name__ == '__main__':
     unittest.main()
