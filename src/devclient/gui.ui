@@ -5,32 +5,47 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1020</width>
+    <height>663</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>DevClient</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <layout class="QVBoxLayout" >
-    <property name="spacing" >
-     <number>6</number>
-    </property>
+   <layout class="QGridLayout" >
     <property name="leftMargin" >
-     <number>9</number>
+     <number>5</number>
     </property>
     <property name="topMargin" >
-     <number>9</number>
+     <number>5</number>
     </property>
     <property name="rightMargin" >
-     <number>9</number>
+     <number>5</number>
     </property>
     <property name="bottomMargin" >
-     <number>9</number>
+     <number>5</number>
     </property>
-    <item>
+    <property name="horizontalSpacing" >
+     <number>5</number>
+    </property>
+    <property name="verticalSpacing" >
+     <number>5</number>
+    </property>
+    <item row="0" column="0" >
      <widget class="QTextEdit" name="text_output" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+        <horstretch>1</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize" >
+       <size>
+        <width>760</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="styleSheet" >
        <string>QTextEdit { background-color: #FFFFFF; font: 10pt "Courier"}</string>
       </property>
@@ -39,8 +54,40 @@
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QLineEdit" name="text_input" />
+    <item rowspan="2" row="0" column="1" >
+     <widget class="QWidget" native="1" name="rightwidget" >
+      <property name="windowModality" >
+       <enum>Qt::NonModal</enum>
+      </property>
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize" >
+       <size>
+        <width>245</width>
+        <height>610</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" >
+     <widget class="QLineEdit" name="text_input" >
+      <property name="sizePolicy" >
+       <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+        <horstretch>1</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize" >
+       <size>
+        <width>760</width>
+        <height>0</height>
+       </size>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -93,4 +140,21 @@
  </widget>
  <resources/>
  <connections/>
+ <designerdata>
+  <property name="gridDeltaX" >
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY" >
+   <number>5</number>
+  </property>
+  <property name="gridSnapX" >
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY" >
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible" >
+   <bool>true</bool>
+  </property>
+ </designerdata>
 </ui>

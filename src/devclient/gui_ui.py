@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Wed Oct 24 22:14:57 2007
+# Created: Sun Nov 25 13:07:47 2007
 #      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,24 +12,50 @@ from PyQt4 import QtCore, QtGui
 class Ui_dev_client(object):
     def setupUi(self, dev_client):
         dev_client.setObjectName("dev_client")
-        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,800,600).size()).expandedTo(dev_client.minimumSizeHint()))
+        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,1020,663).size()).expandedTo(dev_client.minimumSizeHint()))
 
         self.centralwidget = QtGui.QWidget(dev_client)
         self.centralwidget.setObjectName("centralwidget")
 
-        self.vboxlayout = QtGui.QVBoxLayout(self.centralwidget)
-        self.vboxlayout.setSpacing(6)
-        self.vboxlayout.setMargin(9)
-        self.vboxlayout.setObjectName("vboxlayout")
+        self.gridlayout = QtGui.QGridLayout(self.centralwidget)
+        self.gridlayout.setMargin(5)
+        self.gridlayout.setSpacing(5)
+        self.gridlayout.setObjectName("gridlayout")
 
         self.text_output = QtGui.QTextEdit(self.centralwidget)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(1)
+        sizePolicy.setHeightForWidth(self.text_output.sizePolicy().hasHeightForWidth())
+        self.text_output.setSizePolicy(sizePolicy)
+        self.text_output.setMinimumSize(QtCore.QSize(760,0))
         self.text_output.setReadOnly(True)
         self.text_output.setObjectName("text_output")
-        self.vboxlayout.addWidget(self.text_output)
+        self.gridlayout.addWidget(self.text_output,0,0,1,1)
+
+        self.rightwidget = QtGui.QWidget(self.centralwidget)
+        self.rightwidget.setWindowModality(QtCore.Qt.NonModal)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.rightwidget.sizePolicy().hasHeightForWidth())
+        self.rightwidget.setSizePolicy(sizePolicy)
+        self.rightwidget.setMinimumSize(QtCore.QSize(245,610))
+        self.rightwidget.setObjectName("rightwidget")
+        self.gridlayout.addWidget(self.rightwidget,0,1,2,1)
 
         self.text_input = QtGui.QLineEdit(self.centralwidget)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(1)
+        sizePolicy.setHeightForWidth(self.text_input.sizePolicy().hasHeightForWidth())
+        self.text_input.setSizePolicy(sizePolicy)
+        self.text_input.setMinimumSize(QtCore.QSize(760,0))
         self.text_input.setObjectName("text_input")
-        self.vboxlayout.addWidget(self.text_input)
+        self.gridlayout.addWidget(self.text_input,1,0,1,1)
         dev_client.setCentralWidget(self.centralwidget)
 
         self.toolBar = QtGui.QToolBar(dev_client)
