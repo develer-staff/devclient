@@ -179,30 +179,19 @@ class Parser(object):
         return html_res, text_res
 
 
-class DdEParser(Parser):
+class SmaugParser(Parser):
+    """
+    Parse data and build a model specific for Smaug type of MUD
+    """
+
     def parse(self, data):
-        super(DdEParser, self).parse(data)
+        super(SmaugParser, self).parse(data)
         self._parsePrompt()
 
     def _parsePrompt(self):
         text = '\n'.join(self.model.main_text.get())
-        reg = re.compile('PF:(\d+/\d+) Mn:(\d+/\d+) Mv:(\d+/\d+)' +
-                         ' Al:.*? Exp:\d+\>')
+        reg = re.compile('PF:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>')
         m = reg.findall(text)
         if m:
             p = m[-1]
-            self.model.prompt = {'PF': p[0], 'Mn': p[1], 'Mv': p[2]}
-
-
-class ClesParser(Parser):
-    def parse(self, data):
-        super(DdEParser, self).parse(data)
-        self._parsePrompt()
-
-    def _parsePrompt(self):
-        text = '\n'.join(self.model.main_text.get())
-        reg = re.compile('PF:(\d+/\d+) Mn:(\d+/\d+) Mv:(\d+/\d+)\>')
-        m = reg.findall(text)
-        if m:
-            p = m[-1]
-            self.model.prompt = {'PF': p[0], 'Mn': p[1], 'Mv': p[2]}
+            self.model.prompt = {'Hp': p[0], 'Mn': p[1], 'Mv': p[2]}

@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1020</width>
-    <height>663</height>
+    <width>1029</width>
+    <height>666</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -55,10 +55,7 @@
      </widget>
     </item>
     <item rowspan="2" row="0" column="1" >
-     <widget class="QWidget" native="1" name="rightwidget" >
-      <property name="windowModality" >
-       <enum>Qt::NonModal</enum>
-      </property>
+     <widget class="QStackedWidget" name="rightpanel" >
       <property name="sizePolicy" >
        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
         <horstretch>0</horstretch>
@@ -71,6 +68,111 @@
         <height>610</height>
        </size>
       </property>
+      <property name="currentIndex" >
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="generic" />
+      <widget class="QWidget" name="smaug" >
+       <widget class="QWidget" name="" >
+        <property name="geometry" >
+         <rect>
+          <x>5</x>
+          <y>10</y>
+          <width>231</width>
+          <height>126</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" >
+         <item row="0" column="0" >
+          <widget class="QLabel" name="label_health" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize" >
+            <size>
+             <width>90</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text" >
+            <string>Health</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QProgressBar" name="bar_health" >
+           <property name="value" >
+            <number>100</number>
+           </property>
+           <property name="textVisible" >
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLabel" name="label_mana" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize" >
+            <size>
+             <width>90</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text" >
+            <string>Mana</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="QProgressBar" name="bar_mana" >
+           <property name="value" >
+            <number>100</number>
+           </property>
+           <property name="textVisible" >
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" >
+          <widget class="QLabel" name="label_movement" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize" >
+            <size>
+             <width>90</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text" >
+            <string>Movement</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" >
+          <widget class="QProgressBar" name="bar_movement" >
+           <property name="value" >
+            <number>100</number>
+           </property>
+           <property name="textVisible" >
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </widget>
     </item>
     <item row="1" column="0" >

@@ -18,14 +18,18 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
+
+from parser import *
+from viewer import *
 
 GENERIC = 0
 DDE = 1
 CLESSIDRA = 2
 
 def getMudType(host, port):
+    # FIX
     mud_list = {('dde.homelinux.com', 5000): DDE,
                 ('mud.clessidra.it', 4000): CLESSIDRA}
 
@@ -33,3 +37,24 @@ def getMudType(host, port):
         return mud_list[(host, port)]
 
     return GENERIC
+
+class ComponentFactory(object):
+
+    def __init__(self, name):
+        self.name = name
+
+    def parser(self):
+        if self.name == DDE or self.name == CLESSIDRA:
+            return SmaugParser()
+        return Parser()
+
+    def rightPanelIdx(self):
+        # FIX
+        if self.name == DDE or self.name == CLESSIDRA:
+            return 1
+        return 0
+
+    def viewer(self, widget):
+        if self.name == DDE or self.name == CLESSIDRA:
+            return StatusViewer(TextViewer(widget))
+        return TextViewer(widget)

@@ -29,13 +29,13 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import SIGNAL
 from PyQt4.QtGui import QApplication
 
-import viewer
 import storage
 import gui_option
 import event_type
 from conf import config
 from gui_ui import Ui_dev_client
 from history import History
+from mud_type import getMudType, ComponentFactory
 
 class Gui(QtGui.QMainWindow, Ui_dev_client):
     """
@@ -134,9 +134,11 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         port = conn[0][3]
 
         self.q_gui_app.put((event_type.CONNECT, (name, host, port)))
-        self.text_output.clear()
-        self.mainViewer = viewer.Viewer()
         self.history.clear()
+
+        comp_factory = ComponentFactory(getMudType(host, port))
+        self.rightpanel.setCurrentIndex(comp_factory.rightPanelIdx())
+        self.viewer = comp_factory.viewer(self)
 
     def _endApplication(self):
         self.q_gui_app.put((event_type.END_APP, ""))
@@ -175,15 +177,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         try:
             cmd, msg = self.q_app_gui.get(0)
             if cmd == event_type.MODEL:
-                text, bg, fg = self.mainViewer.process(msg)
-                self.text_output.moveCursor(QtGui.QTextCursor.End)
-                self.text_output.insertHtml(text)
-                self.text_output.moveCursor(QtGui.QTextCursor.End)
-                if bg or fg:
-                    self._setOutputColors(bg, fg)
+                self.viewer.process(msg)
             elif cmd == event_type.CONNECTION_REFUSED:
                 QtGui.QMessageBox.warning(self, self._text['Connect'],
-                                      self._text['ConnError'])
+                                          self._text['ConnError'])
 
         except Queue.Empty:
             pass

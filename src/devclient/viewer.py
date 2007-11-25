@@ -21,26 +21,59 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-class Viewer(object):
+from PyQt4 import QtGui
+
+class TextViewer(object):
     """
-    Build a graphical rappresentation of model.
+    Build the html visualization from model.
     """
 
-    def __init__(self):
+    def __init__(self, widget):
+        self.widget = widget
+        self.widget.text_output.clear()
         self.last_row = None
 
-    def process(self, model):
-        new_text = model.main_html.get(self.last_row)
+    def _process(self, model):
+        new_html = model.main_html.get(self.last_row)
         bgcolor = None
         fgcolor = None
 
         if self.last_row is None:
-            self.last_row = len(new_text) - 1
+            self.last_row = len(new_html) - 1
             bgcolor = model.main_bgcolor
             fgcolor = model.main_fgcolor
         else:
-            self.last_row += len(new_text)
+            self.last_row += len(new_html)
 
-        print model.prompt
-        return (''.join(new_text), bgcolor, fgcolor)
+        self.widget.text_output.moveCursor(QtGui.QTextCursor.End)
+        self.widget.text_output.insertHtml(''.join(new_html))
+        self.widget.text_output.moveCursor(QtGui.QTextCursor.End)
+        if bgcolor or fgcolor:
+            self.widget._setOutputColors(bgcolor, fgcolor)
+
+    def process(self, model):
+        self._process(model)
+        self.widget.update()
+
+
+class StatusViewer(TextViewer):
+    """
+    Build the status visualization from model.
+    """
+
+    def __init__(self, v):
+        super(StatusViewer, self).__init__(v.widget)
+        self.v = v
+
+    def _process(self, model):
+        self.v._process(model)
+
+        stats = {'Hp': self.widget.bar_health,
+                 'Mn': self.widget.bar_mana,
+                 'Mv': self.widget.bar_movement}
+
+        if model.prompt:
+            for k, bar in stats.iteritems():
+                cur_value, max_value = model.prompt[k].split('/')
+                bar.setValue(int(100 * int(cur_value) / int(max_value)))
 

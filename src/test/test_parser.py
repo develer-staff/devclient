@@ -26,7 +26,7 @@ import unittest
 
 sys.path.append('..')
 
-from devclient.parser import Parser
+from devclient.parser import Parser, SmaugParser
 
 class TestParser(unittest.TestCase):
 
@@ -137,6 +137,40 @@ class TestParser(unittest.TestCase):
         txt = '\x1b[mhello'
         html_res, text_res = self.parser._replaceAnsiColor(txt)
         self.assert_(html_res == 'hello' and text_res == 'hello')
+
+
+class TestSmaugParser(unittest.TestCase):
+    def setUp(self):
+        self.parser = SmaugParser()
+
+    def testEmptyPrompt(self):
+        self.assert_(self.parser.model.prompt is None)
+
+    def testFakePrompt(self):
+        self.parser.model.main_text.append('fake prompt')
+        self.parser._parsePrompt()
+        self.assert_(self.parser.model.prompt is None)
+
+    def testPrompt1(self):
+        stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
+        p = 'PF:%(Hp)s Mn:%(Mn)s Mv:%(Mv)s>' % stats
+        self.parser.model.main_text.append(p)
+        self.parser._parsePrompt()
+        self.assert_(self.parser.model.prompt == stats)
+
+    def testPrompt2(self):
+        stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
+        p = 'PF:%(Hp)s Mn:%(Mn)s Mv:%(Mv)s bla bla bla>' % stats
+        self.parser.model.main_text.append(p)
+        self.parser._parsePrompt()
+        self.assert_(self.parser.model.prompt == stats)
+
+    def testPrompt3(self):
+        stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
+        p = 'PF:  %(Hp)s Mn:  %(Mn)s Mv:  %(Mv)s>' % stats
+        self.parser.model.main_text.append(p)
+        self.parser._parsePrompt()
+        self.assert_(self.parser.model.prompt == stats)
 
 if __name__ == '__main__':
     unittest.main()

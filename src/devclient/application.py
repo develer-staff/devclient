@@ -27,9 +27,9 @@ import Queue
 import exception
 import event_type
 import mud_type
-from parser import *
 from socket import Socket
 from alias import Alias
+from mud_type import getMudType, ComponentFactory
 
 class Application(object):
     """
@@ -51,13 +51,6 @@ class Application(object):
         self.q_gui_app = q_gui_app
 
         self.sock = Socket()
-
-    def _factoryParser(self, name):
-        if name == mud_type.DDE:
-            return DdEParser()
-        elif name == mud_type.CLESSIDRA:
-            return ClesParser()
-        return Parser()
 
     def mainLoop(self):
         """
@@ -91,10 +84,10 @@ class Application(object):
                     except exception.ConnectionRefused:
                         self.q_app_gui.put((event_type.CONNECTION_REFUSED, ""))
 
-                    mud = mud_type.getMudType(*msg[1:])
+                    mud = getMudType(*msg[1:])
+                    parser = ComponentFactory(mud).parser()
 
                     alias = Alias(msg[0])
-                    parser = self._factoryParser(mud)
 
             except Queue.Empty:
                 pass
