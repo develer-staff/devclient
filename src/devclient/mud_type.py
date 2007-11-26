@@ -48,13 +48,15 @@ class ComponentFactory(object):
             return SmaugParser()
         return Parser()
 
-    def rightPanelIdx(self):
+    def _rightPanelIdx(self):
         # FIX
         if self.name == DDE or self.name == CLESSIDRA:
             return 1
         return 0
 
     def viewer(self, widget):
+        widget.rightpanel.setCurrentIndex(self._rightPanelIdx())
+
         if self.name == DDE or self.name == CLESSIDRA:
             return StatusViewer(TextViewer(widget))
         return TextViewer(widget)

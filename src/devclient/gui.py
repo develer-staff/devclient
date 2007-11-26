@@ -137,7 +137,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.history.clear()
 
         comp_factory = ComponentFactory(getMudType(host, port))
-        self.rightpanel.setCurrentIndex(comp_factory.rightPanelIdx())
         self.viewer = comp_factory.viewer(self)
 
     def _endApplication(self):
