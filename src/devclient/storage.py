@@ -36,22 +36,21 @@ class Storage(object):
     """
 
     def __init__(self):
-        build = not os.path.exists(config['storage']['path'])
 
         self.conn = sqlite3.connect(config['storage']['path'],
                                     isolation_level=None)
 
-        if build:
-            c = self.conn.cursor()
-            c.execute('''CREATE TABLE connections(id integer primary key
-                                                             autoincrement,
-                                                  name text,
-                                                  host text,
-                                                  port integer,
-                                                  def integer)''')
+        c = self.conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS 
+                            connections(id integer primary key autoincrement,
+                                        name text,
+                                        host text,
+                                        port integer,
+                                        def integer)''')
 
-            c.execute('''CREATE TABLE aliases(id_conn integer, label text,
-                                              body text)''')
+        c.execute('''CREATE TABLE IF NOT EXISTS
+                            aliases(id_conn integer, label text,
+                                    body text)''')
 
     def _execQuery(self, sql, params=(), cursor=None):
         """
@@ -110,6 +109,7 @@ class Storage(object):
 
     def deleteConnection(self, conn):
         self._execQuery('DELETE FROM connections WHERE id = ?', (conn[0],))
+        # TODO: delete alias
 
     def updateConnection(self, conn):
         params = conn[1:]
