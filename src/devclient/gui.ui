@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1029</width>
+    <width>930</width>
     <height>666</height>
    </rect>
   </property>
@@ -42,7 +42,7 @@
       </property>
       <property name="minimumSize" >
        <size>
-        <width>760</width>
+        <width>690</width>
         <height>0</height>
        </size>
       </property>
@@ -64,8 +64,8 @@
       </property>
       <property name="minimumSize" >
        <size>
-        <width>245</width>
-        <height>610</height>
+        <width>225</width>
+        <height>615</height>
        </size>
       </property>
       <property name="currentIndex" >
@@ -73,12 +73,12 @@
       </property>
       <widget class="QWidget" name="generic" />
       <widget class="QWidget" name="smaug" >
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <property name="geometry" >
          <rect>
-          <x>5</x>
-          <y>10</y>
-          <width>231</width>
+          <x>0</x>
+          <y>5</y>
+          <width>221</width>
           <height>126</height>
          </rect>
         </property>
@@ -185,7 +185,7 @@
       </property>
       <property name="minimumSize" >
        <size>
-        <width>760</width>
+        <width>690</width>
         <height>0</height>
        </size>
       </property>

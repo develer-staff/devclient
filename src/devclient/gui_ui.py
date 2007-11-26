@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sun Nov 25 18:27:57 2007
-#      by: PyQt4 UI code generator 4.3
+# Created: Mon Nov 26 21:57:30 2007
+#      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_dev_client(object):
     def setupUi(self, dev_client):
         dev_client.setObjectName("dev_client")
-        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,1029,666).size()).expandedTo(dev_client.minimumSizeHint()))
+        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,930,666).size()).expandedTo(dev_client.minimumSizeHint()))
 
         self.centralwidget = QtGui.QWidget(dev_client)
         self.centralwidget.setObjectName("centralwidget")
@@ -29,7 +29,7 @@ class Ui_dev_client(object):
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.text_output.sizePolicy().hasHeightForWidth())
         self.text_output.setSizePolicy(sizePolicy)
-        self.text_output.setMinimumSize(QtCore.QSize(760,0))
+        self.text_output.setMinimumSize(QtCore.QSize(690,0))
         self.text_output.setReadOnly(True)
         self.text_output.setObjectName("text_output")
         self.gridlayout.addWidget(self.text_output,0,0,1,1)
@@ -41,7 +41,7 @@ class Ui_dev_client(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.rightpanel.sizePolicy().hasHeightForWidth())
         self.rightpanel.setSizePolicy(sizePolicy)
-        self.rightpanel.setMinimumSize(QtCore.QSize(245,610))
+        self.rightpanel.setMinimumSize(QtCore.QSize(225,615))
         self.rightpanel.setObjectName("rightpanel")
 
         self.generic = QtGui.QWidget()
@@ -51,14 +51,14 @@ class Ui_dev_client(object):
         self.smaug = QtGui.QWidget()
         self.smaug.setObjectName("smaug")
 
-        self.widget = QtGui.QWidget(self.smaug)
-        self.widget.setGeometry(QtCore.QRect(5,10,231,126))
-        self.widget.setObjectName("widget")
+        self.layoutWidget = QtGui.QWidget(self.smaug)
+        self.layoutWidget.setGeometry(QtCore.QRect(0,5,221,126))
+        self.layoutWidget.setObjectName("layoutWidget")
 
-        self.gridlayout1 = QtGui.QGridLayout(self.widget)
+        self.gridlayout1 = QtGui.QGridLayout(self.layoutWidget)
         self.gridlayout1.setObjectName("gridlayout1")
 
-        self.label_health = QtGui.QLabel(self.widget)
+        self.label_health = QtGui.QLabel(self.layoutWidget)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -69,13 +69,13 @@ class Ui_dev_client(object):
         self.label_health.setObjectName("label_health")
         self.gridlayout1.addWidget(self.label_health,0,0,1,1)
 
-        self.bar_health = QtGui.QProgressBar(self.widget)
+        self.bar_health = QtGui.QProgressBar(self.layoutWidget)
         self.bar_health.setProperty("value",QtCore.QVariant(100))
         self.bar_health.setTextVisible(False)
         self.bar_health.setObjectName("bar_health")
         self.gridlayout1.addWidget(self.bar_health,0,1,1,1)
 
-        self.label_mana = QtGui.QLabel(self.widget)
+        self.label_mana = QtGui.QLabel(self.layoutWidget)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -86,13 +86,13 @@ class Ui_dev_client(object):
         self.label_mana.setObjectName("label_mana")
         self.gridlayout1.addWidget(self.label_mana,1,0,1,1)
 
-        self.bar_mana = QtGui.QProgressBar(self.widget)
+        self.bar_mana = QtGui.QProgressBar(self.layoutWidget)
         self.bar_mana.setProperty("value",QtCore.QVariant(100))
         self.bar_mana.setTextVisible(False)
         self.bar_mana.setObjectName("bar_mana")
         self.gridlayout1.addWidget(self.bar_mana,1,1,1,1)
 
-        self.label_movement = QtGui.QLabel(self.widget)
+        self.label_movement = QtGui.QLabel(self.layoutWidget)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -103,7 +103,7 @@ class Ui_dev_client(object):
         self.label_movement.setObjectName("label_movement")
         self.gridlayout1.addWidget(self.label_movement,2,0,1,1)
 
-        self.bar_movement = QtGui.QProgressBar(self.widget)
+        self.bar_movement = QtGui.QProgressBar(self.layoutWidget)
         self.bar_movement.setProperty("value",QtCore.QVariant(100))
         self.bar_movement.setTextVisible(False)
         self.bar_movement.setObjectName("bar_movement")
@@ -118,7 +118,7 @@ class Ui_dev_client(object):
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.text_input.sizePolicy().hasHeightForWidth())
         self.text_input.setSizePolicy(sizePolicy)
-        self.text_input.setMinimumSize(QtCore.QSize(760,0))
+        self.text_input.setMinimumSize(QtCore.QSize(690,0))
         self.text_input.setObjectName("text_input")
         self.gridlayout.addWidget(self.text_input,1,0,1,1)
         dev_client.setCentralWidget(self.centralwidget)
@@ -129,7 +129,7 @@ class Ui_dev_client(object):
         self.toolBar.setOrientation(QtCore.Qt.Horizontal)
         self.toolBar.setIconSize(QtCore.QSize(32,32))
         self.toolBar.setObjectName("toolBar")
-        dev_client.addToolBar(self.toolBar)
+        dev_client.addToolBar(QtCore.Qt.TopToolBarArea,self.toolBar)
 
         self.action_connect = QtGui.QAction(dev_client)
         self.action_connect.setIcon(QtGui.QIcon("../../resources/images/connect.png"))
