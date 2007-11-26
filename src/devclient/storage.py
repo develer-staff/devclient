@@ -41,7 +41,7 @@ class Storage(object):
                                     isolation_level=None)
 
         c = self.conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS 
+        c.execute('''CREATE TABLE IF NOT EXISTS
                             connections(id integer primary key autoincrement,
                                         name text,
                                         host text,
@@ -73,7 +73,7 @@ class Storage(object):
         cursor.execute(sql, params)
 
         for p in params:
-            sql = sql.replace('?', "'" + str(p) + "'", 1)
+            sql = sql.replace('?', "'%s'" % p, 1)
         logger.debug('sql: ' + sql)
 
         return cursor
@@ -108,8 +108,9 @@ class Storage(object):
         logger.debug('id connection obtained: ' + str(conn[0]))
 
     def deleteConnection(self, conn):
-        self._execQuery('DELETE FROM connections WHERE id = ?', (conn[0],))
-        # TODO: delete alias
+        c = self.conn.cursor()
+        self._execQuery('DELETE FROM connections WHERE id = ?', (conn[0],), c)
+        self._execQuery('DELETE FROM aliases WHERE id_conn = ?', (conn[0],), c)
 
     def updateConnection(self, conn):
         params = conn[1:]
