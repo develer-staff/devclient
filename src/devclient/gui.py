@@ -124,7 +124,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         if id_conn:
             conn = [el for el in connections if el[0] == id_conn]
         else:
-            conn = [el for el in connections if el[3] == 1]
+            conn = [el for el in connections if el[4] == 1]
             # if is not defined a default connection take the first
             if not conn:
                 conn = connections
