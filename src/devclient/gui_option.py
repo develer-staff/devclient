@@ -206,8 +206,6 @@ class GuiOption(QtGui.QDialog, Ui_option):
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
-        self.connect(self.bg_button_style, clicked, self._chooseBgColor)
-        self.connect(self.fg_button_style, clicked, self._chooseFgColor)
         self.connect(self.tab_widget, SIGNAL("currentChanged(int)"),
                      self._syncTabs)
 
@@ -330,11 +328,3 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self.list_alias.removeItem(list_idx)
         self.storage.saveAliases(unicode(self.list_conn_alias.currentText()),
                                  self.aliases)
-
-    def _chooseBgColor(self):
-        color = QtGui.QColorDialog.getColor()
-        self.bg_style.setText(color.name())
-
-    def _chooseFgColor(self):
-        color = QtGui.QColorDialog.getColor()
-        self.fg_style.setText(color.name())

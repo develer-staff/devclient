@@ -9,12 +9,12 @@
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="231"/>
+        <location filename="../../src/devclient/gui.ui" line="279"/>
         <source>Exit</source>
         <translation>Esci</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="239"/>
+        <location filename="../../src/devclient/gui.ui" line="287"/>
         <source>Option</source>
         <translation>Opzioni</translation>
     </message>
@@ -34,24 +34,42 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="50"/>
-        <source>QTextEdit { background-color: #FFFFFF; font: 10pt &quot;Courier&quot;}</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../../src/devclient/gui.ui" line="101"/>
         <source>Health</source>
         <translation>Vita</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="130"/>
+        <location filename="../../src/devclient/gui.ui" line="146"/>
         <source>Mana</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="159"/>
+        <location filename="../../src/devclient/gui.ui" line="191"/>
         <source>Movement</source>
         <translation>Movimento</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.ui" line="50"/>
+        <source>QTextEdit { background-color: #000000; font: 10pt &quot;Courier&quot;; color: #FFFFFF;}</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.ui" line="120"/>
+        <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
+QProgressBar::chunk {background-color:#FF3333;}</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.ui" line="165"/>
+        <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
+QProgressBar::chunk {background-color:#0066FF}</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.ui" line="210"/>
+        <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
+QProgressBar::chunk {background-color:#33CC33;}</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -67,12 +85,12 @@
         <translation>Connessioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="79"/>
+        <location filename="../../src/devclient/gui_option.py" line="52"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="84"/>
+        <location filename="../../src/devclient/gui_option.py" line="57"/>
         <source>Port</source>
         <translation>Porta</translation>
     </message>
@@ -82,7 +100,7 @@
         <translation>Imposta come predefinita</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.ui" line="613"/>
+        <location filename="../../src/devclient/gui_option.ui" line="482"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
@@ -92,42 +110,22 @@
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.ui" line="620"/>
+        <location filename="../../src/devclient/gui_option.ui" line="489"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.ui" line="275"/>
-        <source>Style</source>
-        <translation>Aspetto</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_option.ui" line="300"/>
-        <source>Default color</source>
-        <translation>Colori di default</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_option.ui" line="327"/>
-        <source>Background</source>
-        <translation>Sfondo</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_option.ui" line="371"/>
-        <source>Text</source>
-        <translation>Testo</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_option.py" line="86"/>
+        <location filename="../../src/devclient/gui_option.py" line="60"/>
         <source>Connection</source>
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="88"/>
+        <location filename="../../src/devclient/gui_option.py" line="231"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="91"/>
+        <location filename="../../src/devclient/gui_option.py" line="234"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
@@ -137,28 +135,28 @@
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="95"/>
+        <location filename="../../src/devclient/gui_option.py" line="238"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="97"/>
+        <location filename="../../src/devclient/gui_option.py" line="240"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="100"/>
+        <location filename="../../src/devclient/gui_option.py" line="243"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="93"/>
+        <location filename="../../src/devclient/gui_option.py" line="236"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="81"/>
+        <location filename="../../src/devclient/gui_option.py" line="54"/>
         <source>Host</source>
         <translation></translation>
     </message>

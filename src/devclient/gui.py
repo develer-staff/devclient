@@ -156,7 +156,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         m = re.search('QTextEdit\s*{(.*)}', style)
         if m:
             oldstyle = m.group(1)
-            tmp = [el.split(':') for el in oldstyle.split(';')]
+            tmp = [el.split(':') for el in oldstyle.split(';') if el]
             d = dict([(k.strip(), v.strip()) for k, v in tmp])
         else:
             oldstyle = None

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Mon Nov 26 21:57:30 2007
+# Created: Tue Nov 27 19:05:25 2007
 #      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_dev_client(object):
     def setupUi(self, dev_client):
         dev_client.setObjectName("dev_client")
-        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,930,666).size()).expandedTo(dev_client.minimumSizeHint()))
+        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,930,667).size()).expandedTo(dev_client.minimumSizeHint()))
 
         self.centralwidget = QtGui.QWidget(dev_client)
         self.centralwidget.setObjectName("centralwidget")
@@ -52,7 +52,7 @@ class Ui_dev_client(object):
         self.smaug.setObjectName("smaug")
 
         self.layoutWidget = QtGui.QWidget(self.smaug)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,5,221,126))
+        self.layoutWidget.setGeometry(QtCore.QRect(0,5,226,121))
         self.layoutWidget.setObjectName("layoutWidget")
 
         self.gridlayout1 = QtGui.QGridLayout(self.layoutWidget)
@@ -65,11 +65,13 @@ class Ui_dev_client(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_health.sizePolicy().hasHeightForWidth())
         self.label_health.setSizePolicy(sizePolicy)
-        self.label_health.setMinimumSize(QtCore.QSize(90,0))
+        self.label_health.setMinimumSize(QtCore.QSize(80,0))
         self.label_health.setObjectName("label_health")
         self.gridlayout1.addWidget(self.label_health,0,0,1,1)
 
         self.bar_health = QtGui.QProgressBar(self.layoutWidget)
+        self.bar_health.setMinimumSize(QtCore.QSize(0,22))
+        self.bar_health.setMaximumSize(QtCore.QSize(16777215,22))
         self.bar_health.setProperty("value",QtCore.QVariant(100))
         self.bar_health.setTextVisible(False)
         self.bar_health.setObjectName("bar_health")
@@ -82,11 +84,13 @@ class Ui_dev_client(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_mana.sizePolicy().hasHeightForWidth())
         self.label_mana.setSizePolicy(sizePolicy)
-        self.label_mana.setMinimumSize(QtCore.QSize(90,0))
+        self.label_mana.setMinimumSize(QtCore.QSize(80,0))
         self.label_mana.setObjectName("label_mana")
         self.gridlayout1.addWidget(self.label_mana,1,0,1,1)
 
         self.bar_mana = QtGui.QProgressBar(self.layoutWidget)
+        self.bar_mana.setMinimumSize(QtCore.QSize(0,22))
+        self.bar_mana.setMaximumSize(QtCore.QSize(16777215,22))
         self.bar_mana.setProperty("value",QtCore.QVariant(100))
         self.bar_mana.setTextVisible(False)
         self.bar_mana.setObjectName("bar_mana")
@@ -99,11 +103,13 @@ class Ui_dev_client(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_movement.sizePolicy().hasHeightForWidth())
         self.label_movement.setSizePolicy(sizePolicy)
-        self.label_movement.setMinimumSize(QtCore.QSize(90,0))
+        self.label_movement.setMinimumSize(QtCore.QSize(80,0))
         self.label_movement.setObjectName("label_movement")
         self.gridlayout1.addWidget(self.label_movement,2,0,1,1)
 
         self.bar_movement = QtGui.QProgressBar(self.layoutWidget)
+        self.bar_movement.setMinimumSize(QtCore.QSize(0,22))
+        self.bar_movement.setMaximumSize(QtCore.QSize(16777215,22))
         self.bar_movement.setProperty("value",QtCore.QVariant(100))
         self.bar_movement.setTextVisible(False)
         self.bar_movement.setObjectName("bar_movement")
@@ -150,10 +156,16 @@ class Ui_dev_client(object):
 
     def retranslateUi(self, dev_client):
         dev_client.setWindowTitle(QtGui.QApplication.translate("dev_client", "DevClient", None, QtGui.QApplication.UnicodeUTF8))
-        self.text_output.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #FFFFFF; font: 10pt \"Courier\"}", None, QtGui.QApplication.UnicodeUTF8))
+        self.text_output.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #000000; font: 10pt \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
         self.label_health.setText(QtGui.QApplication.translate("dev_client", "Health", None, QtGui.QApplication.UnicodeUTF8))
+        self.bar_health.setStyleSheet(QtGui.QApplication.translate("dev_client", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
+        "QProgressBar::chunk {background-color:#FF3333;}", None, QtGui.QApplication.UnicodeUTF8))
         self.label_mana.setText(QtGui.QApplication.translate("dev_client", "Mana", None, QtGui.QApplication.UnicodeUTF8))
+        self.bar_mana.setStyleSheet(QtGui.QApplication.translate("dev_client", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
+        "QProgressBar::chunk {background-color:#0066FF}", None, QtGui.QApplication.UnicodeUTF8))
         self.label_movement.setText(QtGui.QApplication.translate("dev_client", "Movement", None, QtGui.QApplication.UnicodeUTF8))
+        self.bar_movement.setStyleSheet(QtGui.QApplication.translate("dev_client", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
+        "QProgressBar::chunk {background-color:#33CC33;}", None, QtGui.QApplication.UnicodeUTF8))
         self.action_connect.setText(QtGui.QApplication.translate("dev_client", "Connect", None, QtGui.QApplication.UnicodeUTF8))
         self.action_exit.setText(QtGui.QApplication.translate("dev_client", "Exit", None, QtGui.QApplication.UnicodeUTF8))
         self.action_option.setText(QtGui.QApplication.translate("dev_client", "Option", None, QtGui.QApplication.UnicodeUTF8))
