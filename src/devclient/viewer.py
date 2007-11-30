@@ -45,8 +45,12 @@ class TextViewer(object):
         else:
             self.last_row += len(new_html)
 
+        new_html = ''.join(new_html)
+        if not new_html.count('<br>'):
+            new_html = '<br>' + new_html
+
         self.widget.text_output.moveCursor(QtGui.QTextCursor.End)
-        self.widget.text_output.insertHtml(''.join(new_html))
+        self.widget.text_output.insertHtml(new_html)
         self.widget.text_output.moveCursor(QtGui.QTextCursor.End)
         if bgcolor or fgcolor:
             self.widget._setOutputColors(bgcolor, fgcolor)
@@ -75,5 +79,7 @@ class StatusViewer(TextViewer):
         if model.prompt:
             for k, bar in stats.iteritems():
                 cur_value, max_value = model.prompt[k].split('/')
-                bar.setValue(int(100 * int(cur_value) / int(max_value)))
+                cur_value = max(int(cur_value), 0)
+                cur_value = min(int(max_value), cur_value)
+                bar.setValue(int(100 * cur_value / int(max_value)))
 
