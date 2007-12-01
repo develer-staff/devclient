@@ -78,7 +78,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
         timer.start(10)
 
-        self.text_input.setFocus()
         self._translateText()
 
     def _onKeyUp(self):
@@ -138,6 +137,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         comp_factory = ComponentFactory(getMudType(host, port))
         self.viewer = comp_factory.viewer(self)
+        self.text_input.setFocus()
 
     def _endApplication(self):
         self.q_gui_app.put((event_type.END_APP, ""))
