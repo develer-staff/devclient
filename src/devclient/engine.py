@@ -28,6 +28,7 @@ import Queue
 import threading
 
 import conf
+import constants
 import event_type
 from conf import config
 from application import Application
@@ -99,10 +100,10 @@ def main(argv, cfg_file):
 
 
     os.chdir(os.path.join(os.getcwd(), os.path.dirname(argv[0])))
-    conf.loadConfiguration("../etc/devclient.cfg")
+    conf.loadConfiguration(cfg_file)
 
     setupLogger()
-    logging.debug('*** START DEVCLIENT ***')
+    logging.debug('*** START %s ***' % constants.PROJECT_NAME.upper())
 
     # Set current path on module path for external resources like images
     os.chdir(config['devclient']['path'])

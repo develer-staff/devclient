@@ -36,6 +36,7 @@ from conf import config
 from gui_ui import Ui_dev_client
 from history import History
 from mud_type import getMudType, ComponentFactory
+from constants import PUBLIC_VERSION, PROJECT_NAME
 
 class Gui(QtGui.QMainWindow, Ui_dev_client):
     """
@@ -79,6 +80,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         timer.start(10)
 
         self._translateText()
+        self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
 
     def _onKeyUp(self):
         if self.text_input.hasFocus():
