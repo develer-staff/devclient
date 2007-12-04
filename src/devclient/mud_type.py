@@ -27,11 +27,13 @@ from viewer import *
 GENERIC = 0
 DDE = 1
 CLESSIDRA = 2
+ANCESTRAL = 3
 
 def getMudType(host, port):
     # FIX
     mud_list = {('dde.homelinux.com', 5000): DDE,
-                ('mud.clessidra.it', 4000): CLESSIDRA}
+                ('mud.clessidra.it', 4000): CLESSIDRA,
+                ('ancestralmud.it', 4000): ANCESTRAL}
 
     if mud_list.has_key((host, port)):
         return mud_list[(host, port)]
@@ -44,19 +46,21 @@ class ComponentFactory(object):
         self.name = name
 
     def parser(self):
-        if self.name == DDE or self.name == CLESSIDRA:
+        if self.name in (DDE, CLESSIDRA):
             return SmaugParser()
+        elif self.name == ANCESTRAL:
+            return AfkParser()
         return Parser()
 
     def _rightPanelIdx(self):
         # FIX
-        if self.name == DDE or self.name == CLESSIDRA:
+        if self.name in (DDE, CLESSIDRA, ANCESTRAL):
             return 1
         return 0
 
     def viewer(self, widget):
         widget.rightpanel.setCurrentIndex(self._rightPanelIdx())
 
-        if self.name == DDE or self.name == CLESSIDRA:
+        if self.name in (DDE, CLESSIDRA, ANCESTRAL):
             return StatusViewer(TextViewer(widget))
         return TextViewer(widget)

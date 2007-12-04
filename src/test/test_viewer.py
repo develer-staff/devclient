@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -125,7 +125,9 @@ class TestStatusViewer(unittest.TestCase):
         self.viewer = StatusViewer(TextViewer(self.widget))
 
     def testPromptProcess1(self):
-        self.model.prompt = {'Hp': '22/22', 'Mn': '117/117', 'Mv': '108/108'}
+        self.model.prompt = {'Hp': ('22', '22'),
+                             'Mn': ('117', '117'),
+                             'Mv': ('108', '108')}
         self.viewer.process(self.model)
 
         self.assert_(self.widget.bar_health._value == 100 and
@@ -133,7 +135,9 @@ class TestStatusViewer(unittest.TestCase):
                      self.widget.bar_movement._value == 100)
 
     def testPromptProcess2(self):
-        self.model.prompt = {'Hp': '0/22', 'Mn': '0/117', 'Mv': '0/108'}
+        self.model.prompt = {'Hp': ('0', '22'),
+                             'Mn': ('0', '117'),
+                             'Mv': ('0', '108')}
         self.viewer.process(self.model)
 
         self.assert_(self.widget.bar_health._value == 0 and
@@ -141,7 +145,9 @@ class TestStatusViewer(unittest.TestCase):
                      self.widget.bar_movement._value == 0)
 
     def testPromptProcess3(self):
-        self.model.prompt = {'Hp': '10/100', 'Mn': '10/50', 'Mv': '20/40'}
+        self.model.prompt = {'Hp': ('10', '100'),
+                             'Mn': ('10', '50'),
+                             'Mv': ('20', '40')}
         self.viewer.process(self.model)
 
         self.assert_(self.widget.bar_health._value == 10 and
@@ -149,7 +155,9 @@ class TestStatusViewer(unittest.TestCase):
                      self.widget.bar_movement._value == 50)
 
     def testPromptProcess4(self):
-        self.model.prompt = {'Hp': '-10/100', 'Mn': '60/50', 'Mv': '10/40'}
+        self.model.prompt = {'Hp': ('-10', '100'),
+                             'Mn': ('60', '50'),
+                             'Mv': ('10', '40')}
         self.viewer.process(self.model)
 
         self.assert_(self.widget.bar_health._value == 0 and

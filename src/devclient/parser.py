@@ -179,17 +179,17 @@ class Parser(object):
         return html_res, text_res
 
 
-class SmaugParser(Parser):
+class PromptParser(Parser):
     """
-    Parse data and build a model specific for Smaug type of MUD
+    Parse data and build a model for prompt
     """
 
     def __init__(self):
-        super(SmaugParser, self).__init__()
+        super(PromptParser, self).__init__()
         self.last_row = None
 
     def parse(self, data):
-        super(SmaugParser, self).parse(data)
+        super(PromptParser, self).parse(data)
         self._parsePrompt()
 
     def _parsePrompt(self):
@@ -200,9 +200,37 @@ class SmaugParser(Parser):
             self.last_row += len(new_text)
 
         text = '\n'.join(new_text)
-        reg = re.compile('Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+)' +
-                         '.*?\>', re.I)
+        reg = self._getRegExpPrompt()
         m = reg.findall(text)
         if m:
-            p = m[-1]
+            p = list(m[-1])
+            for i in xrange(3):
+                p[i] = p[i].split(self._getSepPrompt())
             self.model.prompt = {'Hp': p[0], 'Mn': p[1], 'Mv': p[2]}
+
+
+class SmaugParser(PromptParser):
+    """
+    Parse data and build a model specific for Smaug MUD's
+    """
+
+    def _getRegExpPrompt(self):
+        return re.compile('Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+)' +
+                          '.*?\>', re.I)
+
+    def _getSepPrompt(self):
+        return '/'
+
+
+class AfkParser(PromptParser):
+    """
+    Parse data and build a model specific for AFK MUD's
+    """
+
+    def _getRegExpPrompt(self):
+        return re.compile('\[Pf:\s*(\d+-\d+)\] \[Mana:\s*(\d+-\d+)\] ' +
+                          '\[Mv:\s*(\d+-\d+)\] \[Mon:\s*\d+\] ' +
+                          '\[S:\s*Xp:\s*\d+\]', re.I)
+
+    def _getSepPrompt(self):
+        return '-'

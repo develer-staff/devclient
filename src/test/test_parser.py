@@ -26,7 +26,7 @@ import unittest
 
 sys.path.append('..')
 
-from devclient.parser import Parser, SmaugParser
+from devclient.parser import Parser, SmaugParser, AfkParser
 
 class TestParser(unittest.TestCase):
 
@@ -140,6 +140,7 @@ class TestParser(unittest.TestCase):
 
 
 class TestSmaugParser(unittest.TestCase):
+
     def setUp(self):
         self.parser = SmaugParser()
 
@@ -147,8 +148,11 @@ class TestSmaugParser(unittest.TestCase):
         self.assert_(self.parser.model.prompt is None)
 
     def testFakePrompt(self):
-        self.parser.model.main_text.append('fake prompt')
+        stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
+        p = 'PF:%(Hp)s Mn:%(Mn)s Mv:%(Mv)s' % stats
+        self.parser.model.main_text.append(p)
         self.parser._parsePrompt()
+
         self.assert_(self.parser.model.prompt is None)
 
     def testPrompt1(self):
@@ -156,28 +160,81 @@ class TestSmaugParser(unittest.TestCase):
         p = 'PF:%(Hp)s Mn:%(Mn)s Mv:%(Mv)s>' % stats
         self.parser.model.main_text.append(p)
         self.parser._parsePrompt()
-        self.assert_(self.parser.model.prompt == stats)
+
+        prompt = dict(zip(stats.keys(), [v.split('/') for v in stats.values()]))
+        self.assert_(self.parser.model.prompt == prompt)
 
     def testPrompt2(self):
         stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
         p = 'PF:%(Hp)s Mn:%(Mn)s Mv:%(Mv)s bla bla bla>' % stats
         self.parser.model.main_text.append(p)
         self.parser._parsePrompt()
-        self.assert_(self.parser.model.prompt == stats)
+
+        prompt = dict(zip(stats.keys(), [v.split('/') for v in stats.values()]))
+        self.assert_(self.parser.model.prompt == prompt)
 
     def testPrompt3(self):
         stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
         p = 'PF:  %(Hp)s Mn:  %(Mn)s Mv:  %(Mv)s>' % stats
         self.parser.model.main_text.append(p)
         self.parser._parsePrompt()
-        self.assert_(self.parser.model.prompt == stats)
+
+        prompt = dict(zip(stats.keys(), [v.split('/') for v in stats.values()]))
+        self.assert_(self.parser.model.prompt == prompt)
 
     def testPrompt4(self):
         stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
         p = 'pf:  %(Hp)s mn:  %(Mn)s Mv:  %(Mv)s>' % stats
         self.parser.model.main_text.append(p)
         self.parser._parsePrompt()
-        self.assert_(self.parser.model.prompt == stats)
+
+        prompt = dict(zip(stats.keys(), [v.split('/') for v in stats.values()]))
+        self.assert_(self.parser.model.prompt == prompt)
+
+
+class TestAfkParser(unittest.TestCase):
+
+    def setUp(self):
+        self.parser = AfkParser()
+
+    def testEmptyPrompt(self):
+        self.assert_(self.parser.model.prompt is None)
+
+    def testFakePrompt(self):
+        stats = {'Hp' : '23-24', 'Mn': '102-102', 'Mv': '26-102'}
+        p = '[pf: %(Hp)s] [mana:%(Mn)s] [mv:%(Mv)s] [mon:0]' % stats
+        self.parser.model.main_text.append(p)
+        self.parser._parsePrompt()
+
+        self.assert_(self.parser.model.prompt is None)
+
+    def testPrompt1(self):
+        stats = {'Hp' : '23-24', 'Mn': '102-102', 'Mv': '26-102'}
+        p = '[Pf:%(Hp)s] [Mana:%(Mn)s] [Mv:%(Mv)s] [Mon:0] [S:Xp:0]' % stats
+        self.parser.model.main_text.append(p)
+        self.parser._parsePrompt()
+
+        prompt = dict(zip(stats.keys(), [v.split('-') for v in stats.values()]))
+        self.assert_(self.parser.model.prompt == prompt)
+
+    def testPrompt2(self):
+        stats = {'Hp' : '23-24', 'Mn': '102-102', 'Mv': '26-102'}
+        p = '[Pf: %(Hp)s] [Mana: %(Mn)s] [Mv: %(Mv)s] [Mon: 0] [S:Xp:0]' % stats
+        self.parser.model.main_text.append(p)
+        self.parser._parsePrompt()
+
+        prompt = dict(zip(stats.keys(), [v.split('-') for v in stats.values()]))
+        self.assert_(self.parser.model.prompt == prompt)
+
+    def testPrompt3(self):
+        stats = {'Hp' : '23-24', 'Mn': '102-102', 'Mv': '26-102'}
+        p = '[pf: %(Hp)s] [mana:%(Mn)s] [mv:%(Mv)s] [mon:0] [s:xp: 0]' % stats
+        self.parser.model.main_text.append(p)
+        self.parser._parsePrompt()
+
+        prompt = dict(zip(stats.keys(), [v.split('-') for v in stats.values()]))
+        self.assert_(self.parser.model.prompt == prompt)
+
 
 if __name__ == '__main__':
     unittest.main()

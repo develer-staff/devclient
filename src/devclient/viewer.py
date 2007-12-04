@@ -78,7 +78,7 @@ class StatusViewer(TextViewer):
 
         if model.prompt:
             for k, bar in stats.iteritems():
-                cur_value, max_value = model.prompt[k].split('/')
+                cur_value, max_value = model.prompt[k]
                 cur_value = max(int(cur_value), 0)
                 cur_value = min(int(max_value), cur_value)
                 bar.setValue(int(100 * cur_value / int(max_value)))
