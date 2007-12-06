@@ -106,6 +106,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self._text['ConnError'] = QApplication.translate("dev_client",
             "Unable to establish connection", None, QApplication.UnicodeUTF8)
 
+        self._text['AlreadyConn'] = QApplication.translate("dev_client",
+            "Connection already established", None, QApplication.UnicodeUTF8)
+
     def closeEvent(self, event):
         self._endApplication()
         event.accept()
@@ -118,8 +121,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _connect(self, id_conn = None):
         connections = storage.Storage().connections()
         if not connections:
-            QtGui.QMessageBox.warning(self, self._text['Connect'],
-                                        self._text['NoConn'])
+            self._displayWarning(self._text['Connect'], self._text['NoConn'])
             return
 
         if id_conn:
@@ -135,6 +137,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         port = conn[0][3]
 
         self.q_gui_app.put((event_type.CONNECT, (name, host, port)))
+
+    def _startConnection(self, host, port):
         self.history.clear()
 
         comp_factory = ComponentFactory(getMudType(host, port))
@@ -179,12 +183,21 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             cmd, msg = self.q_app_gui.get(0)
             if cmd == event_type.MODEL:
                 self.viewer.process(msg)
-            elif cmd == event_type.CONNECTION_REFUSED:
-                QtGui.QMessageBox.warning(self, self._text['Connect'],
-                                          self._text['ConnError'])
+            elif cmd == event_type.CONN_REFUSED:
+                 self._displayWarning(self._text['Connect'],
+                                      self._text['ConnError'])
+            elif cmd == event_type.ALREADY_CONN:
+                 self._displayWarning(self._text['Connect'],
+                                      self._text['AlreadyConn'])
+            elif cmd == event_type.CONN_ESTABLISHED:
+                 self._startConnection(*msg)
+
 
         except Queue.Empty:
             pass
+
+    def _displayWarning(self, title, message):
+        QtGui.QMessageBox.warning(self, title, message)
 
     def mainLoop(self):
         self.show()

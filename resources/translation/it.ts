@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
-<defaultcodec></defaultcodec>
 <context>
     <name>dev_client</name>
     <message>
-        <location filename="../../src/devclient/gui.py" line="102"/>
+        <location filename="../../src/devclient/gui.py" line="103"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
@@ -19,12 +18,12 @@
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="105"/>
+        <location filename="../../src/devclient/gui.py" line="106"/>
         <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="108"/>
+        <location filename="../../src/devclient/gui.py" line="109"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -70,6 +69,11 @@ QProgressBar::chunk {background-color:#0066FF}</source>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.py" line="112"/>
+        <source>Connection already established</source>
+        <translation>Connessione già stabilita</translation>
     </message>
 </context>
 <context>

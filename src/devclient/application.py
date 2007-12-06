@@ -78,16 +78,22 @@ class Application(object):
                 elif cmd == event_type.END_APP:
                     self.sock.disconnect()
                     return
-                elif cmd == event_type.CONNECT and not self.sock.connected:
-                    try:
-                        self.sock.connect(*msg[1:])
-                    except exception.ConnectionRefused:
-                        self.q_app_gui.put((event_type.CONNECTION_REFUSED, ""))
+                elif cmd == event_type.CONNECT:
+                    if self.sock.connected:
+                        self.q_app_gui.put((event_type.ALREADY_CONN, ""))
+                    else:
+                        try:
+                            self.sock.connect(*msg[1:])
+                        except exception.ConnectionRefused:
+                            self.q_app_gui.put((event_type.CONN_REFUSED, ""))
+                        else:
+                            self.q_app_gui.put((event_type.CONN_ESTABLISHED,
+                                                msg[1:]))
 
-                    mud = getMudType(*msg[1:])
-                    parser = ComponentFactory(mud).parser()
+                        mud = getMudType(*msg[1:])
+                        parser = ComponentFactory(mud).parser()
 
-                    alias = Alias(msg[0])
+                        alias = Alias(msg[0])
 
             except Queue.Empty:
                 pass
