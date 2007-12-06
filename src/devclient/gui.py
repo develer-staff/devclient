@@ -57,9 +57,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
 
-        self.connect(self.action_exit, SIGNAL("triggered()"),
-                     self._endApplication)
-
         self.connect(self.action_connect, SIGNAL("triggered()"),
                      self._connect)
 
@@ -110,7 +107,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             "Connection already established", None, QApplication.UnicodeUTF8)
 
     def closeEvent(self, event):
-        self._endApplication()
+        self.q_gui_app.put((event_type.END_APP, ""))
         event.accept()
 
     def _showOption(self):
@@ -132,11 +129,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             if not conn:
                 conn = connections
 
-        name = conn[0][1]
-        host = conn[0][2]
-        port = conn[0][3]
-
-        self.q_gui_app.put((event_type.CONNECT, (name, host, port)))
+        self.q_gui_app.put((event_type.CONNECT, conn[0][1:4]))
 
     def _startConnection(self, host, port):
         self.history.clear()
@@ -144,9 +137,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         comp_factory = ComponentFactory(getMudType(host, port))
         self.viewer = comp_factory.viewer(self)
         self.text_input.setFocus()
-
-    def _endApplication(self):
-        self.q_gui_app.put((event_type.END_APP, ""))
 
     def _sendText(self):
         self.history.add(self.text_input.text())
