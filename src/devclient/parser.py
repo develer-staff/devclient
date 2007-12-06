@@ -181,16 +181,30 @@ class Parser(object):
 
 class PromptParser(Parser):
     """
-    Parse data and build a model for prompt
+    Parse data and build a model for prompt.
+
+    This class is an abstract template class (see `template pattern`_) that
+    parse prompt using hook methods to build a model of it.
+
+    Concrete subclass must override:
+
+    - `_getRegExpPrompt` to define the regular expression that matches with
+      prompt
+    - `_getSepPrompt` to define separator from min and max values in Hp, Mn, Mv
+
+.. _template pattern: http://en.wikipedia.org/wiki/Template_method_pattern
     """
+
 
     def __init__(self):
         super(PromptParser, self).__init__()
         self.last_row = None
 
-    def parse(self, data):
-        super(PromptParser, self).parse(data)
-        self._parsePrompt()
+    def _getRegExpPrompt(self):
+        raise NotImplementedError
+
+    def _getSepPrompt(self):
+        raise NotImplementedError
 
     def _parsePrompt(self):
         new_text = self.model.main_text.get(self.last_row)
@@ -207,6 +221,10 @@ class PromptParser(Parser):
             for i in xrange(3):
                 p[i] = p[i].split(self._getSepPrompt())
             self.model.prompt = {'Hp': p[0], 'Mn': p[1], 'Mv': p[2]}
+
+    def parse(self, data):
+        super(PromptParser, self).parse(data)
+        self._parsePrompt()
 
 
 class SmaugParser(PromptParser):
