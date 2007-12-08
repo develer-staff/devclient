@@ -216,6 +216,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         box.setText(message)
         yes = box.addButton(self._text['Yes'], QMessageBox.AcceptRole)
         no = box.addButton(self._text['No'], QMessageBox.RejectRole)
+        box.setDefaultButton(no)
         box.setEscapeButton(no)
         box.exec_()
         return box.clickedButton() == yes
