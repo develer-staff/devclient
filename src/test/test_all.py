@@ -30,6 +30,7 @@ import test_storage
 import test_alias
 import test_history
 import test_viewer
+import test_gui_option
 
 socket = unittest.makeSuite(test_socket.TestSocket)
 parser = unittest.makeSuite(test_parser.TestParser)
@@ -42,9 +43,10 @@ alias = unittest.makeSuite(test_alias.TestAlias)
 history = unittest.makeSuite(test_history.TestHistory)
 text_view = unittest.makeSuite(test_viewer.TestTextViewer)
 stat_view = unittest.makeSuite(test_viewer.TestStatusViewer)
+form_conn = unittest.makeSuite(test_gui_option.TestFormConnection)
 
 alltests = unittest.TestSuite((socket, parser, alias,
                                model, storage, storage2,
                                history, text_view, stat_view,
-                               parser2, parser3))
+                               parser2, parser3, form_conn))
 unittest.TextTestRunner(verbosity=2).run(alltests)

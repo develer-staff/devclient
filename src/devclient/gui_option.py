@@ -113,7 +113,7 @@ class FormConnection(object):
                 msg.append(unicode(text))
 
         if msg:
-            QtGui.QMessageBox.warning(self.w, self._text['connection'],
+            self.w._displayWarning(self._text['connection'],
                 "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
             return False
         return True
@@ -151,8 +151,8 @@ class FormConnection(object):
         if not self.w.list_conn.currentIndex():
             if [el[1] for el in self.connections if
                 el[1] == self.w.name_conn.text()]:
-                QtGui.QMessageBox.warning(self.w, self._text['connection'],
-                                          self._text['unique_name'])
+                self.w._displayWarning(self._text['connection'],
+                                       self._text['unique_name'])
                 return
             else:
                 self.storage.addConnection(conn)
@@ -203,6 +203,9 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self.storage = Storage()
         self.conn = FormConnection(self, self.storage)
         self._translateText()
+
+    def _displayWarning(self, title, message):
+        QtGui.QMessageBox.warning(self, title, message)
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
@@ -291,7 +294,7 @@ class GuiOption(QtGui.QDialog, Ui_option):
                 msg.append(unicode(text))
 
         if msg:
-            QtGui.QMessageBox.warning(self, self._text['alias'],
+            self._displayWarning(self._text['alias'],
                 "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
             return False
         return True
