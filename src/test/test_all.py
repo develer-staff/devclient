@@ -21,32 +21,22 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import os
+import sys
+import glob
+import os.path
 import unittest
 
-import test_socket
-import test_parser
-import test_model
-import test_storage
-import test_alias
-import test_history
-import test_viewer
-import test_gui_option
+os.chdir(os.path.join(os.getcwd(), os.path.dirname(sys.argv[0])))
+test_files = glob.glob('test_*.py')
+test_files.remove('test_all.py')
+imported = {}
+for filename in test_files:
+    execfile(filename, imported)
 
-socket = unittest.makeSuite(test_socket.TestSocket)
-parser = unittest.makeSuite(test_parser.TestParser)
-parser2 = unittest.makeSuite(test_parser.TestSmaugParser)
-parser3 = unittest.makeSuite(test_parser.TestAfkParser)
-model  = unittest.makeSuite(test_model.TestCircularList)
-storage = unittest.makeSuite(test_storage.TestStorage)
-storage2 = unittest.makeSuite(test_storage.TestStorage2)
-alias = unittest.makeSuite(test_alias.TestAlias)
-history = unittest.makeSuite(test_history.TestHistory)
-text_view = unittest.makeSuite(test_viewer.TestTextViewer)
-stat_view = unittest.makeSuite(test_viewer.TestStatusViewer)
-form_conn = unittest.makeSuite(test_gui_option.TestFormConnection)
+alltests = unittest.TestSuite([unittest.makeSuite(ref) for name, ref
+                                in imported.iteritems()
+                                if name.startswith('Test')])
 
-alltests = unittest.TestSuite((socket, parser, alias,
-                               model, storage, storage2,
-                               history, text_view, stat_view,
-                               parser2, parser3, form_conn))
-unittest.TextTestRunner(verbosity=2).run(alltests)
+if __name__ == '__main__':
+    unittest.TextTestRunner(verbosity=2).run(alltests)
