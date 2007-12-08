@@ -18,5 +18,14 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
+"""
+:copyright: 2007 Gianni Valdambrini, Develer_ S.r.l.
+:author: Gianni Valdambrini
+:contact: gvaldambrini@develer.com
+
+.. _Develer: http://www.develer.com/
+"""
+
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
+
