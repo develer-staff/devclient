@@ -27,7 +27,7 @@ import Queue
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QApplication
+from PyQt4.QtGui import QApplication, QMessageBox
 
 import storage
 import gui_option
@@ -48,7 +48,11 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.q_app_gui = q_app_gui
         self.q_gui_app = q_gui_app
 
-        self.app = QtGui.QApplication([])
+        if QApplication.instance():
+            self.app = QApplication.instance()
+        else:
+            self.app = QApplication([])
+
         self.app.setStyle(QtGui.QStyleFactory.create("Cleanlooks"))
         self._installTranslator()
 
@@ -78,7 +82,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self._translateText()
         self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
-        self.connected = 0
+        self.connected = False
 
     def _onKeyUp(self):
         if self.text_input.hasFocus():
@@ -91,7 +95,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _installTranslator(self):
         self.translator = QtCore.QTranslator()
         self.translator.load(config['translation']['path'])
-        QtGui.QApplication.installTranslator(self.translator)
+        QApplication.installTranslator(self.translator)
 
     def _translateText(self):
         self._text = {}
@@ -199,26 +203,25 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                                       self._text['ConnError'])
             elif cmd == event_type.CONN_ESTABLISHED:
                  self._startConnection(*msg)
-                 self.connected = 1
+                 self.connected = True
             elif cmd == event_type.CONN_CLOSED:
-                 self.connected = 0
+                 self.connected = False
 
         except Queue.Empty:
             pass
 
     def _displayQuestion(self, title, message):
-        box = QtGui.QMessageBox(self)
+        box = QMessageBox(self)
         box.setWindowTitle(title)
         box.setText(message)
-        box.setWindowModality(QtCore.Qt.WindowModal)
-        yes = box.addButton(self._text['Yes'], QtGui.QMessageBox.AcceptRole)
-        no = box.addButton(self._text['No'], QtGui.QMessageBox.RejectRole)
+        yes = box.addButton(self._text['Yes'], QMessageBox.AcceptRole)
+        no = box.addButton(self._text['No'], QMessageBox.RejectRole)
         box.setEscapeButton(no)
         box.exec_()
         return box.clickedButton() == yes
 
     def _displayWarning(self, title, message):
-        QtGui.QMessageBox.warning(self, title, message)
+        QMessageBox.warning(self, title, message)
 
     def mainLoop(self):
         self.show()
