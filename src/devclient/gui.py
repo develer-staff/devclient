@@ -203,16 +203,17 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             elif cmd == event_type.CONN_CLOSED:
                  self.connected = 0
 
-
         except Queue.Empty:
             pass
 
     def _displayQuestion(self, title, message):
-        box = QtGui.QMessageBox()
+        box = QtGui.QMessageBox(self)
         box.setWindowTitle(title)
         box.setText(message)
-        yes = box.addButton(self._text['Yes'], QtGui.QMessageBox.ActionRole)
-        no = box.addButton(self._text['No'], QtGui.QMessageBox.ActionRole)
+        box.setWindowModality(QtCore.Qt.WindowModal)
+        yes = box.addButton(self._text['Yes'], QtGui.QMessageBox.AcceptRole)
+        no = box.addButton(self._text['No'], QtGui.QMessageBox.RejectRole)
+        box.setEscapeButton(no)
         box.exec_()
         return box.clickedButton() == yes
 
