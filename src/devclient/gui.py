@@ -78,6 +78,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self._translateText()
         self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
+        self.connected = 0
 
     def _onKeyUp(self):
         if self.text_input.hasFocus():
@@ -103,10 +104,25 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self._text['ConnError'] = QApplication.translate("dev_client",
             "Unable to establish connection", None, QApplication.UnicodeUTF8)
 
-        self._text['AlreadyConn'] = QApplication.translate("dev_client",
-            "Connection already established", None, QApplication.UnicodeUTF8)
+        self._text['Yes'] = QApplication.translate("dev_client", "Yes",
+            None, QApplication.UnicodeUTF8)
+
+        self._text['No'] = QApplication.translate("dev_client", "No",
+            None, QApplication.UnicodeUTF8)
+
+        self._text['CloseConfirm'] = QApplication.translate("dev_client",
+            "Really quit?", None, QApplication.UnicodeUTF8)
+
+        self._text['CloseConn'] = QApplication.translate("dev_client",
+            "Really close connection?", None, QApplication.UnicodeUTF8)
 
     def closeEvent(self, event):
+        if self.connected:
+            if not self._displayQuestion(PROJECT_NAME,
+                                         self._text['CloseConfirm']):
+                event.ignore()
+                return
+
         self.q_gui_app.put((event_type.END_APP, ""))
         event.accept()
 
@@ -116,6 +132,11 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         opt.show()
 
     def _connect(self, id_conn = None):
+        if self.connected:
+            if not self._displayQuestion(self._text['Connect'],
+                                         self._text['CloseConn']):
+                return
+
         connections = storage.Storage().connections()
         if not connections:
             self._displayWarning(self._text['Connect'], self._text['NoConn'])
@@ -176,15 +197,24 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             elif cmd == event_type.CONN_REFUSED:
                  self._displayWarning(self._text['Connect'],
                                       self._text['ConnError'])
-            elif cmd == event_type.ALREADY_CONN:
-                 self._displayWarning(self._text['Connect'],
-                                      self._text['AlreadyConn'])
             elif cmd == event_type.CONN_ESTABLISHED:
                  self._startConnection(*msg)
+                 self.connected = 1
+            elif cmd == event_type.CONN_CLOSED:
+                 self.connected = 0
 
 
         except Queue.Empty:
             pass
+
+    def _displayQuestion(self, title, message):
+        box = QtGui.QMessageBox()
+        box.setWindowTitle(title)
+        box.setText(message)
+        yes = box.addButton(self._text['Yes'], QtGui.QMessageBox.ActionRole)
+        no = box.addButton(self._text['No'], QtGui.QMessageBox.ActionRole)
+        box.exec_()
+        return box.clickedButton() == yes
 
     def _displayWarning(self, title, message):
         QtGui.QMessageBox.warning(self, title, message)

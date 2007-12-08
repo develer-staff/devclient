@@ -3,7 +3,7 @@
 <context>
     <name>dev_client</name>
     <message>
-        <location filename="../../src/devclient/gui.py" line="103"/>
+        <location filename="../../src/devclient/gui.py" line="101"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
@@ -18,12 +18,12 @@
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="106"/>
+        <location filename="../../src/devclient/gui.py" line="104"/>
         <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="109"/>
+        <location filename="../../src/devclient/gui.py" line="107"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -71,9 +71,24 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="112"/>
-        <source>Connection already established</source>
-        <translation>Connessione già stabilita</translation>
+        <location filename="../../src/devclient/gui.py" line="110"/>
+        <source>Yes</source>
+        <translation>Si</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.py" line="113"/>
+        <source>No</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.py" line="116"/>
+        <source>Really quit?</source>
+        <translation>Vuoi davvero uscire?</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.py" line="119"/>
+        <source>Really close connection?</source>
+        <translation>Vuoi davvero chiudere la connessione?</translation>
     </message>
 </context>
 <context>
