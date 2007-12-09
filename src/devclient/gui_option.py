@@ -116,6 +116,19 @@ class FormConnection(object):
             self.w._displayWarning(self._text['connection'],
                 "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
             return False
+
+        if not self.w.list_conn.currentIndex():
+            id_conn = 0
+        else:
+            data = self.w.list_conn.itemData(self.w.list_conn.currentIndex())
+            id_conn = data.toInt()[0]
+
+        if [el[0] for el in self.connections if
+            el[1] == self.w.name_conn.text() and el[0] != id_conn]:
+            self.w._displayWarning(self._text['connection'],
+                                   self._text['unique_name'])
+            return False
+
         return True
 
     def save(self):
@@ -149,16 +162,10 @@ class FormConnection(object):
                 int(make_default)]
 
         if not self.w.list_conn.currentIndex():
-            if [el[1] for el in self.connections if
-                el[1] == self.w.name_conn.text()]:
-                self.w._displayWarning(self._text['connection'],
-                                       self._text['unique_name'])
-                return
-            else:
-                self.storage.addConnection(conn)
-                self.w.list_conn.addItem(self.w.name_conn.text(),
-                                         QtCore.QVariant(conn[0]))
-                self.connections.append(conn)
+            self.storage.addConnection(conn)
+            self.w.list_conn.addItem(self.w.name_conn.text(),
+                                     QtCore.QVariant(conn[0]))
+            self.connections.append(conn)
         else:
             self.connections[self.w.list_conn.currentIndex() - 1] = conn
             self.w.list_conn.setItemText(self.w.list_conn.currentIndex(),

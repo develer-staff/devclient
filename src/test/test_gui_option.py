@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -146,7 +146,7 @@ class TestFormConnection(unittest.TestCase):
         Storage().addConnection([0, 'name', 'host', 4000, 1])
         form_conn = FormConnection(GuiOptionMock(), Storage())
         form_conn.load('name')
-        self.assert_(form_conn._checkFields())
+        self.assert_(not form_conn._checkFields())
 
     def testCheckField2(self):
         Storage().addConnection([0, 'name', 'host', 4000, 1])
@@ -171,6 +171,13 @@ class TestFormConnection(unittest.TestCase):
         form_conn.w.name_conn.setText('name')
         form_conn.w.host_conn.setText('host')
         self.assert_(not form_conn._checkFields())
+
+    def testCheckField6(self):
+        Storage().addConnection([0, 'name', 'host', 4000, 1])
+        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn.load('name')
+        form_conn.w.list_conn.setCurrentIndex(1)
+        self.assert_(form_conn._checkFields())
 
     def testSaveAddFail(self):
         form_conn = FormConnection(GuiOptionMock(), Storage())
@@ -280,6 +287,18 @@ class TestFormConnection(unittest.TestCase):
         self.assert_(len(form_conn.connections) == 2)
         c = Storage().connections()
         self.assert_(c[0][-1] == 0 and c[1][-1] == 1)
+
+    def testSaveUpd5(self):
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000, 0])
+        conn = [0, 'name2', 'host2', 3000, 0]
+        s.addConnection(conn)
+        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn.w.list_conn.setCurrentIndex(2)
+        self._setFormFields(form_conn, ['name', 'host3', 1000, 1])
+        form_conn.save()
+        self.assert_(form_conn.w._warning)
+        self.assert_(Storage().connections()[1][1:] == tuple(conn[1:]))
 
     def testDelete(self):
         Storage().addConnection([0, 'name', 'host', 4000, 1])
