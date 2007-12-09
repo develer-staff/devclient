@@ -49,8 +49,17 @@ class Storage(object):
                                         def integer)''')
 
         c.execute('''CREATE TABLE IF NOT EXISTS
-                            aliases(id_conn integer, label text,
+                            aliases(id_conn integer,
+                                    label text,
                                     body text)''')
+
+        c.execute('''CREATE TABLE IF NOT EXISTS
+                            macros(id_conn integer,
+                                   command text,
+                                   shift integer,
+                                   alt integer,
+                                   ctrl integer,
+                                   keycode integer)''')
 
     def _execQuery(self, sql, params=(), cursor=None):
         """
@@ -102,10 +111,8 @@ class Storage(object):
         self._execQuery('INSERT INTO connections (name, host, port, def)' +
                         'VALUES(?, ?, ?, ?)', conn[1:], c)
 
-        conn[0] = self._execQuery('SELECT id FROM connections WHERE name = ?',
-                                  (conn[1],), c).fetchone()[0]
-
-        logger.debug('id connection obtained: ' + str(conn[0]))
+        conn[0] = self.getIdConnection(conn[1], c)
+        logger.debug('id connection obtained: %d' % conn[0])
 
     def deleteConnection(self, conn):
         c = self.conn.cursor()
@@ -117,6 +124,15 @@ class Storage(object):
         params.append(conn[0])
         self._execQuery('UPDATE connections SET name = ?, host = ?, port = ?,' +
                         'def = ? WHERE id = ?', params)
+
+    def getIdConnection(self, conn_name, cursor=None):
+        row = self._execQuery('SELECT id FROM connections WHERE name = ?',
+                              (conn_name,), cursor).fetchone()
+
+        if not row:
+            raise exception.ConnectionNotFound
+
+        return row[0]
 
     def aliases(self, conn_name):
         """
@@ -137,16 +153,39 @@ class Storage(object):
     def saveAliases(self, conn_name, aliases):
 
         c = self.conn.cursor()
-        row = self._execQuery('SELECT id FROM connections WHERE name = ?',
-                              (conn_name,), c).fetchone()
-
-        if not row:
-            raise exception.ConnectionNotFound
-
-        self._execQuery('DELETE FROM aliases WHERE id_conn = ?', (row[0],))
+        id_conn = self.getIdConnection(conn_name, c)
+        self._execQuery('DELETE FROM aliases WHERE id_conn = ?', (id_conn,))
 
         for alias in aliases:
             self._execQuery('INSERT INTO aliases VALUES(?, ?, ?)',
-                            (row[0], alias[0], alias[1]), c)
+                            (id_conn, alias[0], alias[1]), c)
 
+    def macros(self, conn_name):
+        """
+        Load the list of macro for a connection.
 
+        :Parameters:
+          conn_name : str
+            the name of connection.
+
+        :return: a list of tuples (command, shift, alt, ctrl, keycode)
+        """
+
+        c = self._execQuery('SELECT command, shift, alt, ctrl, keycode ' +
+                            'FROM macros AS m JOIN connections AS c ' +
+                            'ON m.id_conn = c.id WHERE c.name = ?',
+                            (conn_name,))
+
+        return [row for row in c]
+
+    def saveMacros(self, conn_name, macros):
+        c = self.conn.cursor()
+        id_conn = self.getIdConnection(conn_name, c)
+
+        self._execQuery('DELETE FROM macros WHERE id_conn = ?', (id_conn,))
+
+        for m in macros:
+            p = list(m)
+            p.insert(0, id_conn)
+            self._execQuery('INSERT INTO macros VALUES(?, ?, ?, ?, ?, ?)',
+                            p, c)

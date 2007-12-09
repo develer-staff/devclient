@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Tue Nov 27 19:05:42 2007
-#      by: PyQt4 UI code generator 4.3.1
+# Created: Sun Dec  9 15:01:34 2007
+#      by: PyQt4 UI code generator 4.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -239,6 +239,124 @@ class Ui_option(object):
         self.gridlayout2.addLayout(self.hboxlayout1,2,1,1,1)
         self.tab_widget.addTab(self.tab_alias,"")
 
+        self.tab_macro = QtGui.QWidget()
+        self.tab_macro.setObjectName("tab_macro")
+
+        self.layoutWidget_2 = QtGui.QWidget(self.tab_macro)
+        self.layoutWidget_2.setGeometry(QtCore.QRect(10,10,291,266))
+        self.layoutWidget_2.setObjectName("layoutWidget_2")
+
+        self.gridlayout4 = QtGui.QGridLayout(self.layoutWidget_2)
+        self.gridlayout4.setObjectName("gridlayout4")
+
+        self.gridlayout5 = QtGui.QGridLayout()
+        self.gridlayout5.setObjectName("gridlayout5")
+
+        self.label_conn_macro = QtGui.QLabel(self.layoutWidget_2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_conn_macro.sizePolicy().hasHeightForWidth())
+        self.label_conn_macro.setSizePolicy(sizePolicy)
+        self.label_conn_macro.setMinimumSize(QtCore.QSize(66,0))
+        self.label_conn_macro.setObjectName("label_conn_macro")
+        self.gridlayout5.addWidget(self.label_conn_macro,0,0,1,2)
+
+        self.list_conn_macro = QtGui.QComboBox(self.layoutWidget_2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.list_conn_macro.sizePolicy().hasHeightForWidth())
+        self.list_conn_macro.setSizePolicy(sizePolicy)
+        self.list_conn_macro.setObjectName("list_conn_macro")
+        self.gridlayout5.addWidget(self.list_conn_macro,0,2,1,2)
+
+        self.label_macro_macro = QtGui.QLabel(self.layoutWidget_2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_macro_macro.sizePolicy().hasHeightForWidth())
+        self.label_macro_macro.setSizePolicy(sizePolicy)
+        self.label_macro_macro.setMinimumSize(QtCore.QSize(66,0))
+        self.label_macro_macro.setObjectName("label_macro_macro")
+        self.gridlayout5.addWidget(self.label_macro_macro,1,0,1,1)
+
+        spacerItem9 = QtGui.QSpacerItem(80,20,QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Minimum)
+        self.gridlayout5.addItem(spacerItem9,1,1,1,2)
+
+        self.list_macro = QtGui.QComboBox(self.layoutWidget_2)
+        self.list_macro.setEnabled(False)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.list_macro.sizePolicy().hasHeightForWidth())
+        self.list_macro.setSizePolicy(sizePolicy)
+        self.list_macro.setObjectName("list_macro")
+        self.gridlayout5.addWidget(self.list_macro,1,3,1,1)
+
+        self.label_keys_macro = QtGui.QLabel(self.layoutWidget_2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_keys_macro.sizePolicy().hasHeightForWidth())
+        self.label_keys_macro.setSizePolicy(sizePolicy)
+        self.label_keys_macro.setMinimumSize(QtCore.QSize(66,0))
+        self.label_keys_macro.setObjectName("label_keys_macro")
+        self.gridlayout5.addWidget(self.label_keys_macro,2,0,1,1)
+
+        self.keys_macro = QtGui.QLineEdit(self.layoutWidget_2)
+        self.keys_macro.setEnabled(False)
+        self.keys_macro.setObjectName("keys_macro")
+        self.gridlayout5.addWidget(self.keys_macro,2,3,1,1)
+
+        self.label_command_macro = QtGui.QLabel(self.layoutWidget_2)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_command_macro.sizePolicy().hasHeightForWidth())
+        self.label_command_macro.setSizePolicy(sizePolicy)
+        self.label_command_macro.setMinimumSize(QtCore.QSize(66,0))
+        self.label_command_macro.setObjectName("label_command_macro")
+        self.gridlayout5.addWidget(self.label_command_macro,3,0,1,1)
+
+        self.command_macro = QtGui.QLineEdit(self.layoutWidget_2)
+        self.command_macro.setEnabled(False)
+        self.command_macro.setObjectName("command_macro")
+        self.gridlayout5.addWidget(self.command_macro,3,1,1,3)
+
+        self.register_macro = QtGui.QPushButton(self.layoutWidget_2)
+        self.register_macro.setEnabled(False)
+        self.register_macro.setObjectName("register_macro")
+        self.gridlayout5.addWidget(self.register_macro,2,1,1,2)
+        self.gridlayout4.addLayout(self.gridlayout5,0,0,1,2)
+
+        spacerItem10 = QtGui.QSpacerItem(271,66,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout4.addItem(spacerItem10,1,0,1,2)
+
+        spacerItem11 = QtGui.QSpacerItem(91,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout4.addItem(spacerItem11,2,0,1,1)
+
+        self.hboxlayout2 = QtGui.QHBoxLayout()
+        self.hboxlayout2.setSpacing(6)
+        self.hboxlayout2.setMargin(0)
+        self.hboxlayout2.setObjectName("hboxlayout2")
+
+        self.save_macro = QtGui.QPushButton(self.layoutWidget_2)
+        self.save_macro.setObjectName("save_macro")
+        self.hboxlayout2.addWidget(self.save_macro)
+
+        self.delete_macro = QtGui.QPushButton(self.layoutWidget_2)
+        self.delete_macro.setObjectName("delete_macro")
+        self.hboxlayout2.addWidget(self.delete_macro)
+        self.gridlayout4.addLayout(self.hboxlayout2,2,1,1,1)
+        self.tab_widget.addTab(self.tab_macro,"")
+
         self.retranslateUi(option)
         self.tab_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(option)
@@ -269,4 +387,12 @@ class Ui_option(object):
         self.save_alias.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.delete_alias.setText(QtGui.QApplication.translate("option", "Delete", None, QtGui.QApplication.UnicodeUTF8))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_alias), QtGui.QApplication.translate("option", "Alias", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_conn_macro.setText(QtGui.QApplication.translate("option", "Connection", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_macro_macro.setText(QtGui.QApplication.translate("option", "Macro", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_keys_macro.setText(QtGui.QApplication.translate("option", "Keys", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_command_macro.setText(QtGui.QApplication.translate("option", "Command", None, QtGui.QApplication.UnicodeUTF8))
+        self.register_macro.setText(QtGui.QApplication.translate("option", "Register", None, QtGui.QApplication.UnicodeUTF8))
+        self.save_macro.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.delete_macro.setText(QtGui.QApplication.translate("option", "Delete", None, QtGui.QApplication.UnicodeUTF8))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_macro), QtGui.QApplication.translate("option", "Macro", None, QtGui.QApplication.UnicodeUTF8))
 

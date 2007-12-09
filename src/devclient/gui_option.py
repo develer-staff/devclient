@@ -22,7 +22,7 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import SIGNAL
+from PyQt4.QtCore import SIGNAL, Qt
 from PyQt4.QtGui import QApplication
 
 from storage import Storage
@@ -198,6 +198,177 @@ class FormConnection(object):
         self.w.close()
 
 
+class FormMacro(object):
+
+    def __init__(self, widget, storage, conn_name = None):
+        self.w = widget
+        self.storage = storage
+        self._translateText()
+        self._setupSignal()
+
+        self._key_descr = {}
+        for k, v in Qt.__dict__.iteritems():
+            if k.startswith('Key_'):
+                self._key_descr[v] = k[4:]
+
+        connections = storage.connections()
+        self._signalCombo(False)
+        self.w.list_conn_macro.clear()
+        self.w.list_conn_macro.addItems([c[1] for c in connections])
+        self._signalCombo(True)
+
+        conn_name = unicode(connections[0][1])
+        for o in (self.w.list_macro, self.w.command_macro,
+                  self.w.register_macro):
+            o.setEnabled(bool(self.w.list_conn_macro.count()))
+
+        self.loadMacros(conn_name)
+
+    def _translateText(self):
+        self._text = {}
+
+        self._text['new_macro'] = QApplication.translate("option",
+            "Create New", "macro",  QApplication.UnicodeUTF8)
+
+        self._text['macro'] = QApplication.translate("option",
+            "Macro", None, QApplication.UnicodeUTF8)
+
+        self._text['req_fields'] = QApplication.translate("option",
+            "The following fields are required", None, QApplication.UnicodeUTF8)
+
+        self._text['keys'] = QApplication.translate("option",
+            "Keys", None, QApplication.UnicodeUTF8)
+
+        self._text['command'] = QApplication.translate("option",
+            "Command", None, QApplication.UnicodeUTF8)
+
+    def _signalCombo(self, conn):
+        f = self.w.connect
+        if not conn:
+            f = self.w.disconnect
+
+        f(self.w.list_conn_macro, SIGNAL("currentIndexChanged(QString)"),
+          self.loadMacros)
+
+        f(self.w.list_macro, SIGNAL("currentIndexChanged(int)"), self.load)
+
+    def _setupSignal(self):
+        clicked = SIGNAL("clicked()")
+        self.w.connect(self.w.register_macro, clicked, self._register)
+        self.w.connect(self.w.save_macro, clicked, self.save)
+        self.w.connect(self.w.delete_macro, clicked, self.delete)
+        self._signalCombo(True)
+
+    def loadMacros(self, conn):
+        self._signalCombo(False)
+        self.macros = self.storage.macros(unicode(conn))
+        self.w.list_macro.clear()
+        self.w.list_macro.addItem(self._text['new_macro'])
+        self.w.list_macro.addItems([self.getKeyDescr(*m[1:]) for m in
+                                    self.macros])
+        self._signalCombo(True)
+
+    def load(self, idx):
+        if not idx:
+            k, c = '', ''
+            self.key_seq = None
+        else:
+            m = self.macros[idx - 1]
+            c = m[0]
+            k = self.getKeyDescr(*m[1:])
+            self.key_seq = m[1:]
+
+        self.w.keys_macro.setText(k)
+        self.w.command_macro.setText(c)
+
+    def _checkFields(self):
+        """
+        Check validity of fields.
+        """
+
+        msg = []
+
+        conn_fields = {self._text['keys']: self.w.keys_macro,
+                       self._text['command']: self.w.command_macro}
+
+        for text, field in conn_fields.iteritems():
+            if not field.text():
+                msg.append(unicode(text))
+
+        if msg:
+            self.w._displayWarning(self._text['macro'],
+                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
+            return False
+
+        cur_idx = self.w.list_macro.currentIndex()
+        if [el for idx, el in enumerate(self.macros) if el[1:] == self.key_seq
+            and (not cur_idx or idx != cur_idx - 1)]:
+            return False
+        return True
+
+    def save(self):
+
+        if not self._checkFields():
+            return
+
+        macro = [unicode(self.w.command_macro.text())]
+        macro.extend(self.key_seq)
+
+        list_idx = self.w.list_macro.currentIndex()
+        if not list_idx:
+            self.macros.append(macro)
+            self.w.list_macro.addItem(self.getKeyDescr(*self.key_seq))
+        else:
+            self.macros[list_idx - 1] = macro
+            self.w.list_macro.setItemText(list_idx,
+                                          self.getKeyDescr(*macro[1:]))
+
+        self.storage.saveMacros(unicode(self.w.list_conn_macro.currentText()),
+                                 self.macros)
+
+        self.w.list_macro.setCurrentIndex(0)
+        self.load(0)
+
+    def delete(self):
+
+        list_idx = self.w.list_macro.currentIndex()
+        if not list_idx:
+            return
+
+        del self.macros[list_idx - 1]
+        self.w.list_macro.removeItem(list_idx)
+        self.storage.saveMacros(unicode(self.w.list_conn_macro.currentText()),
+                                 self.macros)
+
+    def _register(self):
+        self.w.grabKeyboard()
+        self.w.keys_macro.setText('')
+        self.w.keys_macro.setStyleSheet('background-color: #e0e0e0')
+        self.start_reg = True
+
+    def _checkModifier(self, value, mod):
+        return int((value & mod) == mod)
+
+    def getKeyDescr(self, shift, alt, ctrl, key):
+        return ('', 'Ctrl ')[ctrl] + ('', 'Alt ')[alt] + \
+               ('', 'Shift ')[shift] + self._key_descr[key]
+
+    def keyPressEvent(self, keyEvent):
+        if self.start_reg and self._key_descr.has_key(keyEvent.key()) and \
+           keyEvent.key() not in (Qt.Key_Shift, Qt.Key_Control,
+                                  Qt.Key_Meta, Qt.Key_Alt):
+
+            s = self._checkModifier(keyEvent.modifiers(), Qt.ShiftModifier)
+            a = self._checkModifier(keyEvent.modifiers(), Qt.AltModifier)
+            c = self._checkModifier(keyEvent.modifiers(), Qt.ControlModifier)
+
+            self.key_seq = (s, a, c, keyEvent.key())
+            self.w.releaseKeyboard()
+            self.w.keys_macro.setText(self.getKeyDescr(*self.key_seq))
+            self.w.keys_macro.setStyleSheet('')
+            self.start_reg = False
+
+
 class GuiOption(QtGui.QDialog, Ui_option):
     """
     The Gui dialog for setup option.
@@ -209,6 +380,7 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self._setupSignal()
         self.storage = Storage()
         self.conn = FormConnection(self, self.storage)
+        self.macro = None
         self._translateText()
 
     def _displayWarning(self, title, message):
@@ -250,23 +422,25 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self._text['body'] = QApplication.translate("option", "Body", None,
                                                     QApplication.UnicodeUTF8)
 
+    def keyPressEvent(self, keyEvent):
+        curr_tab = self.tab_widget.currentWidget().objectName()
+        if curr_tab == "tab_macro" and self.macro:
+            self.macro.keyPressEvent(keyEvent)
+
     def _syncTabs(self, idx):
         curr_tab = self.tab_widget.currentWidget().objectName()
         if curr_tab == "tab_alias":
             self._signalConnAlias(False)
             self.list_conn_alias.clear()
-
-            # syncronize connections list, with the exception of first
-            # element, "create new"
-            for i in range(self.list_conn.count() - 1):
-                self.list_conn_alias.addItem(self.list_conn.itemText(i + 1))
-
+            self.list_conn_alias.addItems([c[1] for c in self.conn.connections])
             self._signalConnAlias(True)
             self._loadAliases(unicode(self.list_conn_alias.currentText()))
 
-            objs = (self.list_alias, self.label_alias, self.body_alias)
-            for o in objs:
+            for o in (self.list_alias, self.label_alias, self.body_alias):
                 o.setEnabled(bool(self.list_conn_alias.count()))
+
+        elif curr_tab == "tab_macro":
+            self.macro = FormMacro(self, self.storage)
 
     def _loadAliases(self, conn):
         self._signalConnAlias(False)

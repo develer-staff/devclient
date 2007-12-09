@@ -31,7 +31,26 @@ sys.path.append('..')
 
 from devclient.conf import config
 from devclient.storage import Storage
-from devclient.gui_option import FormConnection, GuiOption
+from devclient.gui_option import *
+
+
+class GuiOptionTest(unittest.TestCase):
+
+    def __init__(self, methodName='runTest'):
+        super(GuiOptionTest, self).__init__(methodName)
+        if not QtGui.QApplication.instance():
+            self.app = QtGui.QApplication([])
+
+    def setUp(self):
+        abspath = os.path.abspath('../../data/storage/dbtest.sqlite')
+        config['storage'] = {'path': abspath}
+
+        if os.path.exists(config['storage']['path']):
+            os.unlink(config['storage']['path'])
+
+    def tearDown(self):
+        if os.path.exists(config['storage']['path']):
+            os.unlink(config['storage']['path'])
 
 
 class GuiOptionMock(object):
@@ -55,11 +74,7 @@ class GuiOptionMock(object):
         self._warning = (title, message)
 
 
-class TestFormConnection(unittest.TestCase):
-    def __init__(self, methodName='runTest'):
-        super(TestFormConnection, self).__init__(methodName)
-        if not QtGui.QApplication.instance():
-            self.app = QtGui.QApplication([])
+class TestFormConnection(GuiOptionTest):
 
     def _formCompare(self, form_conn, conn):
         check = (QtCore.Qt.Unchecked, QtCore.Qt.Checked)[conn[4] != 0]
@@ -86,17 +101,6 @@ class TestFormConnection(unittest.TestCase):
            not form_conn.w.list_conn.currentIndex():
             return True
         return False
-
-    def setUp(self):
-        abspath = os.path.abspath('../../data/storage/dbtest.sqlite')
-        config['storage'] = {'path': abspath}
-
-        if os.path.exists(config['storage']['path']):
-            os.unlink(config['storage']['path'])
-
-    def tearDown(self):
-        if os.path.exists(config['storage']['path']):
-            os.unlink(config['storage']['path'])
 
     def testEmpty(self):
         form_conn = FormConnection(GuiOptionMock(), Storage())
@@ -324,6 +328,129 @@ class TestFormConnection(unittest.TestCase):
         self.assert_(len(form_conn.connections) == 1)
         self.assert_(len(Storage().connections()) == 1)
         self.assert_(form_conn.connections[0][1:] == tuple(conn[1:]))
+
+
+class GuiOptionMacroMock(object):
+
+    def __init__(self):
+        self.register_macro = QtGui.QPushButton()
+        self.save_macro = QtGui.QPushButton()
+        self.delete_macro = QtGui.QPushButton()
+        self.list_macro = QtGui.QComboBox()
+        self.list_conn_macro = QtGui.QComboBox()
+        self.command_macro = QtGui.QLineEdit()
+        self.keys_macro = QtGui.QLineEdit()
+        self._warning = None
+
+    def connect(self, widget, signal, callback):
+        pass
+
+    def disconnect(self, widget, signal, callback):
+        pass
+
+    def _displayWarning(self, title, message):
+        self._warning = (title, message)
+
+
+class TestFormMacro(GuiOptionTest):
+
+    def _formCompare(self, form_macro, macro):
+        if form_macro.w.command_macro.text() != macro[0] or \
+           form_macro.key_seq != macro[1:] or \
+           form_macro.w.keys_macro.text() != form_macro.getKeyDescr(*macro[1:]):
+            return False
+        return True
+
+    def _setFormFields(self, form_macro, macro):
+        form_macro.w.keys_macro.setText(form_macro.getKeyDescr(*macro[1:]))
+        form_macro.w.command_macro.setText(macro[0])
+        form_macro.key_seq = macro[1:]
+
+    def testLoadEmpty(self):
+        Storage().addConnection([0, 'name', 'host', 4000, 1])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        self.assert_(form_macro.w.list_macro.count() == 1)
+
+    def testLoadEmpty2(self):
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000, 1])
+        s.saveMacros('name', [('command', 1, 0, 0, 65)])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+
+        form_macro.load(0)
+        self.assert_(not form_macro.w.command_macro.text() and
+                     not form_macro.w.keys_macro.text())
+
+    def testLoad(self):
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000, 1])
+        macro = ('command', 1, 0, 0, 65)
+        s.saveMacros('name', [macro])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+
+        form_macro.load(1)
+        self.assert_(self._formCompare(form_macro, macro))
+
+    def testLoad2(self):
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000, 1])
+        macro = ('command', 0, 1, 1, 72)
+        s.saveMacros('name', [('command', 1, 0, 0, 65), macro])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+
+    def testCheckField1(self):
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000, 1])
+        s.saveMacros('name', [('command', 1, 0, 0, 65)])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro.load(1)
+        self.assert_(not form_macro._checkFields())
+
+    def testCheckField2(self):
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000, 1])
+        s.saveMacros('name', [('command', 1, 0, 0, 65)])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro.load(1)
+        form_macro.w.list_macro.setCurrentIndex(1)
+        self.assert_(form_macro._checkFields())
+
+    def testCheckField3(self):
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000, 1])
+        macro = ('command', 1, 0, 1, 77)
+        s.saveMacros('name', [('command', 1, 0, 0, 65), macro])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro.load(1)
+        form_macro.w.list_macro.setCurrentIndex(1)
+        form_macro.w.keys_macro.setText(form_macro.getKeyDescr(*macro[1:]))
+        form_macro.key_seq = macro[1:]
+        self.assert_(not form_macro._checkFields())
+
+    def testSaveAdd(self):
+        Storage().addConnection([0, 'name', 'host', 4000, 1])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        macro = ('command', 1, 0, 0, 65)
+        self._setFormFields(form_macro, macro)
+        form_macro.save()
+
+        self.assert_(not form_macro.w._warning)
+        self.assert_(Storage().macros('name')[0] == macro)
+        self.assert_(len(form_macro.macros) == 1)
+
+    def testSaveAdd2(self):
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000, 1])
+        s.saveMacros('name', [('command', 1, 0, 0, 65)])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        macro = ('command', 0, 0, 0, 78)
+        self._setFormFields(form_macro, macro)
+        form_macro.save()
+
+        self.assert_(not form_macro.w._warning)
+        self.assert_(Storage().macros('name')[1] == macro)
+        self.assert_(len(form_macro.macros) == 2)
+
 
 
 if __name__ == '__main__':

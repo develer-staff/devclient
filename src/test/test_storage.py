@@ -160,6 +160,76 @@ class TestStorage(TestBase):
         self.storage.saveAliases(conn_name, aliases)
         self.assert_(self.storage.aliases(conn_name) == aliases)
 
+    def testEmptyMacros(self):
+        self.assert_(self.storage.macros('conn_name') == [])
+
+    def testSaveMacros(self):
+        conn_name = 'conn'
+        macros = [('command', '1', '0', '0', '65')]
+
+        self.assertRaises(exception.ConnectionNotFound,
+                          self.storage.saveMacros,
+                          conn_name, macros)
+
+    def testSaveMacros2(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        macros = [('command', 1, 0, 0, 65)]
+        self.storage.saveMacros(conn_name, macros)
+        self.assert_(self.storage.macros(conn_name) == macros)
+
+    def testSaveMacros3(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        macros = [('command', 1, 0, 0, 65), ('command', 0, 0, 0, 73)]
+        self.storage.saveMacros(conn_name, macros)
+        self.assert_(self.storage.macros(conn_name) == macros)
+
+    def testSaveMacros4(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        macros = [('command', 1, 0, 0, 65)]
+        self.storage.saveMacros(conn_name, macros)
+
+        macros.append(('command', 0, 0, 0, 73))
+        self.storage.saveMacros(conn_name, macros)
+        self.assert_(self.storage.macros(conn_name) == macros)
+
+    def testSaveMacros5(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        macros = [('command', 1, 0, 0, 65)]
+        self.storage.saveMacros(conn_name, macros)
+
+        macros[0] = ('command', 0, 0, 0, 73)
+        self.storage.saveMacros(conn_name, macros)
+        self.assert_(self.storage.macros(conn_name) == macros)
+
+    def testSaveMacros6(self):
+        conn_name = 'conn'
+
+        conn = [0, conn_name, 'host', 111, 1]
+        self.storage.addConnection(conn)
+
+        macros = [('command', 1, 0, 0, 65), ('command', 0, 0, 0, 73)]
+        self.storage.saveMacros(conn_name, macros)
+
+        del macros[0]
+        self.storage.saveMacros(conn_name, macros)
+        self.assert_(self.storage.macros(conn_name) == macros)
+
 
 class TestStorage2(TestBase):
 

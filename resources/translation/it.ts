@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
+<defaultcodec></defaultcodec>
 <context>
     <name>dev_client</name>
     <message>
-        <location filename="../../src/devclient/gui.py" line="101"/>
+        <location filename="../../src/devclient/gui.py" line="105"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
@@ -18,12 +19,12 @@
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="104"/>
+        <location filename="../../src/devclient/gui.py" line="108"/>
         <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="107"/>
+        <location filename="../../src/devclient/gui.py" line="111"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -71,22 +72,22 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="110"/>
+        <location filename="../../src/devclient/gui.py" line="114"/>
         <source>Yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="113"/>
+        <location filename="../../src/devclient/gui.py" line="117"/>
         <source>No</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="116"/>
+        <location filename="../../src/devclient/gui.py" line="120"/>
         <source>Really quit?</source>
         <translation>Vuoi davvero uscire?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="119"/>
+        <location filename="../../src/devclient/gui.py" line="123"/>
         <source>Really close connection?</source>
         <translation>Vuoi davvero chiudere la connessione?</translation>
     </message>
@@ -119,7 +120,7 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Imposta come predefinita</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.ui" line="482"/>
+        <location filename="../../src/devclient/gui_option.ui" line="701"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
@@ -129,7 +130,7 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.ui" line="489"/>
+        <location filename="../../src/devclient/gui_option.ui" line="708"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
@@ -139,12 +140,12 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="231"/>
+        <location filename="../../src/devclient/gui_option.py" line="413"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="234"/>
+        <location filename="../../src/devclient/gui_option.py" line="416"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
@@ -154,22 +155,22 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="238"/>
+        <location filename="../../src/devclient/gui_option.py" line="420"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="240"/>
+        <location filename="../../src/devclient/gui_option.py" line="422"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="243"/>
+        <location filename="../../src/devclient/gui_option.py" line="425"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="236"/>
+        <location filename="../../src/devclient/gui_option.py" line="418"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>
@@ -178,6 +179,32 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <location filename="../../src/devclient/gui_option.py" line="54"/>
         <source>Host</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.py" line="236"/>
+        <source>Macro</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.py" line="242"/>
+        <source>Keys</source>
+        <translation>Tasti</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.py" line="245"/>
+        <source>Command</source>
+        <translation>Comando</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.ui" line="649"/>
+        <source>Register</source>
+        <translation>Registra</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.py" line="233"/>
+        <source>Create New</source>
+        <comment>macro</comment>
+        <translation>Crea nuova</translation>
     </message>
 </context>
 </TS>
