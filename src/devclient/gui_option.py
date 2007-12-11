@@ -203,7 +203,7 @@ class FormMacro(object):
     Manage the macro part of gui option.
     """
 
-    def __init__(self, widget, storage, conn_name = None):
+    def __init__(self, widget, storage):
         self.w = widget
         self.storage = storage
         self._translateText()

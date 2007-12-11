@@ -392,14 +392,14 @@ class TestFormMacro(GuiOptionTest):
 
     def testLoadEmpty(self):
         Storage().addConnection([0, 'name', 'host', 4000, 1])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
         self.assert_(form_macro.w.list_macro.count() == 1)
 
     def testLoadEmpty2(self):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000, 1])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
 
         form_macro.load(0)
         self.assert_(not form_macro.w.command_macro.text() and
@@ -410,7 +410,7 @@ class TestFormMacro(GuiOptionTest):
         s.addConnection([0, 'name', 'host', 4000, 1])
         macro = ('command', 1, 0, 0, 65)
         s.saveMacros('name', [macro])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
 
         form_macro.load(1)
         self.assert_(self._formCompare(form_macro, macro))
@@ -420,13 +420,13 @@ class TestFormMacro(GuiOptionTest):
         s.addConnection([0, 'name', 'host', 4000, 1])
         macro = ('command', 0, 1, 1, 72)
         s.saveMacros('name', [('command', 1, 0, 0, 65), macro])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
 
     def testCheckField1(self):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000, 1])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
         form_macro.load(1)
         self.assert_(not form_macro._checkFields())
 
@@ -434,7 +434,7 @@ class TestFormMacro(GuiOptionTest):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000, 1])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
         form_macro.load(1)
         form_macro.w.list_macro.setCurrentIndex(1)
         self.assert_(form_macro._checkFields())
@@ -444,7 +444,7 @@ class TestFormMacro(GuiOptionTest):
         s.addConnection([0, 'name', 'host', 4000, 1])
         macro = ('command', 1, 0, 1, 77)
         s.saveMacros('name', [('command', 1, 0, 0, 65), macro])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
         form_macro.load(1)
         form_macro.w.list_macro.setCurrentIndex(1)
         form_macro.w.keys_macro.setText(form_macro.getKeyDescr(*macro[1:]))
@@ -455,7 +455,7 @@ class TestFormMacro(GuiOptionTest):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000, 1])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
         self._setFormFields(form_macro, ('command', 0, 0, 0, 78))
         form_macro.save()
         self._setFormFields(form_macro, ('check', 0, 0, 0, 78))
@@ -463,7 +463,7 @@ class TestFormMacro(GuiOptionTest):
 
     def testSaveAdd(self):
         Storage().addConnection([0, 'name', 'host', 4000, 1])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
         macro = ('command', 1, 0, 0, 65)
         self._setFormFields(form_macro, macro)
         form_macro.save()
@@ -476,7 +476,7 @@ class TestFormMacro(GuiOptionTest):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000, 1])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
         macro = ('command', 0, 0, 0, 78)
         self._setFormFields(form_macro, macro)
         form_macro.save()
