@@ -207,7 +207,6 @@ class FormMacro(object):
         self.w = widget
         self.storage = storage
         self._translateText()
-        self._setupSignal()
 
         self._key_descr = {}
         for k, v in Qt.__dict__.iteritems():
@@ -215,10 +214,8 @@ class FormMacro(object):
                 self._key_descr[v] = k[4:]
 
         connections = storage.connections()
-        self._signalCombo(False)
         self.w.list_conn_macro.clear()
         self.w.list_conn_macro.addItems([c[1] for c in connections])
-        self._signalCombo(True)
 
         conn_name = unicode(connections[0][1])
         for o in (self.w.list_macro, self.w.command_macro,
@@ -227,6 +224,7 @@ class FormMacro(object):
 
         self.loadMacros(conn_name)
         self.start_reg = False
+        self._setupSignal()
 
     def _translateText(self):
         self._text = {}
@@ -473,6 +471,7 @@ class GuiOption(QtGui.QDialog, Ui_option):
                 o.setEnabled(bool(self.list_conn_alias.count()))
 
         elif curr_tab == "tab_macro":
+            del self.macro  # Without this, signal disconnect don't work.. why?
             self.macro = FormMacro(self, self.storage)
 
     def _loadAliases(self, conn):
