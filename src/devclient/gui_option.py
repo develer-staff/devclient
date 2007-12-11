@@ -223,6 +223,7 @@ class FormMacro(object):
             o.setEnabled(bool(self.w.list_conn_macro.count()))
 
         self.loadMacros(conn_name)
+        self.start_reg = False
 
     def _translateText(self):
         self._text = {}
@@ -241,6 +242,9 @@ class FormMacro(object):
 
         self._text['command'] = QApplication.translate("option",
             "Command", None, QApplication.UnicodeUTF8)
+
+        self._text['unique_keys'] = QApplication.translate("option",
+            "Key sequence must be unique", None, QApplication.UnicodeUTF8)
 
     def _signalCombo(self, conn):
         f = self.w.connect
@@ -303,6 +307,8 @@ class FormMacro(object):
         cur_idx = self.w.list_macro.currentIndex()
         if [el for idx, el in enumerate(self.macros) if el[1:] == self.key_seq
             and (not cur_idx or idx != cur_idx - 1)]:
+            self.w._displayWarning(self._text['macro'],
+                                   self._text['unique_keys'])
             return False
         return True
 
@@ -316,7 +322,7 @@ class FormMacro(object):
 
         list_idx = self.w.list_macro.currentIndex()
         if not list_idx:
-            self.macros.append(macro)
+            self.macros.append(tuple(macro))
             self.w.list_macro.addItem(self.getKeyDescr(*self.key_seq))
         else:
             self.macros[list_idx - 1] = macro

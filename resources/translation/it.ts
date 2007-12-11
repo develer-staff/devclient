@@ -140,12 +140,12 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="413"/>
+        <location filename="../../src/devclient/gui_option.py" line="419"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="416"/>
+        <location filename="../../src/devclient/gui_option.py" line="422"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
@@ -155,22 +155,22 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="420"/>
+        <location filename="../../src/devclient/gui_option.py" line="426"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="422"/>
+        <location filename="../../src/devclient/gui_option.py" line="428"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="425"/>
+        <location filename="../../src/devclient/gui_option.py" line="431"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="418"/>
+        <location filename="../../src/devclient/gui_option.py" line="424"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>
@@ -181,17 +181,17 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="236"/>
+        <location filename="../../src/devclient/gui_option.py" line="237"/>
         <source>Macro</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="242"/>
+        <location filename="../../src/devclient/gui_option.py" line="243"/>
         <source>Keys</source>
         <translation>Tasti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="245"/>
+        <location filename="../../src/devclient/gui_option.py" line="246"/>
         <source>Command</source>
         <translation>Comando</translation>
     </message>
@@ -201,10 +201,15 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Registra</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="233"/>
+        <location filename="../../src/devclient/gui_option.py" line="234"/>
         <source>Create New</source>
         <comment>macro</comment>
         <translation>Crea nuova</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.py" line="249"/>
+        <source>Key sequence must be unique</source>
+        <translation>La sequenza dei tasti deve essere univoca</translation>
     </message>
 </context>
 </TS>

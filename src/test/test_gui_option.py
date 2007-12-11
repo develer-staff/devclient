@@ -451,6 +451,16 @@ class TestFormMacro(GuiOptionTest):
         form_macro.key_seq = macro[1:]
         self.assert_(not form_macro._checkFields())
 
+    def testCheckField4(self):
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000, 1])
+        s.saveMacros('name', [('command', 1, 0, 0, 65)])
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
+        self._setFormFields(form_macro, ('command', 0, 0, 0, 78))
+        form_macro.save()
+        self._setFormFields(form_macro, ('check', 0, 0, 0, 78))
+        self.assert_(not form_macro._checkFields())
+
     def testSaveAdd(self):
         Storage().addConnection([0, 'name', 'host', 4000, 1])
         form_macro = FormMacro(GuiOptionMacroMock(), Storage(), 'name')
@@ -474,6 +484,7 @@ class TestFormMacro(GuiOptionTest):
         self.assert_(not form_macro.w._warning)
         self.assert_(Storage().macros('name')[1] == macro)
         self.assert_(len(form_macro.macros) == 2)
+
 
 
 
