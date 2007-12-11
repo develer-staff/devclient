@@ -199,6 +199,9 @@ class FormConnection(object):
 
 
 class FormMacro(object):
+    """
+    Manage the macro part of gui option.
+    """
 
     def __init__(self, widget, storage, conn_name = None):
         self.w = widget
@@ -264,6 +267,14 @@ class FormMacro(object):
         self._signalCombo(True)
 
     def loadMacros(self, conn):
+        """
+        Load all macros for a connection.
+
+        :Parameters:
+          conn : str
+            the name of connection
+        """
+
         self._signalCombo(False)
         self.macros = self.storage.macros(unicode(conn))
         self.w.list_macro.clear()
@@ -347,19 +358,35 @@ class FormMacro(object):
                                  self.macros)
 
     def _register(self):
+        """
+        Start register keyboard's event.
+        """
+
         self.w.grabKeyboard()
         self.w.keys_macro.setText('')
         self.w.keys_macro.setStyleSheet('background-color: #e0e0e0')
         self.start_reg = True
 
     def _checkModifier(self, value, mod):
+        """
+        Check keyboard's modifier.
+        """
+
         return int((value & mod) == mod)
 
     def getKeyDescr(self, shift, alt, ctrl, key):
+        """
+        Return a readable description of a sequence of keys.
+        """
+
         return ('', 'Ctrl ')[ctrl] + ('', 'Alt ')[alt] + \
                ('', 'Shift ')[shift] + self._key_descr[key]
 
     def keyPressEvent(self, keyEvent):
+        """
+        Manage the event keyboard's saving the sequence of keys of a macro.
+        """
+
         if self.start_reg and self._key_descr.has_key(keyEvent.key()) and \
            keyEvent.key() not in (Qt.Key_Shift, Qt.Key_Control,
                                   Qt.Key_Meta, Qt.Key_Alt):
