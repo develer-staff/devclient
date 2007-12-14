@@ -222,7 +222,7 @@ class FormMacro(object):
                   self.w.register_macro):
             o.setEnabled(bool(self.w.list_conn_macro.count()))
 
-        self.loadMacros(conn_name)
+        self.loadMacros(conn_name, True)
         self.start_reg = False
         self._setupSignal()
 
@@ -264,7 +264,7 @@ class FormMacro(object):
         self.w.connect(self.w.delete_macro, clicked, self.delete)
         self._signalCombo(True)
 
-    def loadMacros(self, conn):
+    def loadMacros(self, conn, signal=False):
         """
         Load all macros for a connection.
 
@@ -273,13 +273,15 @@ class FormMacro(object):
             the name of connection
         """
 
-        self._signalCombo(False)
+        if not signal:
+            self._signalCombo(False)
         self.macros = self.storage.macros(unicode(conn))
         self.w.list_macro.clear()
         self.w.list_macro.addItem(self._text['new_macro'])
         self.w.list_macro.addItems([self.getKeyDescr(*m[1:]) for m in
                                     self.macros])
-        self._signalCombo(True)
+        if not signal:
+            self._signalCombo(True)
 
     def load(self, idx):
         if not idx:
@@ -328,10 +330,11 @@ class FormMacro(object):
 
         macro = [unicode(self.w.command_macro.text())]
         macro.extend(self.key_seq)
+        macro = tuple(macro)
 
         list_idx = self.w.list_macro.currentIndex()
         if not list_idx:
-            self.macros.append(tuple(macro))
+            self.macros.append(macro)
             self.w.list_macro.addItem(self.getKeyDescr(*self.key_seq))
         else:
             self.macros[list_idx - 1] = macro
@@ -339,7 +342,7 @@ class FormMacro(object):
                                           self.getKeyDescr(*macro[1:]))
 
         self.storage.saveMacros(unicode(self.w.list_conn_macro.currentText()),
-                                 self.macros)
+                                self.macros)
 
         self.w.list_macro.setCurrentIndex(0)
         self.load(0)
@@ -374,7 +377,7 @@ class FormMacro(object):
 
     def getKeyDescr(self, shift, alt, ctrl, key):
         """
-        Return a readable description of a sequence of keys.
+        Return a readable description for a sequence of keys.
         """
 
         return ('', 'Ctrl ')[ctrl] + ('', 'Alt ')[alt] + \
