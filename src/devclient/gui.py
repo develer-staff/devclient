@@ -26,7 +26,7 @@ import sys
 import Queue
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import SIGNAL
+from PyQt4.QtCore import SIGNAL, Qt
 from PyQt4.QtGui import QApplication, QMessageBox
 
 import storage
@@ -82,7 +82,40 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self._translateText()
         self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
-        self.connected = False
+        self.connected = None
+        self.text_input.installEventFilter(self)
+        self.text_output.installEventFilter(self)
+
+    def _getKeySeq(self, event):
+
+        def _checkModifier(value, mod):
+            """
+            Check keyboard's modifier.
+            """
+
+            return int((value & mod) == mod)
+
+        s = _checkModifier(event.modifiers(), Qt.ShiftModifier)
+        a = _checkModifier(event.modifiers(), Qt.AltModifier)
+        c = _checkModifier(event.modifiers(), Qt.ControlModifier)
+        return (s, a, c, event.key())
+
+    def eventFilter(self, target, event):
+        if event.type() == QtCore.QEvent.KeyPress and self.connected and \
+           event.key() not in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Meta,
+                               Qt.Key_Alt):
+
+            if not hasattr(self, 'macros') or self.macros[1] != self.connected:
+                self.macros = (storage.Storage().macros(self.connected),
+                               self.connected)
+
+            key_seq = self._getKeySeq(event)
+
+            for m in self.macros[0]:
+                if m[1:] == key_seq:
+                    self.q_gui_app.put((event_type.MSG, m[0]))
+                    return True
+        return False
 
     def _onKeyUp(self):
         if self.text_input.hasFocus():
@@ -202,10 +235,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                  self._displayWarning(self._text['Connect'],
                                       self._text['ConnError'])
             elif cmd == event_type.CONN_ESTABLISHED:
-                 self._startConnection(*msg)
-                 self.connected = True
+                 self._startConnection(*msg[1:])
+                 self.connected = msg[0]
             elif cmd == event_type.CONN_CLOSED:
-                 self.connected = False
+                 self.connected = None
 
         except Queue.Empty:
             pass

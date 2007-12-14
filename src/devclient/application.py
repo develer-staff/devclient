@@ -88,8 +88,7 @@ class Application(object):
                     except exception.ConnectionRefused:
                         self.q_app_gui.put((event_type.CONN_REFUSED, ""))
                     else:
-                        self.q_app_gui.put((event_type.CONN_ESTABLISHED,
-                                            msg[1:]))
+                        self.q_app_gui.put((event_type.CONN_ESTABLISHED, msg))
 
                     mud = getMudType(*msg[1:])
                     parser = ComponentFactory(mud).parser()
