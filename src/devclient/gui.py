@@ -87,6 +87,15 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_output.installEventFilter(self)
 
     def _getKeySeq(self, event):
+        """
+        Given a keyboard event, return a tuple of its components.
+
+        :Parameters:
+          event : QKeyEvent
+            the keyboard event
+
+        :return: a tuple of the form (shift, alt, ctrl, keycode)
+        """
 
         def _checkModifier(value, mod):
             """

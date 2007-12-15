@@ -368,12 +368,28 @@ class FormMacro(object):
         self.w.keys_macro.setStyleSheet('background-color: #e0e0e0')
         self.start_reg = True
 
-    def _checkModifier(self, value, mod):
+    def _getKeySeq(self, event):
         """
-        Check keyboard's modifier.
+        Given a keyboard event, return a tuple of its components.
+
+        :Parameters:
+          event : QKeyEvent
+            the keyboard event
+
+        :return: a tuple of the form (shift, alt, ctrl, keycode)
         """
 
-        return int((value & mod) == mod)
+        def _checkModifier(value, mod):
+            """
+            Check keyboard's modifier.
+            """
+
+            return int((value & mod) == mod)
+
+        s = _checkModifier(event.modifiers(), Qt.ShiftModifier)
+        a = _checkModifier(event.modifiers(), Qt.AltModifier)
+        c = _checkModifier(event.modifiers(), Qt.ControlModifier)
+        return (s, a, c, event.key())
 
     def getKeyDescr(self, shift, alt, ctrl, key):
         """
@@ -392,11 +408,7 @@ class FormMacro(object):
            keyEvent.key() not in (Qt.Key_Shift, Qt.Key_Control,
                                   Qt.Key_Meta, Qt.Key_Alt):
 
-            s = self._checkModifier(keyEvent.modifiers(), Qt.ShiftModifier)
-            a = self._checkModifier(keyEvent.modifiers(), Qt.AltModifier)
-            c = self._checkModifier(keyEvent.modifiers(), Qt.ControlModifier)
-
-            self.key_seq = (s, a, c, keyEvent.key())
+            self.key_seq = self._getKeySeq(keyEvent)
             self.w.releaseKeyboard()
             self.w.keys_macro.setText(self.getKeyDescr(*self.key_seq))
             self.w.keys_macro.setStyleSheet('')
