@@ -282,6 +282,7 @@ class FormMacro(object):
                                     self.macros])
         if not signal:
             self._signalCombo(True)
+        self._clear()
 
     def load(self, idx):
         if not idx:
@@ -343,9 +344,7 @@ class FormMacro(object):
 
         self.storage.saveMacros(unicode(self.w.list_conn_macro.currentText()),
                                 self.macros)
-
-        self.w.list_macro.setCurrentIndex(0)
-        self.load(0)
+        self._clear()
 
     def delete(self):
 
@@ -356,7 +355,14 @@ class FormMacro(object):
         del self.macros[list_idx - 1]
         self.w.list_macro.removeItem(list_idx)
         self.storage.saveMacros(unicode(self.w.list_conn_macro.currentText()),
-                                 self.macros)
+                                self.macros)
+
+    def _clear(self):
+        self.w.list_macro.setCurrentIndex(0)
+        self.load(0)
+        self.w.keys_macro.setStyleSheet('')
+        self.start_reg = False
+
 
     def _register(self):
         """
