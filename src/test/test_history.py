@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -30,140 +30,137 @@ from devclient.history import History
 
 class TestHistory(unittest.TestCase):
 
+    def setUp(self):
+        self.history = History()
+
     def testHistoryPrevEmpty(self):
-        history = History()
-        self.assert_('' == history.getPrev())
+        self.assert_('' == self.history.getPrev())
 
     def testHistoryPrev1(self):
         txt = 'hello'
-        history = History()
-        history.add(txt)
-        self.assert_(txt == history.getPrev())
+        self.history.add(txt)
+        self.assert_(txt == self.history.getPrev())
 
     def testHistoryPrev2(self):
-        history = History()
         for txt in ('hello', 'world'):
-            history.add(txt)
-        self.assert_('world' == history.getPrev())
+            self.history.add(txt)
+        self.assert_('world' == self.history.getPrev())
 
     def testHistoryPrev3(self):
-        history = History()
         for txt in ('hello', 'world'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getPrev()
-        self.assert_('hello' == history.getPrev())
+        self.history.getPrev()
+        self.assert_('hello' == self.history.getPrev())
 
     def testHistoryPrev4(self):
-        history = History()
         for txt in ('aaa', 'bbb', 'ccc'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getPrev()
-        history.getPrev()
-        self.assert_('aaa' == history.getPrev())
+        self.history.getPrev()
+        self.history.getPrev()
+        self.assert_('aaa' == self.history.getPrev())
 
     def testHistoryPrev5(self):
-        history = History()
         for txt in ('aaa', 'bbb', 'ccc'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getPrev()
-        history.getPrev()
-        history.getPrev()
-        self.assert_('ccc' == history.getPrev())
+        self.history.getPrev()
+        self.history.getPrev()
+        self.history.getPrev()
+        self.assert_('ccc' == self.history.getPrev())
 
     def testHistoryPrev6(self):
-        history = History()
         for txt in ('aaa', 'bbb'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getPrev()
-        history.add('ccc')
-        self.assert_('ccc' == history.getPrev())
+        self.history.getPrev()
+        self.history.add('ccc')
+        self.assert_('ccc' == self.history.getPrev())
 
     def testHistoryNextEmpty(self):
-        history = History()
-        self.assert_('' == history.getNext())
+        self.assert_('' == self.history.getNext())
 
     def testHistoryNext1(self):
         txt = 'hello'
-        history = History()
-        history.add(txt)
-        self.assert_(txt == history.getNext())
+        self.history.add(txt)
+        self.assert_(txt == self.history.getNext())
 
     def testHistoryNext2(self):
-        history = History()
         for txt in ('hello', 'world'):
-            history.add(txt)
+            self.history.add(txt)
 
-        self.assert_('hello' == history.getNext())
+        self.assert_('hello' == self.history.getNext())
 
     def testHistoryNext3(self):
-        history = History()
         for txt in ('hello', 'world'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getNext()
-        self.assert_('world' == history.getNext())
+        self.history.getNext()
+        self.assert_('world' == self.history.getNext())
 
     def testHistoryNext4(self):
-        history = History()
         for txt in ('aaa', 'bbb', 'ccc'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getNext()
-        history.getNext()
-        self.assert_('ccc' == history.getNext())
+        self.history.getNext()
+        self.history.getNext()
+        self.assert_('ccc' == self.history.getNext())
 
     def testHistoryNext5(self):
-        history = History()
         for txt in ('aaa', 'bbb', 'ccc'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getNext()
-        history.getNext()
-        history.getNext()
-        self.assert_('aaa' == history.getNext())
+        self.history.getNext()
+        self.history.getNext()
+        self.history.getNext()
+        self.assert_('aaa' == self.history.getNext())
 
     def testHistoryNext6(self):
-        history = History()
         for txt in ('aaa', 'bbb'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getNext()
-        history.add('ccc')
-        self.assert_('aaa' == history.getNext())
+        self.history.getNext()
+        self.history.add('ccc')
+        self.assert_('aaa' == self.history.getNext())
 
     def testHistoryPrevNext(self):
-        history = History()
         for txt in ('hello', 'world'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getPrev()
-        self.assert_('hello' == history.getNext())
+        self.history.getPrev()
+        self.assert_('hello' == self.history.getNext())
 
     def testHistoryNextPrev(self):
-        history = History()
         for txt in ('hello', 'world'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.getNext()
-        self.assert_('world' == history.getPrev())
+        self.history.getNext()
+        self.assert_('world' == self.history.getPrev())
 
     def testHistoryEmpyAdd(self):
-        history = History()
-        history.add('  \t \r\n')
+        self.history.add('  \t \r\n')
 
-        self.assert_(len(history._list) == 0)
+        self.assert_(len(self.history._list) == 0)
 
     def testHistoryClear(self):
-        history = History()
         for txt in ('aaa', 'bbb', 'ccc'):
-            history.add(txt)
+            self.history.add(txt)
 
-        history.clear()
-        self.assert_(len(history._list) == 0)
+        self.history.clear()
+        self.assert_(len(self.history._list) == 0)
+
+    def testHistoryAll(self):
+        elements = ['aaa', 'bbb', 'ccc']
+        for txt in elements:
+            self.history.add(txt)
+        self.assert_(elements == self.history.get())
+
+    def testHistoryAll2(self):
+        for txt in ('aaa', 'bbb', 'ccc', 'bbb'):
+            self.history.add(txt)
+        self.assert_(['aaa', 'ccc', 'bbb'] == self.history.get())
+
 
 if __name__ == '__main__':
     unittest.main()

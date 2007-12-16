@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 class History(object):
@@ -81,3 +81,10 @@ class History(object):
                 self._curr_idx = 0
 
         return self._list[self._curr_idx]
+
+    def get(self):
+        """
+        Return a copy of the list of all element in history.
+        """
+
+        return self._list[:]
