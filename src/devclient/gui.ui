@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>930</width>
-    <height>667</height>
+    <height>671</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -224,7 +224,7 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
      </widget>
     </item>
     <item row="1" column="0" >
-     <widget class="QLineEdit" name="text_input" >
+     <widget class="QComboBox" name="text_input" >
       <property name="sizePolicy" >
        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
         <horstretch>1</horstretch>
@@ -237,6 +237,14 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
         <height>0</height>
        </size>
       </property>
+      <property name="editable" >
+       <bool>true</bool>
+      </property>
+      <item>
+       <property name="text" >
+        <string/>
+       </property>
+      </item>
      </widget>
     </item>
    </layout>

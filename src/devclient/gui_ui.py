@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Tue Nov 27 19:05:25 2007
-#      by: PyQt4 UI code generator 4.3.1
+# Created: Sun Dec 16 15:40:20 2007
+#      by: PyQt4 UI code generator 4.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_dev_client(object):
     def setupUi(self, dev_client):
         dev_client.setObjectName("dev_client")
-        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,930,667).size()).expandedTo(dev_client.minimumSizeHint()))
+        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,930,671).size()).expandedTo(dev_client.minimumSizeHint()))
 
         self.centralwidget = QtGui.QWidget(dev_client)
         self.centralwidget.setObjectName("centralwidget")
@@ -117,7 +117,7 @@ class Ui_dev_client(object):
         self.rightpanel.addWidget(self.smaug)
         self.gridlayout.addWidget(self.rightpanel,0,1,2,1)
 
-        self.text_input = QtGui.QLineEdit(self.centralwidget)
+        self.text_input = QtGui.QComboBox(self.centralwidget)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(1)
@@ -125,7 +125,9 @@ class Ui_dev_client(object):
         sizePolicy.setHeightForWidth(self.text_input.sizePolicy().hasHeightForWidth())
         self.text_input.setSizePolicy(sizePolicy)
         self.text_input.setMinimumSize(QtCore.QSize(690,0))
+        self.text_input.setEditable(True)
         self.text_input.setObjectName("text_input")
+        self.text_input.addItem("")
         self.gridlayout.addWidget(self.text_input,1,0,1,1)
         dev_client.setCentralWidget(self.centralwidget)
 
@@ -135,7 +137,7 @@ class Ui_dev_client(object):
         self.toolBar.setOrientation(QtCore.Qt.Horizontal)
         self.toolBar.setIconSize(QtCore.QSize(32,32))
         self.toolBar.setObjectName("toolBar")
-        dev_client.addToolBar(QtCore.Qt.TopToolBarArea,self.toolBar)
+        dev_client.addToolBar(self.toolBar)
 
         self.action_connect = QtGui.QAction(dev_client)
         self.action_connect.setIcon(QtGui.QIcon("../../resources/images/connect.png"))

@@ -67,14 +67,17 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.connect(self.action_option, SIGNAL("triggered()"),
                      self._showOption)
 
-        self.connect(self.text_input, SIGNAL("returnPressed()"),
-                     self._sendText)
-
         QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Up),
                         self, self._onKeyUp)
 
         QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Down),
                         self, self._onKeyDown)
+
+        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Enter),
+                        self, self._sendText)
+
+        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Return),
+                        self, self._sendText)
 
         timer = QtCore.QTimer(self)
         self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
@@ -128,11 +131,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _onKeyUp(self):
         if self.text_input.hasFocus():
-            self.text_input.setText(self.history.getPrev())
+            self.text_input.setCurrentIndex(0)
+            self.text_input.setItemText(0, self.history.getPrev())
 
     def _onKeyDown(self):
         if self.text_input.hasFocus():
-            self.text_input.setText(self.history.getNext())
+            self.text_input.setCurrentIndex(0)
+            self.text_input.setItemText(0, self.history.getNext())
 
     def _installTranslator(self):
         self.translator = QtCore.QTranslator()
@@ -206,9 +211,17 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.setFocus()
 
     def _sendText(self):
-        self.history.add(self.text_input.text())
-        self.q_gui_app.put((event_type.MSG, unicode(self.text_input.text())))
-        self.text_input.clear()
+        if self.text_input.hasFocus():
+            text = unicode(self.text_input.currentText())
+            self.history.add(text)
+            self.q_gui_app.put((event_type.MSG, text))
+            hist = self.history.get()
+            hist.reverse()
+            self.text_input.clear()
+            self.text_input.addItem('')
+            self.text_input.addItems(hist)
+            self.text_input.setCurrentIndex(0)
+            self.text_input.setItemText(0, '')
 
     def _setOutputColors(self, bg, fg):
         """
