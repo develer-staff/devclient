@@ -60,7 +60,14 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
+        self._setupSignal()
+        self._translateText()
+        self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
+        self.connected = None
+        self.text_input.installEventFilter(self)
+        self.text_output.installEventFilter(self)
 
+    def _setupSignal(self):
         self.connect(self.action_connect, SIGNAL("triggered()"),
                      self._connect)
 
@@ -82,12 +89,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         timer = QtCore.QTimer(self)
         self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
         timer.start(10)
-
-        self._translateText()
-        self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
-        self.connected = None
-        self.text_input.installEventFilter(self)
-        self.text_output.installEventFilter(self)
 
     def _getKeySeq(self, event):
         """
@@ -117,13 +118,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
            event.key() not in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Meta,
                                Qt.Key_Alt):
 
-            if not hasattr(self, 'macros') or self.macros[1] != self.connected:
-                self.macros = (storage.Storage().macros(self.connected),
-                               self.connected)
-
             key_seq = self._getKeySeq(event)
 
-            for m in self.macros[0]:
+            for m in self.macros:
                 if m[1:] == key_seq:
                     self.q_gui_app.put((event_type.MSG, m[0]))
                     return True
@@ -209,6 +206,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         comp_factory = ComponentFactory(getMudType(host, port))
         self.viewer = comp_factory.viewer(self)
         self.text_input.setFocus()
+        self.macros = storage.Storage().macros(self.connected)
 
     def _sendText(self):
         if self.text_input.hasFocus():
@@ -254,13 +252,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             if cmd == event_type.MODEL:
                 self.viewer.process(msg)
             elif cmd == event_type.CONN_REFUSED:
-                 self._displayWarning(self._text['Connect'],
-                                      self._text['ConnError'])
+                self._displayWarning(self._text['Connect'],
+                                     self._text['ConnError'])
             elif cmd == event_type.CONN_ESTABLISHED:
-                 self._startConnection(*msg[1:])
-                 self.connected = msg[0]
+                self.connected = msg[0]
+                self._startConnection(*msg[1:])
             elif cmd == event_type.CONN_CLOSED:
-                 self.connected = None
+                self.connected = None
 
         except Queue.Empty:
             pass
