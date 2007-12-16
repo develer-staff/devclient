@@ -271,6 +271,8 @@ class FormMacro(object):
         :Parameters:
           conn : str
             the name of connection
+          signal : bool
+            if False the signal connected with combo must be disconnected
         """
 
         if not signal:
@@ -363,7 +365,6 @@ class FormMacro(object):
         self.w.keys_macro.setStyleSheet('')
         self.start_reg = False
 
-
     def _register(self):
         """
         Start register keyboard's event.
@@ -400,6 +401,16 @@ class FormMacro(object):
     def getKeyDescr(self, shift, alt, ctrl, key):
         """
         Return a readable description for a sequence of keys.
+
+        :Parameters:
+          shift : int
+            1 if the shift key is pressed, 0 otherwise
+          alt : int
+            1 if the alt key is pressed, 0 otherwise
+          ctrl : int
+            1 if the control key is pressed, 0 otherwise
+          key : int
+            the code of key
         """
 
         return ('', 'Ctrl ')[ctrl] + ('', 'Alt ')[alt] + \
