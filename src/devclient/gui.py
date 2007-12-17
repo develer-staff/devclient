@@ -177,6 +177,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _showOption(self):
         opt = gui_option.GuiOption(self)
         self.connect(opt, SIGNAL("connectReq(int)"), self._connect)
+        self.connect(opt, SIGNAL("reloadConnData(QString)"),
+                     self._reloadConnData)
         opt.show()
 
     def _connect(self, id_conn = None):
@@ -199,6 +201,19 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 conn = connections
 
         self.q_gui_app.put((event_type.CONNECT, conn[0][1:4]))
+
+    def _reloadConnData(self, conn):
+        """
+        Reload all data rely on connection and propagate message of reloading.
+
+        :Parameters:
+          conn : str
+            the name of connection
+        """
+
+        if self.connected and self.connected == conn:
+            self.macros = storage.Storage().macros(self.connected)
+            self.q_gui_app.put((event_type.RELOAD_CONN_DATA, unicode(conn)))
 
     def _startConnection(self, host, port):
         self.history.clear()

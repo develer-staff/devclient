@@ -344,8 +344,9 @@ class FormMacro(object):
             self.w.list_macro.setItemText(list_idx,
                                           self.getKeyDescr(*macro[1:]))
 
-        self.storage.saveMacros(unicode(self.w.list_conn_macro.currentText()),
-                                self.macros)
+        conn_name = self.w.list_conn_macro.currentText()
+        self.storage.saveMacros(unicode(conn_name), self.macros)
+        self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
         self._clear()
 
     def delete(self):
@@ -356,8 +357,9 @@ class FormMacro(object):
 
         del self.macros[list_idx - 1]
         self.w.list_macro.removeItem(list_idx)
-        self.storage.saveMacros(unicode(self.w.list_conn_macro.currentText()),
-                                self.macros)
+        conn_name = self.w.list_conn_macro.currentText()
+        self.storage.saveMacros(unicode(conn_name), self.macros)
+        self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
 
     def _clear(self):
         self.w.list_macro.setCurrentIndex(0)
@@ -560,9 +562,9 @@ class GuiOption(QtGui.QDialog, Ui_option):
             self.aliases[list_idx - 1] = alias
             self.list_alias.setItemText(list_idx, alias[0])
 
-        self.storage.saveAliases(unicode(self.list_conn_alias.currentText()),
-                                 self.aliases)
-
+        conn_name = self.list_conn_alias.currentText()
+        self.storage.saveAliases(unicode(conn_name), self.aliases)
+        self.emit(SIGNAL('reloadConnData(QString)'), conn_name)
         self.list_alias.setCurrentIndex(0)
         self._loadAlias(0)
 
@@ -574,5 +576,6 @@ class GuiOption(QtGui.QDialog, Ui_option):
 
         del self.aliases[list_idx - 1]
         self.list_alias.removeItem(list_idx)
-        self.storage.saveAliases(unicode(self.list_conn_alias.currentText()),
-                                 self.aliases)
+        conn_name = self.list_conn_alias.currentText()
+        self.storage.saveAliases(unicode(conn_name), self.aliases)
+        self.emit(SIGNAL('reloadConnData(QString)'), conn_name)

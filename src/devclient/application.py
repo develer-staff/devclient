@@ -51,6 +51,19 @@ class Application(object):
         self.q_gui_app = q_gui_app
 
         self.sock = Socket()
+        self.alias = None
+        self.parser = None
+
+    def _reloadConnData(self, conn):
+        """
+        Reload all data rely on connection and propagate message of reloading.
+
+        :Parameters:
+          conn : str
+            the name of connection
+        """
+
+        self.alias = Alias(conn)
 
     def mainLoop(self):
         """
@@ -60,8 +73,6 @@ class Application(object):
         the `Gui` part.
         """
 
-        parser, alias = None, None
-
         while 1:
 
             if self.sock.connected:
@@ -69,16 +80,18 @@ class Application(object):
                 if not self.sock.connected:
                     self.q_app_gui.put((event_type.CONN_CLOSED, ""))
                 elif data:
-                    parser.parse(data)
+                    self.parser.parse(data)
                     self.q_app_gui.put((event_type.MODEL,
-                                        copy.deepcopy(parser.model)))
+                                        copy.deepcopy(self.parser.model)))
             try:
                 cmd, msg = self.q_gui_app.get(0)
                 if cmd == event_type.MSG and self.sock.connected:
-                    self.sock.write(alias.check(msg))
+                    self.sock.write(self.alias.check(msg))
                 elif cmd == event_type.END_APP:
                     self.sock.disconnect()
                     return
+                elif cmd == event_type.RELOAD_CONN_DATA:
+                    self._reloadConnData(msg)
                 elif cmd == event_type.CONNECT:
                     if self.sock.connected:
                         self.sock.disconnect()
@@ -91,9 +104,8 @@ class Application(object):
                         self.q_app_gui.put((event_type.CONN_ESTABLISHED, msg))
 
                     mud = getMudType(*msg[1:])
-                    parser = ComponentFactory(mud).parser()
-
-                    alias = Alias(msg[0])
+                    self.parser = ComponentFactory(mud).parser()
+                    self.alias = Alias(msg[0])
 
             except Queue.Empty:
                 pass
