@@ -51,12 +51,17 @@ class Application(object):
         self.q_gui_app = q_gui_app
 
         self.sock = Socket()
+        """the interface with mud server, an instance of `Socket`"""
+
         self.alias = None
+        """the `Alias` instance, used to replace alias with text to send"""
+
         self.parser = None
+        """the `Parser` instance, used to parse data from server"""
 
     def _reloadConnData(self, conn):
         """
-        Reload all data rely on connection and propagate message of reloading.
+        Reload all data rely on connection.
 
         :Parameters:
           conn : str
