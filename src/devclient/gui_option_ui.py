@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Sun Dec  9 15:01:34 2007
-#      by: PyQt4 UI code generator 4.3
+# Created: Mon Dec 17 21:58:28 2007
+#      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -364,9 +364,23 @@ class Ui_option(object):
         option.setTabOrder(self.name_conn,self.host_conn)
         option.setTabOrder(self.host_conn,self.port_conn)
         option.setTabOrder(self.port_conn,self.default_conn)
-        option.setTabOrder(self.default_conn,self.save_conn)
+        option.setTabOrder(self.default_conn,self.connect_conn)
+        option.setTabOrder(self.connect_conn,self.save_conn)
         option.setTabOrder(self.save_conn,self.delete_conn)
         option.setTabOrder(self.delete_conn,self.tab_widget)
+        option.setTabOrder(self.tab_widget,self.list_conn_alias)
+        option.setTabOrder(self.list_conn_alias,self.list_alias)
+        option.setTabOrder(self.list_alias,self.label_alias)
+        option.setTabOrder(self.label_alias,self.body_alias)
+        option.setTabOrder(self.body_alias,self.save_alias)
+        option.setTabOrder(self.save_alias,self.delete_alias)
+        option.setTabOrder(self.delete_alias,self.list_conn_macro)
+        option.setTabOrder(self.list_conn_macro,self.list_macro)
+        option.setTabOrder(self.list_macro,self.register_macro)
+        option.setTabOrder(self.register_macro,self.command_macro)
+        option.setTabOrder(self.command_macro,self.save_macro)
+        option.setTabOrder(self.save_macro,self.delete_macro)
+        option.setTabOrder(self.delete_macro,self.keys_macro)
 
     def retranslateUi(self, option):
         option.setWindowTitle(QtGui.QApplication.translate("option", "Option", None, QtGui.QApplication.UnicodeUTF8))

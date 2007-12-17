@@ -722,9 +722,23 @@
   <tabstop>host_conn</tabstop>
   <tabstop>port_conn</tabstop>
   <tabstop>default_conn</tabstop>
+  <tabstop>connect_conn</tabstop>
   <tabstop>save_conn</tabstop>
   <tabstop>delete_conn</tabstop>
   <tabstop>tab_widget</tabstop>
+  <tabstop>list_conn_alias</tabstop>
+  <tabstop>list_alias</tabstop>
+  <tabstop>label_alias</tabstop>
+  <tabstop>body_alias</tabstop>
+  <tabstop>save_alias</tabstop>
+  <tabstop>delete_alias</tabstop>
+  <tabstop>list_conn_macro</tabstop>
+  <tabstop>list_macro</tabstop>
+  <tabstop>register_macro</tabstop>
+  <tabstop>command_macro</tabstop>
+  <tabstop>save_macro</tabstop>
+  <tabstop>delete_macro</tabstop>
+  <tabstop>keys_macro</tabstop>
  </tabstops>
  <resources/>
  <connections/>
