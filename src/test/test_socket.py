@@ -28,7 +28,7 @@ import time
 
 sys.path.append('..')
 
-from devclient.socket import Socket
+from devclient.application import Socket
 
 class TestSocket(unittest.TestCase):
     def setUp(self):
