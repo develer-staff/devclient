@@ -407,6 +407,10 @@ class TestFormMacro(GuiOptionTest):
         self.assert_(not form_macro.w.command_macro.text() and
                      not form_macro.w.keys_macro.text())
 
+    def testLoadEmpty3(self):
+        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        self.assert_(form_macro.w.list_macro.count() == 1)
+
     def testLoad(self):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000, 1])

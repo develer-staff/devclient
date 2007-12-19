@@ -217,11 +217,14 @@ class FormMacro(object):
         self.w.list_conn_macro.clear()
         self.w.list_conn_macro.addItems([c[1] for c in connections])
 
-        conn_name = unicode(connections[0][1])
         for o in (self.w.list_macro, self.w.command_macro,
                   self.w.register_macro):
             o.setEnabled(bool(self.w.list_conn_macro.count()))
 
+        if connections:
+            conn_name = unicode(connections[0][1])
+        else:
+            conn_name = None
         self.loadMacros(conn_name, True)
         self.start_reg = False
         self._setupSignal()
@@ -277,7 +280,10 @@ class FormMacro(object):
 
         if not signal:
             self._signalCombo(False)
-        self.macros = self.storage.macros(unicode(conn))
+        if conn:
+            self.macros = self.storage.macros(unicode(conn))
+        else:
+            self.macros = []
         self.w.list_macro.clear()
         self.w.list_macro.addItem(self._text['new_macro'])
         self.w.list_macro.addItems([self.getKeyDescr(*m[1:]) for m in
