@@ -32,9 +32,9 @@ import mud_type
 from alias import Alias
 from mud_type import getMudType, ComponentFactory
 
-class Socket(object):
+class SocketToServer(object):
     """
-    Provide an asynchronous interface to socket operation.
+    Provide a socket interface to Mud server.
     """
 
     encoding = "ISO-8859-1"
@@ -50,15 +50,14 @@ class Socket(object):
             raise exception.ConnectionRefused()
         self.connected = 1
 
+    def getSocket(self):
+        return self.t.get_socket()
+
     def read(self):
         """
         Read data from socket (wait a maximum of 0.1s) and return a unicode
         string.
         """
-
-        # As there is only one socket it is possible to use telnetlib function
-        # instead socket function. This allow to avoid parsing of IAC and Co..
-        select.select([self.t.get_socket()], [], [], .1)
 
         try:
             return unicode(self.t.read_very_eager(), self.encoding)
@@ -97,7 +96,7 @@ class Application(object):
         self.q_app_gui = q_app_gui
         self.q_gui_app = q_gui_app
 
-        self.sock = Socket()
+        self.sock = SocketToServer()
         """the interface with mud server, an instance of `Socket`"""
 
         self.alias = None
@@ -128,6 +127,7 @@ class Application(object):
         while 1:
 
             if self.sock.connected:
+                select.select([self.sock.getSocket()], [], [], .1)
                 data = self.sock.read()
                 if not self.sock.connected:
                     self.q_app_gui.put((event_type.CONN_CLOSED, ""))
