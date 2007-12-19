@@ -375,6 +375,8 @@ class GuiOptionMacroMock(object):
     def _displayWarning(self, title, message):
         self._warning = (title, message)
 
+    def emit(self, signal, slot):
+        pass
 
 class TestFormMacro(GuiOptionTest):
 
@@ -460,7 +462,7 @@ class TestFormMacro(GuiOptionTest):
         form_macro.save()
         self._setFormFields(form_macro, ('check', 0, 0, 0, 78))
         self.assert_(not form_macro._checkFields())
-        
+
     def testCheckField5(self):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000, 1])
@@ -498,8 +500,6 @@ class TestFormMacro(GuiOptionTest):
         self.assert_(not form_macro.w._warning)
         self.assert_(Storage().macros('name')[1] == macro)
         self.assert_(len(form_macro.macros) == 2)
-
-
 
 
 if __name__ == '__main__':
