@@ -28,7 +28,7 @@ import time
 
 sys.path.append('..')
 
-from devclient.application import Socket
+from devclient.core import SocketToServer
 
 class TestSocket(unittest.TestCase):
     def setUp(self):
@@ -36,11 +36,11 @@ class TestSocket(unittest.TestCase):
         time.sleep(1)
 
     def testData(self):
-        s = Socket()
+        s = SocketToServer()
         s.connect("localhost", 6666)
-        s.write("prova")
+        s.write("hello")
         time.sleep(1)
-        self.assert_(s.read() == "prova\n")
+        self.assert_(s.read() == "hello\n")
 
 if __name__ == '__main__':
     unittest.main()

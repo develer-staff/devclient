@@ -23,20 +23,70 @@ __docformat__ = 'restructuredtext'
 
 import re
 import sys
-import Queue
+import cPickle
+import struct
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, QtNetwork
 from PyQt4.QtCore import SIGNAL, Qt
 from PyQt4.QtGui import QApplication, QMessageBox
 
 import storage
+import messages
 import gui_option
-import event_type
 from conf import config
 from gui_ui import Ui_dev_client
 from history import History
 from mud_type import getMudType, ComponentFactory
 from constants import PUBLIC_VERSION, PROJECT_NAME
+
+class SocketToCore(object):
+    """
+    Provide a socket interface to Core part of client.
+    """
+
+    def __init__(self, widget, port=7890):
+        self.w = widget
+        self.s = QtNetwork.QTcpSocket()
+        self.s.connectToHost('localhost', port)
+        self._setupSignal()
+
+    def _setupSignal(self):
+        self.w.connect(self.s, SIGNAL("readyRead()"), self.w._processIncoming)
+        self.w.connect(self.s, SIGNAL("error(QAbstractSocket::SocketError)"),
+                       self.w._commError)
+
+    def read(self):
+        """
+        Read a message.
+
+        :return: a tuple of the form (<message type>, <message>)
+        """
+
+        size = self.s.read(struct.calcsize("L"))
+        size = struct.unpack('>l', size)[0]
+
+        while self.s.bytesAvailable() < size:
+            if not self.s.waitForReadyRead(200):
+                return (messages.UNKNOWN, '')
+
+        return cPickle.loads(self.s.read(size))
+
+    def write(self, cmd, message):
+        """
+        Send a message.
+
+        :Parameters:
+          cmd : int
+            the message type
+
+          message : object
+            the message to sent
+        """
+
+        buf = cPickle.dumps((cmd, message))
+        self.s.write(struct.pack('>l', len(buf)))
+        self.s.write(buf)
+
 
 class Gui(QtGui.QMainWindow, Ui_dev_client):
     """
@@ -44,9 +94,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     designed by Qt-designer.
     """
 
-    def __init__(self, q_app_gui, q_gui_app):
-        self.q_app_gui = q_app_gui
-        self.q_gui_app = q_gui_app
+    def __init__(self):
 
         if QApplication.instance():
             self.app = QApplication.instance()
@@ -55,6 +103,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self.app.setStyle(QtGui.QStyleFactory.create("Cleanlooks"))
         self._installTranslator()
+
+        self.s_core = SocketToCore(self)
+        """the interface with core part, an instance of `SocketToCore`"""
 
         self.history = History()
 
@@ -74,21 +125,11 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.connect(self.action_option, SIGNAL("triggered()"),
                      self._showOption)
 
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Up),
-                        self, self._onKeyUp)
+        QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Up), self, self._onKeyUp)
+        QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Down), self, self._onKeyDown)
 
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Down),
-                        self, self._onKeyDown)
-
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Enter),
-                        self, self._sendText)
-
-        QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Return),
-                        self, self._sendText)
-
-        timer = QtCore.QTimer(self)
-        self.connect(timer, SIGNAL("timeout()"), self._processIncoming)
-        timer.start(10)
+        QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Enter), self, self._sendText)
+        QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Return), self, self._sendText)
 
     def _getKeySeq(self, event):
         """
@@ -122,7 +163,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
             for m in self.macros:
                 if m[1:] == key_seq:
-                    self.q_gui_app.put((event_type.MSG, m[0]))
+                    self.s_core.write(messages.MSG, m[0])
                     return True
         return False
 
@@ -171,7 +212,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 event.ignore()
                 return
 
-        self.q_gui_app.put((event_type.END_APP, ""))
+        self.s_core.write(messages.END_APP, "")
         event.accept()
 
     def _showOption(self):
@@ -200,7 +241,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             if not conn:
                 conn = connections
 
-        self.q_gui_app.put((event_type.CONNECT, conn[0][1:4]))
+        self.s_core.write(messages.CONNECT, conn[0][1:4])
 
     def _reloadConnData(self, conn):
         """
@@ -213,7 +254,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         if self.connected and self.connected == conn:
             self.macros = storage.Storage().macros(self.connected)
-            self.q_gui_app.put((event_type.RELOAD_CONN_DATA, unicode(conn)))
+            self.s_core.write(messages.RELOAD_CONN_DATA, unicode(conn))
 
     def _startConnection(self, host, port):
         self.history.clear()
@@ -227,7 +268,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         if self.text_input.hasFocus():
             text = unicode(self.text_input.currentText())
             self.history.add(text)
-            self.q_gui_app.put((event_type.MSG, text))
+            self.s_core.write(messages.MSG, text)
             hist = self.history.get()
             hist.reverse()
             self.text_input.clear()
@@ -261,22 +302,23 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         else:
             self.text_output.setStyleSheet('QTextEdit {%s}' % style)
 
-    def _processIncoming(self):
-        try:
-            cmd, msg = self.q_app_gui.get(0)
-            if cmd == event_type.MODEL:
-                self.viewer.process(msg)
-            elif cmd == event_type.CONN_REFUSED:
-                self._displayWarning(self._text['Connect'],
-                                     self._text['ConnError'])
-            elif cmd == event_type.CONN_ESTABLISHED:
-                self.connected = msg[0]
-                self._startConnection(*msg[1:])
-            elif cmd == event_type.CONN_CLOSED:
-                self.connected = None
 
-        except Queue.Empty:
-            pass
+    def _processIncoming(self):
+
+        cmd, msg = self.s_core.read()
+
+        if cmd == messages.MODEL:
+            self.viewer.process(msg)
+        elif cmd == messages.CONN_REFUSED:
+            self._displayWarning(self._text['Connect'], self._text['ConnError'])
+        elif cmd == messages.CONN_ESTABLISHED:
+            self.connected = msg[0]
+            self._startConnection(*msg[1:])
+        elif cmd == messages.CONN_CLOSED:
+            self.connected = None
+
+    def _commError(self, error):
+        pass
 
     def _displayQuestion(self, title, message):
         box = QMessageBox(self)

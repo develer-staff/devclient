@@ -24,22 +24,20 @@ __docformat__ = 'restructuredtext'
 import sys
 import os.path
 import logging
-import Queue
 import threading
 
 import conf
 import constants
-import event_type
 from conf import config
-from application import Application
+from core import Core
 from gui import Gui
 
 
 class Thread(threading.Thread):
     """
-    Class to manage thread interaction between `Gui` and `Application`.
+    Class to manage thread interaction between `Gui` and `Core`.
 
-    The gui part run in main thread while application part run
+    The gui part run in main thread while core part run
     in secondary thread.
     """
 
@@ -49,21 +47,17 @@ class Thread(threading.Thread):
         """
 
         threading.Thread.__init__(self)
-        self.q_app_gui = Queue.Queue()  #: events from app to gui
-        self.q_gui_app = Queue.Queue()  #: events from gui to app
-
-        gui = Gui(self.q_app_gui, self.q_gui_app)
-
+        gui = Gui()
         self.start()
         gui.mainLoop()
 
     def run(self):
         """
-        Run the application part.
+        Run the core part.
         """
 
-        app = Application(self.q_app_gui, self.q_gui_app)
-        app.mainLoop()
+        core = Core()
+        core.mainLoop()
 
 
 def main(argv, cfg_file):
