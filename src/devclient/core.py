@@ -168,8 +168,8 @@ class Core(object):
         """
         Realize the main loop of core.
 
-        Manage `Socket` input/output and take care of exchange messages with
-        the `Gui` part.
+        Manage `SocketToServer` input/output and take care of exchange messages
+        with the `Gui` part via `SocketToGui` instance object.
         """
 
         inputs = [self.s_gui.getSocket()]
