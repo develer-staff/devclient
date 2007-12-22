@@ -231,4 +231,4 @@ class Core(object):
                 elif s == self.s_gui.getSocket():
                     sock_watched.append(self.s_gui.accept())
                 elif not self._readDataFromGui(sock_watched):
-                        break
+                    break
