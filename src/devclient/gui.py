@@ -51,7 +51,7 @@ class SocketToCore(object):
         self._setupSignal()
 
     def _setupSignal(self):
-        self.w.connect(self.s, SIGNAL("readyRead()"), self.w._processIncoming)
+        self.w.connect(self.s, SIGNAL("readyRead()"), self.w._readDataFromCore)
         self.w.connect(self.s, SIGNAL("error(QAbstractSocket::SocketError)"),
                        self.w._commError)
 
@@ -68,7 +68,6 @@ class SocketToCore(object):
         while self.s.bytesAvailable() < size:
             if not self.s.waitForReadyRead(200):
                 return (messages.UNKNOWN, '')
-
 
         return cPickle.loads(self.s.read(size))
 
@@ -307,8 +306,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         else:
             self.text_output.setStyleSheet('QTextEdit {%s}' % style)
 
-
-    def _processIncoming(self):
+    def _readDataFromCore(self):
 
         while self.s_core.availableData():
             cmd, msg = self.s_core.read()
@@ -324,6 +322,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 self.connected = None
 
     def _commError(self, error):
+        # FIX
         pass
 
     def _displayQuestion(self, title, message):

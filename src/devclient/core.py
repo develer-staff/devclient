@@ -130,6 +130,7 @@ class SocketToGui(object):
         self.conn.send(struct.pack('>l', len(buf)))
         self.conn.send(buf)
 
+
 class Core(object):
     """
     Main class for the core part of client.
