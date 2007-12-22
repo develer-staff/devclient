@@ -78,7 +78,7 @@ class SocketToServer(object):
 
 class SocketToGui(object):
     """
-    Provide a socket interface to Gui part of client.
+    Provide a socket interface to `Gui` part of client.
     """
 
     def __init__(self, port=7890):
@@ -180,10 +180,10 @@ class Core(object):
                 self.s_server.disconnect()
             try:
                 self.s_server.connect(*msg[1:])
-                sock_watched.append(self.s_server.getSocket())
             except exception.ConnectionRefused:
                 self.s_gui.write(messages.CONN_REFUSED, "")
             else:
+                sock_watched.append(self.s_server.getSocket())
                 self.s_gui.write(messages.CONN_ESTABLISHED, msg)
 
             mud = getMudType(*msg[1:])

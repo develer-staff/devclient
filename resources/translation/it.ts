@@ -4,27 +4,27 @@
 <context>
     <name>dev_client</name>
     <message>
-        <location filename="../../src/devclient/gui.py" line="105"/>
+        <location filename="../../src/devclient/gui.py" line="194"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="279"/>
+        <location filename="../../src/devclient/gui.ui" line="287"/>
         <source>Exit</source>
         <translation>Esci</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="287"/>
+        <location filename="../../src/devclient/gui.ui" line="295"/>
         <source>Option</source>
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="108"/>
+        <location filename="../../src/devclient/gui.py" line="197"/>
         <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="111"/>
+        <location filename="../../src/devclient/gui.py" line="200"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -72,24 +72,29 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="114"/>
+        <location filename="../../src/devclient/gui.py" line="203"/>
         <source>Yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="117"/>
+        <location filename="../../src/devclient/gui.py" line="206"/>
         <source>No</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="120"/>
+        <location filename="../../src/devclient/gui.py" line="209"/>
         <source>Really quit?</source>
         <translation>Vuoi davvero uscire?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="123"/>
+        <location filename="../../src/devclient/gui.py" line="212"/>
         <source>Really close connection?</source>
         <translation>Vuoi davvero chiudere la connessione?</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.py" line="216"/>
+        <source>Fatal Error, please restart your client</source>
+        <translation>Errore irreversibile, riavviare il client</translation>
     </message>
 </context>
 <context>
@@ -140,12 +145,12 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="419"/>
+        <location filename="../../src/devclient/gui_option.py" line="484"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="422"/>
+        <location filename="../../src/devclient/gui_option.py" line="487"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
@@ -155,22 +160,22 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="426"/>
+        <location filename="../../src/devclient/gui_option.py" line="491"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="428"/>
+        <location filename="../../src/devclient/gui_option.py" line="493"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="431"/>
+        <location filename="../../src/devclient/gui_option.py" line="496"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="424"/>
+        <location filename="../../src/devclient/gui_option.py" line="489"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>
@@ -181,17 +186,17 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="237"/>
+        <location filename="../../src/devclient/gui_option.py" line="241"/>
         <source>Macro</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="243"/>
+        <location filename="../../src/devclient/gui_option.py" line="247"/>
         <source>Keys</source>
         <translation>Tasti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="246"/>
+        <location filename="../../src/devclient/gui_option.py" line="250"/>
         <source>Command</source>
         <translation>Comando</translation>
     </message>
@@ -201,13 +206,13 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Registra</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="234"/>
+        <location filename="../../src/devclient/gui_option.py" line="238"/>
         <source>Create New</source>
         <comment>macro</comment>
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="249"/>
+        <location filename="../../src/devclient/gui_option.py" line="253"/>
         <source>Key sequence must be unique</source>
         <translation>La sequenza dei tasti deve essere univoca</translation>
     </message>

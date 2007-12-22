@@ -41,7 +41,7 @@ from constants import PUBLIC_VERSION, PROJECT_NAME
 
 class SocketToCore(object):
     """
-    Provide a socket interface to Core part of client.
+    Provide a socket interface to `Core` part of client.
     """
 
     def __init__(self, widget, port=7890):
@@ -209,6 +209,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self._text['CloseConn'] = QApplication.translate("dev_client",
             "Really close connection?", None, QApplication.UnicodeUTF8)
 
+        self._text['FatalError'] = QApplication.translate("dev_client",
+            "Fatal Error, please restart your client", None,
+            QApplication.UnicodeUTF8)
+
     def closeEvent(self, event):
         if self.connected:
             if not self._displayQuestion(PROJECT_NAME,
@@ -322,8 +326,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 self.connected = None
 
     def _commError(self, error):
-        # FIX
-        pass
+        self._displayWarning(PROJECT_NAME, self._text['FatalError'])
 
     def _displayQuestion(self, title, message):
         box = QMessageBox(self)
