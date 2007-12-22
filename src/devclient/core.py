@@ -163,6 +163,46 @@ class Core(object):
 
         self.alias = Alias(conn)
 
+    def _readDataFromGui(self, inputs, outputs):
+        cmd, msg = self.s_gui.read()
+        if cmd == messages.MSG and self.s_server.connected:
+            self.s_server.write(self.alias.check(msg))
+        elif cmd == messages.END_APP:
+            self.s_server.disconnect()
+            return False
+        elif cmd == messages.RELOAD_CONN_DATA:
+            self._reloadConnData(msg)
+        elif cmd == messages.CONNECT:
+            if self.s_server.connected:
+                inputs.remove(self.s_server.getSocket())
+                self.s_gui.write(messages.CONN_CLOSED, '')
+                self.s_server.disconnect()
+            try:
+                self.s_server.connect(*msg[1:])
+                inputs.append(self.s_server.getSocket())
+            except exception.ConnectionRefused:
+                self.s_gui.write(messages.CONN_REFUSED, "")
+            else:
+                self.s_gui.write(messages.CONN_ESTABLISHED, msg)
+
+            mud = getMudType(*msg[1:])
+            self.parser = ComponentFactory(mud).parser()
+            self.alias = Alias(msg[0])
+
+        return True
+
+    def _readDataFromServer(self, inputs, outputs):
+        try:
+            data = self.s_server.read()
+        except exception.ConnectionClosed:
+            inputs.remove(self.s_server.getSocket())
+            self.s_gui.write(messages.CONN_CLOSED, '')
+            self.s_server.disconnect()
+        else:
+            if data:
+                self.parser.parse(data)
+                self.s_gui.write(messages.MODEL, self.parser.model)
+
     def mainLoop(self):
         """
         Realize the main loop of core.
@@ -178,52 +218,17 @@ class Core(object):
             try:
                 r, w, e = select.select(inputs, outputs, [])
             except select.error, e:
+                # FIX
                 break
             except socket.error, e:
+                # FIX
                 break
 
             for s in r:
-                # read data from server and send to gui
                 if s == self.s_server.getSocket():
-                    try:
-                        data = self.s_server.read()
-                    except exception.ConnectionClosed:
-                        inputs.remove(self.s_server.getSocket())
-                        self.s_gui.write(messages.CONN_CLOSED, '')
-                        self.s_server.disconnect()
-                    else:
-                        if data:
-                            self.parser.parse(data)
-                            self.s_gui.write(messages.MODEL, self.parser.model)
-
+                    self._readDataFromServer(inputs, outputs)
                 # connection request from Gui
                 elif s == self.s_gui.getSocket():
-                    client = self.s_gui.accept()
-                    inputs.append(client)
-
-                # data from Gui
-                else:
-                    cmd, msg = self.s_gui.read()
-                    if cmd == messages.MSG and self.s_server.connected:
-                        self.s_server.write(self.alias.check(msg))
-                    elif cmd == messages.END_APP:
-                        self.s_server.disconnect()
-                        return
-                    elif cmd == messages.RELOAD_CONN_DATA:
-                        self._reloadConnData(msg)
-                    elif cmd == messages.CONNECT:
-                        if self.s_server.connected:
-                            inputs.remove(self.s_server.getSocket())
-                            self.s_gui.write(messages.CONN_CLOSED, '')
-                            self.s_server.disconnect()
-                        try:
-                            self.s_server.connect(*msg[1:])
-                            inputs.append(self.s_server.getSocket())
-                        except exception.ConnectionRefused:
-                            self.s_gui.write(messages.CONN_REFUSED, "")
-                        else:
-                            self.s_gui.write(messages.CONN_ESTABLISHED, msg)
-
-                        mud = getMudType(*msg[1:])
-                        self.parser = ComponentFactory(mud).parser()
-                        self.alias = Alias(msg[0])
+                    inputs.append(self.s_gui.accept())
+                elif not self._readDataFromGui(inputs, outputs):
+                        break
