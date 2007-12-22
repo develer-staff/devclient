@@ -115,6 +115,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self._translateText()
         self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
         self.connected = None
+        self.text_input.setCompleter(None)
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
 
