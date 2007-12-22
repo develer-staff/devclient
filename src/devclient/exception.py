@@ -55,3 +55,6 @@ class ConnectionNotFound(DevClient):
     Class for handling error on finding connection to load.
     """
     pass
+
+class ConnectionClosed(DevClient):
+    pass

@@ -69,7 +69,11 @@ class SocketToCore(object):
             if not self.s.waitForReadyRead(200):
                 return (messages.UNKNOWN, '')
 
+
         return cPickle.loads(self.s.read(size))
+
+    def availableData(self):
+        return self.s.bytesAvailable() > 0
 
     def write(self, cmd, message):
         """
@@ -306,17 +310,18 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _processIncoming(self):
 
-        cmd, msg = self.s_core.read()
-
-        if cmd == messages.MODEL:
-            self.viewer.process(msg)
-        elif cmd == messages.CONN_REFUSED:
-            self._displayWarning(self._text['Connect'], self._text['ConnError'])
-        elif cmd == messages.CONN_ESTABLISHED:
-            self.connected = msg[0]
-            self._startConnection(*msg[1:])
-        elif cmd == messages.CONN_CLOSED:
-            self.connected = None
+        while self.s_core.availableData():
+            cmd, msg = self.s_core.read()
+            if cmd == messages.MODEL:
+                self.viewer.process(msg)
+            elif cmd == messages.CONN_REFUSED:
+                self._displayWarning(self._text['Connect'],
+                                     self._text['ConnError'])
+            elif cmd == messages.CONN_ESTABLISHED:
+                self.connected = msg[0]
+                self._startConnection(*msg[1:])
+            elif cmd == messages.CONN_CLOSED:
+                self.connected = None
 
     def _commError(self, error):
         pass

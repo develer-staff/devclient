@@ -62,8 +62,7 @@ class SocketToServer(object):
         try:
             return unicode(self.t.read_very_eager(), self.encoding)
         except EOFError:
-            self.disconnect()
-            return unicode('')
+            raise exception.ConnectionClosed()
 
     def write(self, msg):
         self.t.write(msg.encode(self.encoding) + "\n")
@@ -87,6 +86,7 @@ class SocketToGui(object):
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(('localhost', port))
         self.s.listen(1)
+        self.w = 0
 
     def getSocket(self):
         return self.s
@@ -126,7 +126,6 @@ class SocketToGui(object):
           message : object
             the message to sent
         """
-
         buf = cPickle.dumps((cmd, message))
         self.conn.send(struct.pack('>l', len(buf)))
         self.conn.send(buf)
@@ -186,10 +185,16 @@ class Core(object):
             for s in r:
                 # read data from server and send to gui
                 if s == self.s_server.getSocket():
-                    data = self.s_server.read()
-                    if data:
-                        self.parser.parse(data)
-                        self.s_gui.write(messages.MODEL, self.parser.model)
+                    try:
+                        data = self.s_server.read()
+                    except exception.ConnectionClosed:
+                        inputs.remove(self.s_server.getSocket())
+                        self.s_gui.write(messages.CONN_CLOSED, '')
+                        self.s_server.disconnect()
+                    else:
+                        if data:
+                            self.parser.parse(data)
+                            self.s_gui.write(messages.MODEL, self.parser.model)
 
                 # connection request from Gui
                 elif s == self.s_gui.getSocket():
@@ -208,8 +213,9 @@ class Core(object):
                         self._reloadConnData(msg)
                     elif cmd == messages.CONNECT:
                         if self.s_server.connected:
+                            inputs.remove(self.s_server.getSocket())
+                            self.s_gui.write(messages.CONN_CLOSED, '')
                             self.s_server.disconnect()
-
                         try:
                             self.s_server.connect(*msg[1:])
                             inputs.append(self.s_server.getSocket())
