@@ -163,7 +163,7 @@ class Core(object):
 
         self.alias = Alias(conn)
 
-    def _readDataFromGui(self, inputs, outputs):
+    def _readDataFromGui(self, sock_watched):
         cmd, msg = self.s_gui.read()
         if cmd == messages.MSG and self.s_server.connected:
             self.s_server.write(self.alias.check(msg))
@@ -174,12 +174,12 @@ class Core(object):
             self._reloadConnData(msg)
         elif cmd == messages.CONNECT:
             if self.s_server.connected:
-                inputs.remove(self.s_server.getSocket())
+                sock_watched.remove(self.s_server.getSocket())
                 self.s_gui.write(messages.CONN_CLOSED, '')
                 self.s_server.disconnect()
             try:
                 self.s_server.connect(*msg[1:])
-                inputs.append(self.s_server.getSocket())
+                sock_watched.append(self.s_server.getSocket())
             except exception.ConnectionRefused:
                 self.s_gui.write(messages.CONN_REFUSED, "")
             else:
@@ -191,11 +191,11 @@ class Core(object):
 
         return True
 
-    def _readDataFromServer(self, inputs, outputs):
+    def _readDataFromServer(self, sock_watched):
         try:
             data = self.s_server.read()
         except exception.ConnectionClosed:
-            inputs.remove(self.s_server.getSocket())
+            sock_watched.remove(self.s_server.getSocket())
             self.s_gui.write(messages.CONN_CLOSED, '')
             self.s_server.disconnect()
         else:
@@ -211,12 +211,11 @@ class Core(object):
         with the `Gui` part via `SocketToGui` instance object.
         """
 
-        inputs = [self.s_gui.getSocket()]
-        outputs = []
+        sock_watched = [self.s_gui.getSocket()]
 
         while 1:
             try:
-                r, w, e = select.select(inputs, outputs, [])
+                r, w, e = select.select(sock_watched, [], [])
             except select.error, e:
                 # FIX
                 break
@@ -226,9 +225,9 @@ class Core(object):
 
             for s in r:
                 if s == self.s_server.getSocket():
-                    self._readDataFromServer(inputs, outputs)
+                    self._readDataFromServer(sock_watched)
                 # connection request from Gui
                 elif s == self.s_gui.getSocket():
-                    inputs.append(self.s_gui.accept())
-                elif not self._readDataFromGui(inputs, outputs):
+                    sock_watched.append(self.s_gui.accept())
+                elif not self._readDataFromGui(sock_watched):
                         break
