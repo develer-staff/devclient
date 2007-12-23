@@ -126,10 +126,10 @@ class SocketToGui(object):
           message : object
             the message to sent
         """
+
         buf = cPickle.dumps((cmd, message))
         self.conn.send(struct.pack('>l', len(buf)))
         self.conn.send(buf)
-
 
 class Core(object):
     """
@@ -202,7 +202,10 @@ class Core(object):
         else:
             if data:
                 self.parser.parse(data)
-                self.s_gui.write(messages.MODEL, self.parser.model)
+                import copy # FIX
+                model = copy.deepcopy(self.parser.model) # FIX
+                del model.main_text # FIX
+                self.s_gui.write(messages.MODEL, model)
 
     def mainLoop(self):
         """

@@ -84,8 +84,8 @@ class Model(object):
     """
 
     def __init__(self):
-        self.main_text = CircularList(100)
-        self.main_html = CircularList(100)
+        self.main_text = CircularList(30)
+        self.main_html = CircularList(30)
         self.main_bgcolor = None
         self.main_fgcolor = None
         self.prompt = None
