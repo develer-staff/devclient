@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -78,6 +78,7 @@ class CircularList(object):
             else:
                 return self._data[last_row:] + self._data[:self._last_idx]
 
+
 class Model(object):
     """
     Rappresent a model of data that can be viewed by a viewer.
@@ -89,4 +90,3 @@ class Model(object):
         self.main_bgcolor = None
         self.main_fgcolor = None
         self.prompt = None
-

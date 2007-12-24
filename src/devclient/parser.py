@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -56,11 +56,14 @@ class Parser(object):
 
         html_data, text_data = self._replaceAnsiColor(data)
 
-        html_data = html_data.replace('\n', '<br>')
-        text_data = text_data.replace('&nbsp;', ' ')
+        html_data = html_data.split('\n')
+        text_data = text_data.replace('&nbsp;', ' ').split('\n')
 
-        self.model.main_text.append(text_data)
-        self.model.main_html.append(html_data)
+        for i, r in enumerate(text_data):
+            self.model.main_text.append((r, r + '\n')[i < len(text_data) - 1])
+            
+        for i, r in enumerate(html_data):
+            self.model.main_html.append((r, r + '<br>')[i < len(text_data) - 1])
 
     def _evalStyle(self, ansi_code):
 
