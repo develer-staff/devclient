@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -21,6 +21,8 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import re
+
 from PyQt4 import QtGui
 
 class TextViewer(object):
@@ -28,10 +30,14 @@ class TextViewer(object):
     Build the html visualization from model.
     """
 
+    MAX_ROWS = 200
+    """The max number of rows displayed in textEdit field"""
+
     def __init__(self, widget):
-        self.widget = widget
-        self.widget.text_output.clear()
+        self.w = widget
+        self.w.text_output.clear()
         self.last_row = None
+        self.data = ''
 
     def _process(self, model):
         new_html = model.main_html.get(self.last_row)
@@ -49,15 +55,49 @@ class TextViewer(object):
         if not new_html.count('<br>'):
             new_html = '<br>' + new_html
 
-        self.widget.text_output.moveCursor(QtGui.QTextCursor.End)
-        self.widget.text_output.insertHtml(new_html)
-        self.widget.text_output.moveCursor(QtGui.QTextCursor.End)
+        rows = self.data.count('<br>') + new_html.count('<br>')
+        if rows > self.MAX_ROWS:
+            data = self.data.split('<br>')[rows - self.MAX_ROWS:]
+            self.data = '<br>'.join(data) + new_html
+        else:
+            self.data += new_html
+        
+        self.w.text_output.clear()
+        self.w.text_output.setHtml(self.data)
+        self.w.text_output.moveCursor(QtGui.QTextCursor.End)
+        #self.w.text_output.insertHtml(new_html)
+        #self.w.text_output.moveCursor(QtGui.QTextCursor.End)
         if bgcolor or fgcolor:
-            self.widget._setOutputColors(bgcolor, fgcolor)
+            self._setOutputColors(bgcolor, fgcolor)
+
+    def _setOutputColors(self, bg, fg):
+        """
+        Set output default colors.
+        """
+
+        style = unicode(self.w.text_output.styleSheet())
+        m = re.search('QTextEdit\s*{(.*)}', style)
+        if m:
+            oldstyle = m.group(1)
+            tmp = [el.split(':') for el in oldstyle.split(';') if el]
+            d = dict([(k.strip(), v.strip()) for k, v in tmp])
+        else:
+            oldstyle = None
+            d = {}
+
+        if bg: d['background-color'] = '#' + bg
+        if fg: d['color'] = '#' + fg
+
+        newstyle = ';'.join([k + ':' + v for k, v in d.iteritems()])
+
+        if oldstyle:
+            self.w.text_output.setStyleSheet(style.replace(oldstyle, newstyle))
+        else:
+            self.w.text_output.setStyleSheet('QTextEdit {%s}' % style)
 
     def process(self, model):
         self._process(model)
-        self.widget.update()
+        self.w.update()
 
 
 class StatusViewer(TextViewer):
@@ -66,15 +106,15 @@ class StatusViewer(TextViewer):
     """
 
     def __init__(self, v):
-        super(StatusViewer, self).__init__(v.widget)
+        super(StatusViewer, self).__init__(v.w)
         self.v = v
 
     def _process(self, model):
         self.v._process(model)
 
-        stats = {'Hp': self.widget.bar_health,
-                 'Mn': self.widget.bar_mana,
-                 'Mv': self.widget.bar_movement}
+        stats = {'Hp': self.w.bar_health,
+                 'Mn': self.w.bar_mana,
+                 'Mv': self.w.bar_movement}
 
         if model.prompt:
             for k, bar in stats.iteritems():

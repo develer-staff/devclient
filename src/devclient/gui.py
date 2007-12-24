@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -21,7 +21,6 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import re
 import sys
 import cPickle
 import struct
@@ -289,31 +288,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self.text_input.addItems(hist)
             self.text_input.setCurrentIndex(0)
             self.text_input.setItemText(0, '')
-
-    def _setOutputColors(self, bg, fg):
-        """
-        Set output default colors.
-        """
-
-        style = unicode(self.text_output.styleSheet())
-        m = re.search('QTextEdit\s*{(.*)}', style)
-        if m:
-            oldstyle = m.group(1)
-            tmp = [el.split(':') for el in oldstyle.split(';') if el]
-            d = dict([(k.strip(), v.strip()) for k, v in tmp])
-        else:
-            oldstyle = None
-            d = {}
-
-        if bg: d['background-color'] = '#' + bg
-        if fg: d['color'] = '#' + fg
-
-        newstyle = ';'.join([k + ':' + v for k, v in d.iteritems()])
-
-        if oldstyle:
-            self.text_output.setStyleSheet(style.replace(oldstyle, newstyle))
-        else:
-            self.text_output.setStyleSheet('QTextEdit {%s}' % style)
 
     def _readDataFromCore(self):
 
