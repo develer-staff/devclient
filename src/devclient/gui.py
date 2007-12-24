@@ -64,7 +64,7 @@ class SocketToCore(object):
         size = self.s.read(struct.calcsize("L"))
         try:
             size = struct.unpack('>l', size)[0]
-        except:
+        except struct.error:
             # waste all data available to restore format data for next messages
             self.s.read(self.s.bytesAvailable())
             return (messages.UNKNOWN, '')

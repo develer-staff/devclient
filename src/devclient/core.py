@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -103,7 +103,10 @@ class SocketToGui(object):
         """
 
         size = self.conn.recv(struct.calcsize("L"))
-        size = struct.unpack('>l', size)[0]
+        try:
+            size = struct.unpack('>l', size)[0]
+        except struct.error:
+            return (messages.UNKNOWN, '')
 
         if size < 0:
             return (messages.UNKNOWN, '')
@@ -165,6 +168,7 @@ class Core(object):
         self.alias = Alias(conn)
 
     def _readDataFromGui(self, sock_watched):
+
         cmd, msg = self.s_gui.read()
         if cmd == messages.MSG and self.s_server.connected:
             self.s_server.write(self.alias.check(msg))
