@@ -61,7 +61,7 @@ class TextViewer(object):
             self.data = '<br>'.join(data) + new_html
         else:
             self.data += new_html
-        
+
         self.w.text_output.clear()
         self.w.text_output.setHtml(self.data)
         self.w.text_output.moveCursor(QtGui.QTextCursor.End)
