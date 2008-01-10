@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -101,7 +101,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     designed by Qt-designer.
     """
 
-    def __init__(self):
+    def __init__(self, port):
 
         if QApplication.instance():
             self.app = QApplication.instance()
@@ -111,7 +111,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.app.setStyle(QtGui.QStyleFactory.create("Cleanlooks"))
         self._installTranslator()
 
-        self.s_core = SocketToCore(self)
+        self.s_core = SocketToCore(self, port)
         """the interface with core part, an instance of `SocketToCore`"""
 
         self.history = History()

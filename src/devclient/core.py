@@ -139,7 +139,7 @@ class Core(object):
     Main class for the core part of client.
     """
 
-    def __init__(self):
+    def __init__(self, port):
         """
         Create the `Core` instance.
         """
@@ -147,7 +147,7 @@ class Core(object):
         self.s_server = SocketToServer()
         """the interface with mud server, an instance of `SocketToServer`"""
 
-        self.s_gui = SocketToGui()
+        self.s_gui = SocketToGui(port)
         """the interface with gui part, an instance of `SocketToGui`"""
 
         self.alias = None

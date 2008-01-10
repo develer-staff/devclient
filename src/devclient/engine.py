@@ -22,6 +22,8 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
+import thread
+import random
 import os.path
 import logging
 import threading
@@ -43,20 +45,21 @@ class Thread(threading.Thread):
 
     def __init__(self):
         """
-        Create the `Thread` instance and run the gui part.
+        Create the `Thread` instance and run the `Gui` part.
         """
 
         threading.Thread.__init__(self)
-        gui = Gui()
-        self.start()
+        port = random.randint(2000, 10000)
+        gui = Gui(port)
+        thread.start_new_thread(self.run, (port,))
         gui.mainLoop()
 
-    def run(self):
+    def run(self, port):
         """
-        Run the core part.
+        Run the `Core` part.
         """
 
-        core = Core()
+        core = Core(port)
         core.mainLoop()
 
 
