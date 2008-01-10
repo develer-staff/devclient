@@ -21,7 +21,7 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-from parser import *
+from model import *
 from viewer import *
 
 GENERIC = 0

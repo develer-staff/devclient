@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -30,6 +30,7 @@ import cPickle
 import messages
 import mud_type
 import exception
+from model import *
 from alias import Alias
 from mud_type import getMudType, ComponentFactory
 
@@ -86,7 +87,6 @@ class SocketToGui(object):
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(('localhost', port))
         self.s.listen(1)
-        self.w = 0
 
     def getSocket(self):
         return self.s
@@ -156,6 +156,12 @@ class Core(object):
         self.parser = None
         """the `Parser` instance, used to parse data from server"""
 
+        self.bg = None
+        """the background color"""
+
+        self.fg = None
+        """the text color"""
+
     def _reloadConnData(self, conn):
         """
         Reload all data rely on connection.
@@ -193,6 +199,8 @@ class Core(object):
             mud = getMudType(*msg[1:])
             self.parser = ComponentFactory(mud).parser()
             self.alias = Alias(msg[0])
+            self.bg = None
+            self.fg = None
 
         return True
 
@@ -205,10 +213,13 @@ class Core(object):
             self.s_server.disconnect()
         else:
             if data:
-                self.parser.parse(data)
-                import copy # FIX
-                model = copy.deepcopy(self.parser.model) # FIX
-                del model.main_text # FIX
+                model = self.parser.buildModel(data, self.bg, self.fg)
+                if model.bg_color != self.bg:
+                    self.bg = model.bg_color
+
+                if model.fg_color != self.fg:
+                    self.fg = model.fg_color
+
                 self.s_gui.write(messages.MODEL, model)
 
     def mainLoop(self):

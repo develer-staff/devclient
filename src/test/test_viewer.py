@@ -35,6 +35,7 @@ class TextMock(object):
 
     def __init__(self):
         self._html = ''
+        self._style = ''
 
     def clear(self):
         self._html = ''
@@ -42,8 +43,14 @@ class TextMock(object):
     def moveCursor(self, cursor):
         pass
 
-    def insertHtml(self, html):
-        self._html += html
+    def setHtml(self, html):
+        self._html = html
+
+    def styleSheet(self):
+        return self._style
+
+    def setStyleSheet(self, style):
+        self._style = style
 
 
 class BarMock(object):
@@ -63,58 +70,74 @@ class WidgetMock(object):
         self.bar_mana = BarMock()
         self.bar_movement = BarMock()
 
-        self._bg = None
-        self._fg = None
-
-    def _setOutputColors(self, bg, fg):
-        self._bg = bg
-        self._fg = fg
-
     def update(self):
         pass
+
 
 class TestTextViewer(unittest.TestCase):
 
     def setUp(self):
-        self.model = Model()
         self.widget = WidgetMock()
         self.viewer = TextViewer(self.widget)
 
     def testTextProcess1(self):
-        text = 'hello world'
-        self.model.main_html.append(text)
-        self.viewer.process(self.model)
+        """Test processing of a model of a single string"""
 
+        m = Model()
+        text = 'hello world'
+        m.main_html.append(text)
+        self.viewer.process(m)
         self.assert_('<br>' + text == self.widget.text_output._html)
 
     def testTextProcess2(self):
+        """Test processing of a model of two string"""
+
+        m = Model()
         elem = ['hello', 'world']
         for text in elem:
-            self.model.main_html.append(text)
-        self.viewer.process(self.model)
-
+            m.main_html.append(text)
+        self.viewer.process(m)
         self.assert_('<br>' + ''.join(elem) == self.widget.text_output._html)
 
     def testTextProcess3(self):
+        """Test the sequence of two call at process"""
+
+        m = Model()
         elem = ['hello', 'world']
         for text in elem:
-            self.model.main_html.append(text)
-        self.viewer.process(self.model)
+            m.main_html.append(text)
+        self.viewer.process(m)
 
+        m = Model()
         elem2 = ['another', 'hello', 'world']
         for text in elem2:
-            self.model.main_html.append(text)
-        self.viewer.process(self.model)
+            m.main_html.append(text)
+        self.viewer.process(m)
 
         text = '<br>' + ''.join(elem) + '<br>' + ''.join(elem2)
         self.assert_(text == self.widget.text_output._html)
 
     def testTextProcess4(self):
-        self.model.main_bgcolor = '000000'
-        self.model.main_fgcolor = 'FFFFFF'
-        self.viewer.process(self.model)
-        self.assert_(self.model.main_bgcolor == self.widget._bg and
-                     self.model.main_fgcolor == self.widget._fg)
+        """Verify background and text color without a previus style"""
+
+        m = Model()
+        m.bg_color = '000000'
+        m.fg_color = 'FFFFFF'
+        self.viewer.process(m)
+        self.assert_('QTextEdit {color:#FFFFFF;background-color:#000000}' ==
+                     self.widget.text_output.styleSheet())
+
+    def testTextProcess5(self):
+        """Verify background and text color with a previus style"""
+
+        viewer = TextViewer(self.widget)
+        m = Model()
+        m.bg_color = 'FF00FF'
+        m.fg_color = 'CCCCCC'
+        self.widget.text_output.setStyleSheet('QTextEdit {color:#FFFF00}')
+        viewer.process(m)
+        self.assert_('QTextEdit {color:#CCCCCC;background-color:#FF00FF}' ==
+                     self.widget.text_output.styleSheet())
 
 
 class TestStatusViewer(unittest.TestCase):

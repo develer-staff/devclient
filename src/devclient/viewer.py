@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -36,22 +36,13 @@ class TextViewer(object):
     def __init__(self, widget):
         self.w = widget
         self.w.text_output.clear()
-        self.last_row = None
         self.data = ''
+        self._bg = None
+        self._fg = None
 
     def _process(self, model):
-        new_html = model.main_html.get(self.last_row)
-        bgcolor = None
-        fgcolor = None
 
-        if self.last_row is None:
-            self.last_row = len(new_html) - 1
-            bgcolor = model.main_bgcolor
-            fgcolor = model.main_fgcolor
-        else:
-            self.last_row += len(new_html)
-
-        new_html = ''.join(new_html)
+        new_html = ''.join(model.main_html)
         if not new_html.count('<br>'):
             new_html = '<br>' + new_html
 
@@ -63,12 +54,21 @@ class TextViewer(object):
             self.data += new_html
 
         self.w.text_output.clear()
+        set_color = False
+
+        if model.bg_color and not self._bg:
+            self._bg = model.bg_color
+            set_color = True
+
+        if model.fg_color and not self._fg:
+            self._fg = model.fg_color
+            set_color = True
+
+        if set_color:
+            self._setOutputColors(self._bg, self._fg)
+
         self.w.text_output.setHtml(self.data)
         self.w.text_output.moveCursor(QtGui.QTextCursor.End)
-        #self.w.text_output.insertHtml(new_html)
-        #self.w.text_output.moveCursor(QtGui.QTextCursor.End)
-        if bgcolor or fgcolor:
-            self._setOutputColors(bgcolor, fgcolor)
 
     def _setOutputColors(self, bg, fg):
         """
@@ -93,7 +93,7 @@ class TextViewer(object):
         if oldstyle:
             self.w.text_output.setStyleSheet(style.replace(oldstyle, newstyle))
         else:
-            self.w.text_output.setStyleSheet('QTextEdit {%s}' % style)
+            self.w.text_output.setStyleSheet('QTextEdit {%s}' % newstyle)
 
     def process(self, model):
         self._process(model)
