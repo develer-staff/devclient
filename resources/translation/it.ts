@@ -4,7 +4,7 @@
 <context>
     <name>dev_client</name>
     <message>
-        <location filename="../../src/devclient/gui.py" line="194"/>
+        <location filename="../../src/devclient/gui.py" line="198"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
@@ -19,12 +19,12 @@
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="197"/>
+        <location filename="../../src/devclient/gui.py" line="201"/>
         <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="200"/>
+        <location filename="../../src/devclient/gui.py" line="204"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -72,29 +72,34 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="203"/>
+        <location filename="../../src/devclient/gui.py" line="207"/>
         <source>Yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="206"/>
+        <location filename="../../src/devclient/gui.py" line="210"/>
         <source>No</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="209"/>
+        <location filename="../../src/devclient/gui.py" line="213"/>
         <source>Really quit?</source>
         <translation>Vuoi davvero uscire?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="212"/>
+        <location filename="../../src/devclient/gui.py" line="216"/>
         <source>Really close connection?</source>
         <translation>Vuoi davvero chiudere la connessione?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="216"/>
+        <location filename="../../src/devclient/gui.py" line="220"/>
         <source>Fatal Error, please restart your client</source>
         <translation>Errore irreversibile, riavviare il client</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui.py" line="223"/>
+        <source>Connection lost</source>
+        <translation>Connessione persa</translation>
     </message>
 </context>
 <context>

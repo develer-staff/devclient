@@ -217,6 +217,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             "Fatal Error, please restart your client", None,
             QApplication.UnicodeUTF8)
 
+        self._text['ConnLost'] = QApplication.translate("dev_client",
+            "Connection lost", None, QApplication.UnicodeUTF8)
+
     def closeEvent(self, event):
         if self.connected:
             if not self._displayQuestion(PROJECT_NAME,
@@ -301,6 +304,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             elif cmd == messages.CONN_ESTABLISHED:
                 self.connected = msg[0]
                 self._startConnection(*msg[1:])
+            elif cmd == messages.CONN_LOST:
+                self._displayWarning(self._text['Connect'],
+                                     self._text['ConnLost'])
+                self.connected = None
             elif cmd == messages.CONN_CLOSED:
                 self.connected = None
 

@@ -56,5 +56,8 @@ class ConnectionNotFound(DevClient):
     """
     pass
 
-class ConnectionClosed(DevClient):
+class ConnectionLost(DevClient):
+    """
+    Handling error on losing connection.
+    """
     pass

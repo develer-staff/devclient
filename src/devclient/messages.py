@@ -21,6 +21,7 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+UNKNOWN = 0
 MSG = 1
 MODEL = 2
 END_APP = 3
@@ -28,5 +29,6 @@ CONNECT = 4
 CONN_REFUSED = 5
 CONN_ESTABLISHED = 6
 CONN_CLOSED = 7
-RELOAD_CONN_DATA = 8
-UNKNOWN = 9
+CONN_LOST = 8
+RELOAD_CONN_DATA = 9
+

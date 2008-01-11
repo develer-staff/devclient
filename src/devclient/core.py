@@ -62,8 +62,8 @@ class SocketToServer(object):
 
         try:
             return unicode(self.t.read_very_eager(), self.encoding)
-        except EOFError:
-            raise exception.ConnectionClosed()
+        except (EOFError, socket.error), e:
+            raise exception.ConnectionLost()
 
     def write(self, msg):
         self.t.write(msg.encode(self.encoding) + "\n")
@@ -174,6 +174,15 @@ class Core(object):
         self.alias = Alias(conn)
 
     def _readDataFromGui(self, sock_watched):
+        """
+        Read data from `Gui`
+        
+        :Parameters:
+          sock_watched : list
+            the list of socket watched for events
+
+        :return: a boolean equal to False when client must exit.
+        """
 
         cmd, msg = self.s_gui.read()
         if cmd == messages.MSG and self.s_server.connected:
@@ -207,9 +216,9 @@ class Core(object):
     def _readDataFromServer(self, sock_watched):
         try:
             data = self.s_server.read()
-        except exception.ConnectionClosed:
+        except exception.ConnectionLost:
             sock_watched.remove(self.s_server.getSocket())
-            self.s_gui.write(messages.CONN_CLOSED, '')
+            self.s_gui.write(messages.CONN_LOST, '')
             self.s_server.disconnect()
         else:
             if data:
