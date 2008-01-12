@@ -27,6 +27,7 @@ import socket
 import struct
 import cPickle
 import logging
+import os.path
 import telnetlib
 
 import messages

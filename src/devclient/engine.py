@@ -29,6 +29,7 @@ import threading
 import conf
 from core import Core
 from gui import Gui
+from os.path import dirname
 
 
 class Thread(threading.Thread):
@@ -64,8 +65,8 @@ def main(argv, cfg_file):
     The function is the client entry point.
     """
 
-    os.chdir(os.path.join(os.getcwd(), os.path.dirname(argv[0])))
-    conf.loadConfiguration(cfg_file)
+    os.chdir(os.path.join(os.getcwd(), dirname(argv[0]), dirname(cfg_file)))
+    conf.loadConfiguration(os.path.basename(cfg_file))
 
     # Set current path on module path for external resources like images
     os.chdir(conf.config['devclient']['path'])
