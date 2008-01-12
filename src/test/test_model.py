@@ -35,43 +35,48 @@ class TestParser(unittest.TestCase):
 
     def testParseText(self):
         txt = 'hello'
-        model = self.parser.buildModel(txt, None, None)
+        model = self.parser.buildModel(txt)
         self.assert_([txt] == model.main_text)
 
     def testParseTextMultiline(self):
         txt = 'hello\nworld'
-        model = self.parser.buildModel(txt, None, None)
+        model = self.parser.buildModel(txt)
         self.assert_(['hello<br>', 'world'] == model.main_html)
 
     def testParseMultiText(self):
         txt1, txt2 = 'hello', 'world'
-        m1 = self.parser.buildModel(txt1, None, None)
-        m2 = self.parser.buildModel(txt2, None, None)
+        m1 = self.parser.buildModel(txt1)
+        m2 = self.parser.buildModel(txt2)
         self.assert_([txt1] == m1.main_html)
         self.assert_([txt2] == m2.main_html)
 
     def testParseMultiText2(self):
         txt1, txt2 = 'hello\x1b[0;', '33mworld'
-        m1 = self.parser.buildModel(txt1, None, None)
-        m2 = self.parser.buildModel(txt2, m1.bg_color, m1.fg_color)
+        m1 = self.parser.buildModel(txt1)
+        m2 = self.parser.buildModel(txt2)
         self.assert_(['hello'] == m1.main_html)
-        self.assert_(['world'] == m2.main_html)
-
-        self.assert_(self.parser._normal_color[3] == m2.fg_color)
+        self.assert_(['<span style="color:#aaaa00">world</span>'] ==
+                     m2.main_html)
 
     def testParseMultiText3(self):
         txt1, txt2 = 'hello\x1b', '[0;42mworld'
-        m1 = self.parser.buildModel(txt1, None, None)
-        m2 = self.parser.buildModel(txt2, m1.bg_color, m1.fg_color)
+        m1 = self.parser.buildModel(txt1)
+        m2 = self.parser.buildModel(txt2)
 
         self.assert_(['hello'] == m1.main_html)
-        self.assert_(['world'] == m2.main_html)
+        self.assert_(['<span style="background-color:#00aa00">world</span>'] ==
+                     m2.main_html)
 
-        self.assert_(self.parser._normal_color[2] == m2.bg_color)
+    def testParseMultiText4(self):
+        txt1, txt2 = '\x1b[0;','33mhello'
+        m1 = self.parser.buildModel(txt1)
+        m2 = self.parser.buildModel(txt2)
+        self.assert_(['hello'] == m2.main_html)
+        self.assert_(self.parser._normal_color[3] == m2.fg_color)
 
     def testParseSpace(self):
         txt = 'hello world'
-        m = self.parser.buildModel(txt, None, None)
+        m = self.parser.buildModel(txt)
         self.assert_([txt.replace(' ','&nbsp;')] == m.main_html)
 
     def testEvalStyle1(self):
@@ -150,12 +155,12 @@ class TestSmaugParser(unittest.TestCase):
         self.parser = SmaugParser()
 
     def testEmptyPrompt(self):
-        self.assert_(self.parser.buildModel('', None, None).prompt is None)
+        self.assert_(self.parser.buildModel('').prompt is None)
 
     def testFakePrompt(self):
         stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
         p = 'PF:%(Hp)s Mn:%(Mn)s Mv:%(Mv)s' % stats
-        m = self.parser.buildModel('', None, None)
+        m = self.parser.buildModel('')
         m.main_text.append(p)
         self.parser._parsePrompt(m)
         self.assert_(m.prompt is None)
@@ -163,7 +168,7 @@ class TestSmaugParser(unittest.TestCase):
     def testPrompt1(self):
         stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
         p = 'PF:%(Hp)s Mn:%(Mn)s Mv:%(Mv)s>' % stats
-        m = self.parser.buildModel('', None, None)
+        m = self.parser.buildModel('')
         m.main_text.append(p)
         self.parser._parsePrompt(m)
         prompt = dict(zip(stats.keys(), [v.split('/') for v in stats.values()]))
@@ -172,7 +177,7 @@ class TestSmaugParser(unittest.TestCase):
     def testPrompt2(self):
         stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
         p = 'PF:%(Hp)s Mn:%(Mn)s Mv:%(Mv)s bla bla bla>' % stats
-        m = self.parser.buildModel('', None, None)
+        m = self.parser.buildModel('')
         m.main_text.append(p)
         self.parser._parsePrompt(m)
         prompt = dict(zip(stats.keys(), [v.split('/') for v in stats.values()]))
@@ -181,7 +186,7 @@ class TestSmaugParser(unittest.TestCase):
     def testPrompt3(self):
         stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
         p = 'PF:  %(Hp)s Mn:  %(Mn)s Mv:  %(Mv)s>' % stats
-        m = self.parser.buildModel('', None, None)
+        m = self.parser.buildModel('')
         m.main_text.append(p)
         self.parser._parsePrompt(m)
         prompt = dict(zip(stats.keys(), [v.split('/') for v in stats.values()]))
@@ -190,7 +195,7 @@ class TestSmaugParser(unittest.TestCase):
     def testPrompt4(self):
         stats = {'Hp' : '23/24', 'Mn': '102/102', 'Mv': '26/102'}
         p = 'pf:  %(Hp)s mn:  %(Mn)s Mv:  %(Mv)s>' % stats
-        m = self.parser.buildModel('', None, None)
+        m = self.parser.buildModel('')
         m.main_text.append(p)
         self.parser._parsePrompt(m)
         prompt = dict(zip(stats.keys(), [v.split('/') for v in stats.values()]))
@@ -203,12 +208,12 @@ class TestAfkParser(unittest.TestCase):
         self.parser = AfkParser()
 
     def testEmptyPrompt(self):
-        self.assert_(self.parser.buildModel('', None, None).prompt is None)
+        self.assert_(self.parser.buildModel('').prompt is None)
 
     def testFakePrompt(self):
         stats = {'Hp' : '23-24', 'Mn': '102-102', 'Mv': '26-102'}
         p = '[pf: %(Hp)s] [mana:%(Mn)s] [mv:%(Mv)s] [mon:0]' % stats
-        m = self.parser.buildModel('', None, None)
+        m = self.parser.buildModel('')
         m.main_text.append(p)
         self.parser._parsePrompt(m)
         self.assert_(m.prompt is None)
@@ -216,7 +221,7 @@ class TestAfkParser(unittest.TestCase):
     def testPrompt1(self):
         stats = {'Hp' : '23-24', 'Mn': '102-102', 'Mv': '26-102'}
         p = '[Pf:%(Hp)s] [Mana:%(Mn)s] [Mv:%(Mv)s] [Mon:0] [S:Xp:0]' % stats
-        m = self.parser.buildModel('', None, None)
+        m = self.parser.buildModel('')
         m.main_text.append(p)
         self.parser._parsePrompt(m)
         prompt = dict(zip(stats.keys(), [v.split('-') for v in stats.values()]))
@@ -225,7 +230,7 @@ class TestAfkParser(unittest.TestCase):
     def testPrompt2(self):
         stats = {'Hp' : '23-24', 'Mn': '102-102', 'Mv': '26-102'}
         p = '[Pf: %(Hp)s] [Mana: %(Mn)s] [Mv: %(Mv)s] [Mon: 0] [S:Xp:0]' % stats
-        m = self.parser.buildModel('', None, None)
+        m = self.parser.buildModel('')
         m.main_text.append(p)
         self.parser._parsePrompt(m)
         prompt = dict(zip(stats.keys(), [v.split('-') for v in stats.values()]))
@@ -234,7 +239,7 @@ class TestAfkParser(unittest.TestCase):
     def testPrompt3(self):
         stats = {'Hp' : '23-24', 'Mn': '102-102', 'Mv': '26-102'}
         p = '[pf: %(Hp)s] [mana:%(Mn)s] [mv:%(Mv)s] [mon:0] [s:xp: 0]' % stats
-        m = self.parser.buildModel('', None, None)
+        m = self.parser.buildModel('')
         m.main_text.append(p)
         self.parser._parsePrompt(m)
         prompt = dict(zip(stats.keys(), [v.split('-') for v in stats.values()]))
