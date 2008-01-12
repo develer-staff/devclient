@@ -21,6 +21,7 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import os
 import sys
 import select
 import socket
@@ -29,7 +30,10 @@ import cPickle
 import logging
 import os.path
 import telnetlib
+from os.path import dirname, join
+from optparse import OptionParser
 
+import conf
 import messages
 import mud_type
 import exception
@@ -146,6 +150,9 @@ class SocketToGui(object):
         self.conn.send(struct.pack('>l', len(buf)))
         self.conn.send(buf)
 
+    def __del__(self):
+        self.conn.close()
+        self.s.close()
 
 class Core(object):
     """
@@ -186,7 +193,7 @@ class Core(object):
         datefmt = '%d %b %Y %H:%M:%S'
 
         if int(config['logger']['log_on_file']):
-            log_file = os.path.join(config['logger']['path'],'devclient.log')
+            log_file = join(config['logger']['path'],'devclient.log')
             logging.basicConfig(level=level[config['logger']['level']],
                                 format=format,
                                 datefmt=datefmt,
@@ -227,6 +234,7 @@ class Core(object):
             self.s_server.write(self.alias.check(msg))
         elif cmd == messages.END_APP:
             self.s_server.disconnect()
+            del self.s_gui
             return False
         elif cmd == messages.RELOAD_CONN_DATA:
             self._reloadConnData(msg)
@@ -288,3 +296,22 @@ class Core(object):
                     sock_watched.append(self.s_gui.accept())
                 elif not self._readDataFromGui(sock_watched):
                     break
+
+
+def main():
+    """
+    This function is the startup of the process `Core`.
+    """
+
+    parser = OptionParser()
+    parser.add_option('-c', '--config', dest='config')
+    parser.add_option('-p', '--port', type='int', dest='port')
+    o, args = parser.parse_args()
+
+    os.chdir(join(os.getcwd(), dirname(o.config)))
+    conf.loadConfiguration(os.path.basename(o.config))
+    core = Core(o.port)
+    core.mainLoop()
+
+if __name__ == '__main__':
+    main()
