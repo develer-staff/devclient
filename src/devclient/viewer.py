@@ -56,11 +56,11 @@ class TextViewer(object):
         self.w.text_output.clear()
         set_color = False
 
-        if model.bg_color and not self._bg:
+        if model.bg_color is not None and self._bg != model.bg_color:
             self._bg = model.bg_color
             set_color = True
 
-        if model.fg_color and not self._fg:
+        if model.fg_color is not None and self._fg != model.fg_color:
             self._fg = model.fg_color
             set_color = True
 

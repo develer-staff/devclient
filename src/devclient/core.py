@@ -176,7 +176,7 @@ class Core(object):
     def _readDataFromGui(self, sock_watched):
         """
         Read data from `Gui`
-        
+
         :Parameters:
           sock_watched : list
             the list of socket watched for events

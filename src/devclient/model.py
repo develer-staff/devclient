@@ -79,6 +79,12 @@ class Parser(object):
         for i, r in enumerate(html_data):
             model.main_html.append((r, r + '<br>')[i < len(html_data) - 1])
 
+        if model.bg_color is None and model.fg_color  is None and \
+           len(''.join(text_data).strip()):
+            # Empty colors means default color
+            model.bg_color = ''
+            model.fg_color = ''
+
         return model
 
     def _evalStyle(self, ansi_code, model):
