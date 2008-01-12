@@ -54,15 +54,17 @@ class Parser(object):
         """
 
         self._incomplete_seq = None
+        self._bg = None
+        self._fg = None
 
-    def buildModel(self, data, bg, fg):
+    def buildModel(self, data):
         """
         Parse data and build the `Model` object.
         """
 
         model = Model()
-        model.bg_color = bg
-        model.fg_color = fg
+        model.bg_color = self._bg
+        model.fg_color = self._fg
 
         # spaces must be replace with html code before calling
         # _replaceAnsiColor to prevent replacing inside html tag.
@@ -84,6 +86,12 @@ class Parser(object):
             # Empty colors means default color
             model.bg_color = ''
             model.fg_color = ''
+
+        if model.bg_color != self._bg:
+            self._bg = model.bg_color
+
+        if model.fg_color != self._fg:
+            self._fg = model.fg_color
 
         return model
 
@@ -239,8 +247,8 @@ class PromptParser(Parser):
                 p[i] = p[i].split(self._getSepPrompt())
             model.prompt = {'Hp': p[0], 'Mn': p[1], 'Mv': p[2]}
 
-    def buildModel(self, data, bg, fg):
-        model = super(PromptParser, self).buildModel(data, bg, fg)
+    def buildModel(self, data):
+        model = super(PromptParser, self).buildModel(data)
         self._parsePrompt(model)
         return model
 

@@ -156,12 +156,6 @@ class Core(object):
         self.parser = None
         """the `Parser` instance, used to parse data from server"""
 
-        self.bg = None
-        """the background color"""
-
-        self.fg = None
-        """the text color"""
-
     def _reloadConnData(self, conn):
         """
         Reload all data rely on connection.
@@ -208,8 +202,6 @@ class Core(object):
             mud = getMudType(*msg[1:])
             self.parser = ComponentFactory(mud).parser()
             self.alias = Alias(msg[0])
-            self.bg = None
-            self.fg = None
 
         return True
 
@@ -222,14 +214,7 @@ class Core(object):
             self.s_server.disconnect()
         else:
             if data:
-                model = self.parser.buildModel(data, self.bg, self.fg)
-                if model.bg_color != self.bg:
-                    self.bg = model.bg_color
-
-                if model.fg_color != self.fg:
-                    self.fg = model.fg_color
-
-                self.s_gui.write(messages.MODEL, model)
+                self.s_gui.write(messages.MODEL, self.parser.buildModel(data))
 
     def mainLoop(self):
         """
