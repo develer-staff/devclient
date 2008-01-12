@@ -511,7 +511,7 @@ class GuiOption(QtGui.QDialog, Ui_option):
                 o.setEnabled(bool(self.list_conn_alias.count()))
 
         elif curr_tab == "tab_macro":
-            #del self.macro  # Without this, signal disconnect don't work.. why?
+            del self.macro  # Without this, signal disconnect don't work.. why?
             self.macro = FormMacro(self, self.storage)
 
     def _loadAliases(self, conn):
