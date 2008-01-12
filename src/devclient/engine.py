@@ -21,16 +21,12 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import sys
 import thread
 import random
 import os.path
-import logging
 import threading
 
 import conf
-import constants
-from conf import config
 from core import Core
 from gui import Gui
 
@@ -68,41 +64,10 @@ def main(argv, cfg_file):
     The function is the client entry point.
     """
 
-    def setupLogger():
-        """
-        Setup the root logger from configuration params.
-        """
-
-        level = {'CRITICAL': logging.CRITICAL,
-                 'ERROR': logging.ERROR,
-                 'WARNING': logging.WARNING,
-                 'INFO': logging.INFO,
-                 'DEBUG': logging.DEBUG }
-
-        format = '%(asctime)s %(levelname)s %(message)s'
-        datefmt = '%d %b %Y %H:%M:%S'
-
-        if int(config['logger']['log_on_file']):
-            log_file = os.path.join(config['logger']['path'],'devclient.log')
-            logging.basicConfig(level=level[config['logger']['level']],
-                                format=format,
-                                datefmt=datefmt,
-                                filename=log_file,
-                                filemode='a+')
-        else:
-            logging.basicConfig(level=level[config['logger']['level']],
-                                format=format,
-                                datefmt=datefmt,
-                                stream=sys.stdout)
-
-
     os.chdir(os.path.join(os.getcwd(), os.path.dirname(argv[0])))
     conf.loadConfiguration(cfg_file)
 
-    setupLogger()
-    logging.debug('*** START %s ***' % constants.PROJECT_NAME.upper())
-
     # Set current path on module path for external resources like images
-    os.chdir(config['devclient']['path'])
+    os.chdir(conf.config['devclient']['path'])
 
     Thread()

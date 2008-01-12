@@ -38,6 +38,7 @@ from history import History
 from mud_type import getMudType, ComponentFactory
 from constants import PUBLIC_VERSION, PROJECT_NAME
 
+
 class SocketToCore(object):
     """
     Provide a socket interface to `Core` part of client.
@@ -112,7 +113,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self._installTranslator()
 
         self.s_core = SocketToCore(self, port)
-        """the interface with core part, an instance of `SocketToCore`"""
+        """the interface with `Core`, an instance of `SocketToCore`"""
 
         self.history = History()
 

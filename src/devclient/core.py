@@ -21,18 +21,23 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import telnetlib
+import sys
 import select
 import socket
 import struct
 import cPickle
+import logging
+import telnetlib
 
 import messages
 import mud_type
 import exception
+import constants
 from model import *
 from alias import Alias
+from conf import config
 from mud_type import getMudType, ComponentFactory
+
 
 class SocketToServer(object):
     """
@@ -92,6 +97,12 @@ class SocketToGui(object):
         return self.s
 
     def accept(self):
+        """
+        Accept a connection.
+
+        :return: the socket object usable to send and receive data.
+        """
+
         self.conn, addr = self.s.accept()
         return self.conn
 
@@ -134,6 +145,7 @@ class SocketToGui(object):
         self.conn.send(struct.pack('>l', len(buf)))
         self.conn.send(buf)
 
+
 class Core(object):
     """
     Main class for the core part of client.
@@ -148,13 +160,44 @@ class Core(object):
         """the interface with mud server, an instance of `SocketToServer`"""
 
         self.s_gui = SocketToGui(port)
-        """the interface with gui part, an instance of `SocketToGui`"""
+        """the interface with `Gui`, an instance of `SocketToGui`"""
 
         self.alias = None
         """the `Alias` instance, used to replace alias with text to send"""
 
         self.parser = None
         """the `Parser` instance, used to parse data from server"""
+
+        self.setupLogger()
+
+    def setupLogger(self):
+        """
+        Setup the root logger from configuration params.
+        """
+
+        level = {'CRITICAL': logging.CRITICAL,
+                 'ERROR': logging.ERROR,
+                 'WARNING': logging.WARNING,
+                 'INFO': logging.INFO,
+                 'DEBUG': logging.DEBUG }
+
+        format = '%(asctime)s %(levelname)s %(message)s'
+        datefmt = '%d %b %Y %H:%M:%S'
+
+        if int(config['logger']['log_on_file']):
+            log_file = os.path.join(config['logger']['path'],'devclient.log')
+            logging.basicConfig(level=level[config['logger']['level']],
+                                format=format,
+                                datefmt=datefmt,
+                                filename=log_file,
+                                filemode='a+')
+        else:
+            logging.basicConfig(level=level[config['logger']['level']],
+                                format=format,
+                                datefmt=datefmt,
+                                stream=sys.stdout)
+
+        logging.debug('*** START %s ***' % constants.PROJECT_NAME.upper())
 
     def _reloadConnData(self, conn):
         """
