@@ -74,6 +74,33 @@ class TestParser(unittest.TestCase):
         self.assert_(['hello'] == m2.main_html)
         self.assert_(self.parser._normal_color[3] == m2.fg_color)
 
+    def testParseMultiText5(self):
+        txt1, txt2 = '\x1b[0;32mh\x1b[0;33mello', 'world,\x1b[0;34mhello'
+        m1 = self.parser.buildModel(txt1)
+        m2 = self.parser.buildModel(txt2)
+        self.assert_(['hello'] == m1.main_text)
+        self.assert_(self.parser._normal_color[2] == m1.fg_color)
+        self.assert_(['<span style="color:#aaaa00">world,</span>' +
+                      '<span style="color:#0000aa">hello</span>'] ==
+                     m2.main_html)
+
+    def testParseMultiText6(self):
+        txt1, txt2 = '\x1b[0;32mh\x1b[0;33mello', 'world'
+        m1 = self.parser.buildModel(txt1)
+        m2 = self.parser.buildModel(txt2)
+        self.assert_(['hello'] == m1.main_text)
+        self.assert_(self.parser._normal_color[2] == m1.fg_color)
+        self.assert_(['<span style="color:#aaaa00">world</span>'] ==
+                     m2.main_html)
+
+    def testParseMultiText7(self):
+        txt1, txt2 = 'h\x1b[0;33me\x1b[0;32m\x1b[0;33mllo', 'world'
+        m1 = self.parser.buildModel(txt1)
+        m2 = self.parser.buildModel(txt2)
+        self.assert_(['hello'] == m1.main_text)
+        self.assert_(self.parser._normal_color[3] == m1.fg_color)
+        self.assert_(['world'] == m2.main_html)
+
     def testParseSpace(self):
         txt = 'hello world'
         m = self.parser.buildModel(txt)

@@ -54,6 +54,7 @@ class Parser(object):
         """
 
         self._incomplete_seq = None
+        self._style = None
         self._bg = None
         self._fg = None
 
@@ -81,7 +82,7 @@ class Parser(object):
         for i, r in enumerate(html_data):
             model.main_html.append((r, r + '<br>')[i < len(html_data) - 1])
 
-        if model.bg_color is None and model.fg_color  is None and \
+        if model.bg_color is None and model.fg_color is None and \
            len(''.join(text_data).strip()):
             # Empty colors means default color
             model.bg_color = ''
@@ -176,11 +177,16 @@ class Parser(object):
             self._incomplete_seq = None
 
         parts = data.split(START_TOKEN)
+        text_res = parts[0]
+        if self._style:
+            html_res = '<span style="%s">%s</span>' % \
+                (self._style, parts[0])
+        else:
+            html_res = parts[0]
 
         if len(parts) == 1:
-            return parts[0], parts[0]
+            return html_res, text_res
 
-        html_res = text_res = parts[0]
         reg = re.compile('\[(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
 
         for i, s in enumerate(parts[1:]):
@@ -189,10 +195,10 @@ class Parser(object):
                 ansi_code = m.group(1)
                 code_length = len(ansi_code) + len(COLOR_TOKEN) + len('[')
                 if m.group(2) == COLOR_TOKEN and ansi_code:
-                    style = self._evalStyle(ansi_code, model)
-                    if style:
+                    self._style = self._evalStyle(ansi_code, model)
+                    if self._style:
                         html_res += '<span style="%s">%s</span>' % \
-                            (style, s[code_length:])
+                            (self._style, s[code_length:])
                         text_res += s[code_length:]
                     else:
                         html_res += s[code_length:]
