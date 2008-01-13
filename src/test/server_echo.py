@@ -21,6 +21,7 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import sys
 import socket
 import optparse
 
@@ -33,6 +34,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind(("localhost", o.port))
 s.listen(1)
+print 'READY'
 conn, addr = s.accept()
 
 while 1:

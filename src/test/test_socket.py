@@ -36,8 +36,13 @@ from devclient.core import SocketToServer
 
 def start_server_echo():
     port = random.randint(2000, 10000)
-    subprocess.Popen(['python', 'server_echo.py', '--port=%d' % port])
-    time.sleep(.2)
+    p = subprocess.Popen(['python', '-u', 'server_echo.py',
+                         '--port=%d' % port],
+                         stdout=subprocess.PIPE)
+    try:
+        buf = p.stdout.read(6) # read READY\n from stdout
+    except IOError:
+        time.sleep(.5)
     return port
 
 
