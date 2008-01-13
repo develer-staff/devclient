@@ -103,11 +103,17 @@ class TextViewer(object):
 class StatusViewer(TextViewer):
     """
     Build the status visualization from model.
+
+    This class is a subclass of TextViewer that take an instance of TextViewer
+    as argument on __init__ (see `decorator pattern`_)
+
+.. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
     """
 
     def __init__(self, v):
         super(StatusViewer, self).__init__(v.w)
         self.v = v
+        self._last_values = {'Hp': None, 'Mn': None, 'Mv': None}
 
     def _process(self, model):
         self.v._process(model)
@@ -121,5 +127,8 @@ class StatusViewer(TextViewer):
                 cur_value, max_value = model.prompt[k]
                 cur_value = max(int(cur_value), 0)
                 cur_value = min(int(max_value), cur_value)
-                bar.setValue(int(100 * cur_value / int(max_value)))
+                v = int(100 * cur_value / int(max_value))
+                if v != self.last_values[k]:
+                    self._last_values[k] = v
+                    bar.setValue(v)
 
