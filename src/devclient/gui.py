@@ -22,8 +22,9 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
-import cPickle
 import struct
+import cPickle
+import logging
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 from PyQt4.QtCore import SIGNAL, Qt
@@ -126,6 +127,23 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.setCompleter(None)
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
+        self.setupLogger()
+
+    def setupLogger(self):
+        """
+        Setup the root logger from configuration params.
+        """
+
+        level = {'CRITICAL': logging.CRITICAL,
+                 'ERROR': logging.ERROR,
+                 'WARNING': logging.WARNING,
+                 'INFO': logging.INFO,
+                 'DEBUG': logging.DEBUG }
+
+        logging.basicConfig(level=level[config['logger']['level']],
+                            format='%(asctime)s %(levelname)s %(message)s',
+                            datefmt='%d %b %Y %H:%M:%S',
+                            stream=sys.stdout)
 
     def _setupSignal(self):
         self.connect(self.action_connect, SIGNAL("triggered()"),
