@@ -18,19 +18,27 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import socket
+import optparse
+
+
+parser = optparse.OptionParser()
+parser.add_option('--port', type='int', default=6666)
+o, args = parser.parse_args()
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind(("localhost", 6666))
+s.bind(("localhost", o.port))
 s.listen(1)
 conn, addr = s.accept()
 
 while 1:
     data = conn.recv(1024)
-    if not data: break
+    if data == 'quit\n':
+        break
     conn.send(data)
+
 conn.close()

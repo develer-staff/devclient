@@ -22,25 +22,71 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
-import unittest
 import os
 import time
+import random
+import unittest
+import subprocess
 
 sys.path.append('..')
 
+import devclient.exception as exception
 from devclient.core import SocketToServer
 
-class TestSocket(unittest.TestCase):
-    def setUp(self):
-        i, o = os.popen2("python server_echo.py")
-        time.sleep(1)
+
+def start_server_echo():
+    port = random.randint(2000, 10000)
+    subprocess.Popen(['python', 'server_echo.py', '--port=%d' % port])
+    time.sleep(.2)
+    return port
+
+
+class TestSocketToServer(unittest.TestCase):
+
+    def testNoConnection(self):
+        s = SocketToServer()
+        self.assert_(not s.connected)
+
+    def testConnectionEstablished(self):
+        port = start_server_echo()
+        s = SocketToServer()
+        s.connect("localhost", port)
+        self.assert_(s.connected)
+        s.write("quit")
+
+    def testConnectionRefused(self):
+        s = SocketToServer()
+        self.assertRaises(exception.ConnectionRefused,
+                          s.connect,
+                          "localhost", 7890)
+        self.assert_(not s.connected)
+
+    def testReadError(self):
+        port = start_server_echo()
+        s = SocketToServer()
+        s.connect("localhost", port)
+        s.write("quit")
+        time.sleep(.1)
+        self.assertRaises(exception.ConnectionLost, s.read)
+        self.assert_(s.connected)
 
     def testData(self):
+        port = start_server_echo()
         s = SocketToServer()
-        s.connect("localhost", 6666)
+        s.connect("localhost", port)
         s.write("hello")
-        time.sleep(1)
+        time.sleep(.1)
         self.assert_(s.read() == "hello\n")
+        s.write('quit')
+
+    def testDisconnect(self):
+        port = start_server_echo()
+        s = SocketToServer()
+        s.connect("localhost", port)
+        s.write('quit')
+        s.disconnect()
+        self.assert_(not s.connected)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -73,6 +73,8 @@ class SocketToServer(object):
         try:
             return unicode(self.t.read_very_eager(), self.encoding)
         except (EOFError, socket.error), e:
+            # disconnection must be called outside this class to remove
+            # the socket from the list of sockets watched.
             raise exception.ConnectionLost()
 
     def write(self, msg):
@@ -154,6 +156,7 @@ class SocketToGui(object):
         self.conn.close()
         self.s.close()
 
+
 class Core(object):
     """
     Main class for the core part of client.
@@ -224,7 +227,7 @@ class Core(object):
 
         :Parameters:
           sock_watched : list
-            the list of socket watched for events
+            the list of sockets watched for events
 
         :return: a boolean equal to False when client must exit.
         """
