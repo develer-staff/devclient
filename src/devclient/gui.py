@@ -128,6 +128,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
         self.setupLogger()
+        self.text_output.setFocusProxy(self.text_input)
 
     def setupLogger(self):
         """
