@@ -24,14 +24,18 @@ __docformat__ = 'restructuredtext'
 import sys
 import os
 import time
+import socket
+import struct
 import random
+import cPickle
 import unittest
 import subprocess
 
 sys.path.append('..')
 
+import devclient.messages as messages
 import devclient.exception as exception
-from devclient.core import SocketToServer
+from devclient.core import SocketToServer, SocketToGui
 
 
 def start_server_echo():
@@ -91,6 +95,56 @@ class TestSocketToServer(unittest.TestCase):
         s.write('quit')
         s.disconnect()
         self.assert_(not s.connected)
+
+
+def read_data(socket):
+    size = socket.recv(struct.calcsize("L"))
+    size = struct.unpack('>l', size)[0]
+
+    data = []
+    while size > 0:
+        data.append(socket.recv(min(4096, size)))
+        size -= len(data[-1])
+    return cPickle.loads(''.join(data))
+
+def write_data(socket, data):
+    buf = cPickle.dumps(data)
+    socket.send(struct.pack('>l', len(buf)))
+    socket.send(buf)
+
+
+class TestSocketToGui(unittest.TestCase):
+
+    def startCommunication(self):
+        port = random.randint(2000, 10000)
+        s_gui = SocketToGui(port)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(('localhost', port))
+        s_gui.accept()
+        return s_gui, s
+
+    def testWriteData(self):
+        s_gui, s = self.startCommunication()
+        cmd = messages.MODEL
+        msg = 'hello'
+        s_gui.write(cmd, msg)
+        self.assert_((cmd, msg) == read_data(s))
+
+    def testReadData(self):
+        s_gui, s = self.startCommunication()
+        write_data(s, (messages.END_APP, ''))
+        self.assert_((messages.END_APP, '') == s_gui.read())
+
+    def testMalformedData(self):
+        s_gui, s = self.startCommunication()
+        s.send(struct.pack('>l', -10))
+        self.assert_((messages.UNKNOWN, '') == s_gui.read())
+
+    def testMalformedData2(self):
+        s_gui, s = self.startCommunication()
+        s.send(struct.pack('>l', 5))
+        s.send('hello')
+        self.assert_((messages.UNKNOWN, '') == s_gui.read())
 
 
 if __name__ == '__main__':

@@ -134,7 +134,12 @@ class SocketToGui(object):
             data.append(self.conn.recv(min(4096, size)))
             size -= len(data[-1])
 
-        return cPickle.loads(''.join(data))
+        try:
+            data = cPickle.loads(''.join(data))
+        except:
+            return (messages.UNKNOWN, '')
+
+        return data
 
     def write(self, cmd, message):
         """
