@@ -122,8 +122,8 @@ class Parser(object):
 
             if model.fg_color is None:
                 model.fg_color = color
-            elif color != model.fg_color:
-                style.append('color:#' + color)
+
+            style.append('color:#' + color)
 
         if bg is not None:
             color = self._normal_color[bg]

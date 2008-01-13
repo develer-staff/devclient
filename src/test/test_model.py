@@ -71,7 +71,8 @@ class TestParser(unittest.TestCase):
         txt1, txt2 = '\x1b[0;','33mhello'
         m1 = self.parser.buildModel(txt1)
         m2 = self.parser.buildModel(txt2)
-        self.assert_(['hello'] == m2.main_html)
+        self.assert_(['<span style="color:#aaaa00">hello</span>'] ==
+                     m2.main_html)
         self.assert_(self.parser._normal_color[3] == m2.fg_color)
 
     def testParseMultiText5(self):
@@ -99,7 +100,8 @@ class TestParser(unittest.TestCase):
         m2 = self.parser.buildModel(txt2)
         self.assert_(['hello'] == m1.main_text)
         self.assert_(self.parser._normal_color[3] == m1.fg_color)
-        self.assert_(['world'] == m2.main_html)
+        self.assert_(['<span style="color:#aaaa00">world</span>'] ==
+                     m2.main_html)
 
     def testParseSpace(self):
         txt = 'hello world'
@@ -144,7 +146,8 @@ class TestParser(unittest.TestCase):
         txt = '\x1b[33mhello'
         m = Model()
         html_res, text_res = self.parser._replaceAnsiColor(txt, m)
-        self.assert_(text_res == 'hello' and html_res == 'hello')
+        self.assert_(text_res == 'hello')
+        self.assert_(html_res == '<span style="color:#aaaa00">hello</span>')
         self.assert_(m.fg_color == self.parser._normal_color[3])
 
     def testReplaceAnsiColor2(self):
@@ -167,7 +170,7 @@ class TestParser(unittest.TestCase):
         self.parser._evalStyle('33', m)
         txt = '\x1b[33mhello'
         html_res, text_res = self.parser._replaceAnsiColor(txt, m)
-        self.assert_(html_res == 'hello')
+        self.assert_(html_res == '<span style="color:#aaaa00">hello</span>')
 
     def testReplaceEmptyColor(self):
         m = Model()
