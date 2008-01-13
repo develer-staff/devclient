@@ -128,7 +128,7 @@ class StatusViewer(TextViewer):
                 cur_value = max(int(cur_value), 0)
                 cur_value = min(int(max_value), cur_value)
                 v = int(100 * cur_value / int(max_value))
-                if v != self.last_values[k]:
+                if v != self._last_values[k]:
                     self._last_values[k] = v
                     bar.setValue(v)
 
