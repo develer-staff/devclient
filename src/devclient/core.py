@@ -304,8 +304,9 @@ def main():
     """
 
     parser = OptionParser()
-    parser.add_option('-c', '--config', dest='config')
-    parser.add_option('-p', '--port', type='int', dest='port')
+    parser.add_option('-c', '--config', help='the configuration file')
+    parser.add_option('-p', '--port', type='int', default=7890,
+                      help='the port listen for connection (default %default)')
     o, args = parser.parse_args()
 
     os.chdir(join(os.getcwd(), dirname(o.config)))
