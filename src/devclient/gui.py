@@ -127,8 +127,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.setCompleter(None)
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
-        self.setupLogger()
         self.text_output.setFocusProxy(self.text_input)
+        self.setupLogger()
 
     def setupLogger(self):
         """
@@ -243,7 +243,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             "Connection lost", None, QApplication.UnicodeUTF8)
 
     def closeEvent(self, event):
-        print 'evento di chiusura'
         if self.connected:
             if not self._displayQuestion(PROJECT_NAME,
                                          self._text['CloseConfirm']):
