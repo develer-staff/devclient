@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sun Dec 16 15:40:20 2007
-#      by: PyQt4 UI code generator 4.3
+# Created: Tue Jan 15 00:21:01 2008
+#      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_dev_client(object):
     def setupUi(self, dev_client):
         dev_client.setObjectName("dev_client")
-        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,930,671).size()).expandedTo(dev_client.minimumSizeHint()))
+        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,930,672).size()).expandedTo(dev_client.minimumSizeHint()))
 
         self.centralwidget = QtGui.QWidget(dev_client)
         self.centralwidget.setObjectName("centralwidget")
@@ -137,14 +137,11 @@ class Ui_dev_client(object):
         self.toolBar.setOrientation(QtCore.Qt.Horizontal)
         self.toolBar.setIconSize(QtCore.QSize(32,32))
         self.toolBar.setObjectName("toolBar")
-        dev_client.addToolBar(self.toolBar)
+        dev_client.addToolBar(QtCore.Qt.TopToolBarArea,self.toolBar)
 
         self.action_connect = QtGui.QAction(dev_client)
         self.action_connect.setIcon(QtGui.QIcon("../../resources/images/connect.png"))
         self.action_connect.setObjectName("action_connect")
-
-        self.action_exit = QtGui.QAction(dev_client)
-        self.action_exit.setObjectName("action_exit")
 
         self.action_option = QtGui.QAction(dev_client)
         self.action_option.setIcon(QtGui.QIcon("../../resources/images/option.png"))
@@ -169,6 +166,7 @@ class Ui_dev_client(object):
         self.bar_movement.setStyleSheet(QtGui.QApplication.translate("dev_client", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
         "QProgressBar::chunk {background-color:#33CC33;}", None, QtGui.QApplication.UnicodeUTF8))
         self.action_connect.setText(QtGui.QApplication.translate("dev_client", "Connect", None, QtGui.QApplication.UnicodeUTF8))
-        self.action_exit.setText(QtGui.QApplication.translate("dev_client", "Exit", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_connect.setShortcut(QtGui.QApplication.translate("dev_client", "Alt+C", None, QtGui.QApplication.UnicodeUTF8))
         self.action_option.setText(QtGui.QApplication.translate("dev_client", "Option", None, QtGui.QApplication.UnicodeUTF8))
+        self.action_option.setShortcut(QtGui.QApplication.translate("dev_client", "Alt+O", None, QtGui.QApplication.UnicodeUTF8))
 

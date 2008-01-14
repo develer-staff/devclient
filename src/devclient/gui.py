@@ -159,6 +159,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Enter), self, self._sendText)
         QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Return), self, self._sendText)
 
+        QtGui.QShortcut(QtGui.QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
+
     def _getKeySeq(self, event):
         """
         Given a keyboard event, return a tuple of its components.
@@ -241,6 +243,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             "Connection lost", None, QApplication.UnicodeUTF8)
 
     def closeEvent(self, event):
+        print 'evento di chiusura'
         if self.connected:
             if not self._displayQuestion(PROJECT_NAME,
                                          self._text['CloseConfirm']):

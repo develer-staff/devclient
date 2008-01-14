@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>930</width>
-    <height>671</height>
+    <height>672</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -281,10 +281,8 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
    <property name="text" >
     <string>Connect</string>
    </property>
-  </action>
-  <action name="action_exit" >
-   <property name="text" >
-    <string>Exit</string>
+   <property name="shortcut" >
+    <string>Alt+C</string>
    </property>
   </action>
   <action name="action_option" >
@@ -293,6 +291,9 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
    </property>
    <property name="text" >
     <string>Option</string>
+   </property>
+   <property name="shortcut" >
+    <string>Alt+O</string>
    </property>
   </action>
  </widget>
