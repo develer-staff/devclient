@@ -103,6 +103,20 @@ class TestParser(unittest.TestCase):
         self.assert_(['<span style="color:#aaaa00">world</span>'] ==
                      m2.main_html)
 
+    def testParseMultiText8(self):
+        m = self.parser.buildModel('hello')
+        txt = '\x1b[33m\x1b[42mworld'
+        m = self.parser.buildModel(txt)
+        self.assert_(m.main_html == ['<span style="color:#aaaa00;' +
+                                     'background-color:#00aa00">world</span>'])
+
+    def testParseMultiText9(self):
+        m = self.parser.buildModel('hello')
+        txt = '\x1b[42m\x1b[33mworld'
+        m = self.parser.buildModel(txt)
+        self.assert_(m.main_html == ['<span style="color:#aaaa00;' +
+                                     'background-color:#00aa00">world</span>'])
+
     def testParseSpace(self):
         txt = 'hello world'
         m = self.parser.buildModel(txt)

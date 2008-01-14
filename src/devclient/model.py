@@ -55,8 +55,10 @@ class Parser(object):
 
         self._incomplete_seq = None
         self._style = None
-        self._bg = None
-        self._fg = None
+        self._default_bg = None
+        self._default_fg = None
+        self._bg_code = None
+        self._fg_code = None
 
     def buildModel(self, data):
         """
@@ -64,8 +66,8 @@ class Parser(object):
         """
 
         model = Model()
-        model.bg_color = self._bg
-        model.fg_color = self._fg
+        model.bg_color = self._default_bg
+        model.fg_color = self._default_fg
 
         # spaces must be replace with html code before calling
         # _replaceAnsiColor to prevent replacing inside html tag.
@@ -88,45 +90,44 @@ class Parser(object):
             model.bg_color = ''
             model.fg_color = ''
 
-        if model.bg_color != self._bg:
-            self._bg = model.bg_color
+        if model.bg_color != self._default_bg:
+            self._default_bg = model.bg_color
 
-        if model.fg_color != self._fg:
-            self._fg = model.fg_color
+        if model.fg_color != self._default_fg:
+            self._default_fg = model.fg_color
 
         return model
 
     def _evalStyle(self, ansi_code, model):
 
         attr = 0
-        fg = None
-        bg = None
-
         list_code = [int(c) for c in ansi_code.split(';')]
 
         for code in list_code:
             if 30 <= code <= 37:
-                fg = code - 30
+                self._fg_code = code - 30
             elif 40 <= code <= 47:
-                bg = code - 40
+                self._bg_code = code - 40
             elif code == 1:
                 attr = 1
 
         style = []
 
-        if fg is not None:
+        if self._fg_code is not None:
             if attr:
-                color = self._bright_color[fg]
+                color = self._bright_color[self._fg_code]
             else:
-                color = self._normal_color[fg]
+                color = self._normal_color[self._fg_code]
 
             if model.fg_color is None:
                 model.fg_color = color
 
             style.append('color:#' + color)
 
-        if bg is not None:
-            color = self._normal_color[bg]
+
+        if self._bg_code is not None:
+            color = self._normal_color[self._bg_code]
+
             if model.bg_color is None:
                 model.bg_color = color
             elif color != model.bg_color:
@@ -196,16 +197,15 @@ class Parser(object):
                 code_length = len(ansi_code) + len(COLOR_TOKEN) + len('[')
                 if m.group(2) == COLOR_TOKEN and ansi_code:
                     self._style = self._evalStyle(ansi_code, model)
-                    if self._style:
+                    if self._style and s[code_length:]: 
                         html_res += '<span style="%s">%s</span>' % \
                             (self._style, s[code_length:])
-                        text_res += s[code_length:]
                     else:
                         html_res += s[code_length:]
-                        text_res += s[code_length:]
                 else:
                     html_res += s[code_length:]
-                    text_res += s[code_length:]
+
+                text_res += s[code_length:]
             else:
                 # i == len() - 2 is the last element of list because the loop
                 # starts at second element
