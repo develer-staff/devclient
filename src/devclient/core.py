@@ -98,6 +98,7 @@ class SocketToGui(object):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(('localhost', port))
+        self.s.settimeout(.5)
         self.s.listen(1)
 
     def getSocket(self):
@@ -130,16 +131,15 @@ class SocketToGui(object):
             return (messages.UNKNOWN, '')
 
         data = []
-        while size > 0:
-            data.append(self.conn.recv(min(4096, size)))
-            size -= len(data[-1])
-
         try:
-            data = cPickle.loads(''.join(data))
-        except:
-            return (messages.UNKNOWN, '')
+            while size > 0:
+                data.append(self.conn.recv(min(4096, size)))
+                size -= len(data[-1])
 
-        return data
+            return cPickle.loads(''.join(data))
+
+        except (socket.error, cPickle.BadPickleGet):
+            return (messages.UNKNOWN, '')
 
     def write(self, cmd, message):
         """
@@ -155,7 +155,7 @@ class SocketToGui(object):
 
         buf = cPickle.dumps((cmd, message))
         self.conn.send(struct.pack('>l', len(buf)))
-        self.conn.send(buf)
+        self.conn.sendall(buf)
 
     def __del__(self):
         self.conn.close()

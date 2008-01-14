@@ -110,7 +110,7 @@ def read_data(socket):
 def write_data(socket, data):
     buf = cPickle.dumps(data)
     socket.send(struct.pack('>l', len(buf)))
-    socket.send(buf)
+    socket.sendall(buf)
 
 
 class TestSocketToGui(unittest.TestCase):
@@ -145,6 +145,30 @@ class TestSocketToGui(unittest.TestCase):
         s.send(struct.pack('>l', 5))
         s.send('hello')
         self.assert_((messages.UNKNOWN, '') == s_gui.read())
+
+    def testMalformedData3(self):
+        s_gui, s = self.startCommunication()
+        s.send(struct.pack('>l', 10))
+        s.send('hello')
+        self.assert_((messages.UNKNOWN, '') == s_gui.read())
+
+    def testMalformedData4(self):
+        s_gui, s = self.startCommunication()
+        s.send('hello')
+        self.assert_((messages.UNKNOWN, '') == s_gui.read())
+
+    def testMalformedData5(self):
+        s_gui, s = self.startCommunication()
+        s.send('h')
+        self.assert_((messages.UNKNOWN, '') == s_gui.read())
+
+    def testMalformedData6(self):
+        s_gui, s = self.startCommunication()
+        s.send(struct.pack('>l', 5))
+        s.send('hello')
+        self.assert_((messages.UNKNOWN, '') == s_gui.read())
+        write_data(s, (messages.END_APP, ''))
+        self.assert_((messages.END_APP, '') == s_gui.read())
 
 
 if __name__ == '__main__':
