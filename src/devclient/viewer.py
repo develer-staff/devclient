@@ -104,7 +104,7 @@ class StatusViewer(TextViewer):
     """
     Build the status visualization from model.
 
-    This class is a subclass of TextViewer that take an instance of TextViewer
+    This class is a subclass of `TextViewer` that take an instance of it
     as argument on __init__ (see `decorator pattern`_)
 
 .. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
