@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Mon Dec 17 21:58:28 2007
-#      by: PyQt4 UI code generator 4.3.1
+# Created: Mon Jan 14 22:49:12 2008
+#      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -311,6 +311,7 @@ class Ui_option(object):
 
         self.keys_macro = QtGui.QLineEdit(self.layoutWidget_2)
         self.keys_macro.setEnabled(False)
+        self.keys_macro.setProperty("highlight_color",QtCore.QVariant(QtGui.QApplication.translate("option", "#e0e0e0", None, QtGui.QApplication.UnicodeUTF8)))
         self.keys_macro.setObjectName("keys_macro")
         self.gridlayout5.addWidget(self.keys_macro,2,3,1,1)
 

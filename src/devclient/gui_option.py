@@ -380,7 +380,8 @@ class FormMacro(object):
 
         self.w.grabKeyboard()
         self.w.keys_macro.setText('')
-        self.w.keys_macro.setStyleSheet('background-color: #e0e0e0')
+        color = self.w.keys_macro.property('highlight_color').toString()
+        self.w.keys_macro.setStyleSheet('background-color: %s' % color)
         self.start_reg = True
 
     def _getKeySeq(self, event):
