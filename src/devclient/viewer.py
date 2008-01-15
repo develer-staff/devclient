@@ -95,6 +95,9 @@ class TextViewer(object):
         else:
             self.w.text_output.setStyleSheet('QTextEdit {%s}' % newstyle)
 
+    def resetOutputColors(self, style):
+        self.w.text_output.setStyleSheet(style)
+
     def process(self, model):
         self._process(model)
         self.w.update()

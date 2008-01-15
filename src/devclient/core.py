@@ -35,7 +35,6 @@ from optparse import OptionParser
 
 import conf
 import messages
-import mud_type
 import exception
 import constants
 from model import *

@@ -117,14 +117,15 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self.app.setStyle(QtGui.QStyleFactory.create("Cleanlooks"))
         self._installTranslator()
+        QtGui.QMainWindow.__init__(self)
+        self.setupUi(self)
 
         self.s_core = SocketToCore(self, port)
         """the interface with `Core`, an instance of `SocketToCore`"""
 
         self.history = History()
+        self._default_style = unicode(self.text_output.styleSheet())
 
-        QtGui.QMainWindow.__init__(self)
-        self.setupUi(self)
         self._setupSignal()
         self._translateText()
         self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
@@ -304,6 +305,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         comp_factory = ComponentFactory(getMudType(host, port))
         self.viewer = comp_factory.viewer(self)
+        self.viewer.resetOutputColors(self._default_style)
         self.text_input.setFocus()
         self.macros = storage.Storage().macros(self.connected)
 
