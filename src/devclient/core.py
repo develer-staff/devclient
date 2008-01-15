@@ -58,12 +58,16 @@ class SocketToServer(object):
     def connect(self, host, port):
         try:
             self.t.open(host, port)
-        except:
+        except socket.error:
             raise exception.ConnectionRefused()
         self.connected = 1
 
-    def getSocket(self):
-        return self.t.get_socket()
+    def fileno(self):
+        """
+        Return the fileno() of the socket object used internally.
+        """
+
+        return self.t.get_socket().fileno()
 
     def read(self):
         """
@@ -72,7 +76,7 @@ class SocketToServer(object):
 
         try:
             return unicode(self.t.read_very_eager(), self.encoding)
-        except (EOFError, socket.error), e:
+        except (EOFError, socket.error):
             # disconnection must be called outside this class to remove
             # the socket from the list of sockets watched.
             raise exception.ConnectionLost()
@@ -101,8 +105,12 @@ class SocketToGui(object):
         self.s.settimeout(.5)
         self.s.listen(1)
 
-    def getSocket(self):
-        return self.s
+    def fileno(self):
+        """
+        Return the fileno() of the socket object used internally.
+        """
+
+        return self.s.fileno()
 
     def accept(self):
         """
@@ -241,14 +249,12 @@ class Core(object):
         if cmd == messages.MSG and self.s_server.connected:
             self.s_server.write(self.alias.check(msg))
         elif cmd == messages.END_APP:
-            self.s_server.disconnect()
-            del self.s_gui
             return False
         elif cmd == messages.RELOAD_CONN_DATA:
             self._reloadConnData(msg)
         elif cmd == messages.CONNECT:
             if self.s_server.connected:
-                sock_watched.remove(self.s_server.getSocket())
+                sock_watched.remove(self.s_server)
                 self.s_gui.write(messages.CONN_CLOSED, '')
                 self.s_server.disconnect()
             try:
@@ -256,7 +262,7 @@ class Core(object):
             except exception.ConnectionRefused:
                 self.s_gui.write(messages.CONN_REFUSED, "")
             else:
-                sock_watched.append(self.s_server.getSocket())
+                sock_watched.append(self.s_server)
                 self.s_gui.write(messages.CONN_ESTABLISHED, msg)
 
             mud = getMudType(*msg[1:])
@@ -269,7 +275,7 @@ class Core(object):
         try:
             data = self.s_server.read()
         except exception.ConnectionLost:
-            sock_watched.remove(self.s_server.getSocket())
+            sock_watched.remove(self.s_server)
             self.s_gui.write(messages.CONN_LOST, '')
             self.s_server.disconnect()
         else:
@@ -284,26 +290,22 @@ class Core(object):
         with the `Gui` part via `SocketToGui` instance object.
         """
 
-        sock_watched = [self.s_gui.getSocket()]
+        sock_watched = [self.s_gui]
 
         while 1:
             try:
                 r, w, e = select.select(sock_watched, [], [])
-            except select.error, e:
-                # FIX
-                break
-            except socket.error, e:
-                # FIX
+            except (select.error, socket.error):
                 break
 
             for s in r:
-                if s == self.s_server.getSocket():
+                if s == self.s_server:
                     self._readDataFromServer(sock_watched)
                 # connection request from Gui
-                elif s == self.s_gui.getSocket():
+                elif s == self.s_gui:
                     sock_watched.append(self.s_gui.accept())
                 elif not self._readDataFromGui(sock_watched):
-                    break
+                    return
 
 
 def main():
