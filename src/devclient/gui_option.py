@@ -28,6 +28,7 @@ from PyQt4.QtGui import QApplication
 from storage import Storage
 from gui_option_ui import Ui_option
 
+
 class FormConnection(object):
     """
     Manage the connection part of gui option.
@@ -205,7 +206,6 @@ class FormMacro(object):
 
     def __init__(self, widget, storage):
         self.w = widget
-        self.storage = storage
         self._translateText()
 
         self._key_descr = {}
@@ -213,21 +213,21 @@ class FormMacro(object):
             if k.startswith('Key_'):
                 self._key_descr[v] = k[4:]
 
+        self.loadForm(storage)
+        self.start_reg = False
+        self._setupSignal()
+
+    def loadForm(self, storage):
+        self.storage = storage
         connections = storage.connections()
         self.w.list_conn_macro.clear()
         self.w.list_conn_macro.addItems([c[1] for c in connections])
-
         for o in (self.w.list_macro, self.w.command_macro,
                   self.w.register_macro):
             o.setEnabled(bool(self.w.list_conn_macro.count()))
 
-        if connections:
-            conn_name = unicode(connections[0][1])
-        else:
-            conn_name = None
+        conn_name = unicode(connections[0][1]) if connections else None
         self.loadMacros(conn_name, True)
-        self.start_reg = False
-        self._setupSignal()
 
     def _translateText(self):
         self._text = {}
@@ -250,22 +250,21 @@ class FormMacro(object):
         self._text['unique_keys'] = QApplication.translate("option",
             "Key sequence must be unique", None, QApplication.UnicodeUTF8)
 
-    def _signalCombo(self, conn):
-        f = self.w.connect
-        if not conn:
-            f = self.w.disconnect
-
-        f(self.w.list_conn_macro, SIGNAL("currentIndexChanged(QString)"),
-          self.loadMacros)
-
-        f(self.w.list_macro, SIGNAL("currentIndexChanged(int)"), self.load)
+    def disableSignal(self, disable):
+        self.w.list_macro.blockSignals(disable)
+        self.w.list_conn_macro.blockSignals(disable)
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
         self.w.connect(self.w.register_macro, clicked, self._register)
         self.w.connect(self.w.save_macro, clicked, self.save)
         self.w.connect(self.w.delete_macro, clicked, self.delete)
-        self._signalCombo(True)
+        self.w.connect(self.w.list_conn_macro,
+                       SIGNAL("currentIndexChanged(QString)"),
+                       self.loadMacros)
+        self.w.connect(self.w.list_macro,
+                       SIGNAL("currentIndexChanged(int)"),
+                       self.load)
 
     def loadMacros(self, conn, signal=False):
         """
@@ -279,17 +278,15 @@ class FormMacro(object):
         """
 
         if not signal:
-            self._signalCombo(False)
-        if conn:
-            self.macros = self.storage.macros(unicode(conn))
-        else:
-            self.macros = []
+            self.disableSignal(True)
+
+        self.macros = self.storage.macros(unicode(conn)) if conn else []
         self.w.list_macro.clear()
         self.w.list_macro.addItem(self._text['new_macro'])
         self.w.list_macro.addItems([self.getKeyDescr(*m[1:]) for m in
                                     self.macros])
         if not signal:
-            self._signalCombo(True)
+            self.disableSignal(False)
         self._clear()
 
     def load(self, idx):
@@ -450,10 +447,16 @@ class GuiOption(QtGui.QDialog, Ui_option):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self._setupSignal()
-        self.storage = Storage()
-        self.conn = FormConnection(self, self.storage)
-        self.macro = None
         self._translateText()
+
+        self.storage = Storage()
+        """an instance of `Storage`, used to maintain persistence."""
+
+        self.conn = FormConnection(self, self.storage)
+        """the `FormConnection` instance, used to manage tab of connections."""
+
+        self.macro = FormMacro(self, self.storage)
+        """the `FormMacro` instance, used to manage tab of macros."""
 
     def _displayWarning(self, title, message):
         QtGui.QMessageBox.warning(self, title, message)
@@ -463,19 +466,18 @@ class GuiOption(QtGui.QDialog, Ui_option):
         self.connect(self.tab_widget, SIGNAL("currentChanged(int)"),
                      self._syncTabs)
 
-        self._signalConnAlias(True)
         self.connect(self.save_alias, clicked, self._saveAlias)
         self.connect(self.delete_alias, clicked, self._deleteAlias)
+        self.connect(self.list_conn_alias,
+                     SIGNAL("currentIndexChanged(QString)"),
+                     self._loadAliases)
+        self.connect(self.list_alias,
+                     SIGNAL("currentIndexChanged(int)"),
+                     self._loadAlias)
 
-    def _signalConnAlias(self, conn):
-        f = self.connect
-        if not conn:
-            f = self.disconnect
-
-        f(self.list_conn_alias, SIGNAL("currentIndexChanged(QString)"),
-          self._loadAliases)
-
-        f(self.list_alias, SIGNAL("currentIndexChanged(int)"), self._loadAlias)
+    def disableSignal(self, disable):
+        self.list_alias.blockSignals(disable)
+        self.list_conn_alias.blockSignals(disable)
 
     def _translateText(self):
         self._text = {}
@@ -502,26 +504,27 @@ class GuiOption(QtGui.QDialog, Ui_option):
     def _syncTabs(self, idx):
         curr_tab = self.tab_widget.currentWidget().objectName()
         if curr_tab == "tab_alias":
-            self._signalConnAlias(False)
+            self.disableSignal(True)
             self.list_conn_alias.clear()
             self.list_conn_alias.addItems([c[1] for c in self.conn.connections])
-            self._signalConnAlias(True)
+            self.disableSignal(False)
             self._loadAliases(unicode(self.list_conn_alias.currentText()))
 
             for o in (self.list_alias, self.label_alias, self.body_alias):
                 o.setEnabled(bool(self.list_conn_alias.count()))
 
         elif curr_tab == "tab_macro":
-            del self.macro  # Without this, signal disconnect don't work.. why?
-            self.macro = FormMacro(self, self.storage)
+            self.macro.disableSignal(True)
+            self.macro.loadForm(self.storage)
+            self.macro.disableSignal(False)
 
     def _loadAliases(self, conn):
-        self._signalConnAlias(False)
+        self.disableSignal(True)
         self.list_alias.clear()
         self.list_alias.addItem(self._text['new_alias'])
         self.aliases = self.storage.aliases(unicode(conn))
         self.list_alias.addItems([l for l, b in self.aliases])
-        self._signalConnAlias(True)
+        self.disableSignal(False)
         self._loadAlias(0)
 
     def _loadAlias(self, idx):
