@@ -39,6 +39,8 @@ from history import History
 from mud_type import getMudType, ComponentFactory
 from constants import PUBLIC_VERSION, PROJECT_NAME
 
+logger = logging.getLogger('gui')
+
 
 class SocketToCore(object):
     """
@@ -95,6 +97,9 @@ class SocketToCore(object):
         buf = cPickle.dumps((cmd, message))
         self.s.write(struct.pack('>l', len(buf)))
         self.s.write(buf)
+
+    def disconnect(self):
+        self.s.disconnectFromHost()
 
 
 class Gui(QtGui.QMainWindow, Ui_dev_client):
@@ -250,6 +255,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 return
 
         self.s_core.write(messages.END_APP, "")
+        self.s_core.disconnect()
         event.accept()
 
     def _showOption(self):
@@ -334,6 +340,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 self.connected = None
 
     def _commError(self, error):
+        logger.error('SocketToCore:' + self.s_core.s.errorString())
         self._displayWarning(PROJECT_NAME, self._text['FatalError'])
 
     def _displayQuestion(self, title, message):
