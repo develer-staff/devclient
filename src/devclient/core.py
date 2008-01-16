@@ -51,6 +51,9 @@ class SocketToServer(object):
     encoding = "ISO-8859-1"
 
     def __init__(self):
+        if not socket.getdefaulttimeout():
+            socket.setdefaulttimeout(1)
+
         self.connected = 0
         self.t = telnetlib.Telnet()
 
@@ -98,10 +101,12 @@ class SocketToGui(object):
     """
 
     def __init__(self, port=7890):
+        if not socket.getdefaulttimeout():
+            socket.setdefaulttimeout(1)
+
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(('localhost', port))
-        self.s.settimeout(.5)
         self.s.listen(1)
 
     def fileno(self):
