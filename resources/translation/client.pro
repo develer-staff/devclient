@@ -1,4 +1,4 @@
-TRANSLATIONS = it.ts
+TRANSLATIONS = it_IT.ts
 
 SOURCES = ../../src/devclient/gui.py \
           ../../src/devclient/gui_option.py

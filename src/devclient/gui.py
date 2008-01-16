@@ -23,11 +23,12 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import struct
+import os.path
 import cPickle
 import logging
 
 from PyQt4 import QtCore, QtGui, QtNetwork
-from PyQt4.QtCore import SIGNAL, Qt
+from PyQt4.QtCore import SIGNAL, Qt, QLocale
 from PyQt4.QtGui import QApplication, QMessageBox
 
 import storage
@@ -214,9 +215,16 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self.text_input.setItemText(0, self.history.getNext())
 
     def _installTranslator(self):
-        self.translator = QtCore.QTranslator()
-        self.translator.load(config['translation']['path'])
-        QApplication.installTranslator(self.translator)
+        """
+        Translate application according to system locale
+        """
+
+        locale = str(QLocale.system().name())
+        fn = os.path.join(config['translation']['path'], locale + '.qm')
+        if os.path.exists(fn):
+            self.translator = QtCore.QTranslator()
+            self.translator.load(fn)
+            QApplication.installTranslator(self.translator)
 
     def _translateText(self):
         self._text = {}
