@@ -30,6 +30,7 @@ import logging
 from PyQt4 import QtCore, QtGui, QtNetwork
 from PyQt4.QtCore import SIGNAL, Qt, QLocale
 from PyQt4.QtGui import QApplication, QMessageBox
+from PyQt4.QtNetwork import QHostAddress
 
 import storage
 import messages
@@ -51,7 +52,10 @@ class SocketToCore(object):
     def __init__(self, widget, port=7890):
         self.w = widget
         self.s = QtNetwork.QTcpSocket()
-        self.s.connectToHost('localhost', port)
+        self.s.connectToHost(QHostAddress(QHostAddress.LocalHost), port)
+        if not self.s.waitForConnected():
+            self.w._commError()
+            return
         self._setupSignal()
 
     def _setupSignal(self):
@@ -78,7 +82,10 @@ class SocketToCore(object):
             if not self.s.waitForReadyRead(200):
                 return (messages.UNKNOWN, '')
 
-        return cPickle.loads(self.s.read(size))
+        try:
+            return cPickle.loads(self.s.read(size))
+        except (MemoryError, cPickle.BadPickleGet):
+            return (messages.UNKNOWN, '')
 
     def availableData(self):
         return self.s.bytesAvailable() > 0
@@ -348,9 +355,12 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 self.connected = None
             elif cmd == messages.CONN_CLOSED:
                 self.connected = None
+            elif cmd == messages.UNKNOWN:
+                logger.warning('SocketToCore: Unknown message')
 
-    def _commError(self, error):
-        logger.error('SocketToCore:' + self.s_core.s.errorString())
+    def _commError(self, error=None):
+        if error:
+            logger.error('SocketToCore:' + self.s_core.s.errorString())
         self._displayWarning(PROJECT_NAME, self._text['FatalError'])
 
     def _displayQuestion(self, title, message):

@@ -42,6 +42,8 @@ from alias import Alias
 from conf import config
 from mud_type import getMudType, ComponentFactory
 
+DEFAULT_TIMEOUT = 1
+logger = logging.getLogger('core')
 
 class SocketToServer(object):
     """
@@ -52,7 +54,7 @@ class SocketToServer(object):
 
     def __init__(self):
         if not socket.getdefaulttimeout():
-            socket.setdefaulttimeout(1)
+            socket.setdefaulttimeout(DEFAULT_TIMEOUT)
 
         self.connected = 0
         self.t = telnetlib.Telnet()
@@ -102,7 +104,7 @@ class SocketToGui(object):
 
     def __init__(self, port=7890):
         if not socket.getdefaulttimeout():
-            socket.setdefaulttimeout(1)
+            socket.setdefaulttimeout(DEFAULT_TIMEOUT)
 
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -123,7 +125,7 @@ class SocketToGui(object):
         :return: the socket object usable to send and receive data.
         """
 
-        self.conn, addr = self.s.accept()
+        self.conn = self.s.accept()[0]
         return self.conn
 
     def read(self):
@@ -272,6 +274,8 @@ class Core(object):
             mud = getMudType(*msg[1:])
             self.parser = ComponentFactory(mud).parser()
             self.alias = Alias(msg[0])
+        elif cmd == messages.UNKNOWN:
+            logger.warning('SocketToGui: Unknown message')
 
         return True
 
