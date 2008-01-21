@@ -212,14 +212,12 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         return False
 
     def _onKeyUp(self):
-        if self.text_input.hasFocus():
-            self.text_input.setCurrentIndex(0)
-            self.text_input.setItemText(0, self.history.getPrev())
+        self.text_input.setCurrentIndex(0)
+        self.text_input.setItemText(0, self.history.getPrev())
 
     def _onKeyDown(self):
-        if self.text_input.hasFocus():
-            self.text_input.setCurrentIndex(0)
-            self.text_input.setItemText(0, self.history.getNext())
+        self.text_input.setCurrentIndex(0)
+        self.text_input.setItemText(0, self.history.getNext())
 
     def _installTranslator(self):
         """
@@ -262,6 +260,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self._text['ConnLost'] = QApplication.translate("dev_client",
             "Connection lost", None, QApplication.UnicodeUTF8)
+
+        self._text['NotConnected'] = QApplication.translate("dev_client",
+            "Client is not connected", None, QApplication.UnicodeUTF8)
 
     def closeEvent(self, event):
         if self.connected:
@@ -321,11 +322,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         comp_factory = ComponentFactory(getMudType(host, port))
         self.viewer = comp_factory.viewer(self)
         self.viewer.resetOutputColors(self._default_style)
-        self.text_input.setFocus()
         self.macros = storage.Storage().macros(self.connected)
 
     def _sendText(self):
-        if self.text_input.hasFocus():
+        if self.connected:
             text = unicode(self.text_input.currentText())
             self.history.add(text)
             self.s_core.write(messages.MSG, text)
@@ -336,6 +336,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self.text_input.addItems(hist)
             self.text_input.setCurrentIndex(0)
             self.text_input.setItemText(0, '')
+        else:
+            self._displayWarning(PROJECT_NAME, self._text['NotConnected'])
 
     def _readDataFromCore(self):
 
