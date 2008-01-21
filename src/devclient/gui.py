@@ -55,7 +55,7 @@ class SocketToCore(object):
         self._s = QtNetwork.QTcpSocket()
         self._s.connectToHost(QHostAddress(QHostAddress.LocalHost), port)
         if not self._s.waitForConnected():
-            self._w._commError()
+            self._commError()
             return
         self._setupSignal()
 
@@ -63,7 +63,11 @@ class SocketToCore(object):
         self._w.connect(self._s, SIGNAL("readyRead()"),
                         self._w._readDataFromCore)
         self._w.connect(self._s, SIGNAL("error(QAbstractSocket::SocketError)"),
-                        self._w._commError)
+                        self._commError)
+
+    def _commError(self, error=None):
+        logger.error('SocketToCore: ' + self._s.errorString())
+        self._w._displayWarning(PROJECT_NAME, self._w._text['FatalError'])
 
     def read(self):
         """
@@ -155,6 +159,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.setupUi(self)
         self._setupSignal()
         self._translateText()
+        self.setupLogger()
 
         self.s_core = SocketToCore(self, port)
         """the interface with `Core`, an instance of `SocketToCore`"""
@@ -168,7 +173,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
         self.text_output.setFocusProxy(self.text_input)
-        self.setupLogger()
 
     def setupLogger(self):
         """
@@ -385,11 +389,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 self.connected = None
             elif cmd == messages.UNKNOWN:
                 logger.warning('SocketToCore: Unknown message')
-
-    def _commError(self, error=None):
-        if error:
-            logger.error('SocketToCore:' + self.s_core.s.errorString())
-        self._displayWarning(PROJECT_NAME, self._text['FatalError'])
 
     def _displayQuestion(self, title, message):
         box = QMessageBox(self)
