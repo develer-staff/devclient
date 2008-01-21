@@ -47,6 +47,9 @@ def main(argv, cfg_file):
                       '--config=%s' % cfg_file,
                       '--port=%d' % port])
 
+    # FIX! To prevent connectionRefused from SocketToGui
+    import time
+    time.sleep(.5)
     # Set current path on module path for external resources like images
     os.chdir(conf.config['devclient']['path'])
     gui = Gui(port)
