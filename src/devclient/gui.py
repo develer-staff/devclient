@@ -49,19 +49,21 @@ class SocketToCore(object):
     Provide a socket interface to `Core` part of client.
     """
 
-    def __init__(self, widget, port=7890):
-        self.w = widget
-        self.s = QtNetwork.QTcpSocket()
-        self.s.connectToHost(QHostAddress(QHostAddress.LocalHost), port)
-        if not self.s.waitForConnected():
-            self.w._commError()
+    def __init__(self, widget, port=7890, timeout=.2):
+        self._w = widget
+        self._timeout = timeout
+        self._s = QtNetwork.QTcpSocket()
+        self._s.connectToHost(QHostAddress(QHostAddress.LocalHost), port)
+        if not self._s.waitForConnected():
+            self._w._commError()
             return
         self._setupSignal()
 
     def _setupSignal(self):
-        self.w.connect(self.s, SIGNAL("readyRead()"), self.w._readDataFromCore)
-        self.w.connect(self.s, SIGNAL("error(QAbstractSocket::SocketError)"),
-                       self.w._commError)
+        self._w.connect(self._s, SIGNAL("readyRead()"),
+                        self._w._readDataFromCore)
+        self._w.connect(self._s, SIGNAL("error(QAbstractSocket::SocketError)"),
+                        self._w._commError)
 
     def read(self):
         """
@@ -70,25 +72,45 @@ class SocketToCore(object):
         :return: a tuple of the form (<message type>, <message>)
         """
 
-        size = self.s.read(struct.calcsize("L"))
+        def readData(size):
+            for wait in (True, False):
+                if self._s.bytesAvailable() < size:
+                    if wait:
+                        # waitForReadyRead might cause UI to freeze
+                        self._s.waitForReadyRead(self._timeout * 1000)
+                    else:
+                        self._s.read(self._s.bytesAvailable())
+                        return ''
+
+            return self._s.read(size)
+
+        def exit_clean():
+            # waste all data available to restore format data for next messages
+            self._s.read(self._s.bytesAvailable())
+            return (messages.UNKNOWN, '')
+
+        size = readData(struct.calcsize("L"))
+        if not size:
+            return exit_clean()
         try:
             size = struct.unpack('>l', size)[0]
         except struct.error:
-            # waste all data available to restore format data for next messages
-            self.s.read(self.s.bytesAvailable())
-            return (messages.UNKNOWN, '')
+            return exit_clean()
 
-        while self.s.bytesAvailable() < size:
-            if not self.s.waitForReadyRead(200):
-                return (messages.UNKNOWN, '')
+        if size < 0:
+            return exit_clean()
+
+        data = readData(size)
+        if not data:
+            return exit_clean()
 
         try:
-            return cPickle.loads(self.s.read(size))
-        except (MemoryError, cPickle.BadPickleGet):
+            return cPickle.loads(data)
+        except cPickle.BadPickleGet:
             return (messages.UNKNOWN, '')
 
     def availableData(self):
-        return self.s.bytesAvailable() > 0
+        return self._s.bytesAvailable() > 0
 
     def write(self, cmd, message):
         """
@@ -103,11 +125,15 @@ class SocketToCore(object):
         """
 
         buf = cPickle.dumps((cmd, message))
-        self.s.write(struct.pack('>l', len(buf)))
-        self.s.write(buf)
+        self._s.write(struct.pack('>l', len(buf)))
+        self._s.write(buf)
+        self._s.flush()  # prevent buffering
 
     def disconnect(self):
-        self.s.disconnectFromHost()
+        self._s.disconnectFromHost()
+
+    def __del__(self):
+        self.disconnect()
 
 
 class Gui(QtGui.QMainWindow, Ui_dev_client):
@@ -127,6 +153,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self._installTranslator()
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
+        self._setupSignal()
+        self._translateText()
 
         self.s_core = SocketToCore(self, port)
         """the interface with `Core`, an instance of `SocketToCore`"""
@@ -134,8 +162,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.history = History()
         self._default_style = unicode(self.text_output.styleSheet())
 
-        self._setupSignal()
-        self._translateText()
         self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
         self.connected = None
         self.text_input.setCompleter(None)

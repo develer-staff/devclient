@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -27,34 +27,10 @@ import socket
 import random
 import unittest
 
-from PyQt4.QtCore import QCoreApplication
-
 sys.path.append('..')
 
 import communication
 from devclient.gui import SocketToCore
-
-
-def eventWrap(classname):
-
-    def add_event_process(func):
-        if QCoreApplication.instance():
-            qApp = QCoreApplication.instance()
-        else:
-            qApp = QCoreApplication([])
-
-        def wrapper(*args, **kw):
-            qApp.processEvents()
-            try:
-                return func(*args, **kw)
-            finally:
-                qApp.processEvents()
-
-        return wrapper
-
-    for n, f in vars(classname).iteritems():
-        if not n.startswith('_') or n == '__init__':
-            setattr(classname, n, add_event_process(getattr(classname, n)))
 
 
 class GuiMock(object):
@@ -84,6 +60,5 @@ class TestSocketToCore(unittest.TestCase, communication.TestSocket):
 if __name__ == '__main__':
     if not socket.getdefaulttimeout():
         socket.setdefaulttimeout(1)
-    eventWrap(SocketToCore)
     unittest.main()
 

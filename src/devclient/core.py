@@ -42,8 +42,8 @@ from alias import Alias
 from conf import config
 from mud_type import getMudType, ComponentFactory
 
-DEFAULT_TIMEOUT = 1
 logger = logging.getLogger('core')
+
 
 class SocketToServer(object):
     """
@@ -52,16 +52,16 @@ class SocketToServer(object):
 
     encoding = "ISO-8859-1"
 
-    def __init__(self):
-        if not socket.getdefaulttimeout():
-            socket.setdefaulttimeout(DEFAULT_TIMEOUT)
-
+    def __init__(self, timeout=1):
+        # setting a default timeout is the only way to set a timeout for the
+        # Telnet object before establish the connection.
+        socket.setdefaulttimeout(timeout)
         self.connected = 0
-        self.t = telnetlib.Telnet()
+        self._t = telnetlib.Telnet()
 
     def connect(self, host, port):
         try:
-            self.t.open(host, port)
+            self._t.open(host, port)
         except socket.error:
             raise exception.ConnectionRefused()
         self.connected = 1
@@ -71,7 +71,7 @@ class SocketToServer(object):
         Return the fileno() of the socket object used internally.
         """
 
-        return self.t.get_socket().fileno()
+        return self._t.get_socket().fileno()
 
     def read(self):
         """
@@ -79,18 +79,18 @@ class SocketToServer(object):
         """
 
         try:
-            return unicode(self.t.read_very_eager(), self.encoding)
+            return unicode(self._t.read_very_eager(), self.encoding)
         except (EOFError, socket.error):
             # disconnection must be called outside this class to remove
             # the socket from the list of sockets watched.
             raise exception.ConnectionLost()
 
     def write(self, msg):
-        self.t.write(msg.encode(self.encoding) + "\n")
+        self._t.write(msg.encode(self.encoding) + "\n")
 
     def disconnect(self):
         if self.connected:
-            self.t.close()
+            self._t.close()
             self.connected = 0
 
     def __del__(self):
@@ -102,21 +102,20 @@ class SocketToGui(object):
     Provide a socket interface to `Gui` part of client.
     """
 
-    def __init__(self, port=7890):
-        if not socket.getdefaulttimeout():
-            socket.setdefaulttimeout(DEFAULT_TIMEOUT)
-
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.s.bind(('localhost', port))
-        self.s.listen(1)
+    def __init__(self, port=7890, timeout=.2):
+        self._timeout = timeout
+        self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._s.bind(('localhost', port))
+        self._s.settimeout(self._timeout)
+        self._s.listen(1)
 
     def fileno(self):
         """
         Return the fileno() of the socket object used internally.
         """
 
-        return self.s.fileno()
+        return self._s.fileno()
 
     def accept(self):
         """
@@ -125,8 +124,9 @@ class SocketToGui(object):
         :return: the socket object usable to send and receive data.
         """
 
-        self.conn = self.s.accept()[0]
-        return self.conn
+        self._conn = self._s.accept()[0]
+        self._conn.settimeout(self._timeout)
+        return self._conn
 
     def read(self):
         """
@@ -135,7 +135,7 @@ class SocketToGui(object):
         :return: a tuple of the form (<message type>, <message>)
         """
 
-        size = self.conn.recv(struct.calcsize("L"))
+        size = self._conn.recv(struct.calcsize("L"))
         try:
             size = struct.unpack('>l', size)[0]
         except struct.error:
@@ -147,7 +147,7 @@ class SocketToGui(object):
         data = []
         try:
             while size > 0:
-                data.append(self.conn.recv(min(4096, size)))
+                data.append(self._conn.recv(min(4096, size)))
                 size -= len(data[-1])
 
             return cPickle.loads(''.join(data))
@@ -168,12 +168,12 @@ class SocketToGui(object):
         """
 
         buf = cPickle.dumps((cmd, message))
-        self.conn.send(struct.pack('>l', len(buf)))
-        self.conn.sendall(buf)
+        self._conn.send(struct.pack('>l', len(buf)))
+        self._conn.sendall(buf)
 
     def __del__(self):
-        self.conn.close()
-        self.s.close()
+        self._conn.close()
+        self._s.close()
 
 
 class Core(object):
