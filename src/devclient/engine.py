@@ -21,7 +21,7 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-
+import sys
 import random
 import os.path
 import subprocess
@@ -42,14 +42,22 @@ def main(argv, cfg_file):
     conf.loadConfiguration(cfg_file)
 
     port = random.randint(2000, 10000)
+
+    if sys.platform == 'win32':  # Hide console on win32 platform
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    else:
+        startupinfo = None
+
     subprocess.Popen(['python',
                       join(conf.config['devclient']['path'], 'core.py'),
                       '--config=%s' % cfg_file,
-                      '--port=%d' % port])
+                      '--port=%d' % port], startupinfo=startupinfo)
 
     # FIX! To prevent connectionRefused from SocketToGui
     import time
     time.sleep(.5)
+
     # Set current path on module path for external resources like images
     os.chdir(conf.config['devclient']['path'])
     gui = Gui(port)
