@@ -41,9 +41,6 @@ class GuiMock(object):
     def _readDataFromCore(self):
         pass
 
-    def _commError(self, error):
-        pass
-
 
 class TestSocketToCore(unittest.TestCase, communication.TestSocket):
 
@@ -58,7 +55,5 @@ class TestSocketToCore(unittest.TestCase, communication.TestSocket):
 
 
 if __name__ == '__main__':
-    if not socket.getdefaulttimeout():
-        socket.setdefaulttimeout(1)
     unittest.main()
 

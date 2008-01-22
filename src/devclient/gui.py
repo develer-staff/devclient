@@ -46,15 +46,28 @@ logger = logging.getLogger('gui')
 
 class SocketToCore(object):
     """
-    Provide a socket interface to `Core` part of client.
+    Provide a socket interface used to exchange message with `Core`.
     """
 
     def __init__(self, widget, port=7890, timeout=.2):
+        """
+        Create the `SocketToCore` instance.
+        
+        :Parameters:
+          widget : QWidget
+            the parent widget, used to display messages
+          port : int
+            the port used to establish a connection with `Core`
+          timeout : int
+            the timeout of socket operations (in seconds)
+        """
+
         self._w = widget
-        self._timeout = timeout
+        self._timeout = timeout * 1000
         self._s = QtNetwork.QTcpSocket()
         self._s.connectToHost(QHostAddress(QHostAddress.LocalHost), port)
-        if not self._s.waitForConnected():
+        if not self._s.waitForConnected(self._timeout):
+            # FIX: the core process must to be killed
             self._commError()
             return
         self._setupSignal()
@@ -69,6 +82,27 @@ class SocketToCore(object):
         logger.error('SocketToCore: ' + self._s.errorString())
         self._w._displayWarning(PROJECT_NAME, self._w._text['FatalError'])
 
+    def _readData(self, size):
+        """
+        Read data, blocking until (for a max of timeout) all data is available.
+        
+        :Parameters:
+          size : int
+            the length of data to read
+
+        :return: data if it is available, None otherwise
+        """
+
+        for wait in (True, False):
+            if self._s.bytesAvailable() < size:
+                if wait:
+                    # waitForReadyRead might cause UI to freeze
+                    self._s.waitForReadyRead(self._timeout)
+                else:
+                    return None
+
+        return self._s.read(size)
+        
     def read(self):
         """
         Read a message.
@@ -76,25 +110,13 @@ class SocketToCore(object):
         :return: a tuple of the form (<message type>, <message>)
         """
 
-        def readData(size):
-            for wait in (True, False):
-                if self._s.bytesAvailable() < size:
-                    if wait:
-                        # waitForReadyRead might cause UI to freeze
-                        self._s.waitForReadyRead(self._timeout * 1000)
-                    else:
-                        self._s.read(self._s.bytesAvailable())
-                        return ''
-
-            return self._s.read(size)
-
         def exit_clean():
             # waste all data available to restore format data for next messages
             self._s.read(self._s.bytesAvailable())
             return (messages.UNKNOWN, '')
 
-        size = readData(struct.calcsize("L"))
-        if not size:
+        size = self._readData(struct.calcsize("L"))
+        if size is None:
             return exit_clean()
         try:
             size = struct.unpack('>l', size)[0]
@@ -104,8 +126,8 @@ class SocketToCore(object):
         if size < 0:
             return exit_clean()
 
-        data = readData(size)
-        if not data:
+        data = self._readData(size)
+        if data is None:
             return exit_clean()
 
         try:
