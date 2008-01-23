@@ -86,12 +86,14 @@ class TestFormConnection(GuiOptionTest):
             return False
         return True
 
-    def _setFormFields(self, form_conn, conn):
-        form_conn.w.name_conn.setText(conn[0])
-        form_conn.w.host_conn.setText(conn[1])
-        form_conn.w.port_conn.setText(str(conn[2]))
-        d = (QtCore.Qt.Unchecked, QtCore.Qt.Checked)[conn[-1]]
+    def _buildForm(self, name, host, port, check):
+        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn.w.name_conn.setText(name)
+        form_conn.w.host_conn.setText(host)
+        form_conn.w.port_conn.setText(str(port))
+        d = (QtCore.Qt.Unchecked, QtCore.Qt.Checked)[check]
         form_conn.w.default_conn.setCheckState(d)
+        return form_conn
 
     def _checkEmptyForm(self, form_conn):
         if not form_conn.w.name_conn.text() and \
@@ -160,35 +162,28 @@ class TestFormConnection(GuiOptionTest):
         """
 
         Storage().addConnection([0, 'name', 'host', 4000, 1])
-        form_conn = FormConnection(GuiOptionMock(), Storage())
-        self._setFormFields(form_conn, ['name', 'host3', 1000, 0])
+        form_conn = self._buildForm('name', 'host3', 1000, 0)
         self.assert_(not form_conn._checkFields())
         self.assert_(form_conn.w._warning)
 
     def testCheckField3(self):
         """Verify error with empty name field """
 
-        form_conn = FormConnection(GuiOptionMock(), Storage())
-        form_conn.w.host_conn.setText('host')
-        form_conn.w.port_conn.setText('1232')
+        form_conn = self._buildForm('', 'host', 1232, 0)
         self.assert_(not form_conn._checkFields())
         self.assert_(form_conn.w._warning)
 
     def testCheckField4(self):
         """Verify error with empty host field """
 
-        form_conn = FormConnection(GuiOptionMock(), Storage())
-        form_conn.w.name_conn.setText('name')
-        form_conn.w.port_conn.setText('1232')
+        form_conn = self._buildForm('name', '', 1232, 0)
         self.assert_(not form_conn._checkFields())
         self.assert_(form_conn.w._warning)
 
     def testCheckField5(self):
         """Verify error with empty port field """
 
-        form_conn = FormConnection(GuiOptionMock(), Storage())
-        form_conn.w.name_conn.setText('name')
-        form_conn.w.host_conn.setText('host')
+        form_conn = self._buildForm('name', 'host', '', 0)
         self.assert_(not form_conn._checkFields())
         self.assert_(form_conn.w._warning)
 
@@ -205,10 +200,7 @@ class TestFormConnection(GuiOptionTest):
     def testCheckField7(self):
         """Verify no error on right add"""
 
-        form_conn = FormConnection(GuiOptionMock(), Storage())
-        form_conn.w.name_conn.setText('name')
-        form_conn.w.host_conn.setText('host')
-        form_conn.w.port_conn.setText('1232')
+        form_conn = self._buildForm('name', 'host', 1232, 0)
         self.assert_(form_conn._checkFields())
         self.assert_(not form_conn.w._warning)
 
@@ -222,18 +214,16 @@ class TestFormConnection(GuiOptionTest):
         s.addConnection([0, 'name', 'host', 4000, 0])
         conn = [0, 'name2', 'host2', 3000, 0]
         s.addConnection(conn)
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = self._buildForm('name', 'host3', 1000, 1)
         form_conn.w.list_conn.setCurrentIndex(2)
-        self._setFormFields(form_conn, ['name', 'host3', 1000, 1])
         self.assert_(not form_conn._checkFields())
         self.assert_(form_conn.w._warning)
 
     def testSaveAdd(self):
         """Add a connection on empty storage."""
 
-        form_conn = FormConnection(GuiOptionMock(), Storage())
         conn = ('name', 'host', 1232, 0)
-        self._setFormFields(form_conn, conn)
+        form_conn = self._buildForm(*conn)
         form_conn.save()
         self.assert_(len(form_conn.connections) == 1)
         self.assert_(conn == Storage().connections()[0][1:])
@@ -243,8 +233,7 @@ class TestFormConnection(GuiOptionTest):
 
         Storage().addConnection([0, 'name', 'host', 4000, 0])
         conn = ('name2', 'host', 1232, 1)
-        form_conn = FormConnection(GuiOptionMock(), Storage())
-        self._setFormFields(form_conn, conn)
+        form_conn = self._buildForm(*conn)
         form_conn.save()
         self.assert_(len(form_conn.connections) == 2)
         self.assert_(conn == Storage().connections()[1][1:])
@@ -256,16 +245,14 @@ class TestFormConnection(GuiOptionTest):
         """
 
         Storage().addConnection([0, 'name', 'host', 4000, 1])
-        form_conn = FormConnection(GuiOptionMock(), Storage())
-        self._setFormFields(form_conn, ('name2', 'host', 1232, 1))
+        form_conn = self._buildForm('name2', 'host', 1232, 1)
         form_conn.save()
         self.assert_(Storage().connections()[0][-1] == 0)
 
     def testSaveAdd4(self):
         """Verify that after saving form fields are empty."""
 
-        form_conn = FormConnection(GuiOptionMock(), Storage())
-        self._setFormFields(form_conn, ('name', 'host', '4000', 0))
+        form_conn = self._buildForm('name', 'host', 4000, 1)
         form_conn.save()
         self.assert_(self._checkEmptyForm(form_conn))
 
@@ -274,10 +261,9 @@ class TestFormConnection(GuiOptionTest):
 
         conn = [0, 'name', 'host', 4000, 1]
         Storage().addConnection(conn)
-        form_conn = FormConnection(GuiOptionMock(), Storage())
         conn = [conn[0], 'name2', 'host2', 1234, 0]
+        form_conn = self._buildForm(*conn[1:])
         form_conn.w.list_conn.setCurrentIndex(1)
-        self._setFormFields(form_conn, conn[1:])
         form_conn.save()
         self.assert_(len(form_conn.connections) == 1)
         self.assert_(conn == list(Storage().connections()[0]))
@@ -287,10 +273,9 @@ class TestFormConnection(GuiOptionTest):
 
         conn = [0, 'name', 'host', 4000, 1]
         Storage().addConnection(conn)
-        form_conn = FormConnection(GuiOptionMock(), Storage())
         conn = [conn[0], 'name2', 'host2', 1234, 0]
+        form_conn = self._buildForm(*conn[1:])
         form_conn.w.list_conn.setCurrentIndex(1)
-        self._setFormFields(form_conn, conn[1:])
         form_conn.save()
         self.assert_(form_conn.w.list_conn.itemText(1) == conn[1])
 
@@ -299,10 +284,9 @@ class TestFormConnection(GuiOptionTest):
 
         conn = [0, 'name', 'host', 4000, 1]
         Storage().addConnection(conn)
-        form_conn = FormConnection(GuiOptionMock(), Storage())
         conn = [conn[0], 'name2', 'host2', 1234, 0]
+        form_conn = self._buildForm(*conn[1:])
         form_conn.w.list_conn.setCurrentIndex(1)
-        self._setFormFields(form_conn, conn[1:])
         form_conn.save()
         self.assert_(self._checkEmptyForm(form_conn))
 
@@ -315,9 +299,8 @@ class TestFormConnection(GuiOptionTest):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000, 1])
         s.addConnection([0, 'name2', 'host2', 3000, 0])
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = self._buildForm('name2', 'host2', 3000, 1)
         form_conn.w.list_conn.setCurrentIndex(2)
-        self._setFormFields(form_conn, ['name2', 'host2', 3000, 1])
         form_conn.save()
         c = Storage().connections()
         self.assert_(c[0][-1] == 0 and c[1][-1] == 1)
