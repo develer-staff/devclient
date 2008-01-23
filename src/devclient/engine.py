@@ -40,6 +40,7 @@ def main(argv, cfg_file):
     os.chdir(join(os.getcwd(), dirname(argv[0]), dirname(cfg_file)))
     cfg_file = join(os.getcwd(), os.path.basename(cfg_file))
     conf.loadConfiguration(cfg_file)
+    sys.path.append(conf.config['servers']['path'])
 
     port = random.randint(2000, 10000)
 

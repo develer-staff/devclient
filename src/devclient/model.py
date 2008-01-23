@@ -25,6 +25,12 @@ import re
 
 import exception
 
+def getParser(server):
+    if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
+        return PromptParser(server)
+    return Parser()
+
+
 class Model(object):
     """
     Rappresent a model of data that can be viewed by a viewer.
@@ -36,6 +42,7 @@ class Model(object):
         self.bg_color = None
         self.fg_color = None
         self.prompt = None
+
 
 class Parser(object):
     """
@@ -221,66 +228,22 @@ class Parser(object):
 class PromptParser(Parser):
     """
     Parse data and build a model for prompt.
-
-    This class is an abstract template class (see `template pattern`_) that
-    parse prompt using hook methods to build a model of it.
-
-    Concrete subclass must override:
-
-    - `_getRegExpPrompt` to define the regular expression that matches with
-      prompt
-    - `_getSepPrompt` to define separator from min and max values in Hp, Mn, Mv
-
-.. _template pattern: http://en.wikipedia.org/wiki/Template_method_pattern
     """
 
-
-    def __init__(self):
+    def __init__(self, server):
         super(PromptParser, self).__init__()
-
-    def _getRegExpPrompt(self):
-        raise NotImplementedError
-
-    def _getSepPrompt(self):
-        raise NotImplementedError
+        self._server = server
 
     def _parsePrompt(self, model):
-        reg = self._getRegExpPrompt()
+        reg = re.compile(self._server.prompt_reg, re.I)
         m = reg.findall('\n'.join(model.main_text))
         if m:
             p = list(m[-1])
             for i in xrange(3):
-                p[i] = p[i].split(self._getSepPrompt())
+                p[i] = p[i].split(self._server.prompt_sep)
             model.prompt = {'Hp': p[0], 'Mn': p[1], 'Mv': p[2]}
 
     def buildModel(self, data):
         model = super(PromptParser, self).buildModel(data)
         self._parsePrompt(model)
         return model
-
-
-class SmaugParser(PromptParser):
-    """
-    Parse data and build a model specific for Smaug MUD's
-    """
-
-    def _getRegExpPrompt(self):
-        return re.compile('Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+)' +
-                          '.*?\>', re.I)
-
-    def _getSepPrompt(self):
-        return '/'
-
-
-class AfkParser(PromptParser):
-    """
-    Parse data and build a model specific for AFK MUD's
-    """
-
-    def _getRegExpPrompt(self):
-        return re.compile('\[Pf:\s*(\d+-\d+)\] \[Mana:\s*(\d+-\d+)\] ' +
-                          '\[Mv:\s*(\d+-\d+)\] \[Mon:\s*\d+\] ' +
-                          '\[S:\s*Xp:\s*\d+\]', re.I)
-
-    def _getSepPrompt(self):
-        return '-'

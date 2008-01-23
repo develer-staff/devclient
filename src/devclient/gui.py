@@ -38,7 +38,8 @@ import gui_option
 from conf import config
 from gui_ui import Ui_dev_client
 from history import History
-from mud_type import getMudType, ComponentFactory
+from viewer import getViewer
+from servers import getServer
 from constants import PUBLIC_VERSION, PROJECT_NAME
 
 logger = logging.getLogger('gui')
@@ -52,7 +53,7 @@ class SocketToCore(object):
     def __init__(self, widget, port=7890, timeout=.2):
         """
         Create the `SocketToCore` instance.
-        
+
         :Parameters:
           widget : QWidget
             the parent widget, used to display messages
@@ -85,7 +86,7 @@ class SocketToCore(object):
     def _readData(self, size):
         """
         Read data, blocking until (for a max of timeout) all data is available.
-        
+
         :Parameters:
           size : int
             the length of data to read
@@ -102,7 +103,7 @@ class SocketToCore(object):
                     return None
 
         return self._s.read(size)
-        
+
     def read(self):
         """
         Read a message.
@@ -370,9 +371,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _startConnection(self, host, port):
         self.history.clear()
-
-        comp_factory = ComponentFactory(getMudType(host, port))
-        self.viewer = comp_factory.viewer(self)
+        self.viewer = getViewer(self, getServer(host, port))
         self.viewer.resetOutputColors(self._default_style)
         self.macros = storage.Storage().macros(self.connected)
 

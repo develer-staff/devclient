@@ -40,7 +40,7 @@ import constants
 from model import *
 from alias import Alias
 from conf import config
-from mud_type import getMudType, ComponentFactory
+from servers import getServer
 
 logger = logging.getLogger('core')
 
@@ -271,8 +271,7 @@ class Core(object):
                 sock_watched.append(self.s_server)
                 self.s_gui.write(messages.CONN_ESTABLISHED, msg)
 
-            mud = getMudType(*msg[1:])
-            self.parser = ComponentFactory(mud).parser()
+            self.parser = getParser(getServer(*msg[1:]))
             self.alias = Alias(msg[0])
         elif cmd == messages.UNKNOWN:
             logger.warning('SocketToGui: Unknown message')
@@ -329,6 +328,7 @@ def main():
 
     os.chdir(join(os.getcwd(), dirname(o.config)))
     conf.loadConfiguration(os.path.basename(o.config))
+    sys.path.append(conf.config['servers']['path'])
     core = Core(o.port)
     core.mainLoop()
 

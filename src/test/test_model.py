@@ -25,8 +25,11 @@ import sys
 import unittest
 
 sys.path.append('..')
+sys.path.append('../servers')
 
-from devclient.model import Parser, SmaugParser, AfkParser, Model
+from generics import SmaugServer, AfkServer
+from devclient.model import Parser, PromptParser, Model
+
 
 class TestParser(unittest.TestCase):
 
@@ -196,7 +199,7 @@ class TestParser(unittest.TestCase):
 class TestSmaugParser(unittest.TestCase):
 
     def setUp(self):
-        self.parser = SmaugParser()
+        self.parser = PromptParser(SmaugServer)
 
     def testEmptyPrompt(self):
         self.assert_(self.parser.buildModel('').prompt is None)
@@ -249,7 +252,7 @@ class TestSmaugParser(unittest.TestCase):
 class TestAfkParser(unittest.TestCase):
 
     def setUp(self):
-        self.parser = AfkParser()
+        self.parser = self.parser = PromptParser(AfkServer)
 
     def testEmptyPrompt(self):
         self.assert_(self.parser.buildModel('').prompt is None)

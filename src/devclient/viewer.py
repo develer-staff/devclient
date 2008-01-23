@@ -25,6 +25,13 @@ import re
 
 from PyQt4 import QtGui
 
+def getViewer(widget, server):
+    widget.rightpanel.setCurrentIndex(server.right_page)
+    if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
+        return StatusViewer(TextViewer(widget))
+
+    return TextViewer(widget)
+
 class TextViewer(object):
     """
     Build the html visualization from model.
