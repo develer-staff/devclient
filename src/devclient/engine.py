@@ -21,15 +21,38 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import os
 import sys
+import ctypes
 import random
+import signal
 import os.path
 import subprocess
 from os.path import dirname, join
 
 import conf
+import exception
 from core import Core
 from gui import Gui
+
+
+def terminateProcess(process):
+    if sys.platform == 'win32':
+        handle = ctypes.windll.kernel32.OpenProcess(1, False, process.pid)
+        ctypes.windll.kernel32.TerminateProcess(handle, -1)
+        ctypes.windll.kernel32.CloseHandle(handle)
+    else:
+        os.kill(process.pid, signal.SIGKILL)
+
+
+def startProcess(cmd):
+    if sys.platform == 'win32':  # Hide console on win32 platform
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    else:
+        startupinfo = None
+
+    return subprocess.Popen(cmd, startupinfo=startupinfo)
 
 
 def main(argv, cfg_file):
@@ -44,16 +67,10 @@ def main(argv, cfg_file):
 
     port = random.randint(2000, 10000)
 
-    if sys.platform == 'win32':  # Hide console on win32 platform
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    else:
-        startupinfo = None
-
-    subprocess.Popen(['python',
+    p = startProcess(['python',
                       join(conf.config['devclient']['path'], 'core.py'),
                       '--config=%s' % cfg_file,
-                      '--port=%d' % port], startupinfo=startupinfo)
+                      '--port=%d' % port])
 
     # FIX! To prevent connectionRefused from SocketToGui
     import time
@@ -61,5 +78,9 @@ def main(argv, cfg_file):
 
     # Set current path on module path for external resources like images
     os.chdir(conf.config['devclient']['path'])
-    gui = Gui(port)
-    gui.mainLoop()
+    try:
+        gui = Gui(port)
+        gui.mainLoop()
+    except exception.IPCError:
+        terminateProcess(p)
+

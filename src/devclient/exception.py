@@ -21,11 +21,13 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+
 class DevClient(Exception):
     """
     Base class for all exceptions from DevClient.
     """
     pass
+
 
 class ClassNotFound(DevClient):
     """
@@ -38,11 +40,13 @@ class ClassNotFound(DevClient):
     def __str__(self):
         return self.message
 
+
 class BufferUnderSize(DevClient):
     """
     Handling error on losing data because buffer size is not sufficient.
     """
     pass
+
 
 class ConnectionRefused(DevClient):
     """
@@ -50,14 +54,23 @@ class ConnectionRefused(DevClient):
     """
     pass
 
+
 class ConnectionNotFound(DevClient):
     """
     Class for handling error on finding connection to load.
     """
     pass
 
+
 class ConnectionLost(DevClient):
     """
     Handling error on losing connection.
+    """
+    pass
+
+
+class IPCError(DevClient):
+    """
+    Handling error on Inter-Process Communication
     """
     pass

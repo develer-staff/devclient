@@ -34,6 +34,7 @@ from PyQt4.QtNetwork import QHostAddress
 
 import storage
 import messages
+import exception
 import gui_option
 from conf import config
 from gui_ui import Ui_dev_client
@@ -68,9 +69,7 @@ class SocketToCore(object):
         self._s = QtNetwork.QTcpSocket()
         self._s.connectToHost(QHostAddress(QHostAddress.LocalHost), port)
         if not self._s.waitForConnected(self._timeout):
-            # FIX: the core process must to be killed
             self._commError()
-            return
         self._setupSignal()
 
     def _setupSignal(self):
@@ -82,6 +81,7 @@ class SocketToCore(object):
     def _commError(self, error=None):
         logger.error('SocketToCore: ' + self._s.errorString())
         self._w._displayWarning(PROJECT_NAME, self._w._text['FatalError'])
+        raise exception.IPCError()
 
     def _readData(self, size):
         """
