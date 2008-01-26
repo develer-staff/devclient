@@ -26,9 +26,20 @@ import re
 import exception
 
 def getParser(server):
+    """
+    Build and return the appropriate `Parser` instance for the server.
+
+    :Parameters:
+        server : class
+          the class of server connected
+    """
+
+    parser = Parser(server)
+
     if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
-        return PromptParser(server)
-    return Parser()
+        parser = PromptParser(parser)
+
+    return parser
 
 
 class Model(object):
@@ -55,7 +66,7 @@ class Parser(object):
     _bright_color = ['444444', 'ff4444', '44ff44', 'ffff44', '4444ff',
                      'ff44ff', '44ffff', 'ffffff']
 
-    def __init__(self):
+    def __init__(self, server):
         """
         Create the `Parser` instance.
         """
@@ -66,6 +77,7 @@ class Parser(object):
         self._default_fg = None
         self._bg_code = None
         self._fg_code = None
+        self._server = server
 
     def buildModel(self, data):
         """
@@ -228,22 +240,27 @@ class Parser(object):
 class PromptParser(Parser):
     """
     Parse data and build a model for prompt.
+
+    This class is a subclass of Parser that get an instance of it
+    as argument on __init__ (see `decorator pattern`_)
+
+.. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
     """
 
-    def __init__(self, server):
-        super(PromptParser, self).__init__()
-        self._server = server
+    def __init__(self, parser):
+        super(PromptParser, self).__init__(parser._server)
+        self._p = parser
 
     def _parsePrompt(self, model):
-        reg = re.compile(self._server.prompt_reg, re.I)
+        reg = re.compile(self._p._server.prompt_reg, re.I)
         m = reg.findall('\n'.join(model.main_text))
         if m:
             p = list(m[-1])
             for i in xrange(3):
-                p[i] = p[i].split(self._server.prompt_sep)
+                p[i] = p[i].split(self._p._server.prompt_sep)
             model.prompt = {'Hp': p[0], 'Mn': p[1], 'Mv': p[2]}
 
     def buildModel(self, data):
-        model = super(PromptParser, self).buildModel(data)
+        model = self._p.buildModel(data)
         self._parsePrompt(model)
         return model
