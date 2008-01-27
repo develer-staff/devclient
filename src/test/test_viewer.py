@@ -61,14 +61,18 @@ class BarMock(object):
     def setValue(self, value):
         self._value = value
 
+class RightWidget(object):
+    def __init__(self):
+        self.bar_health = BarMock()
+        self.bar_mana = BarMock()
+        self.bar_movement = BarMock()
+
 
 class WidgetMock(object):
 
     def __init__(self):
         self.text_output = TextMock()
-        self.bar_health = BarMock()
-        self.bar_mana = BarMock()
-        self.bar_movement = BarMock()
+        self.rightwidget = RightWidget()
 
     def update(self):
         pass
@@ -153,9 +157,9 @@ class TestStatusViewer(unittest.TestCase):
                              'Mv': ('108', '108')}
         self.viewer.process(self.model)
 
-        self.assert_(self.widget.bar_health._value == 100 and
-                     self.widget.bar_mana._value == 100 and
-                     self.widget.bar_movement._value == 100)
+        self.assert_(self.widget.rightwidget.bar_health._value == 100 and
+                     self.widget.rightwidget.bar_mana._value == 100 and
+                     self.widget.rightwidget.bar_movement._value == 100)
 
     def testPromptProcess2(self):
         self.model.prompt = {'Hp': ('0', '22'),
@@ -163,9 +167,9 @@ class TestStatusViewer(unittest.TestCase):
                              'Mv': ('0', '108')}
         self.viewer.process(self.model)
 
-        self.assert_(self.widget.bar_health._value == 0 and
-                     self.widget.bar_mana._value == 0 and
-                     self.widget.bar_movement._value == 0)
+        self.assert_(self.widget.rightwidget.bar_health._value == 0 and
+                     self.widget.rightwidget.bar_mana._value == 0 and
+                     self.widget.rightwidget.bar_movement._value == 0)
 
     def testPromptProcess3(self):
         self.model.prompt = {'Hp': ('10', '100'),
@@ -173,9 +177,9 @@ class TestStatusViewer(unittest.TestCase):
                              'Mv': ('20', '40')}
         self.viewer.process(self.model)
 
-        self.assert_(self.widget.bar_health._value == 10 and
-                     self.widget.bar_mana._value == 20 and
-                     self.widget.bar_movement._value == 50)
+        self.assert_(self.widget.rightwidget.bar_health._value == 10 and
+                     self.widget.rightwidget.bar_mana._value == 20 and
+                     self.widget.rightwidget.bar_movement._value == 50)
 
     def testPromptProcess4(self):
         self.model.prompt = {'Hp': ('-10', '100'),
@@ -183,9 +187,9 @@ class TestStatusViewer(unittest.TestCase):
                              'Mv': ('10', '40')}
         self.viewer.process(self.model)
 
-        self.assert_(self.widget.bar_health._value == 0 and
-                     self.widget.bar_mana._value == 100 and
-                     self.widget.bar_movement._value == 25)
+        self.assert_(self.widget.rightwidget.bar_health._value == 0 and
+                     self.widget.rightwidget.bar_mana._value == 100 and
+                     self.widget.rightwidget.bar_movement._value == 25)
 
 
 if __name__ == '__main__':

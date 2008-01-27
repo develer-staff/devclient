@@ -21,17 +21,17 @@
 
 class Server(object):
     # Default Server, don't remove it!
-    right_page = 0
+    right_widget = ''
 
 
 class SmaugServer(Server):
-    right_page = 1
+    right_widget = 'gui_prompt_ui'
     prompt_reg = 'Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>'
     prompt_sep = '/'
 
 
 class AfkServer(Server):
-    right_page = 1
+    right_widget = 'gui_prompt_ui'
     prompt_reg = '\[Pf:\s*(\d+-\d+)\] \[Mana:\s*(\d+-\d+)\] ' + \
                  '\[Mv:\s*(\d+-\d+)\] \[Mon:\s*\d+\] \[S:\s*Xp:\s*\d+\]'
     prompt_sep = '-'

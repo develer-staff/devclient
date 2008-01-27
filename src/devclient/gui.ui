@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>930</width>
-    <height>672</height>
+    <width>935</width>
+    <height>671</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -55,7 +55,7 @@
      </widget>
     </item>
     <item rowspan="2" row="0" column="1" >
-     <widget class="QStackedWidget" name="rightpanel" >
+     <widget class="QFrame" name="rightpanel" >
       <property name="sizePolicy" >
        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
         <horstretch>0</horstretch>
@@ -64,163 +64,13 @@
       </property>
       <property name="minimumSize" >
        <size>
-        <width>225</width>
+        <width>230</width>
         <height>615</height>
        </size>
       </property>
-      <property name="currentIndex" >
-       <number>0</number>
+      <property name="frameShape" >
+       <enum>QFrame::NoFrame</enum>
       </property>
-      <widget class="QWidget" name="generic" />
-      <widget class="QWidget" name="smaug" >
-       <widget class="QWidget" name="layoutWidget" >
-        <property name="geometry" >
-         <rect>
-          <x>0</x>
-          <y>5</y>
-          <width>226</width>
-          <height>121</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" >
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_health" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize" >
-            <size>
-             <width>80</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text" >
-            <string>Health</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" >
-          <widget class="QProgressBar" name="bar_health" >
-           <property name="minimumSize" >
-            <size>
-             <width>0</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="maximumSize" >
-            <size>
-             <width>16777215</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="styleSheet" >
-            <string>QProgressBar { border: 2px solid gray; border-radius: 5px; }
-QProgressBar::chunk {background-color:#FF3333;}</string>
-           </property>
-           <property name="value" >
-            <number>100</number>
-           </property>
-           <property name="textVisible" >
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_mana" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize" >
-            <size>
-             <width>80</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text" >
-            <string>Mana</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QProgressBar" name="bar_mana" >
-           <property name="minimumSize" >
-            <size>
-             <width>0</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="maximumSize" >
-            <size>
-             <width>16777215</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="styleSheet" >
-            <string>QProgressBar { border: 2px solid gray; border-radius: 5px; }
-QProgressBar::chunk {background-color:#0066FF}</string>
-           </property>
-           <property name="value" >
-            <number>100</number>
-           </property>
-           <property name="textVisible" >
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_movement" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize" >
-            <size>
-             <width>80</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text" >
-            <string>Movement</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" >
-          <widget class="QProgressBar" name="bar_movement" >
-           <property name="minimumSize" >
-            <size>
-             <width>0</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="maximumSize" >
-            <size>
-             <width>16777215</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="styleSheet" >
-            <string>QProgressBar { border: 2px solid gray; border-radius: 5px; }
-QProgressBar::chunk {background-color:#33CC33;}</string>
-           </property>
-           <property name="value" >
-            <number>100</number>
-           </property>
-           <property name="textVisible" >
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
      </widget>
     </item>
     <item row="1" column="0" >

@@ -25,12 +25,43 @@ import re
 
 from PyQt4 import QtGui
 
+def _setRightPanel(widget, widget_name):
+    if widget_name:
+        try:
+            module = __import__(widget_name, globals(), locals())
+
+            class RightWidget(QtGui.QWidget, module.Ui_RightWidget):
+                def __init__(self, parent):
+                    QtGui.QWidget.__init__(self, parent)
+                    self.module_name = widget_name
+                    self.setupUi(self)
+
+        except ImportError:
+            if hasattr(widget, 'rightwidget'):
+                # FIX: find a way to delete the RightWidget instance
+                # (children of rightpanel)
+                widget.rightwidget.hide()
+        else:
+            for w in widget.rightpanel.children():
+                if w.module_name == widget_name:
+                    w.show()
+                    return
+            else:
+                widget.rightwidget = RightWidget(widget.rightpanel)
+                widget.rightwidget.show()
+
+    elif hasattr(widget, 'rightwidget'):
+        widget.rightwidget.hide()
+
+
 def getViewer(widget, server):
-    widget.rightpanel.setCurrentIndex(server.right_page)
+    _setRightPanel(widget, server.right_widget)
+
     if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
         return StatusViewer(TextViewer(widget))
 
     return TextViewer(widget)
+
 
 class TextViewer(object):
     """
@@ -128,9 +159,9 @@ class StatusViewer(TextViewer):
     def _process(self, model):
         self.v._process(model)
 
-        stats = {'Hp': self.w.bar_health,
-                 'Mn': self.w.bar_mana,
-                 'Mv': self.w.bar_movement}
+        stats = {'Hp': self.w.rightwidget.bar_health,
+                 'Mn': self.w.rightwidget.bar_mana,
+                 'Mv': self.w.rightwidget.bar_movement}
 
         if model.prompt:
             for k, bar in stats.iteritems():
