@@ -46,6 +46,9 @@
         <height>0</height>
        </size>
       </property>
+      <property name="focusPolicy" >
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="styleSheet" >
        <string>QTextEdit { background-color: #000000; font: 10pt "Courier"; color: #FFFFFF;}</string>
       </property>

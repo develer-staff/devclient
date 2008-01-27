@@ -22,10 +22,19 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import re
+import logging
 
 from PyQt4 import QtGui
 
+logger = logging.getLogger('viewer')
+
+
 def _setRightPanel(widget, widget_name):
+
+    # FIX: find a way to delete the RightWidget instance (child of rightpanel)
+    for w in widget.rightpanel.children():
+        w.setVisible(False)
+
     if widget_name:
         try:
             module = __import__(widget_name, globals(), locals())
@@ -37,30 +46,30 @@ def _setRightPanel(widget, widget_name):
                     self.setupUi(self)
 
         except ImportError:
-            if hasattr(widget, 'rightwidget'):
-                # FIX: find a way to delete the RightWidget instance
-                # (children of rightpanel)
-                widget.rightwidget.hide()
+            logger.warning('_setRightPanel: Unknown widget %s' % widget_name)
+            return False
         else:
             for w in widget.rightpanel.children():
                 if w.module_name == widget_name:
-                    w.show()
-                    return
+                    widget.rightwidget = w
+                    break
             else:
                 widget.rightwidget = RightWidget(widget.rightpanel)
-                widget.rightwidget.show()
 
-    elif hasattr(widget, 'rightwidget'):
-        widget.rightwidget.hide()
+            widget.rightwidget.setVisible(True)
 
+    return True
 
 def getViewer(widget, server):
-    _setRightPanel(widget, server.right_widget)
+
+    viewer = TextViewer(widget)
+    if not _setRightPanel(widget, server.right_widget):
+        return viewer
 
     if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
-        return StatusViewer(TextViewer(widget))
+        viewer = StatusViewer(viewer)
 
-    return TextViewer(widget)
+    return viewer
 
 
 class TextViewer(object):
