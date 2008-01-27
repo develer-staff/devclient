@@ -21,5 +21,7 @@
 from generics import *
 
 class DdE(SmaugServer):
+    right_widget = 'gui_map_ui'
     host = 'dde.homelinux.com'
     port = 5000
+    wild_map = 1

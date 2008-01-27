@@ -39,6 +39,9 @@ def getParser(server):
     if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
         parser = PromptParser(parser)
 
+    if hasattr(server, 'wild_map'):
+        parser = WildMapParser(parser)
+
     return parser
 
 
@@ -52,6 +55,7 @@ class Model(object):
         self.main_html = []
         self.bg_color = None
         self.fg_color = None
+        self.wild_map = None
         self.prompt = None
 
 
@@ -253,7 +257,7 @@ class PromptParser(Parser):
 
     def _parsePrompt(self, model):
         reg = re.compile(self._p._server.prompt_reg, re.I)
-        m = reg.findall('\n'.join(model.main_text))
+        m = reg.findall(''.join(model.main_text))
         if m:
             p = list(m[-1])
             for i in xrange(3):
@@ -263,4 +267,86 @@ class PromptParser(Parser):
     def buildModel(self, data):
         model = self._p.buildModel(data)
         self._parsePrompt(model)
+        return model
+
+
+class WildMapParser(Parser):
+    """
+    Parse data and build a model for wild.
+
+    This class is a subclass of Parser that get an instance of it
+    as argument on __init__ (see `decorator pattern`_)
+
+.. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
+    """
+
+    def __init__(self, parser):
+        super(WildMapParser, self).__init__(parser._server)
+        self._incomplete_map = None
+        self._incomplete_end_seq = ''
+        self._p = parser
+
+    def _getHtmlFromText(self, model, parts):
+        html = ''.join(model.main_html)
+        html = html.replace('&nbsp;', ' ').replace('<br>', '\n')
+        html_parts = []
+        for p in parts:
+            p_html = ''
+            length = len(p)
+
+            while length > 0:
+                if html.startswith('<span') or html.startswith('</span>'):
+                    pos = html.find('>') + 1
+                    p_html += html[:pos]
+                    html = html[pos:]
+                else:
+                    if html[0] == ' ':
+                        p_html += '&nbsp;'
+                    elif html[0] == '\n':
+                        p_html += '<br>'
+                    else:
+                        p_html += html[0]
+                    html = html[1:]
+                    length -= 1
+
+            if html.startswith('</span>'):
+                p_html += '</span>'
+
+            html_parts.append(p_html)
+
+        return html_parts
+
+    def _parseWild(self, model):
+        text = ''.join(model.main_text)
+        if '[Uscite' in text:
+            if self._incomplete_map:
+                patt = '(.*?)([^0-9a-wy-z\[]*)\[Uscite:'
+            else:
+                patt = '(.*?\n)([^0-9a-wy-z\[]+)\[Uscite:'
+            m = re.compile(patt, re.I|re.S).match(text)
+            if m:
+                if self._incomplete_map:
+                    wild_map = self._incomplete_map + \
+                        self._getHtmlFromText(model, m.groups())[1]
+                    self._incomplete_map = None
+                else:
+                    wild_map = self._getHtmlFromText(model, m.groups())[1]
+                model.wild_map = wild_map
+
+        elif self._incomplete_end_seq:
+           if text.startswith('[Uscite'[len(self._incomplete_end_seq):]):
+               model.wild_map = self._incomplete_map
+               self._incomplete_end_seq = ''
+               self._incomplete_map = None
+        else:
+            reg = re.compile('(.*?\n)([^0-9a-wy-z\[]+)(.*)', re.I|re.S)
+            m = reg.match(text)
+            if m and m.groups()[-1].strip()[:7] in '[Uscite':
+                groups = m.groups()[:-1]
+                self._incomplete_end_seq = m.groups()[-1].strip()[:7]
+                self._incomplete_map = self._getHtmlFromText(model, groups)[1]
+
+    def buildModel(self, data):
+        model = self._p.buildModel(data)
+        self._parseWild(model)
         return model

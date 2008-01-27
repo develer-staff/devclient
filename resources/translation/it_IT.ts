@@ -1,65 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
+<defaultcodec></defaultcodec>
 <context>
     <name>RightWidget</name>
     <message>
-        <location filename="../../src/devclient/gui_prompt.ui" line="13"/>
+        <location filename="../../src/devclient/gui_map.ui" line="13"/>
         <source>Form</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_prompt.ui" line="46"/>
+        <location filename="../../src/devclient/gui_map.ui" line="46"/>
         <source>Health</source>
         <translation>Vita</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_prompt.ui" line="65"/>
+        <location filename="../../src/devclient/gui_map.ui" line="65"/>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#FF3333;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_prompt.ui" line="91"/>
+        <location filename="../../src/devclient/gui_map.ui" line="91"/>
         <source>Mana</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_prompt.ui" line="110"/>
+        <location filename="../../src/devclient/gui_map.ui" line="110"/>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#0066FF}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_prompt.ui" line="136"/>
+        <location filename="../../src/devclient/gui_map.ui" line="136"/>
         <source>Movement</source>
         <translation>Movimento</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_prompt.ui" line="155"/>
+        <location filename="../../src/devclient/gui_map.ui" line="155"/>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#33CC33;}</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_map.ui" line="181"/>
+        <source>QTextEdit { background-color: #000000; font: 10pt &quot;Courier&quot;; color: #FFFFFF;}</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_map.ui" line="184"/>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Courier&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
 </context>
 <context>
     <name>dev_client</name>
     <message>
-        <location filename="../../src/devclient/gui.py" line="292"/>
+        <location filename="../../src/devclient/gui.py" line="291"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="143"/>
+        <location filename="../../src/devclient/gui.ui" line="146"/>
         <source>Option</source>
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="295"/>
+        <location filename="../../src/devclient/gui.py" line="294"/>
         <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="298"/>
+        <location filename="../../src/devclient/gui.py" line="297"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -69,52 +83,52 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="50"/>
+        <location filename="../../src/devclient/gui.ui" line="53"/>
         <source>QTextEdit { background-color: #000000; font: 10pt &quot;Courier&quot;; color: #FFFFFF;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="301"/>
+        <location filename="../../src/devclient/gui.py" line="300"/>
         <source>Yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="304"/>
+        <location filename="../../src/devclient/gui.py" line="303"/>
         <source>No</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="307"/>
+        <location filename="../../src/devclient/gui.py" line="306"/>
         <source>Really quit?</source>
         <translation>Vuoi davvero uscire?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="310"/>
+        <location filename="../../src/devclient/gui.py" line="309"/>
         <source>Really close connection?</source>
         <translation>Vuoi davvero chiudere la connessione?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="314"/>
+        <location filename="../../src/devclient/gui.py" line="313"/>
         <source>Fatal Error, please restart your client</source>
         <translation>Errore irreversibile, riavviare il client</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="317"/>
+        <location filename="../../src/devclient/gui.py" line="316"/>
         <source>Connection lost</source>
         <translation>Connessione persa</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="135"/>
+        <location filename="../../src/devclient/gui.ui" line="138"/>
         <source>Alt+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.ui" line="146"/>
+        <location filename="../../src/devclient/gui.ui" line="149"/>
         <source>Alt+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="320"/>
+        <location filename="../../src/devclient/gui.py" line="319"/>
         <source>Client is not connected</source>
         <translation>Il client non è connesso</translation>
     </message>

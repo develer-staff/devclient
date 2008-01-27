@@ -5,7 +5,8 @@ SOURCES = ../../src/devclient/gui.py \
 
 FORMS = ../../src/devclient/gui.ui \
         ../../src/devclient/gui_option.ui \
-        ../../src/devclient/gui_prompt.ui
+        ../../src/devclient/gui_prompt.ui \
+        ../../src/devclient/gui_map.ui
 
 CODECFORSRC = UTF-8
 CODECFORTR = UTF-8

@@ -60,6 +60,7 @@ def _setRightPanel(widget, widget_name):
 
     return True
 
+
 def getViewer(widget, server):
 
     viewer = TextViewer(widget)
@@ -68,6 +69,9 @@ def getViewer(widget, server):
 
     if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
         viewer = StatusViewer(viewer)
+
+    if hasattr(server, 'wild_map'):
+        viewer = WildMapViewer(viewer)
 
     return viewer
 
@@ -182,3 +186,14 @@ class StatusViewer(TextViewer):
                     self._last_values[k] = v
                     bar.setValue(v)
 
+
+class WildMapViewer(TextViewer):
+
+    def __init__(self, v):
+        super(WildMapViewer, self).__init__(v.w)
+        self.v = v
+
+    def _process(self, model):
+        self.v._process(model)
+        if model.wild_map:
+            self.w.rightwidget.wild_map.setHtml(model.wild_map)
