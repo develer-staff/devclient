@@ -32,3 +32,16 @@ CONN_CLOSED = 7
 CONN_LOST = 8
 RELOAD_CONN_DATA = 9
 
+
+class Model(object):
+    """
+    Rappresent a model of data that can be viewed by a viewer.
+    """
+
+    def __init__(self):
+        self.main_text = ''
+        self.main_html = ''
+        self.bg_color = None
+        self.fg_color = None
+        self.wild_map = None
+        self.prompt = None

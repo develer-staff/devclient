@@ -24,6 +24,8 @@ __docformat__ = 'restructuredtext'
 import re
 
 import exception
+from messages import Model
+
 
 def getParser(server):
     """
@@ -45,23 +47,9 @@ def getParser(server):
     return parser
 
 
-class Model(object):
-    """
-    Rappresent a model of data that can be viewed by a viewer.
-    """
-
-    def __init__(self):
-        self.main_text = []
-        self.main_html = []
-        self.bg_color = None
-        self.fg_color = None
-        self.wild_map = None
-        self.prompt = None
-
-
 class Parser(object):
     """
-    The Parser class build a Model of data received.
+    The Parser class build a `Model` of data received.
     """
 
     _normal_color = ['000000', 'aa0000', '00aa00', 'aaaa00', '0000aa',
@@ -102,10 +90,10 @@ class Parser(object):
         text_data = text_data.replace('&nbsp;', ' ').split('\n')
 
         for i, r in enumerate(text_data):
-            model.main_text.append((r, r + '\n')[i < len(text_data) - 1])
+            model.main_text += (r, r + '\n')[i < len(text_data) - 1]
 
         for i, r in enumerate(html_data):
-            model.main_html.append((r, r + '<br>')[i < len(html_data) - 1])
+            model.main_html += (r, r + '<br>')[i < len(html_data) - 1]
 
         if model.bg_color is None and model.fg_color is None and \
            len(''.join(text_data).strip()):
@@ -220,7 +208,7 @@ class Parser(object):
                 code_length = len(ansi_code) + len(COLOR_TOKEN) + len('[')
                 if m.group(2) == COLOR_TOKEN and ansi_code:
                     self._style = self._evalStyle(ansi_code, model)
-                    if self._style and s[code_length:]: 
+                    if self._style and s[code_length:]:
                         html_res += '<span style="%s">%s</span>' % \
                             (self._style, s[code_length:])
                     else:
@@ -257,7 +245,7 @@ class PromptParser(Parser):
 
     def _parsePrompt(self, model):
         reg = re.compile(self._p._server.prompt_reg, re.I)
-        m = reg.findall(''.join(model.main_text))
+        m = reg.findall(model.main_text)
         if m:
             p = list(m[-1])
             for i in xrange(3):
@@ -287,8 +275,7 @@ class WildMapParser(Parser):
         self._p = parser
 
     def _getHtmlFromText(self, model, parts):
-        html = ''.join(model.main_html)
-        html = html.replace('&nbsp;', ' ').replace('<br>', '\n')
+        html = model.main_html.replace('&nbsp;', ' ').replace('<br>', '\n')
         html_parts = []
         for p in parts:
             p_html = ''

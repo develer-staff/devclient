@@ -27,9 +27,10 @@ import unittest
 
 sys.path.append('..')
 
-from devclient.conf import config
 from devclient.viewer import *
-from devclient.model import Model
+from devclient.conf import config
+from devclient.messages import Model
+
 
 class TextMock(object):
 
@@ -61,6 +62,7 @@ class BarMock(object):
     def setValue(self, value):
         self._value = value
 
+
 class RightWidget(object):
     def __init__(self):
         self.bar_health = BarMock()
@@ -83,40 +85,34 @@ class TestTextViewer(unittest.TestCase):
     def setUp(self):
         self.widget = WidgetMock()
         self.viewer = TextViewer(self.widget)
+        self.m = Model()
 
     def testTextProcess1(self):
         """Test processing of a model of a single string"""
 
-        m = Model()
         text = 'hello world'
-        m.main_html.append(text)
-        self.viewer.process(m)
+        self.m.main_html = text
+        self.viewer.process(self.m)
         self.assert_('<br>' + text == self.widget.text_output._html)
 
     def testTextProcess2(self):
         """Test processing of a model of two string"""
 
-        m = Model()
         elem = ['hello', 'world']
-        for text in elem:
-            m.main_html.append(text)
-        self.viewer.process(m)
+        self.m.main_html = ''.join(elem)
+        self.viewer.process(self.m)
         self.assert_('<br>' + ''.join(elem) == self.widget.text_output._html)
 
     def testTextProcess3(self):
         """Test the sequence of two call at process"""
 
-        m = Model()
         elem = ['hello', 'world']
-        for text in elem:
-            m.main_html.append(text)
-        self.viewer.process(m)
+        self.m.main_html = ''.join(elem)
+        self.viewer.process(self.m)
 
-        m = Model()
         elem2 = ['another', 'hello', 'world']
-        for text in elem2:
-            m.main_html.append(text)
-        self.viewer.process(m)
+        self.m.main_html = ''.join(elem2)
+        self.viewer.process(self.m)
 
         text = '<br>' + ''.join(elem) + '<br>' + ''.join(elem2)
         self.assert_(text == self.widget.text_output._html)
@@ -124,10 +120,9 @@ class TestTextViewer(unittest.TestCase):
     def testTextProcess4(self):
         """Verify background and text color without a previus style"""
 
-        m = Model()
-        m.bg_color = '000000'
-        m.fg_color = 'FFFFFF'
-        self.viewer.process(m)
+        self.m.bg_color = '000000'
+        self.m.fg_color = 'FFFFFF'
+        self.viewer.process(self.m)
         self.assert_('QTextEdit {color:#FFFFFF;background-color:#000000}' ==
                      self.widget.text_output.styleSheet())
 
@@ -135,11 +130,10 @@ class TestTextViewer(unittest.TestCase):
         """Verify background and text color with a previus style"""
 
         viewer = TextViewer(self.widget)
-        m = Model()
-        m.bg_color = 'FF00FF'
-        m.fg_color = 'CCCCCC'
+        self.m.bg_color = 'FF00FF'
+        self.m.fg_color = 'CCCCCC'
         self.widget.text_output.setStyleSheet('QTextEdit {color:#FFFF00}')
-        viewer.process(m)
+        viewer.process(self.m)
         self.assert_('QTextEdit {color:#CCCCCC;background-color:#FF00FF}' ==
                      self.widget.text_output.styleSheet())
 

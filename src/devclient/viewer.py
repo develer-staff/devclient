@@ -93,7 +93,7 @@ class TextViewer(object):
 
     def _process(self, model):
 
-        new_html = ''.join(model.main_html)
+        new_html = model.main_html
         if not new_html.count('<br>'):
             new_html = '<br>' + new_html
 

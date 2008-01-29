@@ -37,9 +37,9 @@ import conf
 import messages
 import exception
 import constants
-from model import *
 from alias import Alias
 from conf import config
+from parse import getParser
 from servers import getServer
 
 logger = logging.getLogger('core')
