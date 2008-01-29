@@ -270,8 +270,8 @@ class WildMapParser(Parser):
 
     def __init__(self, parser):
         super(WildMapParser, self).__init__(parser._server)
-        self._incomplete_map = None
-        self._incomplete_end_seq = ''
+        self._incomplete_text = ''
+        self._incomplete_html = ''
         self._p = parser
 
     def _getHtmlFromText(self, model, parts):
@@ -304,7 +304,34 @@ class WildMapParser(Parser):
         return html_parts
 
     def _parseWild(self, model):
-        text = ''.join(model.main_text)
+        reg = re.compile('(.*?\n)([^0-9a-wy-z\[]+)\n\[Uscite:', re.I|re.S)
+
+        if self._incomplete_text:
+            if not reg.match(self._incomplete_text + model.main_text):
+                model.main_text, self._incomplete_text = \
+                    self._incomplete_text, model.main_text
+                return
+
+            model.main_text = self._incomplete_text + model.main_text
+            self._incomplete_text = ''
+
+        m = reg.match(model.main_text)
+        if m:
+            model.wild_text = m.group(2)
+            pos_start = len(m.group(1))
+            pos_end = pos_start + len(m.group(2))
+            # extract wild map from text
+            model.main_text = model.main_text[:pos_start] + \
+                model.main_text[pos_end:]
+        else:
+            patt = '([^0-9a-wy-z\[]+)'
+            m = re.compile(patt, re.I|re.S).search(model.main_text)
+            if m:
+                self._incomplete_text = model.main_text
+                model.main_text = ''
+
+    def _parseWildOld(self, model):  # FIX: remove this
+        text = model.main_text
         if '[Uscite' in text:
             if self._incomplete_map:
                 patt = '(.*?)([^0-9a-wy-z\[]*)\[Uscite:'

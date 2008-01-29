@@ -278,5 +278,191 @@ class TestAfkParser(unittest.TestCase):
         self.assert_(self.m.prompt == prompt)
 
 
+class TestWildMapParser(unittest.TestCase):
+
+    def setUp(self):
+         self.parser = WildMapParser(Parser(Server))
+         self.m = self.parser.buildModel('')
+
+    def testWild1(self):
+        """Check parsing of simple wild map"""
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        self.m.main_text = start + wild + end
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == wild)
+
+    def testWild2(self):
+        """Check extraction of wild map from main_text"""
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        self.m.main_text = start + wild + end
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.main_text == start + end)
+
+    def testWild3(self):
+        """Check parsing of wild map in two step"""
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        self.m.main_text = start + wild[:len(wild) / 2]
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == '')
+        self.m = self.parser.buildModel(wild[len(wild) / 2:] + end)
+        self.assert_(self.m.wild_text == wild)
+
+    def testWild4(self):
+        """
+        Check parsing of wild map in two step (with end sequence truncated)
+        """
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        self.m.main_text = start + wild + end[:3]
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == '')
+        self.m = self.parser.buildModel(end[3:])
+        self.assert_(self.m.wild_text == wild)
+
+    def testWild5(self):
+        """
+        Check extraction of wild map from main_text (parsed in two step)
+        """
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        self.m.main_text = start + wild[:len(wild) / 2]
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.main_text == '')
+        self.m = self.parser.buildModel(wild[len(wild) / 2:] + end)
+        self.assert_(self.m.main_text == start + end)
+
+    def testWild6(self):
+        """
+        Check extraction of wild map from main_text (parsed in two step with
+        end sequence truncated)
+        """
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        self.m.main_text = start + wild + end[:3]
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.main_text == '')
+        self.m = self.parser.buildModel(end[3:])
+        self.assert_(self.m.main_text == start + end)
+
+    def testWild7(self):
+        """Test sequence of parsing a fake map after a wild map"""
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        self.m.main_text = start + wild + end
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == wild)
+        self.m = self.parser.buildModel('fake wild')
+        self.assert_(self.m.wild_text == '')
+
+    def testWild8(self):
+        """
+        Test sequence of parsing a fake map after a wild map (parsed in two
+        step)
+        """
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        self.m.main_text = start + wild + end[:3]
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == '')
+        self.m.main_text = end[3:]
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == wild)
+        self.m = self.parser.buildModel('fake wild')
+        self.assert_(self.m.wild_text == '')
+
+    def testWild9(self):
+        """Test parsing a map with a right part1 and a wrong part2"""
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = 'fake end'
+
+        self.m.main_text = start + wild[:len(wild) / 2]
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == '')
+        self.m = self.parser.buildModel(wild[len(wild) / 2:] + end)
+        self.assert_(self.m.wild_text == '')
+
+    def testWild10(self):
+        """
+        Test integrity of main_text after parsing a map with a right part1
+        and a wrong part2
+        """
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = 'fake end'
+
+        self.m.main_text = start + wild[:len(wild) / 2]
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == '')
+        self.m = self.parser.buildModel(wild[len(wild) / 2:] + end)
+        self.assert_(self.m.main_text == start + wild[:len(wild) / 2])
+
+    def testWild11(self):
+        """Check parsing of wild map in three step: two part1 and a part2"""
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        self.m.main_text = start + wild[:len(wild) / 2]
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == '')
+        self.m = self.parser.buildModel(start + wild[:len(wild) / 2])
+        self.m.main_text = wild[len(wild) / 2:] + end
+        self.parser._parseWild(self.m)
+        self.assert_(self.m.wild_text == wild)
+
+
 if __name__ == '__main__':
     unittest.main()

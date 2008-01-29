@@ -195,5 +195,6 @@ class WildMapViewer(TextViewer):
 
     def _process(self, model):
         self.v._process(model)
-        if model.wild_map:
-            self.w.rightwidget.wild_map.setHtml(model.wild_map)
+        if model.wild_text:
+            #self.w.rightwidget.wild_map.setHtml(model.wild_html)
+            self.w.rightwidget.wild_map.setText(model.wild_text)
