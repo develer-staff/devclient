@@ -28,7 +28,7 @@ import cPickle
 import logging
 
 from PyQt4 import QtCore, QtGui, QtNetwork
-from PyQt4.QtCore import SIGNAL, Qt, QLocale
+from PyQt4.QtCore import SIGNAL, Qt, QLocale, PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt4.QtGui import QApplication, QMessageBox
 from PyQt4.QtNetwork import QHostAddress
 
@@ -195,6 +195,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.setCompleter(None)
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
+        logger.debug('PyQt version: %s, Qt version: %s' %
+            (PYQT_VERSION_STR, QT_VERSION_STR))
 
     def setupLogger(self):
         """
