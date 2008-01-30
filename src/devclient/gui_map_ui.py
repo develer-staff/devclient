@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui_map.ui'
 #
-# Created: Sun Jan 27 18:27:16 2008
-#      by: PyQt4 UI code generator 4.3
+# Created: Wed Jan 30 22:03:20 2008
+#      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -15,7 +15,7 @@ class Ui_RightWidget(object):
         RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,230,615).size()).expandedTo(RightWidget.minimumSizeHint()))
 
         self.layoutWidget = QtGui.QWidget(RightWidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,225,226,121))
+        self.layoutWidget.setGeometry(QtCore.QRect(0,235,226,121))
         self.layoutWidget.setObjectName("layoutWidget")
 
         self.gridlayout = QtGui.QGridLayout(self.layoutWidget)
@@ -81,8 +81,10 @@ class Ui_RightWidget(object):
         self.gridlayout.addWidget(self.bar_movement,2,1,1,1)
 
         self.wild_map = QtGui.QTextEdit(RightWidget)
-        self.wild_map.setGeometry(QtCore.QRect(0,0,225,220))
+        self.wild_map.setGeometry(QtCore.QRect(0,0,225,231))
         self.wild_map.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.wild_map.setProperty("char_width",QtCore.QVariant(27))
+        self.wild_map.setProperty("char_height",QtCore.QVariant(11))
         self.wild_map.setObjectName("wild_map")
 
         self.retranslateUi(RightWidget)

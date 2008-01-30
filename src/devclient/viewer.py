@@ -193,8 +193,28 @@ class WildMapViewer(TextViewer):
         super(WildMapViewer, self).__init__(v.w)
         self.v = v
 
+    def _centerMap(self, model, width, height):
+        #html_list = model.wild_html.split('<br>')
+        text_list = model.wild_text.split('\n')
+
+        text, html = [], []
+        for i, p in enumerate(text_list):
+            if p.strip():
+                #html.append(html_list[i])
+                text.append(p)
+
+        delta_y = (height - len(text)) / 2
+        delta_x = (width - len(max(text_list, key=len))) / 2
+        model.wild_text = '\n' * delta_y + \
+            '\n'.join([' ' * delta_x + r for r in text])
+        #model.wild_html = '<br>' * delta_y + \
+        #    '<br>'.join(['&nbsp;' * delta_x + r for r in text])
+
     def _process(self, model):
         self.v._process(model)
         if model.wild_text:
+            w = self.w.rightwidget.wild_map.property('char_width').toInt()[0]
+            h = self.w.rightwidget.wild_map.property('char_height').toInt()[0]
+            self._centerMap(model, w, h)
             #self.w.rightwidget.wild_map.setHtml(model.wild_html)
             self.w.rightwidget.wild_map.setText(model.wild_text)
