@@ -270,18 +270,16 @@ class WildMapParser(Parser):
 
     def __init__(self, parser):
         super(WildMapParser, self).__init__(parser._server)
-        self._incomplete_text = ''
-        self._incomplete_html = ''
+        self._incomplete_map = []
         self._p = parser
 
-    def _getHtmlFromText(self, model, parts):
-        html = model.main_html.replace('&nbsp;', ' ').replace('<br>', '\n')
+    def _getHtmlFromText(self, html, parts):
+        html = html.replace('&nbsp;', ' ').replace('<br>', '\n')
         html_parts = []
         for p in parts:
             p_html = ''
-            length = len(p)
 
-            while length > 0:
+            while p:
                 if html.startswith('<span') or html.startswith('</span>'):
                     pos = html.find('>') + 1
                     p_html += html[:pos]
@@ -294,71 +292,58 @@ class WildMapParser(Parser):
                     else:
                         p_html += html[0]
                     html = html[1:]
-                    length -= 1
+                    p = p[1:]
 
             if html.startswith('</span>'):
                 p_html += '</span>'
+                html = html[7:]
 
             html_parts.append(p_html)
 
         return html_parts
 
     def _parseWild(self, model):
+
+        def incompleteMap(text):
+            patt = '(.*?\n)([^0-9a-wy-z\[]+)(.*)'
+            m = re.compile(patt, re.I|re.S).match(text)
+            return m and m.group(3).strip()[:8] in '[Uscite:'
+
+        def swap(a, b): a, b = b, a
+
+        text, html = model.main_text, model.main_html  # to preserve readability
         reg = re.compile('(.*?\n)([^0-9a-wy-z\[]+)\n\[Uscite:', re.I|re.S)
 
-        if self._incomplete_text:
-            if not reg.match(self._incomplete_text + model.main_text):
-                model.main_text, self._incomplete_text = \
-                    self._incomplete_text, model.main_text
+        if self._incomplete_map:
+            if not reg.match(self._incomplete_map[0] + text):
+                if incompleteMap(text):
+                    swap(model.main_text, self._incomplete_map[0])
+                    swap(model.main_html, self._incomplete_map[1])
+                else:
+                    model.main_text = self._incomplete_map[0] + text
+                    model.main_html = self._incomplete_map[1] + html
                 return
 
-            model.main_text = self._incomplete_text + model.main_text
-            self._incomplete_text = ''
+            text = self._incomplete_map[0] + text
+            html = self._incomplete_map[1] + html
+            self._incomplete_map = []
 
-        m = reg.match(model.main_text)
+        m = reg.match(text)
         if m:
             model.wild_text = m.group(2)
             pos_start = len(m.group(1))
             pos_end = pos_start + len(m.group(2))
+            parts = self._getHtmlFromText(html, m.groups())
+            model.wild_html = parts[1]
+
             # extract wild map from text
-            model.main_text = model.main_text[:pos_start] + \
-                model.main_text[pos_end:]
-        else:
-            patt = '([^0-9a-wy-z\[]+)'
-            m = re.compile(patt, re.I|re.S).search(model.main_text)
-            if m:
-                self._incomplete_text = model.main_text
-                model.main_text = ''
+            text = text[:pos_start] + text[pos_end:]
+            html = parts[0] + html[len(parts[0]) + len(parts[1]):]
+        elif incompleteMap(text):
+            self._incomplete_map = [text, html]
+            text, html = '', ''
 
-    def _parseWildOld(self, model):  # FIX: remove this
-        text = model.main_text
-        if '[Uscite' in text:
-            if self._incomplete_map:
-                patt = '(.*?)([^0-9a-wy-z\[]*)\[Uscite:'
-            else:
-                patt = '(.*?\n)([^0-9a-wy-z\[]+)\[Uscite:'
-            m = re.compile(patt, re.I|re.S).match(text)
-            if m:
-                if self._incomplete_map:
-                    wild_map = self._incomplete_map + \
-                        self._getHtmlFromText(model, m.groups())[1]
-                    self._incomplete_map = None
-                else:
-                    wild_map = self._getHtmlFromText(model, m.groups())[1]
-                model.wild_map = wild_map
-
-        elif self._incomplete_end_seq:
-           if text.startswith('[Uscite'[len(self._incomplete_end_seq):]):
-               model.wild_map = self._incomplete_map
-               self._incomplete_end_seq = ''
-               self._incomplete_map = None
-        else:
-            reg = re.compile('(.*?\n)([^0-9a-wy-z\[]+)(.*)', re.I|re.S)
-            m = reg.match(text)
-            if m and m.groups()[-1].strip()[:7] in '[Uscite':
-                groups = m.groups()[:-1]
-                self._incomplete_end_seq = m.groups()[-1].strip()[:7]
-                self._incomplete_map = self._getHtmlFromText(model, groups)[1]
+        model.main_text, model.main_html = text, html
 
     def buildModel(self, data):
         model = self._p.buildModel(data)
