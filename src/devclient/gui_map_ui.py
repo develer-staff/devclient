@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_map.ui'
 #
-# Created: Wed Jan 30 22:03:20 2008
+# Created: Thu Jan 31 18:46:39 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -83,6 +83,9 @@ class Ui_RightWidget(object):
         self.wild_map = QtGui.QTextEdit(RightWidget)
         self.wild_map.setGeometry(QtCore.QRect(0,0,225,231))
         self.wild_map.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.wild_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.wild_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.wild_map.setReadOnly(True)
         self.wild_map.setProperty("char_width",QtCore.QVariant(27))
         self.wild_map.setProperty("char_height",QtCore.QVariant(11))
         self.wild_map.setObjectName("wild_map")

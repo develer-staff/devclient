@@ -180,6 +180,15 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
    <property name="styleSheet" >
     <string>QTextEdit { background-color: #000000; font: 10pt "Courier"; color: #FFFFFF;}</string>
    </property>
+   <property name="verticalScrollBarPolicy" >
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy" >
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="readOnly" >
+    <bool>true</bool>
+   </property>
    <property name="html" >
     <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
