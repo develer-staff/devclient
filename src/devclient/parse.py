@@ -274,6 +274,10 @@ class WildMapParser(Parser):
         self._p = parser
 
     def _getHtmlFromText(self, html, parts):
+        # FIX: this method does not manage this situation:
+        # html = '<span color="#cc00cc">hello&nbsp;world</span>'
+        # self._getHtmlFromText(html, ('hello ','world'))
+
         html = html.replace('&nbsp;', ' ').replace('<br>', '\n')
         html_parts = []
         for p in parts:
