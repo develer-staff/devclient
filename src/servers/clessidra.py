@@ -22,6 +22,6 @@ from generics import *
 
 class Clessidra(SmaugServer):
     right_widget = 'gui_map_ui'
-    wild_chars = '\^\|\.:x@\*\n\s'
+    wild_chars = '~\^\|\.:x@\*\n\s'
     host = 'mud.clessidra.it'
     port = 4000
