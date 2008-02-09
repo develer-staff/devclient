@@ -449,6 +449,64 @@ class TestWildMapParser(unittest.TestCase):
         m = self.parser.buildModel(wild[len(wild) / 2:] + end)
         self.assert_(m.wild_text == wild)
 
+    def testWild12(self):
+        """Test parsing a map with a right part1 and a wrong part2"""
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = 'fake end'
+
+        p1 = start + wild[:len(wild) / 2]
+        m = self.parser.buildModel(p1)
+        self.assert_(self.parser._incomplete_map[0] == p1)
+        m = self.parser.buildModel(wild[len(wild) / 2:] + end)
+        self.assert_(not self.parser._incomplete_map)
+
+    def testWild13(self):
+        """
+        Test the parsing of two map, with first model built with a text
+        composed by the first map and a slice of second map.
+        """
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        txt = start + wild + end
+        m = self.parser.buildModel(txt + start + wild[:len(wild) / 2])
+        self.assert_(m.wild_text == wild)
+        m = self.parser.buildModel(wild[len(wild) / 2:] + end)
+        self.assert_(m.wild_text == wild)
+
+    def testWild14(self):
+        """
+        Test the parsing of two map, with first model built with a text
+        composed by the first map and a slice of second map.
+        """
+
+        s1 = 'La campagna02\n'
+        p1a = '     *.* .   \n.. * *.*.**  \n...*.*....**.\n' + \
+             '....x...@....\n......X......\n..*..*....'
+        m = self.parser.buildModel(s1 + p1a)
+
+        p1b = '..@\n  .. ......*.\n... ........ \n.. ..........\n'
+        e1 = '\n[Uscite: Nord Est Sud Ovest]\n\n> '
+        s2 = 'La campagna02\n'
+        p2a = '  * *.*.**  \n   *.*....**.\n    x...@....\n     ........\n' + \
+              '     *X.....@\n     ......*.\n    ....'
+        m = self.parser.buildModel(p1b + e1 + s2 + p2a)
+        self.assert_(m.wild_text == p1a + p1b)
+
+        p2b = '.... \n   ..........\n  ...........\n'
+        e2 = '\n[Uscite: Nord Est Sud Ovest]\n\n> '
+
+        m = self.parser.buildModel(p2b + e2)
+        self.assert_(m.wild_text == p2a + p2b)
+
     def testExtractHtml1(self):
         html = '<span color="#cc00cc">hello</span>&nbsp;world'
         parts = self.parser._getHtmlFromText(html, ('hello',' world'))

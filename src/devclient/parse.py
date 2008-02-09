@@ -309,6 +309,9 @@ class WildMapParser(Parser):
     def _parseWild(self, model):
 
         def incompleteMap(text):
+            if re.compile('(.*?\n)([^0-9a-wy-z\[]+)$', re.I|re.S).match(text):
+                return True
+
             patt = '(.*?\n)([^0-9a-wy-z\[]+)(.*)'
             m = re.compile(patt, re.I|re.S).match(text)
             return m and m.group(3).strip()[:8] in '[Uscite:'
@@ -326,6 +329,7 @@ class WildMapParser(Parser):
                 else:
                     model.main_text = self._incomplete_map[0] + text
                     model.main_html = self._incomplete_map[1] + html
+                    self._incomplete_map = []
                 return
 
             text = self._incomplete_map[0] + text
@@ -341,8 +345,16 @@ class WildMapParser(Parser):
             model.wild_html = parts[1]
 
             # extract wild map from text
-            text = text[:pos_start] + text[pos_end:]
-            html = parts[0] + html[len(parts[0]) + len(parts[1]):]
+            end_parts = [text[pos_end:], html[len(parts[0]) + len(parts[1]):]]
+            text = text[:pos_start]
+            html = parts[0]
+
+            if incompleteMap(end_parts[0]):
+                self._incomplete_map = end_parts
+            else:
+                text += end_parts[0]
+                html += end_parts[1]
+
         elif incompleteMap(text):
             self._incomplete_map = [text, html]
             text, html = '', ''
