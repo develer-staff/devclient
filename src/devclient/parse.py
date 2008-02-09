@@ -41,7 +41,7 @@ def getParser(server):
     if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
         parser = PromptParser(parser)
 
-    if hasattr(server, 'wild_map'):
+    if hasattr(server, 'wild_chars'):
         parser = WildMapParser(parser)
 
     return parser
@@ -309,17 +309,19 @@ class WildMapParser(Parser):
     def _parseWild(self, model):
 
         def incompleteMap(text):
-            if re.compile('(.*?\n)([^0-9a-wy-z\[]+)$', re.I|re.S).match(text):
+            if re.compile('(.*?\n)([%s]+)$' % self._p._server.wild_chars,
+                          re.I|re.S).match(text):
                 return True
 
-            patt = '(.*?\n)([^0-9a-wy-z\[]+)(.*)'
+            patt = '(.*?\n)([%s]+)(.*)' % self._p._server.wild_chars
             m = re.compile(patt, re.I|re.S).match(text)
             return m and m.group(3).strip()[:8] in '[Uscite:'
 
         def swap(a, b): a, b = b, a
 
         text, html = model.main_text, model.main_html  # to preserve readability
-        reg = re.compile('(.*?\n)([^0-9a-wy-z\[]+)\n\[Uscite:', re.I|re.S)
+        reg = re.compile('(.*?\n)([%s]+)\n\[Uscite:' %
+                         self._p._server.wild_chars, re.I|re.S)
 
         if self._incomplete_map:
             if not reg.match(self._incomplete_map[0] + text):

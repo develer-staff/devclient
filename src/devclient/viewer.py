@@ -70,7 +70,7 @@ def getViewer(widget, server):
     if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
         viewer = StatusViewer(viewer)
 
-    if hasattr(server, 'wild_map'):
+    if hasattr(server, 'wild_chars'):
         viewer = WildMapViewer(viewer)
 
     return viewer

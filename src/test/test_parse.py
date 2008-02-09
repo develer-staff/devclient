@@ -281,7 +281,8 @@ class TestAfkParser(unittest.TestCase):
 class TestWildMapParser(unittest.TestCase):
 
     def setUp(self):
-         self.parser = WildMapParser(Parser(Server))
+        Server.wild_chars = '\^\.x@\*\n\s'
+        self.parser = WildMapParser(Parser(Server))
 
     def testWild1(self):
         """Check parsing of simple wild map"""
