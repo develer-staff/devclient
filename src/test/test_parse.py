@@ -508,6 +508,23 @@ class TestWildMapParser(unittest.TestCase):
         m = self.parser.buildModel(p2b + e2)
         self.assert_(m.wild_text == p2a + p2b)
 
+    def testWild15(self):
+        """
+        Check parsing of wild map in two step, with wild only in the second
+        step.
+        """
+
+        start = 'La montagna05\n'
+        wild = '             \n             \n             \n' + \
+               '             \n     ^X^     \n     ^^^     \n' + \
+               '             \n             \n             \n'
+        end = '\n[Uscite: Est Sud Ovest]'
+
+        m = self.parser.buildModel(start)
+        self.assert_(m.wild_text == '')
+        m = self.parser.buildModel(wild + end)
+        self.assert_(m.wild_text == wild)
+
     def testExtractHtml1(self):
         html = '<span color="#cc00cc">hello</span>&nbsp;world'
         parts = self.parser._getHtmlFromText(html, ('hello',' world'))

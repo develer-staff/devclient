@@ -320,7 +320,7 @@ class WildMapParser(Parser):
         def swap(a, b): a, b = b, a
 
         text, html = model.main_text, model.main_html  # to preserve readability
-        reg = re.compile('(.*?\n)([%s]+)\n\[Uscite:' %
+        reg = re.compile('(.*?\n?)([%s]+)\n\[Uscite:' %
                          self._p._server.wild_chars, re.I|re.S)
 
         if self._incomplete_map:
