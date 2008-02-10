@@ -191,6 +191,7 @@ class WildMapViewer(TextViewer):
 
     def __init__(self, v):
         super(WildMapViewer, self).__init__(v.w)
+        self.w.rightwidget.wild_map.clear()
         self.v = v
 
     def _centerMap(self, model, width, height):
