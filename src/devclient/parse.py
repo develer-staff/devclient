@@ -274,18 +274,17 @@ class WildMapParser(Parser):
         self._p = parser
 
     def _getHtmlFromText(self, html, parts):
-        # FIX: this method does not manage this situation:
-        # html = '<span color="#cc00cc">hello&nbsp;world</span>'
-        # self._getHtmlFromText(html, ('hello ','world'))
-
         html = html.replace('&nbsp;', ' ').replace('<br>', '\n')
         html_parts = []
+        span = ''
         for p in parts:
-            p_html = ''
+            p_html = span
 
             while p:
-                if html.startswith('<span') or html.startswith('</span>'):
+                if html.startswith('</span>') and span or \
+                   html.startswith('<span'):
                     pos = html.find('>') + 1
+                    span = html[:pos] if html.startswith('<span') else ''
                     p_html += html[:pos]
                     html = html[pos:]
                 else:
@@ -298,12 +297,16 @@ class WildMapParser(Parser):
                     html = html[1:]
                     p = p[1:]
 
-            if html.startswith('</span>'):
+            if html.startswith('</span>') or span:
                 p_html += '</span>'
-                html = html[7:]
+                if html.startswith('</span>'):
+                    html = html[7:]
+                    span = ''
 
             html_parts.append(p_html)
 
+        # append the remaining part
+        html_parts.append(html.replace(' ', '&nbsp;').replace('\n', '<br>'))
         return html_parts
 
     def _parseWild(self, model):
@@ -353,7 +356,7 @@ class WildMapParser(Parser):
             model.wild_html = parts[1]
 
             # extract wild map from text
-            end_parts = [text[pos_end:], html[len(parts[0]) + len(parts[1]):]]
+            end_parts = [text[pos_end:], parts[2]]
             text = text[:pos_start]
             html = parts[0]
 
