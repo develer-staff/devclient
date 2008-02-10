@@ -328,15 +328,15 @@ class WildMapParser(Parser):
                            re.I|re.S).match(text)
             if m:
                 _text, _map = m.group(1), m.group(2)
-
-            patt = '(.*?\n?)([%s]{6,})(.*)' % self._p._server.wild_chars
-            m = re.compile(patt, re.I|re.S).match(text)
-            if m and m.group(3).strip()[:8] in '[Uscite:':
-                _text, _map = m.group(1), m.group(2) + m.group(3)
+            else:
+                patt = '(.*?\n?)([%s]{6,})(.*)' % self._p._server.wild_chars
+                m = re.compile(patt, re.I|re.S).match(text)
+                if m and m.group(3).strip()[:8] in '[Uscite:':
+                    _text, _map = m.group(1), m.group(2) + m.group(3)
 
             if _map:
                 parts = self._getHtmlFromText(html, (_text, _map))
-                return (_text, parts[0], [_map, parts[1]])
+                return (_text, parts[0] + parts[2], [_map, parts[1]])
 
             return (text, html, [])
 
