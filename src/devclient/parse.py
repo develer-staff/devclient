@@ -274,6 +274,10 @@ class WildMapParser(Parser):
         self._p = parser
 
     def _getHtmlFromText(self, html, parts):
+
+        def replaceSpecialChar(char):
+            return {' ': '&nbsp;', '\n': '<br>'}.get(char, char)
+
         html = html.replace('&nbsp;', ' ').replace('<br>', '\n')
         html_parts = []
         span = ''
@@ -288,12 +292,7 @@ class WildMapParser(Parser):
                     p_html += html[:pos]
                     html = html[pos:]
                 else:
-                    if html[0] == ' ':
-                        p_html += '&nbsp;'
-                    elif html[0] == '\n':
-                        p_html += '<br>'
-                    else:
-                        p_html += html[0]
+                    p_html += replaceSpecialChar(html[0])
                     html = html[1:]
                     p = p[1:]
 
@@ -306,7 +305,17 @@ class WildMapParser(Parser):
             html_parts.append(p_html)
 
         # append the remaining part
-        html_parts.append(html.replace(' ', '&nbsp;').replace('\n', '<br>'))
+        p_html = ''
+        while html:
+            if html.startswith('</span>') or html.startswith('<span'):
+                pos = html.find('>') + 1
+                p_html += html[:pos]
+                html = html[pos:]
+            else:
+                p_html += replaceSpecialChar(html[0])
+                html = html[1:]
+
+        html_parts.append(p_html)
         return html_parts
 
     def _parseWild(self, model):

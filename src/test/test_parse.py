@@ -581,5 +581,13 @@ class TestWildMapParser(unittest.TestCase):
         self.assert_(parts[1] == '&nbsp;world')
         self.assert_(parts[2] == '&nbsp;hi')
 
+    def testExtractHtml5(self):
+        html = '<span color="#cc00cc">hello</span>&nbsp;world&nbsp;' + \
+               '<span color="#c0c0c0">hi</span>'
+        parts = self.parser._getHtmlFromText(html, ('hello',' world'))
+        self.assert_(parts[0] == '<span color="#cc00cc">hello</span>')
+        self.assert_(parts[1] == '&nbsp;world')
+        self.assert_(parts[2] == '&nbsp;<span color="#c0c0c0">hi</span>')
+
 if __name__ == '__main__':
     unittest.main()
