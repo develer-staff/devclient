@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sun Jan 27 17:52:01 2008
-#      by: PyQt4 UI code generator 4.3
+# Created: Sun Feb 10 22:41:33 2008
+#      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -37,7 +37,7 @@ class Ui_dev_client(object):
 
         self.rightpanel = QtGui.QFrame(self.centralwidget)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.rightpanel.sizePolicy().hasHeightForWidth())
@@ -67,7 +67,7 @@ class Ui_dev_client(object):
         self.toolBar.setOrientation(QtCore.Qt.Horizontal)
         self.toolBar.setIconSize(QtCore.QSize(32,32))
         self.toolBar.setObjectName("toolBar")
-        dev_client.addToolBar(self.toolBar)
+        dev_client.addToolBar(QtCore.Qt.TopToolBarArea,self.toolBar)
 
         self.action_connect = QtGui.QAction(dev_client)
         self.action_connect.setIcon(QtGui.QIcon("../../resources/images/connect.png"))
