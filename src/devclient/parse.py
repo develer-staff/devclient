@@ -305,7 +305,7 @@ class WildMapParser(Parser):
             html_parts.append(p_html)
 
         # append the remaining part
-        p_html = ''
+        p_html = span
         while html:
             if html.startswith('</span>') or html.startswith('<span'):
                 pos = html.find('>') + 1
@@ -315,7 +315,8 @@ class WildMapParser(Parser):
                 p_html += replaceSpecialChar(html[0])
                 html = html[1:]
 
-        html_parts.append(p_html)
+        if p_html:
+            html_parts.append(p_html)
         return html_parts
 
     def _parseWild(self, model):
@@ -336,7 +337,7 @@ class WildMapParser(Parser):
 
             if _map:
                 parts = self._getHtmlFromText(html, (_text, _map))
-                return (_text, parts[0] + parts[2], [_map, parts[1]])
+                return (_text, parts[0], [_map, parts[1]])
 
             return (text, html, [])
 
