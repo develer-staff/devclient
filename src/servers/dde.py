@@ -20,7 +20,7 @@
 
 from generics import *
 
-class DdE(SmaugServer):
+class DdE(DikuServer):
     right_widget = 'gui_map_ui'
     wild_chars = '\^\.x@\*\n\s'
     host = 'dde.homelinux.com'

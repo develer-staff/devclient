@@ -20,7 +20,7 @@
 
 from generics import *
 
-class Clessidra(SmaugServer):
+class Clessidra(DikuServer):
     right_widget = 'gui_map_ui'
     wild_chars = '_~\^\|\.:x@\*\n\s'
     host = 'mud.clessidra.it'

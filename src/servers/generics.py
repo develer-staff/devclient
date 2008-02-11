@@ -24,7 +24,7 @@ class Server(object):
     right_widget = ''
 
 
-class SmaugServer(Server):
+class DikuServer(Server):
     right_widget = 'gui_prompt_ui'
     prompt_reg = 'Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>'
     prompt_sep = '/'
