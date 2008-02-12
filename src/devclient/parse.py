@@ -321,6 +321,19 @@ class WildMapParser(Parser):
 
     def _parseWild(self, model):
 
+        def endswith(text, end):
+            """Check if text finishes with 'end' string or a part of it"""
+
+            if not text:
+                return True
+
+            t = text[-len(end):]
+            while t:
+                if end.startswith(t):
+                    return True
+                t = t[1:]
+            return False
+
         def extractIncompleteMap(text, html):
             """Return text, html and the incomplete wild map if exist."""
 
@@ -330,10 +343,10 @@ class WildMapParser(Parser):
             if m:
                 _text, _map = m.group(1), m.group(2)
             else:
-                patt = '(.*?\n?)([%s]{6,})(.*)' % self._p._server.wild_chars
+                patt = '(.*?\n?)([%s]{6,})' % self._p._server.wild_chars
                 m = re.compile(patt, re.I|re.S).match(text)
-                if m and m.group(3).strip()[:8] in '[Uscite:':
-                    _text, _map = m.group(1), m.group(2) + m.group(3)
+                if m and endswith(text, self._p._server.wild_end_text):
+                    _text, _map = m.group(1), text[len(m.group(1)):]
 
             if _map:
                 parts = self._getHtmlFromText(html, (_text, _map))
@@ -342,20 +355,17 @@ class WildMapParser(Parser):
             return (text, html, [])
 
         text, html = model.main_text, model.main_html  # to save readability
-        reg = re.compile('(.*?\n?)([%s]{6,})\n\[Uscite:' %
-                         self._p._server.wild_chars, re.I|re.S)
 
+        reg = re.compile('(.*?\n?)([%s]{6,})%s' %
+                         (self._p._server.wild_chars,
+                          re.escape(self._p._server.wild_end_text)), re.I|re.S)
+
+        # The incomplete map, came from previous step, is attach at the start
+        # of the string to simulate an unique string.
         if self._incomplete_map:
-            new_text = self._incomplete_map[0] + text
-            new_html = self._incomplete_map[1] + html
-            if not reg.match(new_text):
-                model.main_text, model.main_html, self._incomplete_map = \
-                    extractIncompleteMap(new_text, new_html)
-                return
-
+            text = self._incomplete_map[0] + text
+            html = self._incomplete_map[1] + html
             self._incomplete_map = []
-            text = new_text
-            html = new_html
 
         m = reg.match(text)
         if m:
@@ -365,11 +375,12 @@ class WildMapParser(Parser):
             parts = self._getHtmlFromText(html, m.groups())
             model.wild_html = parts[1]
 
-            # extract wild map from text
+            # extract wild map from main text
             end_parts = [text[pos_end:], parts[2]]
             text = text[:pos_start]
             html = parts[0]
 
+            # only the part after map is checked to find an incomplete map
             p = extractIncompleteMap(end_parts[0], end_parts[1])
             self._incomplete_map = p[2]
             text += p[0]

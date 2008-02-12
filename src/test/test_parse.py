@@ -29,7 +29,7 @@ sys.path.append('../servers')
 
 from devclient.parse import *
 from devclient.messages import Model
-from generics import SmaugServer, AfkServer, Server
+from generics import DikuServer, AfkServer, Server
 
 
 class TestParser(unittest.TestCase):
@@ -193,10 +193,10 @@ class TestParser(unittest.TestCase):
         self.assert_(html_res == 'hello' and text_res == 'hello')
 
 
-class TestSmaugParser(unittest.TestCase):
+class TestDikuParser(unittest.TestCase):
 
     def setUp(self):
-        self.parser = PromptParser(Parser(SmaugServer))
+        self.parser = PromptParser(Parser(DikuServer))
         self.m = self.parser.buildModel('')
 
     def testEmptyPrompt(self):
@@ -282,6 +282,7 @@ class TestWildMapParser(unittest.TestCase):
 
     def setUp(self):
         Server.wild_chars = '\^\.x@\*\n\s'
+        Server.wild_end_text = '\n[Uscite:'
         self.parser = WildMapParser(Parser(Server))
 
     def testWild1(self):
