@@ -60,7 +60,7 @@
     <item rowspan="2" row="0" column="1" >
      <widget class="QFrame" name="rightpanel" >
       <property name="sizePolicy" >
-       <sizepolicy vsizetype="Expanding" hsizetype="Fixed" >
+       <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
