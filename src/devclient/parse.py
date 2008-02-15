@@ -339,12 +339,12 @@ class WildMapParser(Parser):
 
             _text, _map = text, ''
             m = re.compile('(.*?\n?)([%s]+)$' % self._p._server.wild_chars,
-                           re.I|re.S).match(text)
+                           re.S).match(text)
             if m:
                 _text, _map = m.group(1), m.group(2)
             else:
                 patt = '(.*?\n?)([%s]{6,})' % self._p._server.wild_chars
-                m = re.compile(patt, re.I|re.S).match(text)
+                m = re.compile(patt, re.S).match(text)
                 if m and endswith(text, self._p._server.wild_end_text):
                     _text, _map = m.group(1), text[len(m.group(1)):]
 
@@ -358,7 +358,7 @@ class WildMapParser(Parser):
 
         reg = re.compile('(.*?\n?)([%s]{6,})%s' %
                          (self._p._server.wild_chars,
-                          re.escape(self._p._server.wild_end_text)), re.I|re.S)
+                          re.escape(self._p._server.wild_end_text)), re.S)
 
         # The incomplete map, came from previous step, is attach at the start
         # of the string to simulate an unique string.

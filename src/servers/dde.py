@@ -22,7 +22,7 @@ from generics import *
 
 class DdE(DikuServer):
     right_widget = 'gui_map_ui'
-    wild_chars = '\^\.x@\*\n\s'
+    wild_chars = '\^\.xX@\*\n\s'
     wild_end_text = '\n[Uscite:'
     host = 'dde.homelinux.com'
     port = 5000
