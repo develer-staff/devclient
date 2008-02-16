@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -35,11 +35,19 @@ from devclient.gui import SocketToCore
 
 class GuiMock(object):
 
+    def __init__(self):
+        self._warning = None
+        self._text = {}
+        self._text['FatalError'] = ''
+
     def connect(self, widget, signal, callback):
         pass
 
     def _readDataFromCore(self):
         pass
+
+    def _displayWarning(self, title, message):
+        self._warning = (title, message)
 
 
 class TestSocketToCore(unittest.TestCase, communication.TestSocket):
