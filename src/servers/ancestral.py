@@ -22,7 +22,8 @@ from generics import *
 
 class Ancestral(AfkServer):
     right_widget = 'gui_map_ext_ui'
-    wild_chars = '\^~\.:@A=X\*\n\s'
+    wild_chars = '#\^~\.:@A=X\*\n\s'
     wild_end_text = '\nViaggiando sul continente.'
     host = 'ancestralmud.it'
     port = 4000
+

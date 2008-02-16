@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_map_ext.ui'
 #
-# Created: Fri Feb 15 22:08:27 2008
+# Created: Sat Feb 16 10:23:26 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,7 +15,7 @@ class Ui_RightWidget(object):
         RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,237,615).size()).expandedTo(RightWidget.minimumSizeHint()))
 
         self.layoutWidget = QtGui.QWidget(RightWidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,380,236,126))
+        self.layoutWidget.setGeometry(QtCore.QRect(0,390,236,126))
         self.layoutWidget.setObjectName("layoutWidget")
 
         self.gridlayout = QtGui.QGridLayout(self.layoutWidget)
@@ -82,7 +82,7 @@ class Ui_RightWidget(object):
         self.gridlayout.addWidget(self.bar_movement,2,1,1,1)
 
         self.wild_map = QtGui.QTextEdit(RightWidget)
-        self.wild_map.setGeometry(QtCore.QRect(0,0,235,376))
+        self.wild_map.setGeometry(QtCore.QRect(0,0,235,386))
         self.wild_map.setFocusPolicy(QtCore.Qt.NoFocus)
         self.wild_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.wild_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
