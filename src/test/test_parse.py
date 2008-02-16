@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -281,7 +281,7 @@ class TestAfkParser(unittest.TestCase):
 class TestWildMapParser(unittest.TestCase):
 
     def setUp(self):
-        Server.wild_chars = '\^\.x@\*\n\s'
+        Server.wild_chars = '\^\.xX@\*\n\s'
         Server.wild_end_text = '\n[Uscite:'
         self.parser = WildMapParser(Parser(Server))
 
@@ -556,6 +556,42 @@ class TestWildMapParser(unittest.TestCase):
         self.assert_(m.main_text == '')
         m = self.parser.buildModel(end[2:])
         self.assert_(m.main_text == end)
+
+    def testWild18(self):
+        """Check parsing text that contains two maps."""
+
+        s1 = 'La montagna05\n'
+        w1 = '             \n             \n             \n' + \
+             '             \n     ^X^     \n     ^^^     \n' + \
+             '             \n             \n             \n'
+        e1 = '\n[Uscite: Est Sud Ovest]'
+
+        s2 = 'La collina04\n'
+        w2 = '             \n             \n             \n' + \
+             '             \n     ^X^     \n     ^^.     \n' + \
+             '             \n             \n             \n'
+        e2 = '\n[Uscite: Est Sud Ovest]'
+
+        m = self.parser.buildModel(s1 + w1 + e1 + s2 + w2 + e2)
+        self.assert_(m.wild_text == w2)
+
+    def testWild19(self):
+        """Check extracting text that contains two maps."""
+
+        s1 = 'La montagna05\n'
+        w1 = '             \n             \n             \n' + \
+             '             \n     ^X^     \n     ^^^     \n' + \
+             '             \n             \n             \n'
+        e1 = '\n[Uscite: Est Sud Ovest]'
+
+        s2 = 'La collina04\n'
+        w2 = '             \n             \n             \n' + \
+             '             \n     ^X^     \n     ^^.     \n' + \
+             '             \n             \n             \n'
+        e2 = '\n[Uscite: Est Sud Ovest]'
+
+        m = self.parser.buildModel(s1 + w1 + e1 + s2 + w2 + e2)
+        self.assert_(m.main_text == s1 + e1 + s2 + e2)
 
     def testExtractHtml1(self):
         html = '<span color="#cc00cc">hello</span>&nbsp;world'

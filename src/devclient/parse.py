@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -376,21 +376,16 @@ class WildMapParser(Parser):
             model.wild_html = parts[1]
 
             # extract wild map from main text
-            end_parts = [text[pos_end:], parts[2]]
-            text = text[:pos_start]
-            html = parts[0]
+            model.main_text = text[:pos_start] + text[pos_end:]
+            model.main_html = parts[0] + parts[2]
+            return True
 
-            # only the part after map is checked to find an incomplete map
-            p = extractIncompleteMap(end_parts[0], end_parts[1])
-            self._incomplete_map = p[2]
-            text += p[0]
-            html += p[1]
-        else:
-            text, html, self._incomplete_map = extractIncompleteMap(text, html)
-
-        model.main_text, model.main_html = text, html
+        model.main_text, model.main_html, self._incomplete_map = \
+            extractIncompleteMap(text, html)
+        return False
 
     def buildModel(self, data):
         model = self._p.buildModel(data)
-        self._parseWild(model)
+        while self._parseWild(model):
+            pass
         return model
