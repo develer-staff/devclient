@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -188,7 +188,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         """the interface with `Core`, an instance of `SocketToCore`"""
 
         self.history = History()
-        self._default_style = unicode(self.text_output.styleSheet())
 
         self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
         self.connected = None
@@ -373,7 +372,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _startConnection(self, host, port):
         self.history.clear()
         self.viewer = getViewer(self, getServer(host, port))
-        self.viewer.resetOutputColors(self._default_style)
         self.macros = storage.Storage().macros(self.connected)
 
     def _sendText(self):

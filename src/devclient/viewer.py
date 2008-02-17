@@ -28,6 +28,7 @@ from PyQt4 import QtGui
 
 logger = logging.getLogger('viewer')
 
+_default_styles = {}
 
 def _setRightPanel(widget, widget_name):
 
@@ -64,15 +65,14 @@ def _setRightPanel(widget, widget_name):
 def getViewer(widget, server):
 
     viewer = TextViewer(widget)
-    if not _setRightPanel(widget, server.right_widget):
-        return viewer
+    if _setRightPanel(widget, server.right_widget):
+        if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
+            viewer = StatusViewer(viewer)
 
-    if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
-        viewer = StatusViewer(viewer)
+        if hasattr(server, 'wild_chars'):
+            viewer = WildMapViewer(viewer)
 
-    if hasattr(server, 'wild_chars'):
-        viewer = WildMapViewer(viewer)
-
+    viewer._resetWidgets()
     return viewer
 
 
@@ -86,10 +86,17 @@ class TextViewer(object):
 
     def __init__(self, widget):
         self.w = widget
-        self.w.text_output.clear()
         self.data = ''
         self._bg = None
         self._fg = None
+
+    def _resetWidgets(self):
+        t_out = self.w.text_output
+        if not _default_styles.has_key('text_output'):
+            _default_styles['text_output'] = unicode(t_out.styleSheet())
+        else:
+            t_out.setStyleSheet(_default_styles['text_output'])
+            t_out.clear()
 
     def _process(self, model):
 
@@ -105,28 +112,26 @@ class TextViewer(object):
             self.data += new_html
 
         self.w.text_output.clear()
-        set_color = False
+        set_colors = False
 
         if model.bg_color is not None and self._bg != model.bg_color:
             self._bg = model.bg_color
-            set_color = True
+            set_colors = True
 
         if model.fg_color is not None and self._fg != model.fg_color:
             self._fg = model.fg_color
-            set_color = True
-
-        if set_color:
-            self._setOutputColors(self._bg, self._fg)
+            set_colors = True
 
         self.w.text_output.setHtml(self.data)
         self.w.text_output.moveCursor(QtGui.QTextCursor.End)
+        return set_colors
 
     def _setOutputColors(self, bg, fg):
-        """
-        Set output default colors.
-        """
+        self._textEditColors(self.w.text_output, bg, fg)
 
-        style = unicode(self.w.text_output.styleSheet())
+    def _textEditColors(self, text_edit, bg, fg):
+
+        style = unicode(text_edit.styleSheet())
         m = re.search('QTextEdit\s*{(.*)}', style)
         if m:
             oldstyle = m.group(1)
@@ -142,15 +147,13 @@ class TextViewer(object):
         newstyle = ';'.join([k + ':' + v for k, v in d.iteritems()])
 
         if oldstyle:
-            self.w.text_output.setStyleSheet(style.replace(oldstyle, newstyle))
+            text_edit.setStyleSheet(style.replace(oldstyle, newstyle))
         else:
-            self.w.text_output.setStyleSheet('QTextEdit {%s}' % newstyle)
-
-    def resetOutputColors(self, style):
-        self.w.text_output.setStyleSheet(style)
+            text_edit.setStyleSheet('QTextEdit {%s}' % newstyle)
 
     def process(self, model):
-        self._process(model)
+        if self._process(model):
+            self._setOutputColors(model.bg_color, model.fg_color)
         self.w.update()
 
 
@@ -170,7 +173,7 @@ class StatusViewer(TextViewer):
         self._last_values = {'Hp': None, 'Mn': None, 'Mv': None}
 
     def _process(self, model):
-        self.v._process(model)
+        set_colors = self.v._process(model)
 
         stats = {'Hp': self.w.rightwidget.bar_health,
                  'Mn': self.w.rightwidget.bar_mana,
@@ -186,13 +189,31 @@ class StatusViewer(TextViewer):
                     self._last_values[k] = v
                     bar.setValue(v)
 
+        return set_colors
+
 
 class WildMapViewer(TextViewer):
+    """
+    Build the visualization of wild map from model.
+
+    This class is a subclass of `TextViewer` that take an instance of it
+    as argument on __init__ (see `decorator pattern`_)
+
+.. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
+    """
 
     def __init__(self, v):
         super(WildMapViewer, self).__init__(v.w)
-        self.w.rightwidget.wild_map.clear()
         self.v = v
+
+    def _resetWidgets(self):
+        self.v._resetWidgets()
+        w_map = self.w.rightwidget.wild_map
+        if not _default_styles.has_key('wild_map'):
+            _default_styles['wild_map'] = unicode(w_map.styleSheet())
+        else:
+            w_map.setStyleSheet(_default_styles['wild_map'])
+            w_map.clear()
 
     def _centerMap(self, model, width, height):
         html_list = model.wild_html.split('<br>')
@@ -212,9 +233,16 @@ class WildMapViewer(TextViewer):
             '<br>'.join(['&nbsp;' * delta_x + r for r in html])
 
     def _process(self, model):
-        self.v._process(model)
+        set_colors = self.v._process(model)
+
         if model.wild_text:
             w = self.w.rightwidget.wild_map.property('char_width').toInt()[0]
             h = self.w.rightwidget.wild_map.property('char_height').toInt()[0]
             self._centerMap(model, w, h)
             self.w.rightwidget.wild_map.setHtml(model.wild_html)
+
+        return set_colors
+
+    def _setOutputColors(self, bg, fg):
+        self.v._setOutputColors(bg, fg)
+        self._textEditColors(self.w.rightwidget.wild_map, bg, fg)
