@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -86,17 +86,12 @@ class Parser(object):
             data = data.replace(t, r)
 
         html_data, text_data = self._replaceAnsiColor(data, model)
-        html_data = html_data.split('\n')
-        text_data = text_data.replace('&nbsp;', ' ').split('\n')
 
-        for i, r in enumerate(text_data):
-            model.main_text += (r, r + '\n')[i < len(text_data) - 1]
-
-        for i, r in enumerate(html_data):
-            model.main_html += (r, r + '<br>')[i < len(html_data) - 1]
+        model.main_text = text_data.replace('&nbsp;', ' ')
+        model.main_html = html_data.replace('\n', '<br>')
 
         if model.bg_color is None and model.fg_color is None and \
-           len(''.join(text_data).strip()):
+           len(model.main_text.strip()):
             # Empty colors means default color
             model.bg_color = ''
             model.fg_color = ''
