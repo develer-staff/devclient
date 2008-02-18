@@ -58,6 +58,12 @@ class Parser(object):
     _bright_color = ['444444', 'ff4444', '44ff44', 'ffff44', '4444ff',
                      'ff44ff', '44ffff', 'ffffff']
 
+    _text_to_html = {' ': '&nbsp;', '<': '&lt;', '>': '&gt;', '&': '&amp;',
+                     '"': '&quot;', '\n': '<br>'}
+
+    _html_to_text = {'&nbsp;': ' ', '&lt;': '<', '&gt;': '>', '&amp;': '&',
+                     '&quot;': '"', '<br>': '\n'}
+
     def __init__(self, server):
         """
         Create the `Parser` instance.
@@ -80,15 +86,11 @@ class Parser(object):
         model.bg_color = self._default_bg
         model.fg_color = self._default_fg
 
-        # spaces must be replace with html code before calling
-        # _replaceAnsiColor to prevent replacing inside html tag.
-        for t, r in (('\r', ''), (' ', '&nbsp;')):
-            data = data.replace(t, r)
-
+        data = data.replace('\r', '')
         html_data, text_data = self._replaceAnsiColor(data, model)
 
-        model.main_text = text_data.replace('&nbsp;', ' ')
-        model.main_html = html_data.replace('\n', '<br>')
+        model.main_text = text_data
+        model.main_html = self._textToHtml(html_data)
 
         if model.bg_color is None and model.fg_color is None and \
            len(model.main_text.strip()):
@@ -103,6 +105,20 @@ class Parser(object):
             self._default_fg = model.fg_color
 
         return model
+
+    def _textToHtml(self, html):
+
+        out = []
+        while html:
+            if html.startswith('<span') or html.startswith('</span>'):
+                pos = html.find('>') + 1
+                out.append(html[:pos])
+                html = html[pos:]
+            else:
+                out.append(self._text_to_html.get(html[0], html[0]))
+                html = html[1:]
+
+        return ''.join(out)
 
     def _evalStyle(self, ansi_code, model):
 
@@ -270,10 +286,9 @@ class WildMapParser(Parser):
 
     def _getHtmlFromText(self, html, parts):
 
-        def replaceSpecialChar(char):
-            return {' ': '&nbsp;', '\n': '<br>'}.get(char, char)
+        for h, t in self._html_to_text.iteritems():
+            html = html.replace(h, t)
 
-        html = html.replace('&nbsp;', ' ').replace('<br>', '\n')
         html_parts = []
         span = ''
         for p in parts:
@@ -287,7 +302,7 @@ class WildMapParser(Parser):
                     p_html += html[:pos]
                     html = html[pos:]
                 else:
-                    p_html += replaceSpecialChar(html[0])
+                    p_html += self._text_to_html.get(html[0], html[0])
                     html = html[1:]
                     p = p[1:]
 
@@ -307,7 +322,7 @@ class WildMapParser(Parser):
                 p_html += html[:pos]
                 html = html[pos:]
             else:
-                p_html += replaceSpecialChar(html[0])
+                p_html += self._text_to_html.get(html[0], html[0])
                 html = html[1:]
 
         if p_html:
