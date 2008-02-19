@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_map_ext.ui'
 #
-# Created: Sat Feb 16 10:23:26 2008
+# Created: Tue Feb 19 22:17:33 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,14 +12,15 @@ from PyQt4 import QtCore, QtGui
 class Ui_RightWidget(object):
     def setupUi(self, RightWidget):
         RightWidget.setObjectName("RightWidget")
-        RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,237,615).size()).expandedTo(RightWidget.minimumSizeHint()))
+        RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,259,615).size()).expandedTo(RightWidget.minimumSizeHint()))
+        RightWidget.setMinimumSize(QtCore.QSize(259,615))
 
         self.layoutWidget = QtGui.QWidget(RightWidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,390,236,126))
+        self.layoutWidget.setGeometry(QtCore.QRect(0,430,256,131))
         self.layoutWidget.setObjectName("layoutWidget")
 
         self.gridlayout = QtGui.QGridLayout(self.layoutWidget)
-        self.gridlayout.setContentsMargins(5,-1,-1,-1)
+        self.gridlayout.setContentsMargins(5,-1,0,-1)
         self.gridlayout.setHorizontalSpacing(0)
         self.gridlayout.setVerticalSpacing(5)
         self.gridlayout.setObjectName("gridlayout")
@@ -82,13 +83,13 @@ class Ui_RightWidget(object):
         self.gridlayout.addWidget(self.bar_movement,2,1,1,1)
 
         self.wild_map = QtGui.QTextEdit(RightWidget)
-        self.wild_map.setGeometry(QtCore.QRect(0,0,235,386))
+        self.wild_map.setGeometry(QtCore.QRect(0,0,256,426))
         self.wild_map.setFocusPolicy(QtCore.Qt.NoFocus)
         self.wild_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.wild_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.wild_map.setReadOnly(True)
-        self.wild_map.setProperty("char_width",QtCore.QVariant(29))
-        self.wild_map.setProperty("char_height",QtCore.QVariant(19))
+        self.wild_map.setProperty("char_width",QtCore.QVariant(31))
+        self.wild_map.setProperty("char_height",QtCore.QVariant(21))
         self.wild_map.setObjectName("wild_map")
 
         self.retranslateUi(RightWidget)

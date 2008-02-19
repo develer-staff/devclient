@@ -57,6 +57,12 @@ def _setRightPanel(widget, widget_name):
             else:
                 widget.rightwidget = RightWidget(widget.rightpanel)
 
+            # resize the window to display properly the new widget
+            cur = widget.rightpanel.minimumWidth()
+            new = widget.rightwidget.minimumWidth()
+            widget.setMinimumWidth(widget.minimumWidth() + new - cur)
+            widget.rightpanel.setMinimumWidth(new)
+
             widget.rightwidget.setVisible(True)
 
     return True

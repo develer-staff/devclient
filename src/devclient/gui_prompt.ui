@@ -9,6 +9,12 @@
     <height>615</height>
    </rect>
   </property>
+  <property name="minimumSize" >
+   <size>
+    <width>230</width>
+    <height>615</height>
+   </size>
+  </property>
   <property name="windowTitle" >
    <string>Form</string>
   </property>
@@ -167,7 +173,6 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
   </widget>
  </widget>
  <layoutdefault spacing="5" margin="5" />
- <includes/>
  <resources/>
  <connections/>
  <designerdata>

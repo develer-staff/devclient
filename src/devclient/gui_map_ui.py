@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_map.ui'
 #
-# Created: Thu Jan 31 18:46:39 2008
+# Created: Tue Feb 19 22:12:08 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,6 +13,7 @@ class Ui_RightWidget(object):
     def setupUi(self, RightWidget):
         RightWidget.setObjectName("RightWidget")
         RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,230,615).size()).expandedTo(RightWidget.minimumSizeHint()))
+        RightWidget.setMinimumSize(QtCore.QSize(230,615))
 
         self.layoutWidget = QtGui.QWidget(RightWidget)
         self.layoutWidget.setGeometry(QtCore.QRect(0,235,226,121))
