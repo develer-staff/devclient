@@ -52,11 +52,11 @@ class Parser(object):
     The Parser class build a `Model` of data received.
     """
 
-    _normal_color = ['000000', 'aa0000', '00aa00', 'aaaa00', '0000aa',
-                     'aa00aa', '00aaaa', 'aaaaaa']
+    _normal_color = ('000000', 'aa0000', '00aa00', 'aaaa00', '0000aa',
+                     'aa00aa', '00aaaa', 'aaaaaa')
 
-    _bright_color = ['444444', 'ff4444', '44ff44', 'ffff44', '4444ff',
-                     'ff44ff', '44ffff', 'ffffff']
+    _bright_color = ('444444', 'ff4444', '44ff44', 'ffff44', '4444ff',
+                     'ff44ff', '44ffff', 'ffffff')
 
     _text_to_html = {' ': '&nbsp;', '<': '&lt;', '>': '&gt;', '&': '&amp;',
                      '"': '&quot;', '\n': '<br>'}
@@ -189,8 +189,8 @@ class Parser(object):
 
         START_TOKEN = chr(27)
         COLOR_TOKEN = 'm'
-        ANSI_CODE_UNSUPPORTED = ['H', 'f', 'A', 'B', 'C', 'D', 'R', 's', 'u',
-                                 'J', 'K', 'h', 'l', 'p']
+        ANSI_CODE_UNSUPPORTED = ('H', 'f', 'A', 'B', 'C', 'D', 'R', 's', 'u',
+                                 'J', 'K', 'h', 'l', 'p')
 
         ANSI_CODE = [COLOR_TOKEN]
         ANSI_CODE.extend(ANSI_CODE_UNSUPPORTED)
@@ -199,17 +199,15 @@ class Parser(object):
             data = self._incomplete_seq + data
             self._incomplete_seq = None
 
+        style = self._style
         parts = data.split(START_TOKEN)
-        text_res = parts[0]
-        if self._style:
-            html_res = '<span style="%s">%s</span>' % \
-                (self._style, parts[0])
-        else:
-            html_res = parts[0]
+        html_res = ['<span style="%s">%s</span>' % (style, parts[0]) if style
+                    else parts[0]]
 
         if len(parts) == 1:
-            return html_res, text_res
+            return ''.join(html_res), parts[0]
 
+        text_res = [parts[0]]
         reg = re.compile('\[(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
 
         for i, s in enumerate(parts[1:]):
@@ -218,26 +216,28 @@ class Parser(object):
                 ansi_code = m.group(1)
                 code_length = len(ansi_code) + len(COLOR_TOKEN) + len('[')
                 if m.group(2) == COLOR_TOKEN and ansi_code:
-                    self._style = self._evalStyle(ansi_code, model)
-                    if self._style and s[code_length:]:
-                        html_res += '<span style="%s">%s</span>' % \
-                            (self._style, s[code_length:])
+                    style = self._evalStyle(ansi_code, model)
+                    if style and s[code_length:]:
+                        html_res.append('<span style="%s">%s</span>' %
+                                         (style, s[code_length:]))
                     else:
-                        html_res += s[code_length:]
+                        html_res.append(s[code_length:])
                 else:
-                    html_res += s[code_length:]
+                    html_res.append(s[code_length:])
 
-                text_res += s[code_length:]
+                text_res.append(s[code_length:])
             else:
                 # i == len() - 2 is the last element of list because the loop
                 # starts at second element
                 if i == len(parts) - 2:
                     self._incomplete_seq = START_TOKEN + s
                 else:
-                    html_res += s
-                    text_res += s
+                    html_res.append(s)
+                    text_res.append(s)
 
-        return html_res, text_res
+        self._style = style
+
+        return ''.join(html_res), ''.join(text_res)
 
 
 class PromptParser(Parser):
@@ -292,41 +292,41 @@ class WildMapParser(Parser):
         html_parts = []
         span = ''
         for p in parts:
-            p_html = span
+            p_html = [span] if span else []
 
             while p:
                 if html.startswith('</span>') and span or \
                    html.startswith('<span'):
                     pos = html.find('>') + 1
                     span = html[:pos] if html.startswith('<span') else ''
-                    p_html += html[:pos]
+                    p_html.append(html[:pos])
                     html = html[pos:]
                 else:
-                    p_html += self._text_to_html.get(html[0], html[0])
+                    p_html.append(self._text_to_html.get(html[0], html[0]))
                     html = html[1:]
                     p = p[1:]
 
             if html.startswith('</span>') or span:
-                p_html += '</span>'
+                p_html.append('</span>')
                 if html.startswith('</span>'):
                     html = html[7:]
                     span = ''
 
-            html_parts.append(p_html)
+            html_parts.append(''.join(p_html))
 
         # append the remaining part
-        p_html = span
+        p_html = [span] if span else []
         while html:
             if html.startswith('</span>') or html.startswith('<span'):
                 pos = html.find('>') + 1
-                p_html += html[:pos]
+                p_html.append(html[:pos])
                 html = html[pos:]
             else:
-                p_html += self._text_to_html.get(html[0], html[0])
+                p_html.append(self._text_to_html.get(html[0], html[0]))
                 html = html[1:]
 
         if p_html:
-            html_parts.append(p_html)
+            html_parts.append(''.join(p_html))
         return html_parts
 
     def _parseWild(self, model):
