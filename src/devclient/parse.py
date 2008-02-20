@@ -348,12 +348,12 @@ class WildMapParser(Parser):
             """Return text, html and the incomplete wild map if exist."""
 
             _text, _map = text, ''
-            m = re.compile('(.*?\n?)([%s]+)$' % self._p._server.wild_chars,
+            m = re.compile('(.*?)(\n|\s)([%s]*)$' % self._p._server.wild_chars,
                            re.S).match(text)
             if m:
-                _text, _map = m.group(1), m.group(2)
+                _text, _map = m.group(1), text[len(m.group(1)):]
             else:
-                patt = '(.*?\n?)([%s]{6,})' % self._p._server.wild_chars
+                patt = '(.*?)(\n|\s)([%s]{6,})' % self._p._server.wild_chars
                 m = re.compile(patt, re.S).match(text)
                 if m and endswith(text, self._p._server.wild_end_text):
                     _text, _map = m.group(1), text[len(m.group(1)):]
@@ -366,11 +366,11 @@ class WildMapParser(Parser):
 
         text, html = model.main_text, model.main_html  # to save readability
 
-        reg = re.compile('(.*?\n?)([%s]{6,})%s' %
+        reg = re.compile('(.*?)(\n|\s)([%s]{6,})%s' %
                          (self._p._server.wild_chars,
                           re.escape(self._p._server.wild_end_text)), re.S)
 
-        # The incomplete map, came from previous step, is attach at the start
+        # The incomplete map, came from previous step, is attached at the start
         # of the string to simulate an unique string.
         if self._incomplete_map:
             text = self._incomplete_map[0] + text
@@ -379,15 +379,15 @@ class WildMapParser(Parser):
 
         m = reg.match(text)
         if m:
-            model.wild_text = m.group(2)
-            pos_start = len(m.group(1))
-            pos_end = pos_start + len(m.group(2))
+            model.wild_text = m.group(3)
+            pos_start = len(m.group(1)) + len(m.group(2))
+            pos_end = pos_start + len(m.group(3))
             parts = self._getHtmlFromText(html, m.groups())
-            model.wild_html = parts[1]
+            model.wild_html = parts[2]
 
             # extract wild map from main text
             model.main_text = text[:pos_start] + text[pos_end:]
-            model.main_html = parts[0] + parts[2]
+            model.main_html = parts[0] + parts[1] + parts[3]
             return True
 
         model.main_text, model.main_html, self._incomplete_map = \
