@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -261,6 +261,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             for m in self.macros:
                 if m[1:] == key_seq:
                     self.s_core.write(messages.MSG, m[0])
+                    self.viewer.appendHtml(m[0] + '<br>')
                     return True
         return False
 
@@ -377,6 +378,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _sendText(self):
         if self.connected:
             text = unicode(self.text_input.currentText())
+            self.viewer.appendHtml(text + '<br>')
             self.history.add(text)
             self.s_core.write(messages.MSG, text)
             hist = self.history.get()
@@ -395,6 +397,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             cmd, msg = self.s_core.read()
             if cmd == messages.MODEL:
                 self.viewer.process(msg)
+                self.update()
             elif cmd == messages.CONN_REFUSED:
                 self._displayWarning(self._text['Connect'],
                                      self._text['ConnError'])

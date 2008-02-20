@@ -107,9 +107,6 @@ class TextViewer(object):
     def _process(self, model):
 
         new_html = model.main_html
-        if not new_html.count('<br>'):
-            new_html = '<br>' + new_html
-
         rows = self.data.count('<br>') + new_html.count('<br>')
         if rows > self.MAX_ROWS:
             data = self.data.split('<br>')[rows - self.MAX_ROWS:]
@@ -160,7 +157,11 @@ class TextViewer(object):
     def process(self, model):
         if self._process(model):
             self._setOutputColors(model.bg_color, model.fg_color)
-        self.w.update()
+
+    def appendHtml(self, html):
+        self.data += html
+        self.w.text_output.setHtml(self.data)
+        self.w.text_output.moveCursor(QtGui.QTextCursor.End)
 
 
 class StatusViewer(TextViewer):
@@ -197,6 +198,8 @@ class StatusViewer(TextViewer):
 
         return set_colors
 
+    def appendHtml(self, html):
+        self.v.appendHtml(html)
 
 class WildMapViewer(TextViewer):
     """
@@ -252,3 +255,6 @@ class WildMapViewer(TextViewer):
     def _setOutputColors(self, bg, fg):
         self.v._setOutputColors(bg, fg)
         self._textEditColors(self.w.rightwidget.wild_map, bg, fg)
+
+    def appendHtml(self, html):
+        self.v.appendHtml(html)
