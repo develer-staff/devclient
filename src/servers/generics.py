@@ -25,13 +25,13 @@ class Server(object):
 
 
 class DikuServer(Server):
-    right_widget = 'gui_prompt_ui'
+    right_widget = 'gui_prompt'
     prompt_reg = 'Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>'
     prompt_sep = '/'
 
 
 class AfkServer(Server):
-    right_widget = 'gui_prompt_ui'
+    right_widget = 'gui_prompt'
     prompt_reg = '\[Pf:\s*(\d+-\d+)\] \[Mana:\s*(\d+-\d+)\] ' + \
                  '\[Mv:\s*(\d+-\d+)\] \[Mon:\s*\d+\] \[S:\s*Xp:\s*\d+\]'
     prompt_sep = '-'

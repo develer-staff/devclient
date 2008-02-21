@@ -37,7 +37,7 @@ import messages
 import exception
 import gui_option
 from conf import config
-from gui_src.gui_ui import Ui_dev_client
+from gui_src.gui import Ui_dev_client
 from history import History
 from viewer import getViewer
 from servers import getServer

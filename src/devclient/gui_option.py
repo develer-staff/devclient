@@ -26,7 +26,7 @@ from PyQt4.QtCore import SIGNAL, Qt
 from PyQt4.QtGui import QApplication
 
 from storage import Storage
-from gui_src.gui_option_ui import Ui_option
+from gui_src.gui_option import Ui_option
 
 
 class FormConnection(object):
