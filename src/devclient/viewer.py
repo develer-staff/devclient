@@ -201,6 +201,7 @@ class StatusViewer(TextViewer):
     def appendHtml(self, html):
         self.v.appendHtml(html)
 
+
 class WildMapViewer(TextViewer):
     """
     Build the visualization of wild map from model.

@@ -32,6 +32,8 @@ from PyQt4.QtCore import SIGNAL, Qt, QLocale, PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt4.QtGui import QApplication, QMessageBox
 from PyQt4.QtNetwork import QHostAddress
 
+sys.path.append('gui_src')
+
 import storage
 import messages
 import exception
