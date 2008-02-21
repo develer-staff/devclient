@@ -18,11 +18,11 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision$"[11:-2]
-__docformat__ = 'restructuredtext'
+from generics import *
 
-PUBLIC_VERSION = '0.2.95'
-"""Public version of client."""
-
-PROJECT_NAME = 'DevClient'
-"""The name of project"""
+class DivineConflict(Server):
+    right_widget = 'gui_map_noprompt'
+    wild_chars = '\+%\^X\.~\'\n\sx'
+    wild_end_text = '\n<'
+    host = 'divineconflict.mud.it'
+    port = 4030
