@@ -93,7 +93,7 @@ class TestTextViewer(unittest.TestCase):
         text = 'hello world'
         self.m.main_html = text
         self.viewer.process(self.m)
-        self.assert_('<br>' + text == self.widget.text_output._html)
+        self.assert_(text == self.widget.text_output._html)
 
     def testTextProcess2(self):
         """Test processing of a model of two string"""
@@ -101,7 +101,7 @@ class TestTextViewer(unittest.TestCase):
         elem = ['hello', 'world']
         self.m.main_html = ''.join(elem)
         self.viewer.process(self.m)
-        self.assert_('<br>' + ''.join(elem) == self.widget.text_output._html)
+        self.assert_(''.join(elem) == self.widget.text_output._html)
 
     def testTextProcess3(self):
         """Test the sequence of two call at process"""
@@ -114,7 +114,7 @@ class TestTextViewer(unittest.TestCase):
         self.m.main_html = ''.join(elem2)
         self.viewer.process(self.m)
 
-        text = '<br>' + ''.join(elem) + '<br>' + ''.join(elem2)
+        text = ''.join(elem) + ''.join(elem2)
         self.assert_(text == self.widget.text_output._html)
 
     def testTextProcess4(self):

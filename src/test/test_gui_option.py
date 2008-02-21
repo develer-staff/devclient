@@ -27,11 +27,12 @@ import unittest
 
 from PyQt4 import QtCore, QtGui
 
-sys.path.append('..')
+sys.path.append('../devclient')
+sys.path.append('../devclient/gui_src')
 
-from devclient.conf import config
-from devclient.storage import Storage
-from devclient.gui_option import *
+from conf import config
+from storage import Storage
+from gui_option import *
 
 
 class GuiOptionTest(unittest.TestCase):
