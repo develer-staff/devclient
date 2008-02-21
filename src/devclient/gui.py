@@ -32,14 +32,12 @@ from PyQt4.QtCore import SIGNAL, Qt, QLocale, PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt4.QtGui import QApplication, QMessageBox
 from PyQt4.QtNetwork import QHostAddress
 
-sys.path.append('gui_src')
-
 import storage
 import messages
 import exception
 import gui_option
 from conf import config
-from gui_ui import Ui_dev_client
+from gui_src.gui_ui import Ui_dev_client
 from history import History
 from viewer import getViewer
 from servers import getServer

@@ -38,7 +38,8 @@ def _setRightPanel(widget, widget_name):
 
     if widget_name:
         try:
-            module = __import__(widget_name, globals(), locals())
+            parent = __import__('gui_src.' + widget_name, globals(), locals())
+            module = parent.__dict__[widget_name]
 
             class RightWidget(QtGui.QWidget, module.Ui_RightWidget):
                 def __init__(self, parent):
