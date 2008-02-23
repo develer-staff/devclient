@@ -32,11 +32,12 @@ from PyQt4.QtCore import SIGNAL, Qt, QLocale, PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt4.QtGui import QApplication, QMessageBox
 from PyQt4.QtNetwork import QHostAddress
 
-import storage
+
 import messages
 import exception
 import gui_option
 from conf import config
+from storage import Storage
 from gui_src.gui import Ui_dev_client
 from history import History
 from viewer import getViewer
@@ -188,14 +189,22 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         """the interface with `Core`, an instance of `SocketToCore`"""
 
         self.history = History()
+        self.connected = None
+        logger.debug('PyQt version: %s, Qt version: %s' %
+            (PYQT_VERSION_STR, QT_VERSION_STR))
+
+    def setupUi(self, w):
+        Ui_dev_client.setupUi(self, w)
 
         self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
-        self.connected = None
         self.text_input.setCompleter(None)
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
-        logger.debug('PyQt version: %s, Qt version: %s' %
-            (PYQT_VERSION_STR, QT_VERSION_STR))
+
+        screen = QtGui.QDesktopWidget().screenGeometry()
+        size = self.geometry()
+        self.move((screen.width() - size.width()) / 2,
+                  (screen.height() - size.height()) / 2)
 
     def setupLogger(self):
         """
@@ -342,7 +351,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                                          self._text['CloseConn']):
                 return
 
-        connections = storage.Storage().connections()
+        connections = Storage().connections()
         if not connections:
             self._displayWarning(self._text['Connect'], self._text['NoConn'])
             return
@@ -367,13 +376,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         """
 
         if self.connected and self.connected == conn:
-            self.macros = storage.Storage().macros(self.connected)
+            self.macros = Storage().macros(self.connected)
             self.s_core.write(messages.RELOAD_CONN_DATA, unicode(conn))
 
     def _startConnection(self, host, port):
         self.history.clear()
         self.viewer = getViewer(self, getServer(host, port))
-        self.macros = storage.Storage().macros(self.connected)
+        self.macros = Storage().macros(self.connected)
 
     def _sendText(self):
         if self.connected:
