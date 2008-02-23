@@ -32,7 +32,6 @@ from PyQt4.QtCore import SIGNAL, Qt, QLocale, PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt4.QtGui import QApplication, QMessageBox
 from PyQt4.QtNetwork import QHostAddress
 
-
 import messages
 import exception
 import gui_option
@@ -166,8 +165,11 @@ class SocketToCore(object):
 
 class Gui(QtGui.QMainWindow, Ui_dev_client):
     """
-    The Gui class written with Qt, that inherits the real gui interface
-    designed by Qt-designer.
+    The Gui class written with `Qt`_, that inherits the real gui interface
+    designed by `Qt-designer`_.
+
+.. _Qt: http://doc.trolltech.com/4.3/index.html
+.. _Qt-designer: http://doc.trolltech.com/4.3/designer-manual.html
     """
 
     def __init__(self, port):
