@@ -339,11 +339,11 @@ class WildMapParser(Parser):
             """Return text, html and the incomplete wild map if exist."""
 
             _text, _map = text, ''
-            m = re.compile('(.*?)(\s)([%s]*)$' % wild_chars, re.S).match(text)
+            m = re.compile('(.*?)(\s[%s]*)$' % wild_chars, re.S).match(text)
             if m:
                 _text, _map = m.group(1), text[len(m.group(1)):]
             else:
-                patt = '(.*?)(\s)([%s]{6,})' % wild_chars
+                patt = '(.*?)(\s[%s]{6,})' % wild_chars
                 m = re.compile(patt, re.S).match(text)
                 if m and endswith(text, wild_end):
                     _text, _map = m.group(1), text[len(m.group(1)):]
@@ -374,20 +374,20 @@ class WildMapParser(Parser):
         # wild end text must contain at least one char that not is contained
         # into room description.
         room_desc = '\w\s\.\'",:'
-        reg = re.compile('(.*?)(\s)([%s]{6,})[%s]*?%s' %
+        reg = re.compile('(.*?\s)([%s]{6,})[%s]*?%s' %
                          (wild_chars, room_desc, re.escape(wild_end)), re.S)
 
         m = reg.match(text)
         if m:
-            model.wild_text = m.group(3)
-            pos_start = len(m.group(1)) + len(m.group(2))
-            pos_end = pos_start + len(m.group(3))
+            model.wild_text = m.group(2)
+            pos_start = len(m.group(1))
+            pos_end = pos_start + len(m.group(2))
             parts = self._getHtmlFromText(html, m.groups())
-            model.wild_html = parts[2]
+            model.wild_html = parts[1]
 
             # extract wild map from main text
             model.main_text = text[:pos_start] + text[pos_end:]
-            model.main_html = parts[0] + parts[1] + parts[3]
+            model.main_html = parts[0] + parts[2]
             return True
 
         elif not model.wild_text and \
