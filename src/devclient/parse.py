@@ -339,12 +339,12 @@ class WildMapParser(Parser):
             """Return text, html and the incomplete wild map if exist."""
 
             _text, _map = text, ''
-            m = re.compile('(.*?)(\n|\s)([%s]*)$' % self._p._server.wild_chars,
+            m = re.compile('(.*?)(\s)([%s]*)$' % self._p._server.wild_chars,
                            re.S).match(text)
             if m:
                 _text, _map = m.group(1), text[len(m.group(1)):]
             else:
-                patt = '(.*?)(\n|\s)([%s]{6,})' % self._p._server.wild_chars
+                patt = '(.*?)(\s)([%s]{6,})' % self._p._server.wild_chars
                 m = re.compile(patt, re.S).match(text)
                 if m and endswith(text, self._p._server.wild_end_text):
                     _text, _map = m.group(1), text[len(m.group(1)):]
@@ -365,8 +365,11 @@ class WildMapParser(Parser):
             html = self._incomplete_map[1] + html
             self._incomplete_map = []
 
-        reg = re.compile('(.*?)(\n|\s)([%s]{6,})%s' %
-                         (self._p._server.wild_chars,
+        # wild end text must contain at least one char that not is contained
+        # into wild description.
+        wild_desc = '\w\s\.\'",:'
+        reg = re.compile('(.*?)(\s)([%s]{6,})[%s]*?%s' %
+                         (self._p._server.wild_chars, wild_desc,
                           re.escape(self._p._server.wild_end_text)), re.S)
 
         m = reg.match(text)
