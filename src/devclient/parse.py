@@ -106,9 +106,9 @@ class Parser(object):
 
         return model
 
-    def _textToHtml(self, html):
+    def _textToHtml(self, html, out=None):
 
-        out = []
+        out = [out] if out else []
         while html:
             if html.startswith('<span') or html.startswith('</span>'):
                 pos = html.find('>') + 1
@@ -315,18 +315,9 @@ class WildMapParser(Parser):
             html_parts.append(''.join(p_html))
 
         # append the remaining part
-        p_html = [span] if span else []
-        while html:
-            if html.startswith('</span>') or html.startswith('<span'):
-                pos = html.find('>') + 1
-                p_html.append(html[:pos])
-                html = html[pos:]
-            else:
-                p_html.append(self._text_to_html.get(html[0], html[0]))
-                html = html[1:]
-
+        p_html = self._textToHtml(html, span)
         if p_html:
-            html_parts.append(''.join(p_html))
+            html_parts.append(p_html)
         return html_parts
 
     def _parseWild(self, model):
@@ -364,11 +355,8 @@ class WildMapParser(Parser):
 
             return (text, html, [])
 
-        text, html = model.main_text, model.main_html  # to save readability
 
-        reg = re.compile('(.*?)(\n|\s)([%s]{6,})%s' %
-                         (self._p._server.wild_chars,
-                          re.escape(self._p._server.wild_end_text)), re.S)
+        text, html = model.main_text, model.main_html  # to save readability
 
         # The incomplete map, came from previous step, is attached at the start
         # of the string to simulate an unique string.
@@ -376,6 +364,10 @@ class WildMapParser(Parser):
             text = self._incomplete_map[0] + text
             html = self._incomplete_map[1] + html
             self._incomplete_map = []
+
+        reg = re.compile('(.*?)(\n|\s)([%s]{6,})%s' %
+                         (self._p._server.wild_chars,
+                          re.escape(self._p._server.wild_end_text)), re.S)
 
         m = reg.match(text)
         if m:
