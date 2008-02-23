@@ -245,12 +245,15 @@ class WildMapViewer(TextViewer):
 
     def _process(self, model):
         set_colors = self.v._process(model)
+        wild_map = self.w.rightwidget.wild_map
 
         if model.wild_text:
-            w = self.w.rightwidget.wild_map.property('char_width').toInt()[0]
-            h = self.w.rightwidget.wild_map.property('char_height').toInt()[0]
+            w = wild_map.property('char_width').toInt()[0]
+            h = wild_map.property('char_height').toInt()[0]
             self._centerMap(model, w, h)
-            self.w.rightwidget.wild_map.setHtml(model.wild_html)
+            wild_map.setHtml(model.wild_html)
+        elif model.wild_text is None:
+            wild_map.clear()
 
         return set_colors
 

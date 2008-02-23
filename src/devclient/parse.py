@@ -339,14 +339,13 @@ class WildMapParser(Parser):
             """Return text, html and the incomplete wild map if exist."""
 
             _text, _map = text, ''
-            m = re.compile('(.*?)(\s)([%s]*)$' % self._p._server.wild_chars,
-                           re.S).match(text)
+            m = re.compile('(.*?)(\s)([%s]*)$' % wild_chars, re.S).match(text)
             if m:
                 _text, _map = m.group(1), text[len(m.group(1)):]
             else:
-                patt = '(.*?)(\s)([%s]{6,})' % self._p._server.wild_chars
+                patt = '(.*?)(\s)([%s]{6,})' % wild_chars
                 m = re.compile(patt, re.S).match(text)
-                if m and endswith(text, self._p._server.wild_end_text):
+                if m and endswith(text, wild_end):
                     _text, _map = m.group(1), text[len(m.group(1)):]
 
             if _map:
@@ -355,8 +354,15 @@ class WildMapParser(Parser):
 
             return (text, html, [])
 
+        # to save readability
+        text, html = model.main_text, model.main_html
 
-        text, html = model.main_text, model.main_html  # to save readability
+        wild_chars = self._p._server.wild_chars
+        wild_end = self._p._server.wild_end_text
+        if hasattr(self._p._server, 'room_end_text'):
+            room_end = self._p._server.room_end_text
+        else:
+            room_end = wild_end
 
         # The incomplete map, came from previous step, is attached at the start
         # of the string to simulate an unique string.
@@ -366,11 +372,10 @@ class WildMapParser(Parser):
             self._incomplete_map = []
 
         # wild end text must contain at least one char that not is contained
-        # into wild description.
-        wild_desc = '\w\s\.\'",:'
+        # into room description.
+        room_desc = '\w\s\.\'",:'
         reg = re.compile('(.*?)(\s)([%s]{6,})[%s]*?%s' %
-                         (self._p._server.wild_chars, wild_desc,
-                          re.escape(self._p._server.wild_end_text)), re.S)
+                         (wild_chars, room_desc, re.escape(wild_end)), re.S)
 
         m = reg.match(text)
         if m:
@@ -384,6 +389,12 @@ class WildMapParser(Parser):
             model.main_text = text[:pos_start] + text[pos_end:]
             model.main_html = parts[0] + parts[1] + parts[3]
             return True
+
+        elif not model.wild_text and \
+             re.compile('(.*?)(\s)[%s]*?%s' %
+                        (room_desc, re.escape(room_end)), re.S).match(text):
+                model.wild_text = None
+                model.wild_html = None
 
         model.main_text, model.main_html, self._incomplete_map = \
             extractIncompleteMap(text, html)
