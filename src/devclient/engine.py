@@ -30,10 +30,8 @@ import os.path
 import subprocess
 from os.path import dirname, join
 
-import conf
 import exception
-from core import Core
-from gui import Gui
+from conf import loadConfiguration, config
 
 
 def terminateProcess(process):
@@ -62,13 +60,18 @@ def main(argv, cfg_file):
 
     os.chdir(join(os.getcwd(), dirname(argv[0]), dirname(cfg_file)))
     cfg_file = join(os.getcwd(), os.path.basename(cfg_file))
-    conf.loadConfiguration(cfg_file)
-    sys.path.append(conf.config['servers']['path'])
+    loadConfiguration(cfg_file)
+    sys.path.append(config['servers']['path'])
+    sys.path.append(config['resources']['path'])
+
+    # this import must stay here, after the appending of resources path to
+    # sys.path
+    from gui import Gui
 
     port = random.randint(2000, 10000)
 
     p = startProcess(['python',
-                      join(conf.config['devclient']['path'], 'core.py'),
+                      join(config['devclient']['path'], 'core.py'),
                       '--config=%s' % cfg_file,
                       '--port=%d' % port])
 
@@ -76,11 +79,8 @@ def main(argv, cfg_file):
     import time
     time.sleep(.5)
 
-    # Set current path on module path for external resources like images
-    os.chdir(conf.config['devclient']['path'])
     try:
         gui = Gui(port)
         gui.mainLoop()
     except exception.IPCError:
         terminateProcess(p)
-

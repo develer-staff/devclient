@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Fri Feb 15 22:12:02 2008
+# Created: Sat Feb 23 12:13:38 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -70,11 +70,11 @@ class Ui_dev_client(object):
         dev_client.addToolBar(QtCore.Qt.TopToolBarArea,self.toolBar)
 
         self.action_connect = QtGui.QAction(dev_client)
-        self.action_connect.setIcon(QtGui.QIcon("../../resources/images/connect.png"))
+        self.action_connect.setIcon(QtGui.QIcon(":/images/connect.png"))
         self.action_connect.setObjectName("action_connect")
 
         self.action_option = QtGui.QAction(dev_client)
-        self.action_option.setIcon(QtGui.QIcon("../../resources/images/option.png"))
+        self.action_option.setIcon(QtGui.QIcon(":/images/option.png"))
         self.action_option.setObjectName("action_option")
         self.toolBar.addAction(self.action_connect)
         self.toolBar.addAction(self.action_option)
@@ -90,3 +90,4 @@ class Ui_dev_client(object):
         self.action_option.setText(QtGui.QApplication.translate("dev_client", "Option", None, QtGui.QApplication.UnicodeUTF8))
         self.action_option.setShortcut(QtGui.QApplication.translate("dev_client", "Alt+O", None, QtGui.QApplication.UnicodeUTF8))
 
+import gui_rc
