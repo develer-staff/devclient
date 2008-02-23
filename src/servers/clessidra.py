@@ -22,7 +22,7 @@ from generics import *
 
 class Clessidra(DikuServer):
     right_widget = 'gui_map'
-    wild_chars = '-_~\^\|\.:xX@\*\n\s#&\+/\\§'
+    wild_chars = '-_~\^\|\.:xX@\*\s#&\+/\\§'
     wild_end_text = '\n[Uscite:'
     host = 'mud.clessidra.it'
     port = 4000
