@@ -34,16 +34,32 @@ import exception
 from conf import loadConfiguration, config
 
 
-def terminateProcess(process):
+def terminateProcess(pid):
+    """
+    Kill a process.
+
+    :Parameters:
+      pid : int
+        the id of the process to kill
+    """
+
     if sys.platform == 'win32':
-        handle = ctypes.windll.kernel32.OpenProcess(1, False, process.pid)
+        handle = ctypes.windll.kernel32.OpenProcess(1, False, pid)
         ctypes.windll.kernel32.TerminateProcess(handle, -1)
         ctypes.windll.kernel32.CloseHandle(handle)
     else:
-        os.kill(process.pid, signal.SIGKILL)
+        os.kill(pid, signal.SIGKILL)
 
 
 def startProcess(cmd):
+    """
+    Launch a subprocess, hiding the console on win32.
+
+    :Parameters:
+      cmd : tuple
+        the name and parameters of the process to launch.
+    """
+
     if sys.platform == 'win32':  # Hide console on win32 platform
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -83,4 +99,4 @@ def main(argv, cfg_file):
         gui = Gui(port)
         gui.mainLoop()
     except exception.IPCError:
-        terminateProcess(p)
+        terminateProcess(p.pid)
