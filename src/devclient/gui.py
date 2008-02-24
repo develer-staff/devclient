@@ -29,8 +29,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 from PyQt4.QtCore import SIGNAL, Qt, QLocale, PYQT_VERSION_STR, QT_VERSION_STR
-from PyQt4.QtGui import QApplication, QMessageBox
-from PyQt4.QtNetwork import QHostAddress
+from PyQt4.QtGui import QApplication, QMessageBox, QShortcut, QKeySequence
+from PyQt4.QtNetwork import QHostAddress, QTcpSocket
 
 import messages
 import exception
@@ -66,7 +66,7 @@ class SocketToCore(object):
 
         self._w = widget
         self._timeout = timeout * 1000
-        self._s = QtNetwork.QTcpSocket()
+        self._s = QTcpSocket()
         self._s.connectToHost(QHostAddress(QHostAddress.LocalHost), port)
         if not self._s.waitForConnected(self._timeout):
             self._commError()
@@ -94,13 +94,12 @@ class SocketToCore(object):
         :return: data if it is available, None otherwise
         """
 
-        for wait in (True, False):
-            if self._s.bytesAvailable() < size:
-                if wait:
-                    # waitForReadyRead might cause UI to freeze
-                    self._s.waitForReadyRead(self._timeout)
-                else:
-                    return None
+        while self._s.bytesAvailable() < size and \
+              self._s.waitForReadyRead(self._timeout):
+            pass
+
+        if self._s.bytesAvailable() < size:
+            return None
 
         return self._s.read(size)
 
@@ -231,13 +230,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.connect(self.action_option, SIGNAL("triggered()"),
                      self._showOption)
 
-        QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Up), self, self._onKeyUp)
-        QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Down), self, self._onKeyDown)
+        QShortcut(QKeySequence(Qt.Key_Up), self, self._onKeyUp)
+        QShortcut(QKeySequence(Qt.Key_Down), self, self._onKeyDown)
 
-        QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Enter), self, self._sendText)
-        QtGui.QShortcut(QtGui.QKeySequence(Qt.Key_Return), self, self._sendText)
+        QShortcut(QKeySequence(Qt.Key_Enter), self, self._sendText)
+        QShortcut(QKeySequence(Qt.Key_Return), self, self._sendText)
 
-        QtGui.QShortcut(QtGui.QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
+        QShortcut(QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
 
     def _getKeySeq(self, event):
         """
