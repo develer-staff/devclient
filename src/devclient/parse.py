@@ -22,6 +22,7 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import re
+from re import compile, escape
 
 import exception
 from messages import Model
@@ -95,8 +96,7 @@ class Parser(object):
         if model.bg_color is None and model.fg_color is None and \
            len(model.main_text.strip()):
             # Empty colors means default color
-            model.bg_color = ''
-            model.fg_color = ''
+            model.bg_color, model.fg_color = '', ''
 
         if model.bg_color != self._default_bg:
             self._default_bg = model.bg_color
@@ -123,7 +123,7 @@ class Parser(object):
     def _evalStyle(self, ansi_code, model):
 
         attr = 0
-        list_code = [int(c) for c in ansi_code.split(';')]
+        list_code = map(int, ansi_code.split(';'))
 
         for code in list_code:
             if 30 <= code <= 37:
@@ -144,7 +144,7 @@ class Parser(object):
             if model.fg_color is None:
                 model.fg_color = color
 
-            style.append('color:#' + color)
+            style.append('color:#%s' % color)
 
 
         if self._bg_code is not None:
@@ -153,7 +153,7 @@ class Parser(object):
             if model.bg_color is None:
                 model.bg_color = color
             elif color != model.bg_color:
-                style.append('background-color:#' + color)
+                style.append('background-color:#%s' % color)
 
         return ';'.join(style)
 
@@ -189,11 +189,10 @@ class Parser(object):
 
         START_TOKEN = chr(27)
         COLOR_TOKEN = 'm'
-        ANSI_CODE_UNSUPPORTED = ('H', 'f', 'A', 'B', 'C', 'D', 'R', 's', 'u',
-                                 'J', 'K', 'h', 'l', 'p')
+        ANSI_CODE_UNSUPPORTED = ['H', 'f', 'A', 'B', 'C', 'D', 'R', 's', 'u',
+                                 'J', 'K', 'h', 'l', 'p']
 
-        ANSI_CODE = [COLOR_TOKEN]
-        ANSI_CODE.extend(ANSI_CODE_UNSUPPORTED)
+        ANSI_CODE = [COLOR_TOKEN] + ANSI_CODE_UNSUPPORTED
 
         if self._incomplete_seq:
             data = self._incomplete_seq + data
@@ -208,7 +207,7 @@ class Parser(object):
             return ''.join(html_res), parts[0]
 
         text_res = [parts[0]]
-        reg = re.compile('\[(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
+        reg = compile('\[(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
 
         for i, s in enumerate(parts[1:]):
             m = reg.match(s)
@@ -255,7 +254,7 @@ class PromptParser(Parser):
         self._p = parser
 
     def _parsePrompt(self, model):
-        reg = re.compile(self._p._server.prompt_reg, re.I)
+        reg = compile(self._p._server.prompt_reg, re.I)
         m = reg.findall(model.main_text)
         if m:
             p = list(m[-1])
@@ -339,12 +338,12 @@ class WildMapParser(Parser):
             """Return text, html and the incomplete wild map if exist."""
 
             _text, _map = text, ''
-            m = re.compile('(.*?)(\s[%s]*)$' % wild_chars, re.S).match(text)
+            m = compile('(.*?)(\s[%s]*)$' % wild_chars, re.S).match(text)
             if m:
                 _text, _map = m.group(1), text[len(m.group(1)):]
             else:
                 patt = '(.*?)(\s[%s]{6,})' % wild_chars
-                m = re.compile(patt, re.S).match(text)
+                m = compile(patt, re.S).match(text)
                 if m and endswith(text, wild_end):
                     _text, _map = m.group(1), text[len(m.group(1)):]
 
@@ -374,8 +373,8 @@ class WildMapParser(Parser):
         # wild end text must contain at least one char that not is contained
         # into room description.
         room_desc = '\w\s\.\'",:'
-        reg = re.compile('(.*?\s)([%s]{6,})[%s]*?%s' %
-                         (wild_chars, room_desc, re.escape(wild_end)), re.S)
+        reg = compile('(.*?\s)([%s]{6,})[%s]*?%s' %
+                      (wild_chars, room_desc, escape(wild_end)), re.S)
 
         m = reg.match(text)
         if m:
@@ -391,10 +390,9 @@ class WildMapParser(Parser):
             return True
 
         elif not model.wild_text and \
-             re.compile('(.*?)(\s)[%s]*?%s' %
-                        (room_desc, re.escape(room_end)), re.S).match(text):
-                model.wild_text = None
-                model.wild_html = None
+             compile('(.*?)(\s)[%s]*?%s' % (room_desc, escape(room_end)),
+                     re.S).match(text):
+            model.wild_text, model.wild_html = None, None
 
         model.main_text, model.main_html, self._incomplete_map = \
             extractIncompleteMap(text, html)

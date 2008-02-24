@@ -56,8 +56,8 @@ def getServer(host, port):
         _loadServerList()
     for s in server_list.itervalues():
         for n in [''] + map(str, range(2,5)):
-            if hasattr(s, 'host%s' % n) and getattr(s, 'host%s' % n) == host and \
-               hasattr(s, 'port%s' % n) and getattr(s, 'port%s' % n) == port:
+            if s.__dict__.get('host%s' % n, None) == host and \
+               s.__dict__.get('port%s' % n, None) == port:
                 return s
 
     return server_list['Server']
