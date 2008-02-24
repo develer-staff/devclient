@@ -26,3 +26,5 @@ class DdE(DikuServer):
     wild_end_text = '\n[Uscite:'
     host = 'dde.homelinux.com'
     port = 5000
+    host2 = 'dde.homelinux.com'
+    port2 = 4000

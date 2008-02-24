@@ -18,33 +18,46 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import glob
-import os.path
+from glob import glob
+from os.path import join, basename
+
 from conf import config
 
-server_list = None
+server_list = {}
+"""
+The dictionary that contains the list of servers with a specific configuration.
+"""
 
-def _getServerList():
-    files = glob.glob(os.path.join(config['servers']['path'], '*.py'))
-    files = [os.path.basename(f) for f in files]
-    d = {}
+def _loadServerList():
+    """Load the server list from the files in server's directory."""
+
+    server_list.clear()
+    files = [basename(f) for f in glob(join(config['servers']['path'], '*.py'))]
     for f in files:
-        execfile(os.path.join(config['servers']['path'], f), d)
+        execfile(join(config['servers']['path'], f), server_list)
 
-    del d ['__builtins__']
-    return d
+    del server_list['__builtins__']
 
 def getServer(host, port):
-    global server_list
+    """
+    Return the Server class that match best with host and port.
+
+    :Parameters:
+      host : str
+        the host of Server to find
+      port : int
+        the port of Server to find
+    """
 
     if not server_list:
-        server_list = _getServerList()
+        _loadServerList()
     for s in server_list.itervalues():
-        if hasattr(s, 'host') and s.host == host and \
-           hasattr(s, 'port') and s.port == port:
-            return s
+        for n in [''] + map(str, range(2,5)):
+            if hasattr(s, 'host%s' % n) and getattr(s, 'host%s' % n) == host and \
+               hasattr(s, 'port%s' % n) and getattr(s, 'port%s' % n) == port:
+                return s
 
     return server_list['Server']
