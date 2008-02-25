@@ -21,6 +21,7 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import os
 import sys
 import os.path
 import unittest
@@ -49,6 +50,10 @@ class TestStorage(TestBase):
     def setUp(self):
         super(TestStorage, self).setUp()
         self.storage = Storage()
+
+    def tearDown(self):
+        del self.storage
+        super(TestStorage, self).tearDown()
 
     def testEmptyConnections(self):
         self.assert_(self.storage.connections() == [])

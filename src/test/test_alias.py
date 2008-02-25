@@ -45,6 +45,7 @@ class TestAlias(unittest.TestCase):
         self.storage.addConnection(conn)
 
     def tearDown(self):
+        del self.storage
         if os.path.exists(config['storage']['path']):
             os.unlink(config['storage']['path'])
 
