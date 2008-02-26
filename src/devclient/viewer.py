@@ -24,7 +24,7 @@ __docformat__ = 'restructuredtext'
 import re
 import logging
 
-from PyQt4 import QtGui
+from PyQt4.QtGui import QWidget, QTextCursor
 
 logger = logging.getLogger('viewer')
 
@@ -41,9 +41,9 @@ def _setRightPanel(widget, widget_name):
             parent = __import__('gui_src.' + widget_name, globals(), locals())
             module = getattr(parent, widget_name)
 
-            class RightWidget(QtGui.QWidget, module.Ui_RightWidget):
+            class RightWidget(QWidget, module.Ui_RightWidget):
                 def __init__(self, parent):
-                    QtGui.QWidget.__init__(self, parent)
+                    QWidget.__init__(self, parent)
                     self.module_name = widget_name
                     self.setupUi(self)
 
@@ -93,9 +93,9 @@ class TextViewer(object):
 
     def __init__(self, widget):
         self.w = widget
-        self.data = ''
         self._bg = None
         self._fg = None
+        self.w.text_output.document().setMaximumBlockCount(self.MAX_ROWS)
 
     def _resetWidgets(self):
         t_out = self.w.text_output
@@ -105,17 +105,19 @@ class TextViewer(object):
             t_out.setStyleSheet(_default_styles['text_output'])
             t_out.clear()
 
-    def _process(self, model):
+    def appendHtml(self, html):
+        new_html = html.split('<br>')
+        cursor = self.w.text_output.textCursor()
+        cursor.movePosition(QTextCursor.End)
 
-        new_html = model.main_html
-        rows = self.data.count('<br>') + new_html.count('<br>')
-        if rows > self.MAX_ROWS:
-            data = self.data.split('<br>')[rows - self.MAX_ROWS:]
-            self.data = '<br>'.join(data) + new_html
-        else:
-            self.data += new_html
+        for i, row in enumerate(new_html):
+            if i:
+                cursor.insertBlock()
+            cursor.insertHtml(row)
 
-        self.w.text_output.clear()
+        self.w.text_output.setTextCursor(cursor)
+
+    def _textEditColors(self, model, text_edit):
         set_colors = False
 
         if model.bg_color is not None and self._bg != model.bg_color:
@@ -126,14 +128,8 @@ class TextViewer(object):
             self._fg = model.fg_color
             set_colors = True
 
-        self.w.text_output.setHtml(self.data)
-        self.w.text_output.moveCursor(QtGui.QTextCursor.End)
-        return set_colors
-
-    def _setOutputColors(self, bg, fg):
-        self._textEditColors(self.w.text_output, bg, fg)
-
-    def _textEditColors(self, text_edit, bg, fg):
+        if not set_colors:
+            return
 
         style = unicode(text_edit.styleSheet())
         m = re.search('QTextEdit\s*{(.*)}', style)
@@ -145,8 +141,8 @@ class TextViewer(object):
             oldstyle = None
             d = {}
 
-        if bg: d['background-color'] = '#' + bg
-        if fg: d['color'] = '#' + fg
+        if self._bg: d['background-color'] = '#' + self._bg
+        if self._fg: d['color'] = '#' + self._fg
 
         newstyle = ';'.join([k + ':' + v for k, v in d.iteritems()])
 
@@ -156,13 +152,8 @@ class TextViewer(object):
             text_edit.setStyleSheet('QTextEdit {%s}' % newstyle)
 
     def process(self, model):
-        if self._process(model):
-            self._setOutputColors(model.bg_color, model.fg_color)
-
-    def appendHtml(self, html):
-        self.data += html
-        self.w.text_output.setHtml(self.data)
-        self.w.text_output.moveCursor(QtGui.QTextCursor.End)
+        self._textEditColors(model, self.w.text_output)
+        self.appendHtml(model.main_html)
 
 
 class StatusViewer(TextViewer):
@@ -180,8 +171,8 @@ class StatusViewer(TextViewer):
         self.v = v
         self._last_values = {'Hp': None, 'Mn': None, 'Mv': None}
 
-    def _process(self, model):
-        set_colors = self.v._process(model)
+    def process(self, model):
+        self.v.process(model)
 
         stats = {'Hp': self.w.rightwidget.bar_health,
                  'Mn': self.w.rightwidget.bar_mana,
@@ -196,11 +187,6 @@ class StatusViewer(TextViewer):
                 if v != self._last_values[k]:
                     self._last_values[k] = v
                     bar.setValue(v)
-
-        return set_colors
-
-    def appendHtml(self, html):
-        self.v.appendHtml(html)
 
 
 class WildMapViewer(TextViewer):
@@ -243,8 +229,10 @@ class WildMapViewer(TextViewer):
         model.wild_html = '<br>' * delta_y + \
             '<br>'.join(['&nbsp;' * delta_x + r for r in html])
 
-    def _process(self, model):
-        set_colors = self.v._process(model)
+    def process(self, model):
+        self.v.process(model)
+        self._textEditColors(model, self.w.rightwidget.wild_map)
+
         wild_map = self.w.rightwidget.wild_map
 
         if model.wild_text:
@@ -254,12 +242,3 @@ class WildMapViewer(TextViewer):
             wild_map.setHtml(model.wild_html)
         elif model.wild_text is None:
             wild_map.clear()
-
-        return set_colors
-
-    def _setOutputColors(self, bg, fg):
-        self.v._setOutputColors(bg, fg)
-        self._textEditColors(self.w.rightwidget.wild_map, bg, fg)
-
-    def appendHtml(self, html):
-        self.v.appendHtml(html)

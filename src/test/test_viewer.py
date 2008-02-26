@@ -32,20 +32,39 @@ from devclient.conf import config
 from devclient.messages import Model
 
 
+class TextDocMock(object):
+    def setMaximumBlockCount(self, num):
+        pass
+
+
+class TextCursorMock(object):
+    def __init__(self, text_mock):
+        self.text_mock = text_mock
+
+    def movePosition(self, where):
+        pass
+
+    def insertBlock(self):
+        pass
+
+    def insertHtml(self, html):
+        self.text_mock._html += html
+
+
 class TextMock(object):
 
     def __init__(self):
         self._html = ''
         self._style = ''
 
-    def clear(self):
-        self._html = ''
-
-    def moveCursor(self, cursor):
+    def setTextCursor(self, cursor):
         pass
 
-    def setHtml(self, html):
-        self._html = html
+    def textCursor(self):
+        return TextCursorMock(self)
+
+    def document(self):
+        return TextDocMock()
 
     def styleSheet(self):
         return self._style
