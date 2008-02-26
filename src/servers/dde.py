@@ -28,3 +28,10 @@ class DdE(DikuServer):
     port = 5000
     host2 = 'dde.homelinux.com'
     port2 = 4000
+
+
+class ADdE(DdE):
+    host = 'algor.homelinux.com'
+    port = 5556
+    host2 = None
+    port2 = None
