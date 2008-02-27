@@ -45,6 +45,7 @@ class TestBase(unittest.TestCase):
         if os.path.exists(conf.config['storage']['path']):
             os.unlink(conf.config['storage']['path'])
 
+
 class TestStorage(TestBase):
 
     def setUp(self):
@@ -234,6 +235,14 @@ class TestStorage(TestBase):
         del macros[0]
         self.storage.saveMacros(conn_name, macros)
         self.assert_(self.storage.macros(conn_name) == macros)
+
+    def testEmptyPreferences(self):
+        self.assert_(self.storage.preferences() == [])
+
+    def testSavePreferences(self):
+        preferences = (1, '#FF0000', 0)
+        self.storage.savePreferences(preferences)
+        self.assert_(self.storage.preferences() == preferences)
 
 
 class TestStorage2(TestBase):

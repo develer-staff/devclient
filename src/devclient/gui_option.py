@@ -21,9 +21,9 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import SIGNAL, Qt
-from PyQt4.QtGui import QApplication
+from PyQt4 import QtGui
+from PyQt4.QtCore import SIGNAL, Qt, QVariant
+from PyQt4.QtGui import QApplication, QDialog, QColorDialog
 
 from storage import Storage
 from gui_src.gui_option import Ui_option
@@ -41,7 +41,7 @@ class FormConnection(object):
 
         self.connections = self.storage.connections()
         for el in self.connections:
-            self.w.list_conn.addItem(el[1], QtCore.QVariant(el[0]))
+            self.w.list_conn.addItem(el[1], QVariant(el[0]))
 
         self._translateText()
         self._setupSignal()
@@ -86,10 +86,10 @@ class FormConnection(object):
 
         if conn:
             n, h, p = conn[0][1:-1]
-            d = (QtCore.Qt.Unchecked, QtCore.Qt.Checked)[conn[0][-1]]
+            d = (Qt.Unchecked, Qt.Checked)[conn[0][-1]]
             connect = True
         else:
-            n, h, p, d = ('', '', '', QtCore.Qt.Unchecked)
+            n, h, p, d = ('', '', '', Qt.Unchecked)
             connect = False
 
         self.w.name_conn.setText(n)
@@ -146,7 +146,7 @@ class FormConnection(object):
             data = self.w.list_conn.itemData(self.w.list_conn.currentIndex())
             id_conn = data.toInt()[0]
 
-        make_default = self.w.default_conn.checkState() == QtCore.Qt.Checked
+        make_default = self.w.default_conn.checkState() == Qt.Checked
 
         if make_default:
             for idx, conn in enumerate(self.connections):
@@ -164,8 +164,7 @@ class FormConnection(object):
 
         if not self.w.list_conn.currentIndex():
             self.storage.addConnection(conn)
-            self.w.list_conn.addItem(self.w.name_conn.text(),
-                                     QtCore.QVariant(conn[0]))
+            self.w.list_conn.addItem(self.w.name_conn.text(), QVariant(conn[0]))
             self.connections.append(conn)
         else:
             self.connections[self.w.list_conn.currentIndex() - 1] = conn
@@ -438,13 +437,51 @@ class FormMacro(object):
             self.start_reg = False
 
 
-class GuiOption(QtGui.QDialog, Ui_option):
+class FormPreferences(object):
+    """
+    Manage the preferences part of gui option.
+    """
+
+    def __init__(self, widget, storage):
+        self.w = widget
+        self.storage = storage
+        self._loadForm()
+        self._setupSignal()
+
+    def _setupSignal(self):
+        clicked = SIGNAL("clicked()")
+        self.w.connect(self.w.echo_color_button, clicked, self._getEchoColor)
+        self.w.connect(self.w.save_preferences, clicked, self.save)
+
+    def _getEchoColor(self):
+        color = QColorDialog.getColor().name()
+        self.w.echo_color.setText(unicode(color).upper())
+
+    def _loadForm(self):
+        preferences = self.storage.preferences()
+        if preferences:
+            echo_text = (Qt.Unchecked, Qt.Checked)[preferences[0]]
+            self.w.echo_text.setCheckState(echo_text)
+            self.w.echo_color.setText(preferences[1])
+            keep_text = (Qt.Unchecked, Qt.Checked)[preferences[2]]
+            self.w.keep_text.setCheckState(keep_text)
+
+    def save(self):
+        preferences = (int(self.w.echo_text.checkState() == Qt.Checked),
+                       unicode(self.w.echo_color.text()),
+                       int(self.w.keep_text.checkState() == Qt.Checked))
+
+        self.storage.savePreferences(preferences)
+        self.w.emit(SIGNAL('reloadPreferences()'))
+
+
+class GuiOption(QDialog, Ui_option):
     """
     The Gui dialog for setup option.
     """
 
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QDialog.__init__(self, parent)
         self.setupUi(self)
         self._setupSignal()
         self._translateText()
@@ -457,6 +494,9 @@ class GuiOption(QtGui.QDialog, Ui_option):
 
         self.macro = FormMacro(self, self.storage)
         """the `FormMacro` instance, used to manage tab of macros."""
+
+        self.preferences = FormPreferences(self, self.storage)
+        """the `FormPreferences` instance, used to manage tab of preferences."""
 
     def _displayWarning(self, title, message):
         QtGui.QMessageBox.warning(self, title, message)

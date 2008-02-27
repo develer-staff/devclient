@@ -194,6 +194,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         logger.debug('PyQt version: %s, Qt version: %s' %
             (PYQT_VERSION_STR, QT_VERSION_STR))
 
+        self.preferences = Storage().preferences()
+
     def setupUi(self, w):
         Ui_dev_client.setupUi(self, w)
 
@@ -271,7 +273,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             for m in self.macros:
                 if m[1:] == key_seq:
                     self.s_core.write(messages.MSG, m[0])
-                    self.viewer.appendHtml(m[0] + '<br>')
+                    self._appendEcho(m[0])
                     return True
         return False
 
@@ -344,6 +346,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.connect(opt, SIGNAL("connectReq(int)"), self._connect)
         self.connect(opt, SIGNAL("reloadConnData(QString)"),
                      self._reloadConnData)
+        self.connect(opt, SIGNAL("reloadPreferences()"),
+                     self._reloadPreferences)
         opt.show()
 
     def _connect(self, id_conn = None):
@@ -367,6 +371,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self.s_core.write(messages.CONNECT, conn[0][1:4])
 
+    def _reloadPreferences(self):
+        self.preferences = Storage().preferences()
+
     def _reloadConnData(self, conn):
         """
         Reload all data rely on connection and propagate message of reloading.
@@ -385,21 +392,32 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.viewer = getViewer(self, getServer(host, port))
         self.macros = Storage().macros(self.connected)
 
-    def _sendText(self):
-        if self.connected:
-            text = unicode(self.text_input.currentText())
-            self.viewer.appendHtml(text + '<br>')
-            self.history.add(text)
-            self.s_core.write(messages.MSG, text)
-            hist = self.history.get()
-            hist.reverse()
-            self.text_input.clear()
-            self.text_input.addItem('')
-            self.text_input.addItems(hist)
-            self.text_input.setCurrentIndex(0)
-            self.text_input.setItemText(0, '')
+    def _appendEcho(self, text):
+        if not self.preferences[0]:
+            text = '<br>'
         else:
+            text = '<span style="color:%s">%s</span><br>' % \
+                (self.preferences[1], text)
+
+        self.viewer.appendHtml(text)
+
+    def _sendText(self):
+        if not self.connected:
             self._displayWarning(PROJECT_NAME, self._text['NotConnected'])
+            return
+
+        text = unicode(self.text_input.currentText())
+        self._appendEcho(text)
+        self.history.add(text)
+        self.s_core.write(messages.MSG, text)
+        hist = self.history.get()
+        hist.reverse()
+        self.text_input.clear()
+        self.text_input.addItem('')
+        self.text_input.addItems(hist)
+        self.text_input.setCurrentIndex(0)
+        self.text_input.setItemText(0, text if self.preferences[2] else '')
+        self.text_input.lineEdit().selectAll()
 
     def _readDataFromCore(self):
 

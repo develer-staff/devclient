@@ -61,6 +61,11 @@ class Storage(object):
                                    ctrl integer,
                                    keycode integer)''')
 
+        c.execute('''CREATE TABLE IF NOT EXISTS
+                            preferences(echo_text integer,
+                                        echo_color text,
+                                        keep_text integer)''')
+
     def _execQuery(self, sql, params=(), cursor=None):
         """
         Execute a query.
@@ -189,3 +194,13 @@ class Storage(object):
             p.insert(0, id_conn)
             self._execQuery('INSERT INTO macros VALUES(?, ?, ?, ?, ?, ?)',
                             p, c)
+
+    def preferences(self):
+        row = self._execQuery('SELECT echo_text, echo_color, keep_text ' +
+                              'FROM preferences').fetchone()
+        return row if row else []
+
+    def savePreferences(self, preferences):
+        self._execQuery('DELETE FROM preferences')
+        self._execQuery('INSERT INTO preferences VALUES(?, ?, ?)', preferences)
+

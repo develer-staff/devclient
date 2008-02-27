@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Mon Jan 14 22:49:12 2008
+# Created: Tue Feb 26 23:24:50 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -358,6 +358,57 @@ class Ui_option(object):
         self.gridlayout4.addLayout(self.hboxlayout2,2,1,1,1)
         self.tab_widget.addTab(self.tab_macro,"")
 
+        self.tab_option = QtGui.QWidget()
+        self.tab_option.setObjectName("tab_option")
+
+        self.widget = QtGui.QWidget(self.tab_option)
+        self.widget.setGeometry(QtCore.QRect(5,7,296,266))
+        self.widget.setObjectName("widget")
+
+        self.gridlayout6 = QtGui.QGridLayout(self.widget)
+        self.gridlayout6.setObjectName("gridlayout6")
+
+        self.echo_text = QtGui.QCheckBox(self.widget)
+        self.echo_text.setMinimumSize(QtCore.QSize(100,0))
+        self.echo_text.setObjectName("echo_text")
+        self.gridlayout6.addWidget(self.echo_text,0,0,1,1)
+
+        self.echo_color_button = QtGui.QPushButton(self.widget)
+        self.echo_color_button.setMinimumSize(QtCore.QSize(90,27))
+        self.echo_color_button.setMaximumSize(QtCore.QSize(90,16777215))
+        self.echo_color_button.setObjectName("echo_color_button")
+        self.gridlayout6.addWidget(self.echo_color_button,0,1,1,1)
+
+        self.echo_color = QtGui.QLineEdit(self.widget)
+        self.echo_color.setEnabled(False)
+        self.echo_color.setMinimumSize(QtCore.QSize(80,0))
+        self.echo_color.setMaximumSize(QtCore.QSize(80,16777215))
+        self.echo_color.setObjectName("echo_color")
+        self.gridlayout6.addWidget(self.echo_color,0,2,1,1)
+
+        self.keep_text = QtGui.QCheckBox(self.widget)
+        self.keep_text.setMinimumSize(QtCore.QSize(200,0))
+        self.keep_text.setObjectName("keep_text")
+        self.gridlayout6.addWidget(self.keep_text,1,0,1,2)
+
+        spacerItem12 = QtGui.QSpacerItem(71,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout6.addItem(spacerItem12,1,2,1,1)
+
+        spacerItem13 = QtGui.QSpacerItem(276,146,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout6.addItem(spacerItem13,2,0,1,3)
+
+        self.hboxlayout3 = QtGui.QHBoxLayout()
+        self.hboxlayout3.setObjectName("hboxlayout3")
+
+        spacerItem14 = QtGui.QSpacerItem(191,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.hboxlayout3.addItem(spacerItem14)
+
+        self.save_preferences = QtGui.QPushButton(self.widget)
+        self.save_preferences.setObjectName("save_preferences")
+        self.hboxlayout3.addWidget(self.save_preferences)
+        self.gridlayout6.addLayout(self.hboxlayout3,3,0,1,3)
+        self.tab_widget.addTab(self.tab_option,"")
+
         self.retranslateUi(option)
         self.tab_widget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(option)
@@ -410,4 +461,9 @@ class Ui_option(object):
         self.save_macro.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.delete_macro.setText(QtGui.QApplication.translate("option", "Delete", None, QtGui.QApplication.UnicodeUTF8))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_macro), QtGui.QApplication.translate("option", "Macro", None, QtGui.QApplication.UnicodeUTF8))
+        self.echo_text.setText(QtGui.QApplication.translate("option", "Echo Text", None, QtGui.QApplication.UnicodeUTF8))
+        self.echo_color_button.setText(QtGui.QApplication.translate("option", "Echo Color", None, QtGui.QApplication.UnicodeUTF8))
+        self.keep_text.setText(QtGui.QApplication.translate("option", "Keep text entered", None, QtGui.QApplication.UnicodeUTF8))
+        self.save_preferences.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.tab_widget.setTabText(self.tab_widget.indexOf(self.tab_option), QtGui.QApplication.translate("option", "Preferences", None, QtGui.QApplication.UnicodeUTF8))
 
