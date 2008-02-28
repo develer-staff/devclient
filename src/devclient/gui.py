@@ -393,7 +393,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.macros = Storage().macros(self.connected)
 
     def _appendEcho(self, text):
-        if not self.preferences[0]:
+        if not self.preferences or not self.preferences[0]:
             text = '<br>'
         else:
             text = '<span style="color:%s">%s</span><br>' % \
@@ -416,7 +416,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.addItem('')
         self.text_input.addItems(hist)
         self.text_input.setCurrentIndex(0)
-        self.text_input.setItemText(0, text if self.preferences[2] else '')
+        if not self.preferences or not self.preferences[2]:
+            text = ''
+        self.text_input.setItemText(0, text)
         self.text_input.lineEdit().selectAll()
 
     def _readDataFromCore(self):
