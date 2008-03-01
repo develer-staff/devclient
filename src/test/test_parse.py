@@ -285,6 +285,11 @@ class TestWildMapParser(unittest.TestCase):
         Server.wild_end_text = '\n[Uscite:'
         self.parser = WildMapParser(Parser(Server))
 
+    def testEmptyParsing(self):
+        m = self.parser.buildModel('')
+        self.assert_(m.wild_text == '' and m.wild_html == '')
+        self.assert_(m.main_text == '' and m.main_html == '')
+
     def testWild1(self):
         """Check parsing of simple wild map"""
 
@@ -633,6 +638,29 @@ class TestWildMapParser(unittest.TestCase):
         self.assert_(parts[0] == '<span color="#cc00cc">hello&nbsp;</span>')
         self.assert_(parts[1] == '<span color="#cc00cc">world</span>')
 
+    def testParseRoom1(self):
+        text = "Strada carraia Sud.01\n   Sei nei pressi dell'uscita Sud " + \
+               "del villaggio; te ne rendi conto quando ad Est\nnoti di " + \
+               "aver raggiunto il Bazar di Rubinio che sempre ti ha " + \
+               "incuriosito per la\nincredibile quantita' di oggetti in " + \
+               "vendita.\n[Uscite: Nord Est Sud]\n\nPF:74/74 Mn:153/153 " + \
+               "Mv:2/145 Al:Neutrale Exp:301633> "
+
+        m = self.parser.buildModel(text)
+        self.assert_(m.wild_text is None and m.wild_html is None)
+
+    def testParseRoom2(self):
+        m = self.parser.buildModel("Via del giglio.\n")
+        self.assert_(m.wild_text == '' and m.wild_html == '')
+
+        text = "\n   La grande via del Giglio termina a Nord con le mura " + \
+               "della citta' \nchiuse dalla porta nord. \nA Sud invece la " + \
+               "prestigiosa via si inoltra nel cuore della Capitale,\n" + \
+               "mentre a Ovest inizia un oscuro vicoletto.\n[Uscite: Nord " + \
+               "Est Sud Ovest]\n\nPf:30/30 Mn:117/117 Mv:7/108> "
+
+        m = self.parser.buildModel(text)
+        self.assert_(m.wild_text is None and m.wild_html is None)
 
 if __name__ == '__main__':
     unittest.main()
