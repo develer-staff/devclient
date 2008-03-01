@@ -156,6 +156,26 @@ class TestParser(unittest.TestCase):
         self.assert_(style == 'background-color:#%s' %
                                self.parser._normal_color[1])
 
+    def testEvalStyle7(self):
+        m = Model()
+        m.fg_color, m.bg_color = 'FFFFFF', '000000'
+        self.parser._evalStyle('33;42', m)
+        style = self.parser._evalStyle('0;31', m)
+        self.assert_(style == 'color:#%s' % self.parser._normal_color[1])
+
+    def testEvalStyle8(self):
+        m = Model()
+        m.fg_color, m.bg_color = 'FFFFFF', '000000'
+        self.parser._evalStyle('1;33;42', m)
+        style = self.parser._evalStyle('31;0', m)
+        self.assert_(style == 'color:#%s' % self.parser._normal_color[1])
+
+    def testEvalStyle9(self):
+        m = Model()
+        m.fg_color, m.bg_color = 'FFFFFF', '000000'
+        self.parser._evalStyle('33;42', m)
+        self.assert_(self.parser._evalStyle('0', m) == '')
+
     def testReplaceAnsiColor(self):
         txt = '\x1b[33mhello'
         m = Model()

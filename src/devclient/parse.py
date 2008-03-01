@@ -125,6 +125,11 @@ class Parser(object):
         attr = 0
         list_code = map(int, ansi_code.split(';'))
 
+        if 0 in list_code:
+            # reset all attributes
+            self._fg_code = None
+            self._bg_code = None
+
         for code in list_code:
             if 30 <= code <= 37:
                 self._fg_code = code - 30
