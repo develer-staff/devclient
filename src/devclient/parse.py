@@ -392,7 +392,7 @@ class WildMapParser(Parser):
         if m:
             groups = list(m.groups())
             if groups[0][-1:] == ' ':
-                groups[1] = ' ' + groups[1]
+                groups[1] = ' ' + groups[1]  # to save alignment
                 groups[0] = groups[0][:-1]
 
             model.wild_text = groups[1]
