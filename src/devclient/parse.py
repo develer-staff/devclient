@@ -334,17 +334,24 @@ class WildMapParser(Parser):
                 t = t[1:]
             return False
 
+        def precChar(c):
+            """Check if the char is a char that might be come before wild"""
+            if hasattr(self._p._server, 'wild_prec_char'):
+                return c in self._p._server.wild_prec_char
+
+            return True
+
         def extractIncompleteMap(text, html):
             """Return text, html and the incomplete wild map if exist."""
 
             _text, _map = text, ''
             m = compile('(.*?)(\s[%s]*)$' % wild_chars, re.S).match(text)
-            if m:
+            if m and precChar(m.group(1)[-1:]):
                 _text, _map = m.group(1), text[len(m.group(1)):]
             else:
                 patt = '(.*?)(\s[%s]{6,})' % wild_chars
                 m = compile(patt, re.S).match(text)
-                if m and endswith(text, wild_end):
+                if m and precChar(m.group(1)[-1:]) and endswith(text, wild_end):
                     _text, _map = m.group(1), text[len(m.group(1)):]
 
             if _map:
