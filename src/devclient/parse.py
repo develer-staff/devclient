@@ -390,10 +390,15 @@ class WildMapParser(Parser):
 
         m = reg.match(text)
         if m:
-            model.wild_text = m.group(2)
-            pos_start = len(m.group(1))
-            pos_end = pos_start + len(m.group(2))
-            parts = self._getHtmlFromText(html, m.groups())
+            groups = list(m.groups())
+            if groups[0][-1:] == ' ':
+                groups[1] = ' ' + groups[1]
+                groups[0] = groups[0][:-1]
+
+            model.wild_text = groups[1]
+            pos_start = len(groups[0])
+            pos_end = pos_start + len(groups[1])
+            parts = self._getHtmlFromText(html, groups)
             model.wild_html = parts[1]
 
             # extract wild map from main text
