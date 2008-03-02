@@ -368,9 +368,10 @@ class WildMapParser(Parser):
             if m and precChar(m.group(1)[-1:]):
                 _text, _map = m.group(1), text[len(m.group(1)):]
             else:
-                patt = '(.*?)(\s[%s]{6,})' % wild_chars
+                patt = '(.*?)(\s[%s]{8,})' % wild_chars
                 m = compile(patt, re.S).match(text)
-                if m and precChar(m.group(1)[-1:]) and endswith(text, wild_end):
+                if m and m.group(2).strip() and precChar(m.group(1)[-1:]) and \
+                   endswith(text, wild_end):
                     _text, _map = m.group(1), text[len(m.group(1)):]
 
             if _map:
@@ -399,7 +400,7 @@ class WildMapParser(Parser):
         # wild end text must contain at least one char that not is contained
         # into room description.
         room_desc = '\w\s\.\'",:;'
-        reg = compile('(.*?\s)([%s]{6,})[%s]*?%s' %
+        reg = compile('(.*?\s)([%s]{8,})[%s]*?%s' %
                       (wild_chars, room_desc, escape(wild_end)), re.S)
 
         if hasattr(self._p._server, 'room_map'):
