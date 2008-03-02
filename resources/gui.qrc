@@ -2,5 +2,8 @@
  <qresource>
      <file>images/connect.png</file>
      <file>images/option.png</file>
+     <file>images/button-save.png</file>
+     <file>images/button-cancel.png</file>
+     <file>images/button-connect.png</file>
  </qresource>
  </RCC>
