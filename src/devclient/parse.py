@@ -342,7 +342,7 @@ class WildMapParser(Parser):
         def precChar(c):
             """Check if the char is a char that might be come before wild"""
             if hasattr(self._p._server, 'wild_prec_char'):
-                return c and c in self._p._server.wild_prec_char
+                return c in self._p._server.wild_prec_char
 
             return True
 
