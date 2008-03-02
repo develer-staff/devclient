@@ -162,6 +162,19 @@ class Parser(object):
 
         return ';'.join(style)
 
+    def _styleVisible(self, ansi_code, text):
+        if not text:
+            return False
+
+        list_code = map(int, ansi_code.split(';'))
+        # style might not visible only if text contains chars not printable
+        if not text.strip():
+            if (' ' in text or '\n' in text) and \
+               ([el for el in list_code if el >= 40] or 0 in list_code):
+                return True
+            return False
+        return True
+
     def _replaceAnsiColor(self, data, model):
         """
         Replace ansi color code with equivalent html color.
@@ -220,8 +233,9 @@ class Parser(object):
                 ansi_code = m.group(1)
                 code_length = len(ansi_code) + len(COLOR_TOKEN) + len('[')
                 if m.group(2) == COLOR_TOKEN and ansi_code:
+                    # evalStyle must be always called to set color attributes
                     style = self._evalStyle(ansi_code, model)
-                    if style and s[code_length:]:
+                    if style and self._styleVisible(ansi_code, s[code_length:]):
                         html_res.append('<span style="%s">%s</span>' %
                                          (style, s[code_length:]))
                     else:

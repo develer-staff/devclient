@@ -212,6 +212,27 @@ class TestParser(unittest.TestCase):
         html_res, text_res = self.parser._replaceAnsiColor(txt, m)
         self.assert_(html_res == 'hello' and text_res == 'hello')
 
+    def testStyleVisible1(self):
+        self.assert_(not self.parser._styleVisible('0', ''))
+        self.assert_(not self.parser._styleVisible('0', '\t\r'))
+        self.assert_(self.parser._styleVisible('0', ' '))
+        self.assert_(self.parser._styleVisible('0', '\n'))
+        self.assert_(self.parser._styleVisible('0', ' text '))
+
+    def testStyleVisible2(self):
+        self.assert_(not self.parser._styleVisible('31', '\n\t\r '))
+        self.assert_(self.parser._styleVisible('31', ' text '))
+
+    def testStyleVisible3(self):
+        self.assert_(not self.parser._styleVisible('41', '\t\r'))
+        self.assert_(self.parser._styleVisible('41', ' '))
+        self.assert_(self.parser._styleVisible('41', '\n'))
+        self.assert_(self.parser._styleVisible('41', ' text '))
+
+    def testStyleVisible4(self):
+        self.assert_(not self.parser._styleVisible('1', '\n\t\r '))
+        self.assert_(self.parser._styleVisible('1', ' text '))
+
 
 class TestDikuParser(unittest.TestCase):
 
