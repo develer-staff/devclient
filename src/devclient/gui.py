@@ -27,9 +27,11 @@ import os.path
 import cPickle
 import logging
 
-from PyQt4 import QtCore, QtGui, QtNetwork
-from PyQt4.QtCore import SIGNAL, Qt, QLocale, PYQT_VERSION_STR, QT_VERSION_STR
-from PyQt4.QtGui import QApplication, QMessageBox, QShortcut, QKeySequence
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import QEvent, Qt, QLocale
+from PyQt4.QtCore import SIGNAL, PYQT_VERSION_STR, QT_VERSION_STR
+from PyQt4.QtGui import QApplication, QIcon
+from PyQt4.QtGui import QMessageBox, QShortcut, QKeySequence
 from PyQt4.QtNetwork import QHostAddress, QTcpSocket
 
 import messages
@@ -189,6 +191,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.s_core = SocketToCore(self, port)
         """the interface with `Core`, an instance of `SocketToCore`"""
 
+        self.viewer = None
+        """The instance of `Viewer` used to show data arrived from `Core`"""
+
         self.history = History()
         self.connected = None
         logger.debug('PyQt version: %s, Qt version: %s' %
@@ -203,6 +208,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.setCompleter(None)
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
+        self.text_input.lineEdit().installEventFilter(self)
 
         screen = QtGui.QDesktopWidget().screenGeometry()
         size = self.geometry()
@@ -264,7 +270,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         return (s, a, c, event.key())
 
     def eventFilter(self, target, event):
-        if event.type() == QtCore.QEvent.KeyPress and self.connected and \
+
+        if event.type() == QEvent.KeyPress and self.connected and \
            event.key() not in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Meta,
                                Qt.Key_Alt):
 
@@ -275,6 +282,16 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                     self.s_core.write(messages.MSG, m[0])
                     self._appendEcho(m[0])
                     return True
+
+        elif event.type() == QEvent.MouseButtonPress and \
+            event.button() == Qt.LeftButton and self.viewer and \
+            unicode(self.viewer.selectedText()):
+            text = unicode(self.text_input.currentText())
+            text += unicode(self.viewer.selectedText())
+            self.text_input.setItemText(0, text)
+            self.viewer.clearSelection()
+            return True
+
         return False
 
     def _onKeyUp(self):
@@ -448,9 +465,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         box.setWindowTitle(title)
         box.setText(message)
         yes = box.addButton(self._text['Yes'], QMessageBox.AcceptRole)
-        yes.setIcon(QtGui.QIcon(":/images/button-yes.png"))
+        yes.setIcon(QIcon(":/images/button-yes.png"))
         no = box.addButton(self._text['No'], QMessageBox.RejectRole)
-        no.setIcon(QtGui.QIcon(":/images/button-no.png"))
+        no.setIcon(QIcon(":/images/button-no.png"))
         box.setDefaultButton(no)
         box.setEscapeButton(no)
         box.exec_()
