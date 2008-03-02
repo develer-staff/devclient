@@ -24,6 +24,7 @@ __docformat__ = 'restructuredtext'
 import re
 import logging
 
+from sip import delete
 from PyQt4.QtGui import QWidget, QTextCursor
 
 logger = logging.getLogger('viewer')
@@ -32,9 +33,8 @@ _default_styles = {}
 
 def _setRightPanel(widget, widget_name):
 
-    # FIX: find a way to delete the RightWidget instance (child of rightpanel)
-    for w in widget.rightpanel.children():
-        w.setVisible(False)
+    # delete the old widget
+    map(delete, widget.rightpanel.children())
 
     if widget_name:
         try:
@@ -51,12 +51,7 @@ def _setRightPanel(widget, widget_name):
             logger.warning('_setRightPanel: Unknown widget %s' % widget_name)
             return False
         else:
-            for w in widget.rightpanel.children():
-                if w.module_name == widget_name:
-                    widget.rightwidget = w
-                    break
-            else:
-                widget.rightwidget = RightWidget(widget.rightpanel)
+            widget.rightwidget = RightWidget(widget.rightpanel)
 
             # resize the window to display properly the new widget
             cur = widget.rightpanel.minimumWidth()
@@ -210,15 +205,6 @@ class WildMapViewer(TextViewer):
     def __init__(self, v):
         super(WildMapViewer, self).__init__(v.w)
         self.v = v
-
-    def _resetWidgets(self):
-        self.v._resetWidgets()
-        w_map = self.w.rightwidget.wild_map
-        if not _default_styles.has_key('wild_map'):
-            _default_styles['wild_map'] = unicode(w_map.styleSheet())
-        else:
-            w_map.setStyleSheet(_default_styles['wild_map'])
-            w_map.clear()
 
     def _centerMap(self, model, width, height):
         html_list = model.wild_html.split('<br>')
