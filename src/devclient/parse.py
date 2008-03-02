@@ -384,9 +384,12 @@ class WildMapParser(Parser):
 
         # wild end text must contain at least one char that not is contained
         # into room description.
-        room_desc = '\w\s\.\'",:'
+        room_desc = '\w\s\.\'",:;'
         reg = compile('(.*?\s)([%s]{6,})[%s]*?%s' %
                       (wild_chars, room_desc, escape(wild_end)), re.S)
+
+        if hasattr(self._p._server, 'room_map'):
+            room_desc += self._p._server.room_map
 
         m = reg.match(text)
         if m:
@@ -407,7 +410,7 @@ class WildMapParser(Parser):
             return True
 
         elif not model.wild_text and \
-             compile('(.*?)(\s)[%s]*?%s' % (room_desc, escape(room_end)),
+             compile('.*?[%s]*?%s' % (room_desc, escape(room_end)),
                      re.S).match(text):
             model.wild_text, model.wild_html = None, None
 
