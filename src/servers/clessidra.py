@@ -25,5 +25,6 @@ class Clessidra(DikuServer):
     wild_chars = '-_~\^\|\.:xX@\*\s#&\+/\\§'
     wild_end_text = '[Uscite:'
     wild_prec_char = '.'
+    gui_width = 965
     host = 'mud.clessidra.it'
     port = 4000

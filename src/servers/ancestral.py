@@ -26,5 +26,7 @@ class Ancestral(AfkServer):
     wild_end_text = '\nViaggiando sul continente.'
     wild_prec_char = '.\n '
     room_end_text = '\nUscite Visibili:'
+    gui_width = 1010
     host = 'ancestralmud.it'
     port = 4000
+

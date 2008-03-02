@@ -31,8 +31,9 @@ logger = logging.getLogger('viewer')
 
 _default_styles = {}
 
-def _setRightPanel(widget, widget_name):
+def _setRightPanel(widget, server):
 
+    widget_name = server.right_widget
     # delete the old widget
     map(delete, widget.rightpanel.children())
 
@@ -52,6 +53,7 @@ def _setRightPanel(widget, widget_name):
             return False
         else:
             widget.rightwidget = RightWidget(widget.rightpanel)
+            widget.rightwidget.setVisible(True)
 
             # resize the window to display properly the new widget
             cur = widget.rightpanel.minimumWidth()
@@ -59,7 +61,8 @@ def _setRightPanel(widget, widget_name):
             widget.setMinimumWidth(widget.minimumWidth() + new - cur)
             widget.rightpanel.setMinimumWidth(new)
 
-            widget.rightwidget.setVisible(True)
+            if hasattr(server, 'gui_width'):
+                widget.resize(server.gui_width, widget.height())
 
     return True
 
@@ -67,7 +70,7 @@ def _setRightPanel(widget, widget_name):
 def getViewer(widget, server):
 
     viewer = TextViewer(widget)
-    if _setRightPanel(widget, server.right_widget):
+    if _setRightPanel(widget, server):
         if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
             viewer = StatusViewer(viewer)
 
