@@ -31,9 +31,8 @@ logger = logging.getLogger('viewer')
 
 _default_styles = {}
 
-def _setRightPanel(widget, server):
+def _setRightPanel(widget, widget_name):
 
-    widget_name = server.right_widget
     # delete the old widget
     map(delete, widget.rightpanel.children())
 
@@ -61,21 +60,21 @@ def _setRightPanel(widget, server):
             widget.setMinimumWidth(widget.minimumWidth() + new - cur)
             widget.rightpanel.setMinimumWidth(new)
 
-            if hasattr(server, 'gui_width'):
-                widget.resize(server.gui_width, widget.height())
-
     return True
 
 
 def getViewer(widget, server):
 
     viewer = TextViewer(widget)
-    if _setRightPanel(widget, server):
+    if _setRightPanel(widget, server.right_widget):
         if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
             viewer = StatusViewer(viewer)
 
         if hasattr(server, 'wild_chars'):
             viewer = WildMapViewer(viewer)
+
+    if hasattr(server, 'gui_width'):
+        widget.resize(server.gui_width, widget.height())
 
     viewer._resetWidgets()
     return viewer
