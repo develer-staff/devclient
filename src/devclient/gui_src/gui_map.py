@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_map.ui'
 #
-# Created: Tue Feb 19 22:12:08 2008
+# Created: Mon Mar  3 23:37:09 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -81,15 +81,15 @@ class Ui_RightWidget(object):
         self.bar_movement.setObjectName("bar_movement")
         self.gridlayout.addWidget(self.bar_movement,2,1,1,1)
 
-        self.wild_map = QtGui.QTextEdit(RightWidget)
-        self.wild_map.setGeometry(QtCore.QRect(0,0,225,231))
-        self.wild_map.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.wild_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.wild_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.wild_map.setReadOnly(True)
-        self.wild_map.setProperty("char_width",QtCore.QVariant(27))
-        self.wild_map.setProperty("char_height",QtCore.QVariant(11))
-        self.wild_map.setObjectName("wild_map")
+        self.text_map = QtGui.QTextEdit(RightWidget)
+        self.text_map.setGeometry(QtCore.QRect(0,0,225,231))
+        self.text_map.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.text_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.text_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.text_map.setReadOnly(True)
+        self.text_map.setProperty("char_width",QtCore.QVariant(27))
+        self.text_map.setProperty("char_height",QtCore.QVariant(11))
+        self.text_map.setObjectName("text_map")
 
         self.retranslateUi(RightWidget)
         QtCore.QMetaObject.connectSlotsByName(RightWidget)
@@ -105,8 +105,8 @@ class Ui_RightWidget(object):
         self.label_movement.setText(QtGui.QApplication.translate("RightWidget", "Movement", None, QtGui.QApplication.UnicodeUTF8))
         self.bar_movement.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
         "QProgressBar::chunk {background-color:#33CC33;}", None, QtGui.QApplication.UnicodeUTF8))
-        self.wild_map.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QTextEdit { background-color: #000000; font: 10pt \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
-        self.wild_map.setHtml(QtGui.QApplication.translate("RightWidget", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+        self.text_map.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QTextEdit { background-color: #000000; font: 10pt \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
+        self.text_map.setHtml(QtGui.QApplication.translate("RightWidget", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
         "p, li { white-space: pre-wrap; }\n"
         "</style></head><body style=\" font-family:\'Courier\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
         "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))

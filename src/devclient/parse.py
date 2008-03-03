@@ -413,21 +413,21 @@ class WildMapParser(Parser):
                 groups[1] = ' ' + groups[1]  # to save alignment
                 groups[0] = groups[0][:-1]
 
-            model.wild_text = groups[1]
+            model.map_text = groups[1]
             pos_start = len(groups[0])
             pos_end = pos_start + len(groups[1])
             parts = self._getHtmlFromText(html, groups)
-            model.wild_html = parts[1]
+            model.map_html = parts[1]
 
             # extract wild map from main text
             model.main_text = text[:pos_start] + text[pos_end:]
             model.main_html = parts[0] + parts[2]
             return True
 
-        elif not model.wild_text and \
+        elif not model.map_text and \
              compile('.*?[%s]*?%s' % (room_desc, escape(room_end)),
                      re.S).match(text):
-            model.wild_text, model.wild_html = None, None
+            model.map_text, model.map_html = None, None
 
         model.main_text, model.main_html, self._incomplete_map = \
             extractIncompleteMap(text, html)

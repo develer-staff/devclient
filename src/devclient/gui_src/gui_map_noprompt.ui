@@ -18,7 +18,7 @@
   <property name="windowTitle" >
    <string>Form</string>
   </property>
-  <widget class="QTextEdit" name="wild_map" >
+  <widget class="QTextEdit" name="text_map" >
    <property name="geometry" >
     <rect>
      <x>0</x>

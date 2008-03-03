@@ -43,6 +43,6 @@ class Model(object):
         self.main_html = ''
         self.bg_color = None
         self.fg_color = None
-        self.wild_html = ''
-        self.wild_text = ''
+        self.map_html = ''
+        self.map_text = ''
         self.prompt = None

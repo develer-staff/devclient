@@ -171,7 +171,7 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
     </item>
    </layout>
   </widget>
-  <widget class="QTextEdit" name="wild_map" >
+  <widget class="QTextEdit" name="text_map" >
    <property name="geometry" >
     <rect>
      <x>0</x>

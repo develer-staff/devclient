@@ -71,7 +71,7 @@ def getViewer(widget, server):
             viewer = StatusViewer(viewer)
 
         if hasattr(server, 'wild_chars'):
-            viewer = WildMapViewer(viewer)
+            viewer = MapViewer(viewer)
 
     if hasattr(server, 'gui_width'):
         widget.resize(server.gui_width, widget.height())
@@ -194,9 +194,9 @@ class StatusViewer(TextViewer):
                     bar.setValue(v)
 
 
-class WildMapViewer(TextViewer):
+class MapViewer(TextViewer):
     """
-    Build the visualization of wild map from model.
+    Build the visualization of a map from model.
 
     This class is a subclass of `TextViewer` that take an instance of it
     as argument on __init__ (see `decorator pattern`_)
@@ -205,12 +205,12 @@ class WildMapViewer(TextViewer):
     """
 
     def __init__(self, v):
-        super(WildMapViewer, self).__init__(v.w)
+        super(MapViewer, self).__init__(v.w)
         self.v = v
 
     def _centerMap(self, model, width, height):
-        html_list = model.wild_html.split('<br>')
-        text_list = model.wild_text.split('\n')
+        html_list = model.map_html.split('<br>')
+        text_list = model.map_text.split('\n')
 
         text, html = [], []
         for i, p in enumerate(text_list):
@@ -220,21 +220,20 @@ class WildMapViewer(TextViewer):
 
         delta_y = (height - len(text)) / 2
         delta_x = (width - len(max(text_list, key=len))) / 2
-        model.wild_text = '\n' * delta_y + \
+        model.map_text = '\n' * delta_y + \
             '\n'.join([' ' * delta_x + r for r in text])
-        model.wild_html = '<br>' * delta_y + \
+        model.map_html = '<br>' * delta_y + \
             '<br>'.join(['&nbsp;' * delta_x + r for r in html])
 
     def process(self, model):
         self.v.process(model)
-        self._textEditColors(model, self.w.rightwidget.wild_map)
+        w_map = self.w.rightwidget.text_map
+        self._textEditColors(model, w_map)
 
-        wild_map = self.w.rightwidget.wild_map
-
-        if model.wild_text:
-            w = wild_map.property('char_width').toInt()[0]
-            h = wild_map.property('char_height').toInt()[0]
+        if model.map_text:
+            w = w_map.property('char_width').toInt()[0]
+            h = w_map.property('char_height').toInt()[0]
             self._centerMap(model, w, h)
-            wild_map.setHtml(model.wild_html)
-        elif model.wild_text is None:
-            wild_map.clear()
+            w_map.setHtml(model.map_html)
+        elif model.map_text is None:
+            w_map.clear()
