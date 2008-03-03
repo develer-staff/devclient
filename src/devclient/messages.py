@@ -41,6 +41,7 @@ class Model(object):
     def __init__(self):
         self.main_text = ''
         self.main_html = ''
+        self.original_text = ''
         self.bg_color = None
         self.fg_color = None
         self.map_html = ''

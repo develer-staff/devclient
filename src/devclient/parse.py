@@ -91,6 +91,7 @@ class Parser(object):
         html_data, text_data = self._replaceAnsiColor(data, model)
 
         model.main_text = text_data
+        model.original_text = text_data
         model.main_html = self._textToHtml(html_data)
 
         if model.bg_color is None and model.fg_color is None and \

@@ -21,11 +21,13 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import os
 import sys
 import struct
-import os.path
 import cPickle
 import logging
+from time import strftime
+from os.path import join, exists
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import QEvent, Qt, QLocale
@@ -162,6 +164,30 @@ class SocketToCore(object):
 
     def __del__(self):
         self.disconnect()
+
+
+class GameLogger(object):
+
+    encoding = "ISO-8859-1"
+
+    def __init__(self, conn_name):
+        dir_name = join(config['logger']['path'], conn_name)
+        try:
+            if not exists(dir_name):
+                os.mkdir(dir_name)
+
+            self.fd = open(join(dir_name, strftime("%Y-%m-%d_%H-%M.log")), 'a+')
+        except IOError:
+            logger.warning('GameLogger: unable to open log file')
+
+    def write(self, model):
+        if hasattr(self, 'fd'):
+            self.fd.write(model.original_text.encode(self.encoding))
+
+    def __del__(self):
+        if hasattr(self, 'fd'):
+            self.fd.flush()
+            self.fd.close()
 
 
 class Gui(QtGui.QMainWindow, Ui_dev_client):
@@ -308,8 +334,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         """
 
         locale = str(QLocale.system().name())
-        fn = os.path.join(config['translation']['path'], locale + '.qm')
-        if os.path.exists(fn):
+        fn = join(config['translation']['path'], locale + '.qm')
+        if exists(fn):
             self.translator = QtCore.QTranslator()
             self.translator.load(fn)
             QApplication.installTranslator(self.translator)
@@ -408,6 +434,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.history.clear()
         self.viewer = getViewer(self, getServer(host, port))
         self.macros = Storage().macros(self.connected)
+        self.game_logger = GameLogger(self.connected)
 
     def _appendEcho(self, text):
         if not self.preferences or not self.preferences[0]:
@@ -443,6 +470,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         while self.s_core.availableData():
             cmd, msg = self.s_core.read()
             if cmd == messages.MODEL:
+                self.game_logger.write(msg)
                 self.viewer.process(msg)
                 self.update()
             elif cmd == messages.CONN_REFUSED:
