@@ -240,7 +240,7 @@ class TestStorage(TestBase):
         self.assert_(self.storage.preferences() == [])
 
     def testSavePreferences(self):
-        preferences = (1, '#FF0000', 0)
+        preferences = (1, '#FF0000', 0, 1)
         self.storage.savePreferences(preferences)
         self.assert_(self.storage.preferences() == preferences)
 

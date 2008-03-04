@@ -21,11 +21,11 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import os
 import sys
 import struct
 import cPickle
 import logging
+from os import mkdir
 from time import strftime
 from os.path import join, exists
 
@@ -170,11 +170,14 @@ class GameLogger(object):
 
     encoding = "ISO-8859-1"
 
-    def __init__(self, conn_name):
-        dir_name = join(config['logger']['path'], conn_name)
+    def __init__(self, server_name, preferences):
+        if not preferences or not preferences[3]:
+            return
+
+        dir_name = join(config['logger']['path'], server_name)
         try:
             if not exists(dir_name):
-                os.mkdir(dir_name)
+                mkdir(dir_name)
 
             self.fd = open(join(dir_name, strftime("%Y-%m-%d_%H-%M.log")), 'a+')
         except IOError:
@@ -416,6 +419,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _reloadPreferences(self):
         self.preferences = Storage().preferences()
+        self.game_logger = GameLogger(self.connected, self.preferences)
 
     def _reloadConnData(self, conn):
         """
@@ -434,7 +438,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.history.clear()
         self.viewer = getViewer(self, getServer(host, port))
         self.macros = Storage().macros(self.connected)
-        self.game_logger = GameLogger(self.connected)
+        self.game_logger = GameLogger(self.connected, self.preferences)
 
     def _appendEcho(self, text):
         if not self.preferences or not self.preferences[0]:

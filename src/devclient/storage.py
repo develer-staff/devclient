@@ -64,7 +64,8 @@ class Storage(object):
         c.execute('''CREATE TABLE IF NOT EXISTS
                             preferences(echo_text integer,
                                         echo_color text,
-                                        keep_text integer)''')
+                                        keep_text integer,
+                                        save_log integer)''')
 
     def _execQuery(self, sql, params=(), cursor=None):
         """
@@ -196,11 +197,12 @@ class Storage(object):
                             p, c)
 
     def preferences(self):
-        row = self._execQuery('SELECT echo_text, echo_color, keep_text ' +
-                              'FROM preferences').fetchone()
+        row = self._execQuery('SELECT echo_text, echo_color, keep_text, ' +
+                              'save_log FROM preferences').fetchone()
         return row if row else []
 
     def savePreferences(self, preferences):
         self._execQuery('DELETE FROM preferences')
-        self._execQuery('INSERT INTO preferences VALUES(?, ?, ?)', preferences)
+        self._execQuery('INSERT INTO preferences VALUES(?, ?, ?, ?)',
+                        preferences)
 

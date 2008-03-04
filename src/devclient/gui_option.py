@@ -465,11 +465,14 @@ class FormPreferences(object):
             self.w.echo_color.setText(preferences[1])
             keep_text = (Qt.Unchecked, Qt.Checked)[preferences[2]]
             self.w.keep_text.setCheckState(keep_text)
+            save_log = (Qt.Unchecked, Qt.Checked)[preferences[3]]
+            self.w.save_log.setCheckState(save_log)
 
     def save(self):
         preferences = (int(self.w.echo_text.checkState() == Qt.Checked),
                        unicode(self.w.echo_color.text()),
-                       int(self.w.keep_text.checkState() == Qt.Checked))
+                       int(self.w.keep_text.checkState() == Qt.Checked),
+                       int(self.w.save_log.checkState() == Qt.Checked))
 
         self.storage.savePreferences(preferences)
         self.w.emit(SIGNAL('reloadPreferences()'))

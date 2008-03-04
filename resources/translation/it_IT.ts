@@ -57,7 +57,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>dev_client</name>
     <message>
-        <location filename="../../src/devclient/gui.py" line="305"/>
+        <location filename="../../src/devclient/gui.py" line="351"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
@@ -67,12 +67,12 @@ p, li { white-space: pre-wrap; }
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="308"/>
+        <location filename="../../src/devclient/gui.py" line="354"/>
         <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="311"/>
+        <location filename="../../src/devclient/gui.py" line="357"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -87,32 +87,32 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="314"/>
+        <location filename="../../src/devclient/gui.py" line="360"/>
         <source>Yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="317"/>
+        <location filename="../../src/devclient/gui.py" line="363"/>
         <source>No</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="320"/>
+        <location filename="../../src/devclient/gui.py" line="366"/>
         <source>Really quit?</source>
         <translation>Vuoi davvero uscire?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="323"/>
+        <location filename="../../src/devclient/gui.py" line="369"/>
         <source>Really close connection?</source>
         <translation>Vuoi davvero chiudere la connessione?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="327"/>
+        <location filename="../../src/devclient/gui.py" line="373"/>
         <source>Fatal Error, please restart your client</source>
         <translation>Errore irreversibile, riavviare il client</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="330"/>
+        <location filename="../../src/devclient/gui.py" line="376"/>
         <source>Connection lost</source>
         <translation>Connessione persa</translation>
     </message>
@@ -127,7 +127,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="333"/>
+        <location filename="../../src/devclient/gui.py" line="379"/>
         <source>Client is not connected</source>
         <translation>Il client non è connesso</translation>
     </message>
@@ -160,7 +160,7 @@ p, li { white-space: pre-wrap; }
         <translation>Imposta come predefinita</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="845"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="942"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
@@ -170,7 +170,7 @@ p, li { white-space: pre-wrap; }
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="711"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="723"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
@@ -180,37 +180,37 @@ p, li { white-space: pre-wrap; }
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="527"/>
+        <location filename="../../src/devclient/gui_option.py" line="530"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="530"/>
+        <location filename="../../src/devclient/gui_option.py" line="533"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="250"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="244"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="534"/>
+        <location filename="../../src/devclient/gui_option.py" line="537"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="536"/>
+        <location filename="../../src/devclient/gui_option.py" line="539"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="539"/>
+        <location filename="../../src/devclient/gui_option.py" line="542"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="532"/>
+        <location filename="../../src/devclient/gui_option.py" line="535"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>
@@ -236,7 +236,7 @@ p, li { white-space: pre-wrap; }
         <translation>Comando</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="652"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="661"/>
         <source>Register</source>
         <translation>Registra</translation>
     </message>
@@ -252,29 +252,58 @@ p, li { white-space: pre-wrap; }
         <translation>La sequenza dei tasti deve essere univoca</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="616"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="625"/>
         <source>#e0e0e0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="722"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="737"/>
         <source>Preferences</source>
         <translation>Preferenze</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="743"/>
-        <source>Echo Text</source>
-        <translation>Echo testo</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="762"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="797"/>
         <source>Echo Color</source>
         <translation>Colore Echo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="797"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="832"/>
         <source>Keep text entered</source>
         <translation>Tieni testo inserito</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="749"/>
+        <source> QGroupBox {  border-top: 1px solid gray; margin-top: 2ex;} 
+
+QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left;  padding: 0 3px;  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,                                       stop: 0 #FFOECE, stop: 1 #FFFFFF); }</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="754"/>
+        <source>Text inserted</source>
+        <translation>Testo inserito</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="778"/>
+        <source>Echo text</source>
+        <translation>Echo testo</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="862"/>
+        <source> QGroupBox {  border-top: 1px solid gray; margin-top: 2ex;} 
+
+QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left;  padding: 0 3px; }</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="867"/>
+        <source>General</source>
+        <translation>Generale</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="894"/>
+        <source>Save log</source>
+        <translation>Salva log</translation>
     </message>
 </context>
 </TS>
