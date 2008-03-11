@@ -67,19 +67,23 @@ def uncompressClient(filename):
     tar.close()
     return base_dir
 
-def replaceOldVersion(root_dir, base_dir):
+def replaceOldVersion(root_dir, base_dir, ignore_list):
 
     chdir(base_dir)
     for root, dirs, files in walk('.'):
         for f in files:
             filename = normpath(join(root, f))
+            if filename in ignore_list:
+                print 'skip file: %s' % filename
+                continue
+
             destfile = join(root_dir, filename)
             print '%s file:' % ('add', 'replace')[exists(destfile)], destfile
             if not exists(dirname(destfile)):
                 print 'create directory:', dirname(destfile)
                 makedirs(dirname(destfile))
-            copyfile(filename, join(root_dir, filename))
-            copymode(filename, join(root_dir, filename))
+            copyfile(filename, destfile)
+            copymode(filename, destfile)
 
 def updateClient():
     o = parseOption()
@@ -91,6 +95,8 @@ def updateClient():
     tmp_dir = join(start_dir, 'temp')
     # the root directory of client
     root_dir = abspath(join(start_dir, '../..'))
+    # files to be skipped, with path relative to root_dir
+    ignore_list = []
     if not exists(tmp_dir):
         mkdir(tmp_dir)
 
@@ -98,7 +104,7 @@ def updateClient():
     if newVersion(client_url):
         downloadFile(client_url, o.timeout)
     base_dir = uncompressClient(basename(client_url))
-    replaceOldVersion(root_dir, base_dir)
+    replaceOldVersion(root_dir, base_dir, ignore_list)
     chdir(start_dir)
     rmtree(tmp_dir)
 
