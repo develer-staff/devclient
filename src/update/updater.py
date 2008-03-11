@@ -23,9 +23,9 @@ __docformat__ = 'restructuredtext'
 
 import tarfile
 from optparse import OptionParser
-from shutil import copyfile, rmtree
 from socket import setdefaulttimeout
 from urllib2 import urlopen, HTTPError
+from shutil import copyfile, rmtree, copymode
 from os import mkdir, chdir, walk, getcwd, makedirs
 from os.path import basename, join, exists, abspath, normpath, dirname
 
@@ -79,6 +79,7 @@ def replaceOldVersion(root_dir, base_dir):
                 print 'create directory:', dirname(destfile)
                 makedirs(dirname(destfile))
             copyfile(filename, join(root_dir, filename))
+            copymode(filename, join(root_dir, filename))
 
 def updateClient():
     o = parseOption()
