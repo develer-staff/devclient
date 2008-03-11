@@ -26,8 +26,8 @@ from optparse import OptionParser
 from shutil import copyfile, rmtree
 from socket import setdefaulttimeout
 from urllib2 import urlopen, HTTPError
-from os import mkdir, chdir, walk, getcwd
-from os.path import basename, join, exists, abspath
+from os import mkdir, chdir, walk, getcwd, makedirs
+from os.path import basename, join, exists, abspath, normpath, dirname
 
 
 def parseOption():
@@ -62,18 +62,22 @@ def downloadFile(client_url, timeout):
 
 def uncompressClient(filename):
     tar = tarfile.open(filename)
+    base_dir = normpath(tar.getnames()[0])
     tar.extractall()
     tar.close()
+    return base_dir
 
-def replaceOldVersion(root_dir):
-    tmp_dir = 'devclient'
-    for root, dirs, files in walk(tmp_dir):
+def replaceOldVersion(root_dir, base_dir):
+
+    chdir(base_dir)
+    for root, dirs, files in walk('.'):
         for f in files:
-            filename = join(root, f)
-            if exists(join(root_dir, filename)):
-                print 'replace file:', join(root_dir, filename)
-            else:
-                print 'add file:', join(root_dir, filename)
+            filename = normpath(join(root, f))
+            destfile = join(root_dir, filename)
+            print '%s file:' % ('add', 'replace')[exists(destfile)], destfile
+            if not exists(dirname(destfile)):
+                print 'create directory:', dirname(destfile)
+                makedirs(dirname(destfile))
             copyfile(filename, join(root_dir, filename))
 
 def updateClient():
@@ -84,16 +88,16 @@ def updateClient():
 
     start_dir = getcwd()
     tmp_dir = join(start_dir, 'temp')
-    # the parent directory of client
-    root_dir = abspath(join(start_dir, '../../..'))
+    # the root directory of client
+    root_dir = abspath(join(start_dir, '../..'))
     if not exists(tmp_dir):
         mkdir(tmp_dir)
 
     chdir(tmp_dir)
     if newVersion(client_url):
         downloadFile(client_url, o.timeout)
-    uncompressClient(basename(client_url))
-    replaceOldVersion(root_dir)
+    base_dir = uncompressClient(basename(client_url))
+    replaceOldVersion(root_dir, base_dir)
     chdir(start_dir)
     rmtree(tmp_dir)
 
