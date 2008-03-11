@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import tarfile
@@ -49,9 +49,10 @@ def downloadFile(client_url, timeout):
     try:
         u = urlopen(client_url)
     except IOError:
-        print 'Timeout on download!'
-        exit
+        print 'Timeout on download file:', client_url
+        exit()
 
+    # TODO: manage 404 error
     filename = basename(client_url)
     fd = open(filename, 'wb+')
     fd.write(u.read())
