@@ -22,10 +22,10 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import tarfile
-from urllib import urlopen
 from optparse import OptionParser
 from shutil import copyfile, rmtree
 from socket import setdefaulttimeout
+from urllib2 import urlopen, HTTPError
 from os import mkdir, chdir, walk, getcwd
 from os.path import basename, join, exists, abspath
 
@@ -48,11 +48,13 @@ def downloadFile(client_url, timeout):
     setdefaulttimeout(timeout)
     try:
         u = urlopen(client_url)
+    except HTTPError:
+        print 'Error on downloading file:', client_url
+        exit()
     except IOError:
         print 'Timeout on download file:', client_url
         exit()
 
-    # TODO: manage 404 error
     filename = basename(client_url)
     fd = open(filename, 'wb+')
     fd.write(u.read())
