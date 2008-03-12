@@ -52,21 +52,25 @@ def newVersion(client_url):
     # TODO
     return True
 
-def downloadFile(client_url, timeout):
 
+def downloadFile(url, timeout):
     setdefaulttimeout(timeout)
     try:
-        u = urlopen(client_url)
+        u = urlopen(url)
     except HTTPError:
-        raise UpdaterError('Error on downloading file: ' + client_url)
+        raise UpdaterError('Error on downloading file: %s' % url)
     except URLError:
-        raise UpdaterError('Url format error: ' + client_url)
+        raise UpdaterError('Url format error: %s' % url)
     except IOError:
-        raise UpdaterError('Timeout on download file: ' + client_url)
+        raise UpdaterError('Timeout on download file: %s' % url)
 
+    return u.read()
+
+def downloadClient(client_url, timeout):
+    data = downloadFile(client_url, timeout)
     filename = basename(client_url)
     fd = open(filename, 'wb+')
-    fd.write(u.read())
+    fd.write(data)
     fd.close()
 
 def uncompressClient(filename):
@@ -112,7 +116,7 @@ def updateClient():
     chdir(tmp_dir)
     try:
         if newVersion(client_url):
-            downloadFile(client_url, o.timeout)
+            downloadClient(client_url, o.timeout)
             base_dir = uncompressClient(basename(client_url))
             replaceOldVersion(root_dir, base_dir, ignore_list)
             chdir(start_dir)

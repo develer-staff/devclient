@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import unittest
@@ -29,19 +29,19 @@ class TestUpdater(unittest.TestCase):
     def testBadDomain(self):
         url = 'https://www.devler.com/~aleister/devclient/devclient.tgz'
         self.assertRaises(updater.UpdaterError,
-                          updater.downloadFile,
+                          updater.downloadClient,
                           url, 1)
 
     def testBadFilename(self):
         url = 'https://www.develer.com/~aleister/devclient/devlient.tgz'
         self.assertRaises(updater.UpdaterError,
-                          updater.downloadFile,
+                          updater.downloadClient,
                           url, 1)
 
     def testBadUrl(self):
         url = 'htps://www.develer.com/~aleister/devclient/devclient.tgz'
         self.assertRaises(updater.UpdaterError,
-                          updater.downloadFile,
+                          updater.downloadClient,
                           url, 1)
 
 
