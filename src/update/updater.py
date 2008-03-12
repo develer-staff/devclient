@@ -18,6 +18,10 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
+"""
+The script to manage auto updating of client.
+"""
+
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
@@ -36,6 +40,9 @@ from devclient import __version__
 
 
 class UpdaterError(Exception):
+    """
+    Base class for the exceptions of updater.
+    """
 
     def __init__(self, msg):
         self.msg = msg
@@ -54,10 +61,18 @@ def parseOption():
     return o
 
 def newVersion(client_version):
+    """
+    Check existance of a new version to download.
+
+    :Parameters:
+      client_version : str
+        the url of file that contains the version of client downloadable.
+    """
+
     try:
         online_version = map(int, downloadFile(client_version, 2).split('.'))
     except UpdaterError:
-        print 'No online version found, download new version'
+        print 'Unknown online version, download new version'
         return True
 
     local_version = map(int, __version__.split('.'))
@@ -65,6 +80,16 @@ def newVersion(client_version):
     return online_version > local_version
 
 def downloadFile(url, timeout):
+    """
+    Download a file from url and return its data.
+
+    :Parameters:
+      url : str
+        the url of file to download
+      timeout : int
+        timeout to wait before raising an error
+    """
+
     setdefaulttimeout(timeout)
     try:
         u = urlopen(url)
@@ -78,6 +103,16 @@ def downloadFile(url, timeout):
     return u.read()
 
 def downloadClient(client_url, timeout):
+    """
+    Download the client from an url and save it in the filesystem.
+
+    :Parameters:
+      client_url : str
+        the url of file to download
+      timeout : int
+        timeout to wait before raising error
+    """
+
     data = downloadFile(client_url, timeout)
     filename = basename(client_url)
     fd = open(filename, 'wb+')
@@ -85,6 +120,14 @@ def downloadClient(client_url, timeout):
     fd.close()
 
 def uncompressClient(filename):
+    """
+    Extracting the client
+
+    :Parameters:
+      filename : str
+        the name of the client
+    """
+
     tar = tarfile.open(filename)
     base_dir = normpath(tar.getnames()[0])
     tar.extractall()
@@ -92,6 +135,17 @@ def uncompressClient(filename):
     return base_dir
 
 def replaceOldVersion(root_dir, base_dir, ignore_list):
+    """
+    Replace the old version of client with the new files.
+
+    :Parameters:
+        root_dir : str
+          the root directory of the client installed
+        base_dir : str
+          the base directory of the new version of client
+        ignore_list : list
+          the list of files to be skipped
+    """
 
     chdir(base_dir)
     for root, dirs, files in walk('.'):
