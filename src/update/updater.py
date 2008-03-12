@@ -19,7 +19,7 @@
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
 """
-The script to manage auto updating of client.
+The module to manage auto updating of client.
 """
 
 __version__ = "$Revision$"[11:-2]
@@ -136,7 +136,7 @@ def uncompressClient(filename):
 
 def replaceOldVersion(root_dir, base_dir, ignore_list):
     """
-    Replace the old version of client with the new files.
+    Replace the old files of installed client with the new files.
 
     :Parameters:
         root_dir : str
@@ -165,6 +165,7 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
 
 def updateClient():
     o = parseOption()
+    # FIX: remove all the url from code
     base_url = "https://www.develer.com/~aleister/devclient/"
     client_url = join(base_url, "devclient.tgz")
     client_version = join(base_url, "devclient.version")
