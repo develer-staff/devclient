@@ -32,7 +32,7 @@ from socket import setdefaulttimeout
 from shutil import copyfile, rmtree, copymode
 from urllib2 import urlopen, HTTPError, URLError
 from os import mkdir, chdir, walk, getcwd, makedirs
-from os.path import basename, join, exists, abspath, normpath, dirname
+from os.path import basename, join, exists, abspath, normpath, dirname, split
 
 sys.path.append(join(getcwd(), dirname(sys.argv[0]), '..'))
 
@@ -150,18 +150,20 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
     chdir(base_dir)
     for root, dirs, files in walk('.'):
         for f in files:
-            filename = normpath(join(root, f))
-            if filename in ignore_list:
-                print 'skip file: %s' % filename
-                continue
+            source = normpath(join(root, f))
+            if source in ignore_list:
+                d, f = split(source)
+                dest = join(root_dir, d, 'ignore_ver.' + f)
+                print 'skip file: %s, save into %s' % (source, dest)
+            else:
+                dest = join(root_dir, source)
+                print '%s file:' % ('add', 'replace')[exists(source)], source
 
-            destfile = join(root_dir, filename)
-            print '%s file:' % ('add', 'replace')[exists(destfile)], destfile
-            if not exists(dirname(destfile)):
-                print 'create directory:', dirname(destfile)
-                makedirs(dirname(destfile))
-            copyfile(filename, destfile)
-            copymode(filename, destfile)
+            if not exists(dirname(dest)):
+                print 'create directory:', dirname(dest)
+                makedirs(dirname(dest))
+            copyfile(source, dest)
+            copymode(source, dest)
 
 def updateClient():
     o = parseOption()
