@@ -30,9 +30,10 @@ from urllib2 import urlopen, HTTPError, URLError
 from os import mkdir, chdir, walk, getcwd, makedirs
 from os.path import basename, join, exists, abspath, normpath, dirname
 
-sys.path.append('..')
+sys.path.append(join(getcwd(), dirname(sys.argv[0]), '..'))
 
 from devclient import __version__
+
 
 class UpdaterError(Exception):
 
@@ -116,10 +117,9 @@ def updateClient():
     if o.url:
        client_url = o.url
 
-    start_dir = getcwd()
-    tmp_dir = join(start_dir, 'temp')
+    tmp_dir = abspath(join(getcwd(), dirname(sys.argv[0]), 'temp'))
     # the root directory of client
-    root_dir = abspath(join(start_dir, '../..'))
+    root_dir = abspath(join(getcwd(), dirname(sys.argv[0]), '../..'))
     # files to be skipped, with path relative to root_dir
     ignore_list = []
     if not exists(tmp_dir):
@@ -131,9 +131,8 @@ def updateClient():
             downloadClient(client_url, o.timeout)
             base_dir = uncompressClient(basename(client_url))
             replaceOldVersion(root_dir, base_dir, ignore_list)
-            chdir(start_dir)
     except UpdaterError, e:
-            print e
+        print e
     finally:
         rmtree(tmp_dir)
 
