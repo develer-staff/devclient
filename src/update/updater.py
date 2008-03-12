@@ -21,6 +21,7 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import sys
 import tarfile
 from optparse import OptionParser
 from socket import setdefaulttimeout
@@ -29,6 +30,9 @@ from urllib2 import urlopen, HTTPError, URLError
 from os import mkdir, chdir, walk, getcwd, makedirs
 from os.path import basename, join, exists, abspath, normpath, dirname
 
+sys.path.append('..')
+
+from devclient import __version__
 
 class UpdaterError(Exception):
 
@@ -48,10 +52,16 @@ def parseOption():
     o, args = parser.parse_args()
     return o
 
-def newVersion(client_url):
-    # TODO
-    return True
+def newVersion(client_version):
+    try:
+        online_version = map(int, downloadFile(client_version, 2).split('.'))
+    except UpdaterError:
+        print 'No online version found, download new version'
+        return True
 
+    local_version = map(int, __version__.split('.'))
+    print 'online version:', online_version, 'local version:', local_version
+    return online_version > local_version
 
 def downloadFile(url, timeout):
     setdefaulttimeout(timeout)
@@ -100,7 +110,9 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
 
 def updateClient():
     o = parseOption()
-    client_url = "https://www.develer.com/~aleister/devclient/devclient.tgz"
+    base_url = "https://www.develer.com/~aleister/devclient/"
+    client_url = join(base_url, "devclient.tgz")
+    client_version = join(base_url, "devclient.version")
     if o.url:
        client_url = o.url
 
@@ -115,7 +127,7 @@ def updateClient():
 
     chdir(tmp_dir)
     try:
-        if newVersion(client_url):
+        if newVersion(client_version):
             downloadClient(client_url, o.timeout)
             base_dir = uncompressClient(basename(client_url))
             replaceOldVersion(root_dir, base_dir, ignore_list)
