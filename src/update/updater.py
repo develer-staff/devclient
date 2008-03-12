@@ -24,10 +24,19 @@ __docformat__ = 'restructuredtext'
 import tarfile
 from optparse import OptionParser
 from socket import setdefaulttimeout
-from urllib2 import urlopen, HTTPError
 from shutil import copyfile, rmtree, copymode
+from urllib2 import urlopen, HTTPError, URLError
 from os import mkdir, chdir, walk, getcwd, makedirs
 from os.path import basename, join, exists, abspath, normpath, dirname
+
+
+class UpdaterError(Exception):
+
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg
 
 
 def parseOption():
@@ -49,11 +58,11 @@ def downloadFile(client_url, timeout):
     try:
         u = urlopen(client_url)
     except HTTPError:
-        print 'Error on downloading file:', client_url
-        exit()
+        raise UpdaterError('Error on downloading file: ' + client_url)
+    except URLError:
+        raise UpdaterError('Url format error: ' + client_url)
     except IOError:
-        print 'Timeout on download file:', client_url
-        exit()
+        raise UpdaterError('Timeout on download file: ' + client_url)
 
     filename = basename(client_url)
     fd = open(filename, 'wb+')
@@ -101,12 +110,16 @@ def updateClient():
         mkdir(tmp_dir)
 
     chdir(tmp_dir)
-    if newVersion(client_url):
-        downloadFile(client_url, o.timeout)
-    base_dir = uncompressClient(basename(client_url))
-    replaceOldVersion(root_dir, base_dir, ignore_list)
-    chdir(start_dir)
-    rmtree(tmp_dir)
+    try:
+        if newVersion(client_url):
+            downloadFile(client_url, o.timeout)
+            base_dir = uncompressClient(basename(client_url))
+            replaceOldVersion(root_dir, base_dir, ignore_list)
+            chdir(start_dir)
+    except UpdaterError, e:
+            print e
+    finally:
+        rmtree(tmp_dir)
 
 if __name__ == '__main__':
     updateClient()
