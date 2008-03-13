@@ -31,12 +31,22 @@ from optparse import OptionParser
 from socket import setdefaulttimeout
 from shutil import copyfile, rmtree, copymode
 from urllib2 import urlopen, HTTPError, URLError
-from os import mkdir, chdir, walk, getcwd, makedirs
-from os.path import basename, join, exists, abspath, normpath, dirname, split
+from os import mkdir, chdir, walk, getcwd, makedirs, rename
+from os.path import basename, splitext, split, abspath
+from os.path import exists, join, normpath, dirname
 
 sys.path.append(join(getcwd(), dirname(sys.argv[0]), '..'))
 
 from devclient import __version__
+
+
+# the root directory of client
+_ROOT_DIR = abspath(join(getcwd(), dirname(sys.argv[0]), '../..'))
+
+_TMP_DIR = abspath(join(getcwd(), dirname(sys.argv[0]), 'temp'))
+
+# the module itself
+_SELF_MODULE = abspath(sys.argv[0])[len(_ROOT_DIR) + 1:]
 
 
 class UpdaterError(Exception):
@@ -155,6 +165,12 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
                 d, f = split(source)
                 dest = join(root_dir, d, 'ignore_ver.' + f)
                 print 'skip file: %s, save into %s' % (source, dest)
+            elif source == _SELF_MODULE:
+                dest = join(root_dir, source)
+                d, f = split(dest)
+                name, ext = splitext(f)
+                rename(dest, join(d, name + '_old' + ext))
+                print '%s file replace (old version backupped)' % source
             else:
                 dest = join(root_dir, source)
                 print '%s file:' % ('add', 'replace')[exists(source)], source
@@ -169,29 +185,27 @@ def updateClient():
     o = parseOption()
     # FIX: remove all the url from code
     base_url = "https://www.develer.com/~aleister/devclient/"
-    client_url = join(base_url, "devclient.tgz")
+    client_url = join(base_url, "devclient_branch.tgz")
     client_version = join(base_url, "devclient.version")
     if o.url:
        client_url = o.url
 
-    tmp_dir = abspath(join(getcwd(), dirname(sys.argv[0]), 'temp'))
-    # the root directory of client
-    root_dir = abspath(join(getcwd(), dirname(sys.argv[0]), '../..'))
     # files to be skipped, with path relative to root_dir
     ignore_list = []
-    if not exists(tmp_dir):
-        mkdir(tmp_dir)
+    if not exists(_TMP_DIR):
+        mkdir(_TMP_DIR)
 
-    chdir(tmp_dir)
+    chdir(_TMP_DIR)
     try:
         if newVersion(client_version):
             downloadClient(client_url, o.timeout)
             base_dir = uncompressClient(basename(client_url))
-            replaceOldVersion(root_dir, base_dir, ignore_list)
+            replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
     except UpdaterError, e:
         print e
     finally:
-        rmtree(tmp_dir)
+        chdir(_ROOT_DIR)  # change directory is required to remove the temp dir
+        rmtree(_TMP_DIR)
 
 if __name__ == '__main__':
     updateClient()
