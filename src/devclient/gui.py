@@ -171,7 +171,7 @@ class GameLogger(object):
     encoding = "ISO-8859-1"
 
     def __init__(self, server_name, preferences):
-        if not preferences or not preferences[3]:
+        if not preferences or not preferences[3] or not server_name:
             return
 
         dir_name = join(config['logger']['path'], server_name)
