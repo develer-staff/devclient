@@ -31,7 +31,7 @@ from optparse import OptionParser
 from socket import setdefaulttimeout
 from shutil import copyfile, rmtree, copymode
 from urllib2 import urlopen, HTTPError, URLError
-from os import mkdir, chdir, walk, getcwd, makedirs, rename
+from os import mkdir, chdir, walk, getcwd, makedirs, rename, stat
 from os.path import basename, splitext, split, abspath
 from os.path import exists, join, normpath, dirname
 
@@ -164,16 +164,22 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             if source in ignore_list:
                 d, f = split(source)
                 dest = join(root_dir, d, 'ignore_ver.' + f)
+                if stat(source)[6] == stat(dest)[6]:
+                    continue
                 print 'skip file: %s, save into %s' % (source, dest)
-            elif source == _SELF_MODULE:
-                dest = join(root_dir, source)
-                d, f = split(dest)
-                name, ext = splitext(f)
-                rename(dest, join(d, name + '_old' + ext))
-                print '%s file replace (old version backupped)' % source
             else:
                 dest = join(root_dir, source)
-                print '%s file:' % ('add', 'replace')[exists(source)], source
+                if stat(source)[6] == stat(dest)[6]:
+                    continue
+
+                if source == _SELF_MODULE:
+                    d, f = split(dest)
+                    name, ext = splitext(f)
+                    rename(dest, join(d, name + '_old' + ext))
+                    print '%s file replace (old version backupped)' % source
+                else:
+                    print '%s file:' % ('add', 'replace')[exists(source)], \
+                        source
 
             if not exists(dirname(dest)):
                 print 'create directory:', dirname(dest)
