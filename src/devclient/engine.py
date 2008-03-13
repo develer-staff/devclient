@@ -27,12 +27,14 @@ import random
 import signal
 import os.path
 import subprocess
-from os.path import dirname, join
+from os.path import dirname, join, abspath, normpath
 from sys import path, argv, platform
 
 import exception
 from conf import loadConfiguration, config
 
+_DEF_CONFIG_FILE = "../../etc/devclient.cfg"
+cfg_file = normpath(join(dirname(abspath(__file__)), _DEF_CONFIG_FILE))
 
 def terminateProcess(pid):
     """
@@ -68,7 +70,7 @@ def startProcess(cmd):
 
     return subprocess.Popen(cmd, startupinfo=startupinfo)
 
-def main(argv=argv, cfg_file="../etc/devclient.cfg"):
+def main(argv=argv, cfg_file=cfg_file):
     """
     The function is the client entry point.
     """
