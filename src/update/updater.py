@@ -191,7 +191,7 @@ def updateClient():
     o = parseOption()
     # FIX: remove all the url from code
     base_url = "https://www.develer.com/~aleister/devclient/"
-    client_url = join(base_url, "devclient_branch.tgz")
+    client_url = join(base_url, "devclient.tar.bz2")
     client_version = join(base_url, "devclient.version")
     if o.url:
        client_url = o.url
