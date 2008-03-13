@@ -22,13 +22,13 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import os
-import sys
 import ctypes
 import random
 import signal
 import os.path
 import subprocess
 from os.path import dirname, join
+from sys import path, argv, platform
 
 import exception
 from conf import loadConfiguration, config
@@ -43,7 +43,7 @@ def terminateProcess(pid):
         the id of the process to kill
     """
 
-    if sys.platform == 'win32':
+    if platform == 'win32':
         handle = ctypes.windll.kernel32.OpenProcess(1, False, pid)
         ctypes.windll.kernel32.TerminateProcess(handle, -1)
         ctypes.windll.kernel32.CloseHandle(handle)
@@ -60,7 +60,7 @@ def startProcess(cmd):
         the name and parameters of the process to launch.
     """
 
-    if sys.platform == 'win32':  # Hide console on win32 platform
+    if platform == 'win32':  # Hide console on win32 platform
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     else:
@@ -68,8 +68,7 @@ def startProcess(cmd):
 
     return subprocess.Popen(cmd, startupinfo=startupinfo)
 
-
-def main(argv, cfg_file):
+def main(argv=argv, cfg_file="../etc/devclient.cfg"):
     """
     The function is the client entry point.
     """
@@ -77,11 +76,10 @@ def main(argv, cfg_file):
     os.chdir(join(os.getcwd(), dirname(argv[0]), dirname(cfg_file)))
     cfg_file = join(os.getcwd(), os.path.basename(cfg_file))
     loadConfiguration(cfg_file)
-    sys.path.append(config['servers']['path'])
-    sys.path.append(config['resources']['path'])
+    path.append(config['servers']['path'])
+    path.append(config['resources']['path'])
 
-    # this import must stay here, after the appending of resources path to
-    # sys.path
+    # this import must stay here, after the appending of resources path to path
     from gui import Gui
 
     port = random.randint(2000, 10000)

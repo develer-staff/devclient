@@ -25,9 +25,7 @@ This module is the client startup.
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import sys
-
 import devclient.engine
 
 if __name__ == '__main__':
-    devclient.engine.main(sys.argv, "../etc/devclient.cfg")
+    devclient.engine.main()
