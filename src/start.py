@@ -25,7 +25,12 @@ This module is the client startup.
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import devclient.engine
+from subprocess import call
+from os.path import normpath
 
 if __name__ == '__main__':
+    call(['python', normpath('update/updater.py')])
+
+    # This import must stay after updating of client
+    import devclient.engine
     devclient.engine.main()
