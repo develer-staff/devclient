@@ -30,6 +30,7 @@ import tarfile
 from filecmp import cmp
 from optparse import OptionParser
 from socket import setdefaulttimeout
+from ConfigParser import SafeConfigParser
 from shutil import copyfile, rmtree, copymode
 from urllib2 import urlopen, HTTPError, URLError
 from os import mkdir, chdir, walk, getcwd, makedirs, rename
@@ -48,6 +49,9 @@ _TMP_DIR = abspath(join(getcwd(), dirname(sys.argv[0]), 'temp'))
 
 _SELF_MODULE = abspath(sys.argv[0])[len(_ROOT_DIR) + 1:]
 """path of the module itself"""
+
+_CONFIG_FILE = 'updater.cfg'
+"""the configuration file"""
 
 
 class UpdaterError(Exception):
@@ -164,7 +168,8 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             source = normpath(join(root, f))
             if source in ignore_list:
                 d, f = split(source)
-                dest = join(root_dir, d, 'ignore_ver.' + f)
+                name, ext = splitext(f)
+                dest = join(root_dir, d, name + '_ignore' + ext)
                 if exists(dest) and cmp(source, dest):
                     continue
                 print 'skip file: %s, save into %s' % (source, dest)
@@ -189,25 +194,29 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             copymode(source, dest)
 
 def updateClient():
-    o = parseOption()
-    # FIX: remove all the url from code
-    base_url = "https://www.develer.com/~aleister/devclient/"
-    client_url = join(base_url, "devclient.tar.bz2")
-    client_version = join(base_url, "devclient.version")
-    if o.url:
-       client_url = o.url
+    cp = SafeConfigParser()
+    cp.read(_CONFIG_FILE)
+    config = {}
+    for s in cp.sections():
+        config[s] = dict(cp.items(s))
 
-    # files to be skipped, with path relative to root_dir
-    ignore_list = []
-    ignore_list = map(normpath, ignore_list)
+    if not int(config['main']['update']):
+        print 'Update disabled!'
+        return
+
+    o = parseOption()
+    if o.url:
+       config['client']['url'] = o.url
+
+    ignore_list = map(normpath, config['files']['ignore'].split(','))
     if not exists(_TMP_DIR):
         mkdir(_TMP_DIR)
 
     chdir(_TMP_DIR)
     try:
-        if newVersion(client_version):
-            downloadClient(client_url, o.timeout)
-            base_dir = uncompressClient(basename(client_url))
+        if newVersion(config['client']['version']):
+            downloadClient(config['client']['url'], o.timeout)
+            base_dir = uncompressClient(basename(config['client']['url']))
             replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
     except UpdaterError, e:
         print e
