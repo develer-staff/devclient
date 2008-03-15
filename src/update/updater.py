@@ -47,10 +47,10 @@ _ROOT_DIR = abspath(join(getcwd(), dirname(sys.argv[0]), '../..'))
 _TMP_DIR = abspath(join(getcwd(), dirname(sys.argv[0]), 'temp'))
 """temp directory where store data for the process of updating"""
 
-_SELF_MODULE = abspath(sys.argv[0])[len(_ROOT_DIR) + 1:]
+_SELF_MODULE = abspath(sys.argv[0])
 """path of the module itself"""
 
-_CONFIG_FILE = 'updater.cfg'
+_CONFIG_FILE = join(dirname(_SELF_MODULE), 'updater.cfg')
 """the configuration file"""
 
 
