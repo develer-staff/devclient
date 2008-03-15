@@ -37,20 +37,20 @@ from os import mkdir, chdir, walk, getcwd, makedirs, rename
 from os.path import basename, splitext, split, abspath
 from os.path import exists, join, normpath, dirname
 
-sys.path.append(join(getcwd(), dirname(sys.argv[0]), '..'))
+_SELF_MODULE = sys.argv[0]
+"""path of the module itself"""
+
+sys.path.append(join(getcwd(), dirname(_SELF_MODULE), '..'))
 from devclient import __version__
 """the public version of client"""
 
-_ROOT_DIR = abspath(join(getcwd(), dirname(sys.argv[0]), '../..'))
+_ROOT_DIR = abspath(join(getcwd(), dirname(_SELF_MODULE), '../..'))
 """the root directory of client"""
 
-_TMP_DIR = abspath(join(getcwd(), dirname(sys.argv[0]), 'temp'))
+_TMP_DIR = abspath(join(getcwd(), dirname(_SELF_MODULE), 'temp'))
 """temp directory where store data for the process of updating"""
 
-_SELF_MODULE = abspath(sys.argv[0])
-"""path of the module itself"""
-
-_CONFIG_FILE = join(dirname(_SELF_MODULE), 'updater.cfg')
+_CONFIG_FILE = join(dirname(abspath(_SELF_MODULE)), 'updater.cfg')
 """the configuration file"""
 
 
@@ -64,16 +64,6 @@ class UpdaterError(Exception):
 
     def __str__(self):
         return self.msg
-
-
-def parseOption():
-
-    parser = OptionParser()
-    parser.add_option('-u', '--url', help='the url of client')
-    parser.add_option('-t', '--timeout', type='int', default=2,
-                      help='timeout to retrieve the file (default %default)')
-    o, args = parser.parse_args()
-    return o
 
 def newVersion(client_version):
     """
@@ -94,7 +84,7 @@ def newVersion(client_version):
     print 'online version:', online_version, 'local version:', local_version
     return online_version > local_version
 
-def downloadFile(url, timeout):
+def downloadFile(url, timeout=2):
     """
     Download a file from url and return its data.
 
@@ -117,7 +107,7 @@ def downloadFile(url, timeout):
 
     return u.read()
 
-def downloadClient(client_url, timeout):
+def downloadClient(client_url, timeout=2):
     """
     Download the client from an url and save it in the filesystem.
 
@@ -203,10 +193,6 @@ def updateClient():
         print 'Update disabled!'
         return
 
-    o = parseOption()
-    if o.url:
-       config['client']['url'] = o.url
-
     ignore_list = map(normpath, config['files']['ignore'].split(','))
     if not exists(_TMP_DIR):
         mkdir(_TMP_DIR)
@@ -214,7 +200,7 @@ def updateClient():
     chdir(_TMP_DIR)
     try:
         if newVersion(config['client']['version']):
-            downloadClient(config['client']['url'], o.timeout)
+            downloadClient(config['client']['url'])
             base_dir = uncompressClient(basename(config['client']['url']))
             replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
     except UpdaterError, e:
