@@ -28,15 +28,15 @@ import updater
 class TestUpdater(unittest.TestCase):
     def testBadDomain(self):
         url = 'https://www.devler.com/~aleister/devclient/devclient.tgz'
-        self.assertRaises(updater.UpdaterError, updater.downloadClient, url)
+        self.assertRaises(updater.UpdaterError, updater.downloadFile, url)
 
     def testBadFilename(self):
         url = 'https://www.develer.com/~aleister/devclient/devlient.tgz'
-        self.assertRaises(updater.UpdaterError, updater.downloadClient, url)
+        self.assertRaises(updater.UpdaterError, updater.downloadFile, url)
 
     def testBadUrl(self):
         url = 'htps://www.develer.com/~aleister/devclient/devclient.tgz'
-        self.assertRaises(updater.UpdaterError, updater.downloadClient, url)
+        self.assertRaises(updater.UpdaterError, updater.downloadFile, url)
 
 
 if __name__ == '__main__':

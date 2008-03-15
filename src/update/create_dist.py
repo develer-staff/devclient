@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -47,11 +47,17 @@ _DIST_DIR = abspath(join(dirname(_SELF_MODULE), 'dist'))
 
 
 def createVersionFile():
+    """Create the file that contain the version of client"""
+
     fd = open(_PROJECT_NAME + '.version', 'w+')
     fd.write(__version__)
     fd.close()
 
 def createArchive():
+    """
+    Create the archive (compressed with bzip2) that contain the client.
+    """
+
     def is_admitted(name):
         if '.svn' in name:
             return False
