@@ -75,13 +75,14 @@ def newVersion(client_version):
     """
 
     try:
-        online_version = map(int, downloadFile(client_version, 2).split('.'))
+        online_str = downloadFile(client_version).strip()
+        online_version = map(int, online_str.split('.'))
     except UpdaterError:
         print 'Unknown online version, download new version'
         return True
 
     local_version = map(int, __version__.split('.'))
-    print 'online version:', online_version, 'local version:', local_version
+    print 'online version:', online_str, 'local version:', __version__
     return online_version > local_version
 
 def downloadFile(url, timeout=2):
