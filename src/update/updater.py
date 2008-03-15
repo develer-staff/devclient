@@ -33,7 +33,7 @@ from socket import setdefaulttimeout
 from ConfigParser import SafeConfigParser
 from shutil import copyfile, rmtree, copymode
 from urllib2 import urlopen, HTTPError, URLError
-from os import mkdir, chdir, walk, getcwd, makedirs, rename
+from os import mkdir, chdir, walk, getcwd, makedirs, rename, sep
 from os.path import basename, splitext, split, abspath
 from os.path import exists, join, normpath, dirname
 
@@ -135,7 +135,8 @@ def uncompressClient(filename):
     """
 
     tar = tarfile.open(filename)
-    base_dir = normpath(tar.getnames()[0])
+    name = normpath(tar.getnames()[0])
+    base_dir = name[:name.find(sep)]
     tar.extractall()
     tar.close()
     return base_dir
