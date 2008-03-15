@@ -184,8 +184,7 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
                     rename(dest, join(d, name + '_old' + ext))
                     print 'replace file: %s (old version backupped)' % source
                 else:
-                    print '%s file:' % ('add', 'replace')[exists(source)], \
-                        source
+                    print '%s file:' % ('add', 'replace')[exists(dest)], source
 
             if not exists(dirname(dest)):
                 print 'create directory:', dirname(dest)
