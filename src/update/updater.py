@@ -193,8 +193,9 @@ def updateClient():
 
     if not int(config['main']['update']):
         print 'Update disabled!'
-        return
+        return 0
 
+    retcode = 0
     ignore_list = map(normpath, config['files']['ignore'].split(','))
     if not exists(_TMP_DIR):
         mkdir(_TMP_DIR)
@@ -206,6 +207,7 @@ def updateClient():
             base_dir = uncompressClient(basename(config['client']['url']))
             replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
     except UpdaterError, e:
+        retcode = 1
         print e
     else:
         print 'Update successfully complete!'
@@ -213,5 +215,7 @@ def updateClient():
         chdir(_ROOT_DIR)  # change directory is required to remove the temp dir
         rmtree(_TMP_DIR)
 
+    return retcode
+
 if __name__ == '__main__':
-    updateClient()
+    sys.exit(updateClient())

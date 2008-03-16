@@ -84,7 +84,7 @@ class SocketToCore(object):
 
     def _commError(self, error=None):
         logger.error('SocketToCore: ' + self._s.errorString())
-        self._w._displayWarning(PROJECT_NAME, self._w._text['FatalError'])
+        self._w.displayWarning(PROJECT_NAME, self._w._text['FatalError'])
         raise exception.IPCError()
 
     def _readData(self, size):
@@ -376,6 +376,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self._text['NotConnected'] = QApplication.translate("dev_client",
             "Client is not connected", None, QApplication.UnicodeUTF8)
 
+        self._text['UpdateFail'] = QApplication.translate("dev_client",
+            "Unable to download update", None, QApplication.UnicodeUTF8)
+
     def closeEvent(self, event):
         if self.connected:
             if not self._displayQuestion(PROJECT_NAME,
@@ -404,7 +407,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         connections = Storage().connections()
         if not connections:
-            self._displayWarning(self._text['Connect'], self._text['NoConn'])
+            self.displayWarning(self._text['Connect'], self._text['NoConn'])
             return
 
         if id_conn:
@@ -451,7 +454,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _sendText(self):
         if not self.connected:
-            self._displayWarning(PROJECT_NAME, self._text['NotConnected'])
+            self.displayWarning(PROJECT_NAME, self._text['NotConnected'])
             return
 
         text = unicode(self.text_input.currentText())
@@ -478,14 +481,14 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 self.viewer.process(msg)
                 self.update()
             elif cmd == messages.CONN_REFUSED:
-                self._displayWarning(self._text['Connect'],
-                                     self._text['ConnError'])
+                self.displayWarning(self._text['Connect'],
+                                    self._text['ConnError'])
             elif cmd == messages.CONN_ESTABLISHED:
                 self.connected = msg[0]
                 self._startConnection(*msg[1:])
             elif cmd == messages.CONN_LOST:
-                self._displayWarning(self._text['Connect'],
-                                     self._text['ConnLost'])
+                self.displayWarning(self._text['Connect'],
+                                    self._text['ConnLost'])
                 self.connected = None
             elif cmd == messages.CONN_CLOSED:
                 self.connected = None
@@ -505,7 +508,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         box.exec_()
         return box.clickedButton() == yes
 
-    def _displayWarning(self, title, message):
+    def displayWarning(self, title, message):
         QMessageBox.warning(self, title, message)
 
     def mainLoop(self):

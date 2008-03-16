@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
+<defaultcodec></defaultcodec>
 <context>
     <name>RightWidget</name>
     <message>
@@ -8,34 +9,34 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="58"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="89"/>
         <source>Health</source>
         <translation>Vita</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="77"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="108"/>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#FF3333;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="103"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="134"/>
         <source>Mana</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="122"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="153"/>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#0066FF}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="148"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="179"/>
         <source>Movement</source>
         <translation>Movimento</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="167"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="198"/>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
@@ -131,6 +132,11 @@ p, li { white-space: pre-wrap; }
         <source>Client is not connected</source>
         <translation>Il client non è connesso</translation>
     </message>
+    <message>
+        <location filename="../../src/devclient/gui.py" line="382"/>
+        <source>Unable to download update</source>
+        <translation>Impossibile scaricare gli aggiornamenti</translation>
+    </message>
 </context>
 <context>
     <name>option</name>
@@ -160,7 +166,7 @@ p, li { white-space: pre-wrap; }
         <translation>Imposta come predefinita</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="942"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="941"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
@@ -262,46 +268,32 @@ p, li { white-space: pre-wrap; }
         <translation>Preferenze</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="797"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="798"/>
         <source>Echo Color</source>
         <translation>Colore Echo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="832"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="833"/>
         <source>Keep text entered</source>
         <translation>Tieni testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="749"/>
-        <source> QGroupBox {  border-top: 1px solid gray; margin-top: 2ex;} 
-
-QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left;  padding: 0 3px;  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,                                       stop: 0 #FFOECE, stop: 1 #FFFFFF); }</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="754"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="752"/>
         <source>Text inserted</source>
         <translation>Testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="778"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="779"/>
         <source>Echo text</source>
         <translation>Echo testo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="862"/>
-        <source> QGroupBox {  border-top: 1px solid gray; margin-top: 2ex;} 
-
-QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left;  padding: 0 3px; }</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="867"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="866"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="894"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="893"/>
         <source>Save log</source>
         <translation>Salva log</translation>
     </message>

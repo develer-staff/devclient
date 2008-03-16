@@ -31,6 +31,7 @@ from os.path import dirname, join, abspath, normpath
 from sys import path, argv, platform
 
 import exception
+from constants import PROJECT_NAME
 from conf import loadConfiguration, config
 
 _DEF_CONFIG_FILE = "../../etc/devclient.cfg"
@@ -70,7 +71,7 @@ def startProcess(cmd):
 
     return subprocess.Popen(cmd, startupinfo=startupinfo)
 
-def main(argv=argv, cfg_file=cfg_file):
+def main(argv=argv, cfg_file=cfg_file, update=1):
     """
     The function is the client entry point.
     """
@@ -97,6 +98,9 @@ def main(argv=argv, cfg_file=cfg_file):
 
     try:
         gui = Gui(port)
+        if not update:
+            gui.displayWarning(PROJECT_NAME, gui._text['UpdateFail'])
         gui.mainLoop()
     except exception.IPCError:
         terminateProcess(p.pid)
+
