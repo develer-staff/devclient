@@ -345,39 +345,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _translateText(self):
         self._text = {}
-        self._text['Connect'] = QApplication.translate("dev_client", "Connect",
-            None, QApplication.UnicodeUTF8)
-
-        self._text['NoConn'] = QApplication.translate("dev_client",
-            "There aren't connections defined", None, QApplication.UnicodeUTF8)
-
-        self._text['ConnError'] = QApplication.translate("dev_client",
-            "Unable to establish connection", None, QApplication.UnicodeUTF8)
-
-        self._text['Yes'] = QApplication.translate("dev_client", "Yes",
-            None, QApplication.UnicodeUTF8)
-
-        self._text['No'] = QApplication.translate("dev_client", "No",
-            None, QApplication.UnicodeUTF8)
-
-        self._text['CloseConfirm'] = QApplication.translate("dev_client",
-            "Really quit?", None, QApplication.UnicodeUTF8)
-
-        self._text['CloseConn'] = QApplication.translate("dev_client",
-            "Really close connection?", None, QApplication.UnicodeUTF8)
-
-        self._text['FatalError'] = QApplication.translate("dev_client",
-            "Fatal Error, please restart your client", None,
-            QApplication.UnicodeUTF8)
-
-        self._text['ConnLost'] = QApplication.translate("dev_client",
-            "Connection lost", None, QApplication.UnicodeUTF8)
-
-        self._text['NotConnected'] = QApplication.translate("dev_client",
-            "Client is not connected", None, QApplication.UnicodeUTF8)
-
-        self._text['UpdateFail'] = QApplication.translate("dev_client",
-            "Unable to download update", None, QApplication.UnicodeUTF8)
+        execfile(join(config['devclient']['path'], 'gui.msg') , self._text)
 
     def closeEvent(self, event):
         if self.connected:

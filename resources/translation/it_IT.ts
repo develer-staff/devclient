@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
-<defaultcodec></defaultcodec>
 <context>
     <name>RightWidget</name>
     <message>
@@ -58,7 +57,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>dev_client</name>
     <message>
-        <location filename="../../src/devclient/gui.py" line="351"/>
+        <location filename="../../src/devclient/gui.msg" line="5"/>
         <source>Connect</source>
         <translation>Connetti</translation>
     </message>
@@ -68,12 +67,12 @@ p, li { white-space: pre-wrap; }
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="354"/>
+        <location filename="../../src/devclient/gui.msg" line="7"/>
         <source>There aren&apos;t connections defined</source>
         <translation>Non ci sono connessioni definite</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="357"/>
+        <location filename="../../src/devclient/gui.msg" line="9"/>
         <source>Unable to establish connection</source>
         <translation>Impossibile stabilire la connessione</translation>
     </message>
@@ -88,32 +87,32 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="360"/>
+        <location filename="../../src/devclient/gui.msg" line="11"/>
         <source>Yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="363"/>
+        <location filename="../../src/devclient/gui.msg" line="13"/>
         <source>No</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="366"/>
+        <location filename="../../src/devclient/gui.msg" line="15"/>
         <source>Really quit?</source>
         <translation>Vuoi davvero uscire?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="369"/>
+        <location filename="../../src/devclient/gui.msg" line="17"/>
         <source>Really close connection?</source>
         <translation>Vuoi davvero chiudere la connessione?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="373"/>
+        <location filename="../../src/devclient/gui.msg" line="19"/>
         <source>Fatal Error, please restart your client</source>
         <translation>Errore irreversibile, riavviare il client</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="376"/>
+        <location filename="../../src/devclient/gui.msg" line="21"/>
         <source>Connection lost</source>
         <translation>Connessione persa</translation>
     </message>
@@ -128,13 +127,13 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="379"/>
+        <location filename="../../src/devclient/gui.msg" line="23"/>
         <source>Client is not connected</source>
         <translation>Il client non è connesso</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.py" line="382"/>
-        <source>Unable to download update</source>
+        <location filename="../../src/devclient/gui.msg" line="23"/>
+        <source>Unable to download updates</source>
         <translation>Impossibile scaricare gli aggiornamenti</translation>
     </message>
 </context>

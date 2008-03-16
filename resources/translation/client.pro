@@ -1,6 +1,6 @@
 TRANSLATIONS = it_IT.ts
 
-SOURCES = ../../src/devclient/gui.py \
+SOURCES = ../../src/devclient/gui.msg \
           ../../src/devclient/gui_option.py
 
 FORMS = ../../src/devclient/gui_src/gui.ui \
