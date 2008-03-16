@@ -100,9 +100,9 @@ def downloadFile(url, timeout=2):
     try:
         u = urlopen(url)
     except HTTPError:
-        raise UpdaterError('Error on downloading file: %s' % url)
+        raise UpdaterError('Unable to download file: %s' % url)
     except URLError:
-        raise UpdaterError('Url format error: %s' % url)
+        raise UpdaterError('Url malformed: %s' % url)
     except IOError:
         raise UpdaterError('Timeout on download file: %s' % url)
 
@@ -134,11 +134,14 @@ def uncompressClient(filename):
         the name of the client
     """
 
-    tar = tarfile.open(filename)
-    name = normpath(tar.getnames()[0])
-    base_dir = name[:name.find(sep)]
-    tar.extractall()
-    tar.close()
+    try:
+        tar = tarfile.open(filename)
+        name = normpath(tar.getnames()[0])
+        base_dir = name[:name.find(sep)]
+        tar.extractall()
+        tar.close()
+    except tarfile.ReadError:
+        raise UpdaterError('Archive malformed')
     return base_dir
 
 def replaceOldVersion(root_dir, base_dir, ignore_list):
@@ -207,7 +210,7 @@ def updateClient():
             base_dir = uncompressClient(basename(config['client']['url']))
             replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
     except UpdaterError, e:
-        print e
+        print 'ERROR:', e
     else:
         retcode = 0
         print 'Update successfully complete!'
