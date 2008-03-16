@@ -80,6 +80,5 @@ the `core` receive the message and transform it (with module `parse`) into a
 display data.
 """
 
-__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
-
+from constants import PUBLIC_VERSION as __version__

@@ -21,8 +21,23 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-PUBLIC_VERSION = '0.4.00'
-"""Public version of client."""
+import unittest
 
-PROJECT_NAME = 'DevClient'
-"""The name of project"""
+import updater
+
+class TestUpdater(unittest.TestCase):
+    def testBadDomain(self):
+        url = 'https://www.devler.com/~aleister/devclient/devclient.tgz'
+        self.assertRaises(updater.UpdaterError, updater.downloadFile, url)
+
+    def testBadFilename(self):
+        url = 'https://www.develer.com/~aleister/devclient/devlient.tgz'
+        self.assertRaises(updater.UpdaterError, updater.downloadFile, url)
+
+    def testBadUrl(self):
+        url = 'htps://www.develer.com/~aleister/devclient/devclient.tgz'
+        self.assertRaises(updater.UpdaterError, updater.downloadFile, url)
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -26,8 +26,14 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
-
-import devclient.engine
+from subprocess import call
+from os.path import normpath, join, dirname
 
 if __name__ == '__main__':
-    devclient.engine.main(sys.argv, "../etc/devclient.cfg")
+    retcode = call(['python', join(dirname(sys.argv[0]),
+                                   normpath('update/updater.py'))])
+
+    # This import must stay after updating of client
+    import devclient.engine
+    devclient.engine.main(update=not retcode)
+

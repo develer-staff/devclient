@@ -84,7 +84,7 @@ class SocketToCore(object):
 
     def _commError(self, error=None):
         logger.error('SocketToCore: ' + self._s.errorString())
-        self._w._displayWarning(PROJECT_NAME, self._w._text['FatalError'])
+        self._w.displayWarning(PROJECT_NAME, self._w._text['FatalError'])
         raise exception.IPCError()
 
     def _readData(self, size):
@@ -171,7 +171,7 @@ class GameLogger(object):
     encoding = "ISO-8859-1"
 
     def __init__(self, server_name, preferences):
-        if not preferences or not preferences[3]:
+        if not preferences or not preferences[3] or not server_name:
             return
 
         dir_name = join(config['logger']['path'], server_name)
@@ -345,36 +345,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _translateText(self):
         self._text = {}
-        self._text['Connect'] = QApplication.translate("dev_client", "Connect",
-            None, QApplication.UnicodeUTF8)
-
-        self._text['NoConn'] = QApplication.translate("dev_client",
-            "There aren't connections defined", None, QApplication.UnicodeUTF8)
-
-        self._text['ConnError'] = QApplication.translate("dev_client",
-            "Unable to establish connection", None, QApplication.UnicodeUTF8)
-
-        self._text['Yes'] = QApplication.translate("dev_client", "Yes",
-            None, QApplication.UnicodeUTF8)
-
-        self._text['No'] = QApplication.translate("dev_client", "No",
-            None, QApplication.UnicodeUTF8)
-
-        self._text['CloseConfirm'] = QApplication.translate("dev_client",
-            "Really quit?", None, QApplication.UnicodeUTF8)
-
-        self._text['CloseConn'] = QApplication.translate("dev_client",
-            "Really close connection?", None, QApplication.UnicodeUTF8)
-
-        self._text['FatalError'] = QApplication.translate("dev_client",
-            "Fatal Error, please restart your client", None,
-            QApplication.UnicodeUTF8)
-
-        self._text['ConnLost'] = QApplication.translate("dev_client",
-            "Connection lost", None, QApplication.UnicodeUTF8)
-
-        self._text['NotConnected'] = QApplication.translate("dev_client",
-            "Client is not connected", None, QApplication.UnicodeUTF8)
+        execfile(join(config['devclient']['path'], 'gui.msg') , self._text)
 
     def closeEvent(self, event):
         if self.connected:
@@ -404,7 +375,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         connections = Storage().connections()
         if not connections:
-            self._displayWarning(self._text['Connect'], self._text['NoConn'])
+            self.displayWarning(self._text['Connect'], self._text['NoConn'])
             return
 
         if id_conn:
@@ -451,7 +422,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _sendText(self):
         if not self.connected:
-            self._displayWarning(PROJECT_NAME, self._text['NotConnected'])
+            self.displayWarning(PROJECT_NAME, self._text['NotConnected'])
             return
 
         text = unicode(self.text_input.currentText())
@@ -478,14 +449,14 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 self.viewer.process(msg)
                 self.update()
             elif cmd == messages.CONN_REFUSED:
-                self._displayWarning(self._text['Connect'],
-                                     self._text['ConnError'])
+                self.displayWarning(self._text['Connect'],
+                                    self._text['ConnError'])
             elif cmd == messages.CONN_ESTABLISHED:
                 self.connected = msg[0]
                 self._startConnection(*msg[1:])
             elif cmd == messages.CONN_LOST:
-                self._displayWarning(self._text['Connect'],
-                                     self._text['ConnLost'])
+                self.displayWarning(self._text['Connect'],
+                                    self._text['ConnLost'])
                 self.connected = None
             elif cmd == messages.CONN_CLOSED:
                 self.connected = None
@@ -505,7 +476,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         box.exec_()
         return box.clickedButton() == yes
 
-    def _displayWarning(self, title, message):
+    def displayWarning(self, title, message):
         QMessageBox.warning(self, title, message)
 
     def mainLoop(self):
