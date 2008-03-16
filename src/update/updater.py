@@ -33,24 +33,27 @@ from socket import setdefaulttimeout
 from ConfigParser import SafeConfigParser
 from shutil import copyfile, rmtree, copymode
 from urllib2 import urlopen, HTTPError, URLError
-from os import mkdir, chdir, walk, getcwd, makedirs, rename, sep
+from os import chdir, walk, getcwd, makedirs, rename, sep
 from os.path import basename, splitext, split, abspath
 from os.path import exists, join, normpath, dirname
 
-_SELF_MODULE = sys.argv[0]
-"""path of the module itself"""
+_SELF_MODULE = basename(sys.argv[0])
+"""name of the module itself"""
 
-sys.path.append(join(getcwd(), dirname(_SELF_MODULE), '..'))
+_SELF_DIR = dirname(sys.argv[0])
+"""directory of the module itself"""
+
+sys.path.append(join(getcwd(), _SELF_DIR, '..'))
 from devclient import __version__
 """the public version of client"""
 
-_ROOT_DIR = abspath(join(getcwd(), dirname(_SELF_MODULE), '../..'))
+_ROOT_DIR = abspath(join(getcwd(), _SELF_DIR, '../..'))
 """the root directory of client"""
 
-_TMP_DIR = abspath(join(getcwd(), dirname(_SELF_MODULE), 'temp'))
+_TMP_DIR = abspath(join(getcwd(), _SELF_DIR, 'temp'))
 """temp directory where store data for the process of updating"""
 
-_CONFIG_FILE = join(dirname(abspath(_SELF_MODULE)), 'updater.cfg')
+_CONFIG_FILE = join(abspath(_SELF_DIR), 'updater.cfg')
 """the configuration file"""
 
 
@@ -173,7 +176,8 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
                 if exists(dest) and cmp(source, dest):
                     continue
 
-                if source == _SELF_MODULE:
+                # FIX: this check should be done from the root dir of client
+                if basename(source) == _SELF_MODULE:
                     d, f = split(dest)
                     name, ext = splitext(f)
                     rename(dest, join(d, name + '_old' + ext))
@@ -201,7 +205,7 @@ def updateClient():
     retcode = 1
     ignore_list = map(normpath, config['files']['ignore'].split(','))
     if not exists(_TMP_DIR):
-        mkdir(_TMP_DIR)
+        makedirs(_TMP_DIR)
 
     chdir(_TMP_DIR)
     try:

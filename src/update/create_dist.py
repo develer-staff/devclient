@@ -26,13 +26,13 @@ import tarfile
 from os import makedirs, chdir, getcwd, walk
 from os.path import exists, abspath, dirname, join, normpath, splitext, isfile
 
-_SELF_MODULE = sys.argv[0]
-"""path of the module itself"""
+_SELF_DIR = dirname(sys.argv[0])
+"""directory of the module itself"""
 
-_ROOT_DIR = abspath(join(getcwd(), dirname(_SELF_MODULE), '../..'))
+_ROOT_DIR = abspath(join(getcwd(), _SELF_DIR, '../..'))
 """the root directory of project"""
 
-sys.path.append(join(getcwd(), dirname(_SELF_MODULE), '..'))
+sys.path.append(join(getcwd(), _SELF_DIR, '..'))
 from devclient import __version__
 """the public version of client"""
 
@@ -43,7 +43,7 @@ _ADMITTED_EXT = ('py', 'ui', 'cfg', 'qrc', 'png', 'pro', 'qm', 'ts', 'GPL',
 _PROJECT_NAME = 'devclient'
 """the project name"""
 
-_DIST_DIR = abspath(join(dirname(_SELF_MODULE), 'dist'))
+_DIST_DIR = abspath(join(_SELF_DIR, 'dist'))
 """the directory of distribution's file"""
 
 
