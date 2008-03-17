@@ -467,6 +467,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         box = QMessageBox(self)
         box.setWindowTitle(title)
         box.setText(message)
+        box.setIcon(QMessageBox.Question)
         yes = box.addButton(self._text['Yes'], QMessageBox.AcceptRole)
         yes.setIcon(QIcon(":/images/button-yes.png"))
         no = box.addButton(self._text['No'], QMessageBox.RejectRole)
