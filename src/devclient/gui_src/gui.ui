@@ -52,6 +52,9 @@
       <property name="styleSheet" >
        <string>QTextEdit { background-color: #000000; font: 10pt "Courier"; color: #FFFFFF;}</string>
       </property>
+      <property name="undoRedoEnabled" >
+       <bool>false</bool>
+      </property>
       <property name="readOnly" >
        <bool>true</bool>
       </property>

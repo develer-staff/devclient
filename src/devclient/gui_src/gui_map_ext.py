@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_map_ext.ui'
 #
-# Created: Sun Mar 16 13:00:45 2008
+# Created: Mon Mar 17 23:02:03 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -20,21 +20,22 @@ class Ui_RightWidget(object):
         self.text_map.setFocusPolicy(QtCore.Qt.NoFocus)
         self.text_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.text_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.text_map.setUndoRedoEnabled(False)
         self.text_map.setReadOnly(True)
         self.text_map.setProperty("char_width",QtCore.QVariant(31))
         self.text_map.setProperty("char_height",QtCore.QVariant(21))
         self.text_map.setObjectName("text_map")
 
-        self.widget = QtGui.QWidget(RightWidget)
-        self.widget.setGeometry(QtCore.QRect(0,433,256,116))
-        self.widget.setObjectName("widget")
+        self.layoutWidget = QtGui.QWidget(RightWidget)
+        self.layoutWidget.setGeometry(QtCore.QRect(0,433,256,116))
+        self.layoutWidget.setObjectName("layoutWidget")
 
-        self.gridlayout = QtGui.QGridLayout(self.widget)
+        self.gridlayout = QtGui.QGridLayout(self.layoutWidget)
         self.gridlayout.setContentsMargins(5,-1,-1,-1)
         self.gridlayout.setVerticalSpacing(5)
         self.gridlayout.setObjectName("gridlayout")
 
-        self.label_health = QtGui.QLabel(self.widget)
+        self.label_health = QtGui.QLabel(self.layoutWidget)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -45,7 +46,7 @@ class Ui_RightWidget(object):
         self.label_health.setObjectName("label_health")
         self.gridlayout.addWidget(self.label_health,0,0,1,1)
 
-        self.bar_health = QtGui.QProgressBar(self.widget)
+        self.bar_health = QtGui.QProgressBar(self.layoutWidget)
         self.bar_health.setMinimumSize(QtCore.QSize(0,22))
         self.bar_health.setMaximumSize(QtCore.QSize(16777215,22))
         self.bar_health.setProperty("value",QtCore.QVariant(100))
@@ -53,7 +54,7 @@ class Ui_RightWidget(object):
         self.bar_health.setObjectName("bar_health")
         self.gridlayout.addWidget(self.bar_health,0,1,1,1)
 
-        self.label_mana = QtGui.QLabel(self.widget)
+        self.label_mana = QtGui.QLabel(self.layoutWidget)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -64,7 +65,7 @@ class Ui_RightWidget(object):
         self.label_mana.setObjectName("label_mana")
         self.gridlayout.addWidget(self.label_mana,1,0,1,1)
 
-        self.bar_mana = QtGui.QProgressBar(self.widget)
+        self.bar_mana = QtGui.QProgressBar(self.layoutWidget)
         self.bar_mana.setMinimumSize(QtCore.QSize(0,22))
         self.bar_mana.setMaximumSize(QtCore.QSize(16777215,22))
         self.bar_mana.setProperty("value",QtCore.QVariant(100))
@@ -72,7 +73,7 @@ class Ui_RightWidget(object):
         self.bar_mana.setObjectName("bar_mana")
         self.gridlayout.addWidget(self.bar_mana,1,1,1,1)
 
-        self.label_movement = QtGui.QLabel(self.widget)
+        self.label_movement = QtGui.QLabel(self.layoutWidget)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -83,7 +84,7 @@ class Ui_RightWidget(object):
         self.label_movement.setObjectName("label_movement")
         self.gridlayout.addWidget(self.label_movement,2,0,1,1)
 
-        self.bar_movement = QtGui.QProgressBar(self.widget)
+        self.bar_movement = QtGui.QProgressBar(self.layoutWidget)
         self.bar_movement.setMinimumSize(QtCore.QSize(0,22))
         self.bar_movement.setMaximumSize(QtCore.QSize(16777215,22))
         self.bar_movement.setProperty("value",QtCore.QVariant(100))

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Tue Mar  4 19:42:13 2008
+# Created: Mon Mar 17 23:00:31 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -369,26 +369,26 @@ class Ui_option(object):
         self.tab_option.setObjectName("tab_option")
 
         self.groupBox = QtGui.QGroupBox(self.tab_option)
-        self.groupBox.setGeometry(QtCore.QRect(10,10,286,91))
+        self.groupBox.setGeometry(QtCore.QRect(10,10,291,91))
         self.groupBox.setFlat(True)
         self.groupBox.setObjectName("groupBox")
 
         self.layoutWidget2 = QtGui.QWidget(self.groupBox)
-        self.layoutWidget2.setGeometry(QtCore.QRect(2,10,284,81))
+        self.layoutWidget2.setGeometry(QtCore.QRect(2,10,286,81))
         self.layoutWidget2.setObjectName("layoutWidget2")
 
         self.gridlayout6 = QtGui.QGridLayout(self.layoutWidget2)
-        self.gridlayout6.setHorizontalSpacing(2)
+        self.gridlayout6.setHorizontalSpacing(5)
         self.gridlayout6.setObjectName("gridlayout6")
 
         self.echo_text = QtGui.QCheckBox(self.layoutWidget2)
-        self.echo_text.setMinimumSize(QtCore.QSize(100,0))
+        self.echo_text.setMinimumSize(QtCore.QSize(90,0))
         self.echo_text.setObjectName("echo_text")
         self.gridlayout6.addWidget(self.echo_text,0,0,1,1)
 
         self.echo_color_button = QtGui.QPushButton(self.layoutWidget2)
-        self.echo_color_button.setMinimumSize(QtCore.QSize(90,27))
-        self.echo_color_button.setMaximumSize(QtCore.QSize(90,16777215))
+        self.echo_color_button.setMinimumSize(QtCore.QSize(80,22))
+        self.echo_color_button.setMaximumSize(QtCore.QSize(80,16777215))
         self.echo_color_button.setObjectName("echo_color_button")
         self.gridlayout6.addWidget(self.echo_color_button,0,1,1,1)
 
@@ -400,7 +400,7 @@ class Ui_option(object):
         self.gridlayout6.addWidget(self.echo_color,0,2,1,1)
 
         self.keep_text = QtGui.QCheckBox(self.layoutWidget2)
-        self.keep_text.setMinimumSize(QtCore.QSize(200,0))
+        self.keep_text.setMinimumSize(QtCore.QSize(195,0))
         self.keep_text.setObjectName("keep_text")
         self.gridlayout6.addWidget(self.keep_text,1,0,1,2)
 

@@ -741,7 +741,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>286</width>
+       <width>291</width>
        <height>91</height>
       </rect>
      </property>
@@ -759,19 +759,19 @@
        <rect>
         <x>2</x>
         <y>10</y>
-        <width>284</width>
+        <width>286</width>
         <height>81</height>
        </rect>
       </property>
       <layout class="QGridLayout" >
        <property name="horizontalSpacing" >
-        <number>2</number>
+        <number>5</number>
        </property>
        <item row="0" column="0" >
         <widget class="QCheckBox" name="echo_text" >
          <property name="minimumSize" >
           <size>
-           <width>100</width>
+           <width>90</width>
            <height>0</height>
           </size>
          </property>
@@ -784,13 +784,13 @@
         <widget class="QPushButton" name="echo_color_button" >
          <property name="minimumSize" >
           <size>
-           <width>90</width>
-           <height>27</height>
+           <width>80</width>
+           <height>22</height>
           </size>
          </property>
          <property name="maximumSize" >
           <size>
-           <width>90</width>
+           <width>80</width>
            <height>16777215</height>
           </size>
          </property>
@@ -825,7 +825,7 @@
         <widget class="QCheckBox" name="keep_text" >
          <property name="minimumSize" >
           <size>
-           <width>200</width>
+           <width>195</width>
            <height>0</height>
           </size>
          </property>

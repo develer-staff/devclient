@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sat Feb 23 12:13:38 2008
+# Created: Mon Mar 17 23:01:07 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,6 +31,7 @@ class Ui_dev_client(object):
         self.text_output.setSizePolicy(sizePolicy)
         self.text_output.setMinimumSize(QtCore.QSize(690,0))
         self.text_output.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.text_output.setUndoRedoEnabled(False)
         self.text_output.setReadOnly(True)
         self.text_output.setObjectName("text_output")
         self.gridlayout.addWidget(self.text_output,0,0,1,1)
