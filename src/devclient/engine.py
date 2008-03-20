@@ -103,4 +103,7 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
         gui.mainLoop()
     except exception.IPCError:
         terminateProcess(p.pid)
+    except Exception, e:
+        print 'Fatal Exception:', e
+        terminateProcess(p.pid)
 
