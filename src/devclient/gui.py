@@ -370,7 +370,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                      self._reloadPreferences)
         opt.show()
 
-    def _connect(self, id_conn = None):
+    def _connect(self, id_conn=None):
         if self.connected:
             if not self._displayQuestion(self._text['Connect'],
                                          self._text['CloseConn']):
@@ -399,6 +399,11 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
           conn : str
             the name of connection
         """
+
+        if not conn:
+            self.list_conn.clear()
+            for el in self._storage.connections():
+                self.list_conn.addItem(el[1], QVariant(el[0]))
 
         if self.connected and self.connected == conn:
             self.macros = self._storage.macros(self.connected)

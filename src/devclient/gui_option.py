@@ -173,6 +173,7 @@ class FormConnection(object):
             self.storage.updateConnection(conn)
 
         self.w.list_conn.setCurrentIndex(0)
+        self.w.emit(SIGNAL('reloadConnData(QString)'), '')
         self.load('')
 
     def delete(self):
