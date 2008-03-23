@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sun Mar 23 23:54:49 2008
+# Created: Mon Mar 24 00:27:04 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -36,21 +36,21 @@ class Ui_dev_client(object):
         self.toppanel.setFrameShadow(QtGui.QFrame.Raised)
         self.toppanel.setObjectName("toppanel")
 
-        self.comboBox = QtGui.QComboBox(self.toppanel)
-        self.comboBox.setGeometry(QtCore.QRect(85,2,145,26))
-        self.comboBox.setObjectName("comboBox")
+        self.list_conn = QtGui.QComboBox(self.toppanel)
+        self.list_conn.setGeometry(QtCore.QRect(85,2,145,26))
+        self.list_conn.setObjectName("list_conn")
 
-        self.comboBox_2 = QtGui.QComboBox(self.toppanel)
-        self.comboBox_2.setGeometry(QtCore.QRect(325,2,145,26))
-        self.comboBox_2.setObjectName("comboBox_2")
+        self.list_account = QtGui.QComboBox(self.toppanel)
+        self.list_account.setGeometry(QtCore.QRect(325,2,145,26))
+        self.list_account.setObjectName("list_account")
 
-        self.top_label1 = QtGui.QLabel(self.toppanel)
-        self.top_label1.setGeometry(QtCore.QRect(0,0,80,30))
-        self.top_label1.setObjectName("top_label1")
+        self.top_label_conn = QtGui.QLabel(self.toppanel)
+        self.top_label_conn.setGeometry(QtCore.QRect(0,0,80,30))
+        self.top_label_conn.setObjectName("top_label_conn")
 
-        self.label_2 = QtGui.QLabel(self.toppanel)
-        self.label_2.setGeometry(QtCore.QRect(240,0,80,30))
-        self.label_2.setObjectName("label_2")
+        self.top_label_account = QtGui.QLabel(self.toppanel)
+        self.top_label_account.setGeometry(QtCore.QRect(240,0,80,30))
+        self.top_label_account.setObjectName("top_label_account")
 
         self.button_connect = QtGui.QPushButton(self.toppanel)
         self.button_connect.setGeometry(QtCore.QRect(475,2,105,26))
@@ -126,8 +126,8 @@ class Ui_dev_client(object):
 
     def retranslateUi(self, dev_client):
         dev_client.setWindowTitle(QtGui.QApplication.translate("dev_client", "DevClient", None, QtGui.QApplication.UnicodeUTF8))
-        self.top_label1.setText(QtGui.QApplication.translate("dev_client", "Connection", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("dev_client", "Account", None, QtGui.QApplication.UnicodeUTF8))
+        self.top_label_conn.setText(QtGui.QApplication.translate("dev_client", "Connection", None, QtGui.QApplication.UnicodeUTF8))
+        self.top_label_account.setText(QtGui.QApplication.translate("dev_client", "Account", None, QtGui.QApplication.UnicodeUTF8))
         self.button_connect.setText(QtGui.QApplication.translate("dev_client", "Connect", None, QtGui.QApplication.UnicodeUTF8))
         self.button_connect.setShortcut(QtGui.QApplication.translate("dev_client", "Alt+C", None, QtGui.QApplication.UnicodeUTF8))
         self.button_option.setText(QtGui.QApplication.translate("dev_client", "Option", None, QtGui.QApplication.UnicodeUTF8))

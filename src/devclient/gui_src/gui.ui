@@ -58,7 +58,7 @@
       <property name="frameShadow" >
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QComboBox" name="comboBox" >
+      <widget class="QComboBox" name="list_conn" >
        <property name="geometry" >
         <rect>
          <x>85</x>
@@ -68,7 +68,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_2" >
+      <widget class="QComboBox" name="list_account" >
        <property name="geometry" >
         <rect>
          <x>325</x>
@@ -78,7 +78,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLabel" name="top_label1" >
+      <widget class="QLabel" name="top_label_conn" >
        <property name="geometry" >
         <rect>
          <x>0</x>
@@ -91,7 +91,7 @@
         <string>Connection</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_2" >
+      <widget class="QLabel" name="top_label_account" >
        <property name="geometry" >
         <rect>
          <x>240</x>

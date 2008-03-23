@@ -30,7 +30,7 @@ from time import strftime
 from os.path import join, exists
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QEvent, Qt, QLocale
+from PyQt4.QtCore import QEvent, Qt, QLocale, QVariant
 from PyQt4.QtCore import SIGNAL, PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt4.QtGui import QApplication, QIcon
 from PyQt4.QtGui import QMessageBox, QShortcut, QKeySequence
@@ -228,7 +228,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         logger.debug('PyQt version: %s, Qt version: %s' %
             (PYQT_VERSION_STR, QT_VERSION_STR))
 
-        self.preferences = Storage().preferences()
+        self._storage = Storage()
+        self.preferences = self._storage.preferences()
+        for el in self._storage.connections():
+            self.list_conn.addItem(el[1], QVariant(el[0]))
 
     def setupUi(self, w):
         Ui_dev_client.setupUi(self, w)
@@ -373,23 +376,19 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                                          self._text['CloseConn']):
                 return
 
-        connections = Storage().connections()
-        if not connections:
+        if not self._storage.connections():
             self.displayWarning(self._text['Connect'], self._text['NoConn'])
             return
 
-        if id_conn:
-            conn = [el for el in connections if el[0] == id_conn]
-        else:
-            conn = [el for el in connections if el[4] == 1]
-            # if is not defined a default connection take the first
-            if not conn:
-                conn = connections
+        if not id_conn:
+            data = self.list_conn.itemData(self.list_conn.currentIndex())
+            id_conn = data.toInt()[0]
 
+        conn = [el for el in self._storage.connections() if el[0] == id_conn]
         self.s_core.write(messages.CONNECT, conn[0][1:4])
 
     def _reloadPreferences(self):
-        self.preferences = Storage().preferences()
+        self.preferences = self._storage.preferences()
         self.game_logger = GameLogger(self.connected, self.preferences)
 
     def _reloadConnData(self, conn):
@@ -402,13 +401,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         """
 
         if self.connected and self.connected == conn:
-            self.macros = Storage().macros(self.connected)
+            self.macros = self._storage.macros(self.connected)
             self.s_core.write(messages.RELOAD_CONN_DATA, unicode(conn))
 
     def _startConnection(self, host, port):
         self.history.clear()
         self.viewer = getViewer(self, getServer(host, port))
-        self.macros = Storage().macros(self.connected)
+        self.macros = self._storage.macros(self.connected)
         self.game_logger = GameLogger(self.connected, self.preferences)
 
     def _appendEcho(self, text):
