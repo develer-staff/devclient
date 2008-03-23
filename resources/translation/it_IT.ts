@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
+<defaultcodec></defaultcodec>
 <context>
     <name>RightWidget</name>
     <message>
@@ -8,34 +9,34 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="89"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="92"/>
         <source>Health</source>
         <translation>Vita</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="108"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="111"/>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#FF3333;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="134"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="137"/>
         <source>Mana</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="153"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="156"/>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#0066FF}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="179"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="182"/>
         <source>Movement</source>
         <translation>Movimento</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="198"/>
+        <location filename="../../src/devclient/gui_src/gui_map_ext.ui" line="201"/>
         <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
@@ -46,7 +47,7 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_map_noprompt.ui" line="46"/>
+        <location filename="../../src/devclient/gui_src/gui_map_noprompt.ui" line="49"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Courier&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -62,7 +63,7 @@ p, li { white-space: pre-wrap; }
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui.ui" line="146"/>
+        <location filename="../../src/devclient/gui_src/gui.ui" line="178"/>
         <source>Option</source>
         <translation>Opzioni</translation>
     </message>
@@ -82,7 +83,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui.ui" line="53"/>
+        <location filename="../../src/devclient/gui_src/gui.ui" line="213"/>
         <source>QTextEdit { background-color: #000000; font: 10pt &quot;Courier&quot;; color: #FFFFFF;}</source>
         <translation></translation>
     </message>
@@ -117,12 +118,12 @@ p, li { white-space: pre-wrap; }
         <translation>Connessione persa</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui.ui" line="138"/>
+        <location filename="../../src/devclient/gui_src/gui.ui" line="147"/>
         <source>Alt+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui.ui" line="149"/>
+        <location filename="../../src/devclient/gui_src/gui.ui" line="190"/>
         <source>Alt+O</source>
         <translation></translation>
     </message>
@@ -135,6 +136,16 @@ p, li { white-space: pre-wrap; }
         <location filename="../../src/devclient/gui.msg" line="23"/>
         <source>Unable to download updates</source>
         <translation>Impossibile scaricare gli aggiornamenti</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui.ui" line="91"/>
+        <source>Connection</source>
+        <translation>Connessione</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui.ui" line="104"/>
+        <source>Account</source>
+        <translation></translation>
     </message>
 </context>
 <context>

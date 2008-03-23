@@ -261,10 +261,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                             stream=sys.stdout)
 
     def _setupSignal(self):
-        self.connect(self.action_connect, SIGNAL("triggered()"),
+        self.connect(self.button_connect, SIGNAL("clicked()"),
                      self._connect)
 
-        self.connect(self.action_option, SIGNAL("triggered()"),
+        self.connect(self.button_option, SIGNAL("clicked()"),
                      self._showOption)
 
         QShortcut(QKeySequence(Qt.Key_Up), self, self._onKeyUp)
