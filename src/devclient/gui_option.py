@@ -187,6 +187,7 @@ class FormConnection(object):
         index = self.w.list_conn.currentIndex() - 1
         self.storage.deleteConnection(self.connections[index])
         self.w.list_conn.removeItem(self.w.list_conn.currentIndex())
+        self.w.emit(SIGNAL('reloadConnData(QString)'), '')
         del self.connections[index]
 
     def connectReq(self):
