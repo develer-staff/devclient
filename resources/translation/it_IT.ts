@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
+<defaultcodec></defaultcodec>
 <context>
     <name>RightWidget</name>
     <message>
@@ -150,12 +151,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>option</name>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="13"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="16"/>
         <source>Option</source>
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="59"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="62"/>
         <source>Connections</source>
         <translation>Connessioni</translation>
     </message>
@@ -170,17 +171,17 @@ p, li { white-space: pre-wrap; }
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="984"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1218"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="140"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="143"/>
         <source>Create New</source>
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="763"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="983"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
@@ -190,32 +191,32 @@ p, li { white-space: pre-wrap; }
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="508"/>
+        <location filename="../../src/devclient/gui_option.py" line="538"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="511"/>
+        <location filename="../../src/devclient/gui_option.py" line="541"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="515"/>
+        <location filename="../../src/devclient/gui_option.py" line="545"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="517"/>
+        <location filename="../../src/devclient/gui_option.py" line="547"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="520"/>
+        <location filename="../../src/devclient/gui_option.py" line="550"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="513"/>
+        <location filename="../../src/devclient/gui_option.py" line="543"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>
@@ -226,90 +227,120 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="219"/>
+        <location filename="../../src/devclient/gui_option.py" line="217"/>
         <source>Macro</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="225"/>
+        <location filename="../../src/devclient/gui_option.py" line="223"/>
         <source>Keys</source>
         <translation>Tasti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="228"/>
+        <location filename="../../src/devclient/gui_option.py" line="226"/>
         <source>Command</source>
         <translation>Comando</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="701"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="921"/>
         <source>Register</source>
         <translation>Registra</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="216"/>
+        <location filename="../../src/devclient/gui_option.py" line="214"/>
         <source>Create New</source>
         <comment>macro</comment>
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="231"/>
+        <location filename="../../src/devclient/gui_option.py" line="229"/>
         <source>Key sequence must be unique</source>
         <translation>La sequenza dei tasti deve essere univoca</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="665"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="885"/>
         <source>#e0e0e0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="91"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="94"/>
         <source>Preferences</source>
         <translation>Preferenze</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="873"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1093"/>
         <source>Keep text entered</source>
         <translation>Tieni testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="789"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1009"/>
         <source>Text inserted</source>
         <translation>Testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="816"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1036"/>
         <source>Echo text</source>
         <translation>Echo testo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="906"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1126"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="936"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1150"/>
         <source>Save log</source>
         <translation>Salva log</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="67"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="70"/>
         <source>Accounts</source>
         <translation>Account</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="83"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="86"/>
         <source>Macros</source>
         <translation>Macro</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="75"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="78"/>
         <source>Aliases</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="835"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1055"/>
         <source>Color</source>
         <translation>Colore</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="359"/>
+        <source>Old password</source>
+        <translation>Vecchia password</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="376"/>
+        <source>New Password</source>
+        <translation>Nuova Password</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="390"/>
+        <source>New Password (again)</source>
+        <translation>Ripeti Nuova Password</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="473"/>
+        <source>Account</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="517"/>
+        <source>Change Password</source>
+        <translation>Cambia Password</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1170"/>
+        <source>Save accounts</source>
+        <translation>Salva account</translation>
     </message>
 </context>
 </TS>

@@ -455,6 +455,36 @@ class FormPreferences(object):
         self.w.emit(SIGNAL('reloadPreferences()'))
 
 
+class FormAccounts(object):
+    def __init__(self, widget, storage):
+        self.w = widget
+        self.storage = storage
+        self._loadForm()
+        self._setupSignal()
+
+    def _loadForm(self):
+        connections = self.storage.connections()
+        self.w.list_conn_account.clear()
+        self.w.list_conn_account.addItems([c[1] for c in connections])
+        self.w.frame_account_pwd.setVisible(False)
+        if connections:
+            self.w.delete_account.setEnabled(True)
+            self.w.pwd_account.setEnabled(True)
+
+    def _setupSignal(self):
+        clicked = SIGNAL("clicked()")
+        self.w.connect(self.w.pwd_account, clicked, self._toggleFramePwd)
+        self.w.connect(self.w.save_pwd_account, clicked, self._changePwd)
+
+    def _toggleFramePwd(self):
+        cur_state = self.w.frame_account_pwd.isVisible()
+        self.w.frame_account_pwd.setVisible(not cur_state)
+
+    def _changePwd(self):
+        print 'save!'
+        self._toggleFramePwd()
+
+
 class GuiOption(QDialog, Ui_option):
     """
     The Gui dialog for setup option.
@@ -470,13 +500,16 @@ class GuiOption(QDialog, Ui_option):
         """an instance of `Storage`, used to maintain persistence."""
 
         self.conn = FormConnection(self, self.storage)
-        """the `FormConnection` instance, used to manage tab of connections."""
+        """the `FormConnection` instance, used to manage form of connections."""
 
         self.macro = FormMacro(self, self.storage)
-        """the `FormMacro` instance, used to manage tab of macros."""
+        """the `FormMacro` instance, used to manage form of macros."""
 
         self.preferences = FormPreferences(self, self.storage)
-        """the `FormPreferences` instance, used to manage tab of preferences."""
+        """the `FormPreferences` instance, used to manage form of preferences."""
+
+        self.accounts = FormAccounts(self, self.storage)
+        """the FormAccounts instance, used to manage form of accounts."""
 
     def _displayWarning(self, title, message):
         QtGui.QMessageBox.warning(self, title, message)

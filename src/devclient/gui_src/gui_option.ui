@@ -321,7 +321,224 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="account_page" />
+   <widget class="QWidget" name="account_page" >
+    <widget class="QFrame" name="frame_account_pwd" >
+     <property name="geometry" >
+      <rect>
+       <x>4</x>
+       <y>124</y>
+       <width>301</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QWidget" name="layoutWidget" >
+      <property name="geometry" >
+       <rect>
+        <x>5</x>
+        <y>5</y>
+        <width>296</width>
+        <height>156</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" >
+       <property name="horizontalSpacing" >
+        <number>5</number>
+       </property>
+       <property name="verticalSpacing" >
+        <number>8</number>
+       </property>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>Old password</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QLineEdit" name="lineEdit" >
+         <property name="text" >
+          <string/>
+         </property>
+         <property name="echoMode" >
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QLabel" name="label_2" >
+         <property name="text" >
+          <string>New Password</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QLineEdit" name="lineEdit_2" >
+         <property name="echoMode" >
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QLabel" name="label_3" >
+         <property name="text" >
+          <string>New Password (again)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QLineEdit" name="lineEdit_3" >
+         <property name="echoMode" >
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2" >
+        <layout class="QHBoxLayout" >
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>171</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="save_pwd_account" >
+           <property name="text" >
+            <string>Save</string>
+           </property>
+           <property name="icon" >
+            <iconset resource="../../../resources/gui_option.qrc" >:/images/button-save.png</iconset>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="layoutWidget" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>7</y>
+       <width>296</width>
+       <height>116</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="horizontalSpacing" >
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing" >
+       <number>8</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_conn_account" >
+        <property name="text" >
+         <string>Connection</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="list_conn_account" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_account_account" >
+        <property name="text" >
+         <string>Account</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QComboBox" name="list_account" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <layout class="QHBoxLayout" >
+        <property name="spacing" >
+         <number>3</number>
+        </property>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>71</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pwd_account" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="text" >
+           <string>Change Password</string>
+          </property>
+          <property name="icon" >
+           <iconset resource="../../../resources/gui_option.qrc" >:/images/button-pwd.png</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="delete_account" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="text" >
+           <string>Delete</string>
+          </property>
+          <property name="icon" >
+           <iconset resource="../../../resources/gui_option.qrc" >:/images/button-cancel.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </widget>
    <widget class="QWidget" name="alias_page" >
     <widget class="QWidget" name="layoutWidget_2" >
      <property name="geometry" >
@@ -911,22 +1128,16 @@
      <property name="flat" >
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="layoutWidget_4" >
+     <widget class="QWidget" name="layoutWidget" >
       <property name="geometry" >
        <rect>
-        <x>2</x>
-        <y>20</y>
-        <width>296</width>
+        <x>0</x>
+        <y>19</y>
+        <width>298</width>
         <height>156</height>
        </rect>
       </property>
       <layout class="QGridLayout" >
-       <property name="horizontalSpacing" >
-        <number>2</number>
-       </property>
-       <property name="verticalSpacing" >
-        <number>0</number>
-       </property>
        <item row="0" column="0" >
         <widget class="QCheckBox" name="save_log" >
          <property name="minimumSize" >
@@ -947,26 +1158,46 @@
          </property>
          <property name="sizeHint" >
           <size>
-           <width>166</width>
-           <height>20</height>
+           <width>156</width>
+           <height>22</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="1" column="0" colspan="2" >
+       <item row="1" column="0" >
+        <widget class="QCheckBox" name="checkBox" >
+         <property name="text" >
+          <string>Save accounts</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>156</width>
+           <height>22</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0" colspan="2" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" >
           <size>
-           <width>276</width>
-           <height>99</height>
+           <width>294</width>
+           <height>56</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="2" column="0" colspan="2" >
+       <item row="3" column="0" colspan="2" >
         <layout class="QHBoxLayout" >
          <item>
           <spacer>
