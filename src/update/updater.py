@@ -27,6 +27,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import tarfile
+import sqlite3
 from filecmp import cmp
 from optparse import OptionParser
 from socket import setdefaulttimeout
@@ -55,6 +56,12 @@ _TMP_DIR = abspath(join(getcwd(), _SELF_DIR, 'temp'))
 
 _CONFIG_FILE = join(abspath(_SELF_DIR), 'updater.cfg')
 """the configuration file"""
+
+_UPDATE_DB_FILE = join(abspath(_SELF_DIR), 'updater.sql')
+"""the file that contains the changes to apply at db"""
+
+_DB_FILE = join(_ROOT_DIR, 'data/storage/db.sqlite')
+"""the database file"""
 
 
 class UpdaterError(Exception):
@@ -191,6 +198,25 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             copyfile(source, dest)
             copymode(source, dest)
 
+def updateDatabase():
+    local_version = map(int, __version__.split('.'))
+
+    cp = SafeConfigParser()
+    cp.read(_UPDATE_DB_FILE)
+    statements = {}
+    for s in cp.sections():
+        ver = map(int, s.split('.'))
+        if ver > local_version:
+            statements[tuple(ver)] = sorted(cp.items(s))
+
+    conn = sqlite3.connect(_DB_FILE, isolation_level=None)
+    c = conn.cursor()
+
+    for v, s in sorted(statements.items()):
+        for label, sql in s:
+            print 'Execute query:', sql
+            c.execute(sql)
+
 def updateClient():
     cp = SafeConfigParser()
     cp.read(_CONFIG_FILE)
@@ -213,6 +239,7 @@ def updateClient():
             downloadClient(config['client']['url'])
             base_dir = uncompressClient(basename(config['client']['url']))
             replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
+            updateDatabase()
     except UpdaterError, e:
         print 'ERROR:', e
     else:
