@@ -299,7 +299,7 @@
            <string>Save</string>
           </property>
           <property name="icon" >
-           <iconset resource="../../../resources/gui.qrc" >:/images/button-save.png</iconset>
+           <iconset resource="../../../resources/gui_option.qrc" >:/images/button-save.png</iconset>
           </property>
          </widget>
         </item>
@@ -309,7 +309,7 @@
            <string>Delete</string>
           </property>
           <property name="icon" >
-           <iconset resource="../../../resources/gui.qrc" >:/images/button-cancel.png</iconset>
+           <iconset resource="../../../resources/gui_option.qrc" >:/images/button-cancel.png</iconset>
           </property>
          </widget>
         </item>
@@ -528,7 +528,7 @@
            <string>Save</string>
           </property>
           <property name="icon" >
-           <iconset resource="../../../resources/gui.qrc" >:/images/button-save.png</iconset>
+           <iconset resource="../../../resources/gui_option.qrc" >:/images/button-save.png</iconset>
           </property>
          </widget>
         </item>
@@ -538,7 +538,7 @@
            <string>Delete</string>
           </property>
           <property name="icon" >
-           <iconset resource="../../../resources/gui.qrc" >:/images/button-cancel.png</iconset>
+           <iconset resource="../../../resources/gui_option.qrc" >:/images/button-cancel.png</iconset>
           </property>
          </widget>
         </item>
@@ -753,7 +753,7 @@
            <string>Save</string>
           </property>
           <property name="icon" >
-           <iconset resource="../../../resources/gui.qrc" >:/images/button-save.png</iconset>
+           <iconset resource="../../../resources/gui_option.qrc" >:/images/button-save.png</iconset>
           </property>
          </widget>
         </item>
@@ -763,7 +763,7 @@
            <string>Delete</string>
           </property>
           <property name="icon" >
-           <iconset resource="../../../resources/gui.qrc" >:/images/button-cancel.png</iconset>
+           <iconset resource="../../../resources/gui_option.qrc" >:/images/button-cancel.png</iconset>
           </property>
          </widget>
         </item>
@@ -822,17 +822,20 @@
          <property name="minimumSize" >
           <size>
            <width>80</width>
-           <height>22</height>
+           <height>26</height>
           </size>
          </property>
          <property name="maximumSize" >
           <size>
            <width>80</width>
-           <height>16777215</height>
+           <height>26</height>
           </size>
          </property>
          <property name="text" >
-          <string>Echo Color</string>
+          <string>Color</string>
+         </property>
+         <property name="icon" >
+          <iconset resource="../../../resources/gui_option.qrc" >:/images/button-color.png</iconset>
          </property>
         </widget>
        </item>
@@ -981,7 +984,7 @@
             <string>Save</string>
            </property>
            <property name="icon" >
-            <iconset resource="../../../resources/gui.qrc" >:/images/button-save.png</iconset>
+            <iconset resource="../../../resources/gui_option.qrc" >:/images/button-save.png</iconset>
            </property>
           </widget>
          </item>

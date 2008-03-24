@@ -170,7 +170,7 @@ p, li { white-space: pre-wrap; }
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="981"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="984"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
@@ -267,12 +267,7 @@ p, li { white-space: pre-wrap; }
         <translation>Preferenze</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="835"/>
-        <source>Echo Color</source>
-        <translation>Colore Echo</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="870"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="873"/>
         <source>Keep text entered</source>
         <translation>Tieni testo inserito</translation>
     </message>
@@ -287,12 +282,12 @@ p, li { white-space: pre-wrap; }
         <translation>Echo testo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="903"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="906"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="933"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="936"/>
         <source>Save log</source>
         <translation>Salva log</translation>
     </message>
@@ -310,6 +305,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../../src/devclient/gui_src/gui_option.ui" line="75"/>
         <source>Aliases</source>
         <translation>Alias</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="835"/>
+        <source>Color</source>
+        <translation>Colore</translation>
     </message>
 </context>
 </TS>

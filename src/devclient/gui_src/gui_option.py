@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Mon Mar 24 14:49:54 2008
+# Created: Mon Mar 24 15:29:33 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -386,8 +386,9 @@ class Ui_option(object):
         self.gridlayout5.addWidget(self.echo_text,0,0,1,1)
 
         self.echo_color_button = QtGui.QPushButton(self.layoutWidget1)
-        self.echo_color_button.setMinimumSize(QtCore.QSize(80,22))
-        self.echo_color_button.setMaximumSize(QtCore.QSize(80,16777215))
+        self.echo_color_button.setMinimumSize(QtCore.QSize(80,26))
+        self.echo_color_button.setMaximumSize(QtCore.QSize(80,26))
+        self.echo_color_button.setIcon(QtGui.QIcon(":/images/button-color.png"))
         self.echo_color_button.setObjectName("echo_color_button")
         self.gridlayout5.addWidget(self.echo_color_button,0,1,1,1)
 
@@ -494,7 +495,7 @@ class Ui_option(object):
         self.delete_macro.setText(QtGui.QApplication.translate("option", "Delete", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("option", "Text inserted", None, QtGui.QApplication.UnicodeUTF8))
         self.echo_text.setText(QtGui.QApplication.translate("option", "Echo text", None, QtGui.QApplication.UnicodeUTF8))
-        self.echo_color_button.setText(QtGui.QApplication.translate("option", "Echo Color", None, QtGui.QApplication.UnicodeUTF8))
+        self.echo_color_button.setText(QtGui.QApplication.translate("option", "Color", None, QtGui.QApplication.UnicodeUTF8))
         self.keep_text.setText(QtGui.QApplication.translate("option", "Keep text entered", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("option", "General", None, QtGui.QApplication.UnicodeUTF8))
         self.save_log.setText(QtGui.QApplication.translate("option", "Save log", None, QtGui.QApplication.UnicodeUTF8))
