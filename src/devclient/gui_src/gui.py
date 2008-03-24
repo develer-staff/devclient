@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Mon Mar 24 00:27:04 2008
+# Created: Mon Mar 24 12:55:29 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -38,10 +38,12 @@ class Ui_dev_client(object):
 
         self.list_conn = QtGui.QComboBox(self.toppanel)
         self.list_conn.setGeometry(QtCore.QRect(85,2,145,26))
+        self.list_conn.setFocusPolicy(QtCore.Qt.NoFocus)
         self.list_conn.setObjectName("list_conn")
 
         self.list_account = QtGui.QComboBox(self.toppanel)
         self.list_account.setGeometry(QtCore.QRect(325,2,145,26))
+        self.list_account.setFocusPolicy(QtCore.Qt.NoFocus)
         self.list_account.setObjectName("list_account")
 
         self.top_label_conn = QtGui.QLabel(self.toppanel)
@@ -62,6 +64,7 @@ class Ui_dev_client(object):
         self.button_connect.setSizePolicy(sizePolicy)
         self.button_connect.setMinimumSize(QtCore.QSize(105,26))
         self.button_connect.setMaximumSize(QtCore.QSize(105,26))
+        self.button_connect.setFocusPolicy(QtCore.Qt.NoFocus)
         self.button_connect.setIcon(QtGui.QIcon(":/images/connect.png"))
         self.button_connect.setIconSize(QtCore.QSize(16,16))
         self.button_connect.setObjectName("button_connect")
@@ -76,6 +79,7 @@ class Ui_dev_client(object):
         self.button_option.setSizePolicy(sizePolicy)
         self.button_option.setMinimumSize(QtCore.QSize(105,26))
         self.button_option.setMaximumSize(QtCore.QSize(105,26))
+        self.button_option.setFocusPolicy(QtCore.Qt.NoFocus)
         self.button_option.setIcon(QtGui.QIcon(":/images/option.png"))
         self.button_option.setIconSize(QtCore.QSize(16,16))
         self.button_option.setObjectName("button_option")
