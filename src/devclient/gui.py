@@ -363,14 +363,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _showOption(self):
         opt = gui_option.GuiOption(self)
-        self.connect(opt, SIGNAL("connectReq(int)"), self._connect)
         self.connect(opt, SIGNAL("reloadConnData(QString)"),
                      self._reloadConnData)
         self.connect(opt, SIGNAL("reloadPreferences()"),
                      self._reloadPreferences)
         opt.show()
 
-    def _connect(self, id_conn=None):
+    def _connect(self):
         if self.connected:
             if not self._displayQuestion(self._text['Connect'],
                                          self._text['CloseConn']):
@@ -380,10 +379,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self.displayWarning(self._text['Connect'], self._text['NoConn'])
             return
 
-        if not id_conn:
-            data = self.list_conn.itemData(self.list_conn.currentIndex())
-            id_conn = data.toInt()[0]
-
+        data = self.list_conn.itemData(self.list_conn.currentIndex())
+        id_conn = data.toInt()[0]
         conn = [el for el in self._storage.connections() if el[0] == id_conn]
         self.s_core.write(messages.CONNECT, conn[0][1:4])
 

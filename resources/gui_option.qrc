@@ -1,0 +1,9 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>images/connections.png</file>
+     <file>images/aliases.png</file>
+     <file>images/macros.png</file>
+     <file>images/preferences.png</file>
+     <file>images/accounts.png</file>
+ </qresource>
+ </RCC>

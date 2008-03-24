@@ -71,8 +71,6 @@ class FormConnection(object):
         self.w.connect(self.w.list_conn, SIGNAL("currentIndexChanged(QString)"),
                        self.load)
 
-        self.w.connect(self.w.connect_conn, clicked, self.connectReq)
-
     def load(self, name):
         """
         Load data of one connection.
@@ -95,8 +93,6 @@ class FormConnection(object):
         self.w.name_conn.setText(n)
         self.w.host_conn.setText(h)
         self.w.port_conn.setText(unicode(p))
-        self.w.connect_conn.setEnabled(connect)
-        self.w.default_conn.setCheckState(d)
 
     def _checkFields(self):
         """
@@ -146,21 +142,11 @@ class FormConnection(object):
             data = self.w.list_conn.itemData(self.w.list_conn.currentIndex())
             id_conn = data.toInt()[0]
 
-        make_default = self.w.default_conn.checkState() == Qt.Checked
-
-        if make_default:
-            for idx, conn in enumerate(self.connections):
-                if conn[0] != id_conn and conn[4]:
-                    c = list(conn)
-                    c[4] = 0
-                    self.storage.updateConnection(c)
-                    self.connections[idx] = tuple(c)
-
         conn = [id_conn,
                 unicode(self.w.name_conn.text()),
                 unicode(self.w.host_conn.text()),
                 int(self.w.port_conn.text()),
-                int(make_default)]
+                0] # FIX: remove this field
 
         if not self.w.list_conn.currentIndex():
             self.storage.addConnection(conn)
@@ -189,15 +175,6 @@ class FormConnection(object):
         self.w.list_conn.removeItem(self.w.list_conn.currentIndex())
         self.w.emit(SIGNAL('reloadConnData(QString)'), '')
         del self.connections[index]
-
-    def connectReq(self):
-        """
-        Send a request to establish a connection.
-        """
-
-        id_conn = self.connections[self.w.list_conn.currentIndex() - 1][0]
-        self.w.emit(SIGNAL('connectReq(int)'), id_conn)
-        self.w.close()
 
 
 class FormMacro(object):
@@ -508,9 +485,6 @@ class GuiOption(QDialog, Ui_option):
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
-        self.connect(self.tab_widget, SIGNAL("currentChanged(int)"),
-                     self._syncTabs)
-
         self.connect(self.save_alias, clicked, self._saveAlias)
         self.connect(self.delete_alias, clicked, self._deleteAlias)
         self.connect(self.list_conn_alias,
@@ -519,6 +493,8 @@ class GuiOption(QDialog, Ui_option):
         self.connect(self.list_alias,
                      SIGNAL("currentIndexChanged(int)"),
                      self._loadAlias)
+        self.connect(self.list_option, SIGNAL("itemClicked(QListWidgetItem *)"),
+                     self._changeForm)
 
     def disableSignal(self, disable):
         self.list_alias.blockSignals(disable)
@@ -542,13 +518,16 @@ class GuiOption(QDialog, Ui_option):
                                                     QApplication.UnicodeUTF8)
 
     def keyPressEvent(self, keyEvent):
-        curr_tab = self.tab_widget.currentWidget().objectName()
-        if curr_tab == "tab_macro" and self.macro:
+        curr_page = self.page_container.currentWidget().objectName()
+        if curr_page == "macro_page" and self.macro:
             self.macro.keyPressEvent(keyEvent)
 
-    def _syncTabs(self, idx):
-        curr_tab = self.tab_widget.currentWidget().objectName()
-        if curr_tab == "tab_alias":
+    def _changeForm(self, item):
+        num = self.list_option.currentRow()
+        self.page_container.setCurrentIndex(num)
+
+        curr_page = self.page_container.currentWidget().objectName()
+        if curr_page == "alias_page":
             self.disableSignal(True)
             self.list_conn_alias.clear()
             self.list_conn_alias.addItems([c[1] for c in self.conn.connections])
@@ -558,7 +537,7 @@ class GuiOption(QDialog, Ui_option):
             for o in (self.list_alias, self.label_alias, self.body_alias):
                 o.setEnabled(bool(self.list_conn_alias.count()))
 
-        elif curr_tab == "tab_macro":
+        elif curr_page == "macro_page":
             self.macro.disableSignal(True)
             self.macro.loadForm(self.storage)
             self.macro.disableSignal(False)
