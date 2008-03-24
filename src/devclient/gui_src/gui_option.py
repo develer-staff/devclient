@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Mon Mar 24 19:45:26 2008
+# Created: Mon Mar 24 21:50:21 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -541,9 +541,9 @@ class Ui_option(object):
         spacerItem15 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout8.addItem(spacerItem15,0,1,1,1)
 
-        self.checkBox = QtGui.QCheckBox(self.layoutWidget4)
-        self.checkBox.setObjectName("checkBox")
-        self.gridlayout8.addWidget(self.checkBox,1,0,1,1)
+        self.save_account = QtGui.QCheckBox(self.layoutWidget4)
+        self.save_account.setObjectName("save_account")
+        self.gridlayout8.addWidget(self.save_account,1,0,1,1)
 
         spacerItem16 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout8.addItem(spacerItem16,1,1,1,1)
@@ -626,7 +626,7 @@ class Ui_option(object):
         self.keep_text.setText(QtGui.QApplication.translate("option", "Keep text entered", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("option", "General", None, QtGui.QApplication.UnicodeUTF8))
         self.save_log.setText(QtGui.QApplication.translate("option", "Save log", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox.setText(QtGui.QApplication.translate("option", "Save accounts", None, QtGui.QApplication.UnicodeUTF8))
+        self.save_account.setText(QtGui.QApplication.translate("option", "Save accounts", None, QtGui.QApplication.UnicodeUTF8))
         self.save_preferences.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
 
 import gui_rc

@@ -469,6 +469,7 @@ class GuiOptionPrefMock(object):
         self.echo_color_button = QtGui.QPushButton()
         self.keep_text = QtGui.QCheckBox()
         self.save_log = QtGui.QCheckBox()
+        self.save_account = QtGui.QCheckBox()
 
     def connect(self, widget, signal, callback):
         pass
@@ -490,14 +491,14 @@ class TestFormPreferences(GuiOptionTest):
         form = FormPreferences(GuiOptionPrefMock(), Storage())
         form.w.echo_text.setCheckState(QtCore.Qt.Checked)
         form.save()
-        self.assert_(Storage().preferences() == (1, '', 0, 0))
+        self.assert_(Storage().preferences() == (1, '', 0, 0, 0))
 
     def testSavePreferences2(self):
         form = FormPreferences(GuiOptionPrefMock(), Storage())
         form.w.keep_text.setCheckState(QtCore.Qt.Checked)
         form.w.echo_color.setText('#CC0000')
         form.save()
-        self.assert_(Storage().preferences() == (0, '#CC0000', 1, 0))
+        self.assert_(Storage().preferences() == (0, '#CC0000', 1, 0, 0))
 
     def testSavePreferences3(self):
         form = FormPreferences(GuiOptionPrefMock(), Storage())
@@ -505,8 +506,9 @@ class TestFormPreferences(GuiOptionTest):
         form.w.keep_text.setCheckState(QtCore.Qt.Unchecked)
         form.w.echo_color.setText('#CC0000')
         form.w.save_log.setCheckState(QtCore.Qt.Checked)
+        form.w.save_account.setCheckState(QtCore.Qt.Checked)
         form.save()
-        self.assert_(Storage().preferences() == (1, '#CC0000', 0, 1))
+        self.assert_(Storage().preferences() == (1, '#CC0000', 0, 1, 1))
 
     def testSavePreferences4(self):
         form = FormPreferences(GuiOptionPrefMock(), Storage())
@@ -514,13 +516,15 @@ class TestFormPreferences(GuiOptionTest):
         form.w.keep_text.setCheckState(QtCore.Qt.Unchecked)
         form.w.echo_color.setText('#CC0000')
         form.w.save_log.setCheckState(QtCore.Qt.Unchecked)
+        form.w.save_account.setCheckState(QtCore.Qt.Unchecked)
         form.save()
         form.w.echo_text.setCheckState(QtCore.Qt.Unchecked)
         form.w.keep_text.setCheckState(QtCore.Qt.Checked)
         form.w.echo_color.setText('#000000')
         form.w.save_log.setCheckState(QtCore.Qt.Checked)
+        form.w.save_account.setCheckState(QtCore.Qt.Checked)
         form.save()
-        self.assert_(Storage().preferences() == (0, '#000000', 1, 1))
+        self.assert_(Storage().preferences() == (0, '#000000', 1, 1, 1))
 
 
 if __name__ == '__main__':

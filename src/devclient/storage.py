@@ -64,7 +64,8 @@ class Storage(object):
                             preferences(echo_text integer,
                                         echo_color text,
                                         keep_text integer,
-                                        save_log integer)''')
+                                        save_log integer,
+                                        save_account integer)''')
 
     def _execQuery(self, sql, params=(), cursor=None):
         """
@@ -114,7 +115,7 @@ class Storage(object):
         """
 
         c = self.conn.cursor()
-        self._execQuery('INSERT INTO connections (name, host, port)' +
+        self._execQuery('INSERT INTO connections (name, host, port) ' +
                         'VALUES(?, ?, ?)', conn[1:], c)
 
         conn[0] = self.getIdConnection(conn[1], c)
@@ -128,7 +129,7 @@ class Storage(object):
     def updateConnection(self, conn):
         params = conn[1:]
         params.append(conn[0])
-        self._execQuery('UPDATE connections SET name = ?, host = ?, port = ?' +
+        self._execQuery('UPDATE connections SET name = ?, host = ?, port = ? ' +
                         'WHERE id = ?', params)
 
     def getIdConnection(self, conn_name, cursor=None):
@@ -197,12 +198,13 @@ class Storage(object):
                             p, c)
 
     def preferences(self):
-        row = self._execQuery('SELECT echo_text, echo_color, keep_text, ' +
-                              'save_log FROM preferences').fetchone()
+        c = self._execQuery('SELECT echo_text, echo_color, keep_text, ' +
+                            'save_log, save_account FROM preferences')
+        row = c.fetchone()
         return row if row else []
 
     def savePreferences(self, preferences):
         self._execQuery('DELETE FROM preferences')
-        self._execQuery('INSERT INTO preferences VALUES(?, ?, ?, ?)',
+        self._execQuery('INSERT INTO preferences VALUES(?, ?, ?, ?, ?)',
                         preferences)
 
