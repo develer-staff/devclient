@@ -83,11 +83,10 @@ class FormConnection(object):
         conn = [el for el in self.connections if el[1] == name]
 
         if conn:
-            n, h, p = conn[0][1:-1]
-            d = (Qt.Unchecked, Qt.Checked)[conn[0][-1]]
+            n, h, p = conn[0][1:]
             connect = True
         else:
-            n, h, p, d = ('', '', '', Qt.Unchecked)
+            n, h, p = ('', '', '')
             connect = False
 
         self.w.name_conn.setText(n)
@@ -145,8 +144,7 @@ class FormConnection(object):
         conn = [id_conn,
                 unicode(self.w.name_conn.text()),
                 unicode(self.w.host_conn.text()),
-                int(self.w.port_conn.text()),
-                0] # FIX: remove this field
+                int(self.w.port_conn.text())]
 
         if not self.w.list_conn.currentIndex():
             self.storage.addConnection(conn)

@@ -45,8 +45,7 @@ class Storage(object):
                             connections(id integer primary key autoincrement,
                                         name text,
                                         host text,
-                                        port integer,
-                                        def integer)''')
+                                        port integer)''')
 
         c.execute('''CREATE TABLE IF NOT EXISTS
                             aliases(id_conn integer,
@@ -97,10 +96,11 @@ class Storage(object):
         """
         Load the list of connections.
 
-        :return: a list of tuples (id, name, host, port, default)
+        :return: a list of tuples (id, name, host, port)
         """
 
-        data = [row for row in self._execQuery('SELECT * FROM connections')]
+        data = [row for row in self._execQuery('SELECT id, name, host, port ' +
+                                               'FROM connections')]
         return data
 
     def addConnection(self, conn):
@@ -114,8 +114,8 @@ class Storage(object):
         """
 
         c = self.conn.cursor()
-        self._execQuery('INSERT INTO connections (name, host, port, def)' +
-                        'VALUES(?, ?, ?, ?)', conn[1:], c)
+        self._execQuery('INSERT INTO connections (name, host, port)' +
+                        'VALUES(?, ?, ?)', conn[1:], c)
 
         conn[0] = self.getIdConnection(conn[1], c)
         logger.debug('id connection obtained: %d' % conn[0])
@@ -128,8 +128,8 @@ class Storage(object):
     def updateConnection(self, conn):
         params = conn[1:]
         params.append(conn[0])
-        self._execQuery('UPDATE connections SET name = ?, host = ?, port = ?,' +
-                        'def = ? WHERE id = ?', params)
+        self._execQuery('UPDATE connections SET name = ?, host = ?, port = ?' +
+                        'WHERE id = ?', params)
 
     def getIdConnection(self, conn_name, cursor=None):
         row = self._execQuery('SELECT id FROM connections WHERE name = ?',

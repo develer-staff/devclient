@@ -60,26 +60,26 @@ class TestStorage(TestBase):
         self.assert_(self.storage.connections() == [])
 
     def testAddConnection(self):
-        conn = (0, 'name', 'host', 111, 1)
+        conn = (0, 'name', 'host', 111)
         self.storage.addConnection(list(conn))
         self.assert_(self.storage.connections()[0][1:] == conn[1:])
 
     def testAddConnection2(self):
-        conn = [0, 'name', 'host', 111, 1]
+        conn = [0, 'name', 'host', 111]
         self.storage.addConnection(conn)
         self.assert_(self.storage.connections()[0] == tuple(conn))
 
     def testAddConnection3(self):
-        conn = [0, 'name', 'host', 111, 1]
+        conn = [0, 'name', 'host', 111]
         self.storage.addConnection(conn)
 
-        conn2 = [0, 'name2', 'host2', 222, 1]
+        conn2 = [0, 'name2', 'host2', 222]
         self.storage.addConnection(conn2)
         connections = [tuple(conn), tuple(conn2)]
         self.assert_(self.storage.connections() == connections)
 
     def testUpdateConnection(self):
-        conn = [0, 'name', 'host', 111, 1]
+        conn = [0, 'name', 'host', 111]
         self.storage.addConnection(conn)
 
         conn[1] = 'new_name'
@@ -87,10 +87,10 @@ class TestStorage(TestBase):
         self.assert_(self.storage.connections()[0] == tuple(conn))
 
     def testDeleteConnection(self):
-        conn = [0, 'name', 'host', 111, 1]
+        conn = [0, 'name', 'host', 111]
         self.storage.addConnection(conn)
 
-        conn2 = [0, 'name2', 'host2', 222, 1]
+        conn2 = [0, 'name2', 'host2', 222]
         self.storage.addConnection(conn2)
 
         self.storage.deleteConnection(conn2)
@@ -110,7 +110,7 @@ class TestStorage(TestBase):
     def testSaveAliases2(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         aliases = [('label', 'body')]
@@ -120,7 +120,7 @@ class TestStorage(TestBase):
     def testSaveAliases3(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         aliases = [('label1', 'body1'), ('label2', 'body2')]
@@ -130,7 +130,7 @@ class TestStorage(TestBase):
     def testSaveAliases4(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         aliases = [('label1', 'body1')]
@@ -143,7 +143,7 @@ class TestStorage(TestBase):
     def testSaveAliases5(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         aliases = [('label1', 'body1')]
@@ -156,7 +156,7 @@ class TestStorage(TestBase):
     def testSaveAliases6(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         aliases = [('label1', 'body1'), ('label2', 'body2')]
@@ -180,7 +180,7 @@ class TestStorage(TestBase):
     def testSaveMacros2(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         macros = [('command', 1, 0, 0, 65)]
@@ -190,7 +190,7 @@ class TestStorage(TestBase):
     def testSaveMacros3(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         macros = [('command', 1, 0, 0, 65), ('command', 0, 0, 0, 73)]
@@ -200,7 +200,7 @@ class TestStorage(TestBase):
     def testSaveMacros4(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         macros = [('command', 1, 0, 0, 65)]
@@ -213,7 +213,7 @@ class TestStorage(TestBase):
     def testSaveMacros5(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         macros = [('command', 1, 0, 0, 65)]
@@ -226,7 +226,7 @@ class TestStorage(TestBase):
     def testSaveMacros6(self):
         conn_name = 'conn'
 
-        conn = [0, conn_name, 'host', 111, 1]
+        conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
         macros = [('command', 1, 0, 0, 65), ('command', 0, 0, 0, 73)]
@@ -248,7 +248,7 @@ class TestStorage(TestBase):
 class TestStorage2(TestBase):
 
     def testMultiConnection(self):
-        conn = [0, 'name','host', 111, 0]
+        conn = [0, 'name','host', 111]
         Storage().addConnection(conn)
         self.assert_(Storage().connections()[0] == tuple(conn))
 
