@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Mon Mar 24 21:50:21 2008
+# Created: Tue Mar 25 19:04:15 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -16,7 +16,7 @@ class Ui_option(object):
         option.resize(QtCore.QSize(QtCore.QRect(0,0,414,290).size()).expandedTo(option.minimumSizeHint()))
 
         self.list_option = QtGui.QListWidget(option)
-        self.list_option.setGeometry(QtCore.QRect(5,5,100,280))
+        self.list_option.setGeometry(QtCore.QRect(5,5,90,280))
         self.list_option.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.list_option.setTextElideMode(QtCore.Qt.ElideNone)
         self.list_option.setMovement(QtGui.QListView.Static)
@@ -571,6 +571,7 @@ class Ui_option(object):
 
     def retranslateUi(self, option):
         option.setWindowTitle(QtGui.QApplication.translate("option", "Option", None, QtGui.QApplication.UnicodeUTF8))
+        self.list_option.setStyleSheet(QtGui.QApplication.translate("option", "QListWidget { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E0E0E0, stop: 1 #FFFFFF); color: #00AAFF;selection-background-color: #C8C8C8;selection-color:#000000;font: bold 10px \"Verdana\";  }", None, QtGui.QApplication.UnicodeUTF8))
         self.list_option.clear()
 
         item = QtGui.QListWidgetItem(self.list_option)

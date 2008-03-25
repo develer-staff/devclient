@@ -20,12 +20,12 @@
     <rect>
      <x>5</x>
      <y>5</y>
-     <width>100</width>
+     <width>90</width>
      <height>280</height>
     </rect>
    </property>
    <property name="styleSheet" >
-    <string/>
+    <string>QListWidget { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E0E0E0, stop: 1 #FFFFFF); color: #00AAFF;selection-background-color: #C8C8C8;selection-color:#000000;font: bold 10px "Verdana";  }</string>
    </property>
    <property name="horizontalScrollBarPolicy" >
     <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -298,6 +298,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="save_conn" >
+          <property name="styleSheet" >
+           <string/>
+          </property>
           <property name="text" >
            <string>Save</string>
           </property>
