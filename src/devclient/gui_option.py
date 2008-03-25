@@ -462,17 +462,17 @@ class FormAccounts(object):
     def __init__(self, widget, storage):
         self.w = widget
         self.storage = storage
-        self._loadForm()
+        self.loadForm()
         self._setupSignal()
 
-    def _loadForm(self):
+    def loadForm(self):
         connections = self.storage.connections()
         self.w.list_conn_account.clear()
         self.w.list_conn_account.addItems([c[1] for c in connections])
         self.w.frame_account_pwd.setVisible(False)
-        if connections:
-            self.w.delete_account.setEnabled(True)
-            self.w.pwd_account.setEnabled(True)
+        butt_enabled = True if connections else False
+        self.w.delete_account.setEnabled(butt_enabled)
+        self.w.pwd_account.setEnabled(butt_enabled)
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
@@ -486,6 +486,9 @@ class FormAccounts(object):
     def _changePwd(self):
         print 'save!'
         self._toggleFramePwd()
+
+    def disableSignal(self, disable):
+        self.w.list_conn_account.blockSignals(disable)
 
 
 class GuiOption(QDialog, Ui_option):
@@ -575,6 +578,11 @@ class GuiOption(QDialog, Ui_option):
             self.macro.disableSignal(True)
             self.macro.loadForm(self.storage)
             self.macro.disableSignal(False)
+
+        elif curr_page == "account_page":
+            self.accounts.disableSignal(True)
+            self.accounts.loadForm()
+            self.accounts.disableSignal(False)
 
     def _loadAliases(self, conn):
         self.disableSignal(True)
