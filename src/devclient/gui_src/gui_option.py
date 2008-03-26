@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Wed Mar 26 22:29:30 2008
+# Created: Thu Mar 27 00:13:07 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -125,20 +125,20 @@ class Ui_option(object):
         self.account_page = QtGui.QWidget()
         self.account_page.setObjectName("account_page")
 
-        self.widget = QtGui.QWidget(self.account_page)
-        self.widget.setGeometry(QtCore.QRect(5,5,311,121))
-        self.widget.setObjectName("widget")
+        self.layoutWidget1 = QtGui.QWidget(self.account_page)
+        self.layoutWidget1.setGeometry(QtCore.QRect(5,5,311,121))
+        self.layoutWidget1.setObjectName("layoutWidget1")
 
-        self.gridlayout1 = QtGui.QGridLayout(self.widget)
+        self.gridlayout1 = QtGui.QGridLayout(self.layoutWidget1)
         self.gridlayout1.setHorizontalSpacing(0)
         self.gridlayout1.setVerticalSpacing(10)
         self.gridlayout1.setObjectName("gridlayout1")
 
-        self.label_conn_account = QtGui.QLabel(self.widget)
+        self.label_conn_account = QtGui.QLabel(self.layoutWidget1)
         self.label_conn_account.setObjectName("label_conn_account")
         self.gridlayout1.addWidget(self.label_conn_account,0,0,1,1)
 
-        self.list_conn_account = QtGui.QComboBox(self.widget)
+        self.list_conn_account = QtGui.QComboBox(self.layoutWidget1)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -149,11 +149,11 @@ class Ui_option(object):
         self.list_conn_account.setObjectName("list_conn_account")
         self.gridlayout1.addWidget(self.list_conn_account,0,1,1,1)
 
-        self.label_account_account = QtGui.QLabel(self.widget)
+        self.label_account_account = QtGui.QLabel(self.layoutWidget1)
         self.label_account_account.setObjectName("label_account_account")
         self.gridlayout1.addWidget(self.label_account_account,1,0,1,1)
 
-        self.list_account = QtGui.QComboBox(self.widget)
+        self.list_account = QtGui.QComboBox(self.layoutWidget1)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -171,7 +171,7 @@ class Ui_option(object):
         spacerItem5 = QtGui.QSpacerItem(71,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.hboxlayout1.addItem(spacerItem5)
 
-        self.delete_account = QtGui.QPushButton(self.widget)
+        self.delete_account = QtGui.QPushButton(self.layoutWidget1)
         self.delete_account.setEnabled(False)
         self.delete_account.setIcon(QtGui.QIcon(":/images/button-cancel.png"))
         self.delete_account.setObjectName("delete_account")
@@ -426,34 +426,34 @@ class Ui_option(object):
         self.groupBox.setFlat(True)
         self.groupBox.setObjectName("groupBox")
 
-        self.layoutWidget1 = QtGui.QWidget(self.groupBox)
-        self.layoutWidget1.setGeometry(QtCore.QRect(2,10,306,81))
-        self.layoutWidget1.setObjectName("layoutWidget1")
+        self.layoutWidget2 = QtGui.QWidget(self.groupBox)
+        self.layoutWidget2.setGeometry(QtCore.QRect(2,10,306,81))
+        self.layoutWidget2.setObjectName("layoutWidget2")
 
-        self.gridlayout6 = QtGui.QGridLayout(self.layoutWidget1)
+        self.gridlayout6 = QtGui.QGridLayout(self.layoutWidget2)
         self.gridlayout6.setHorizontalSpacing(5)
         self.gridlayout6.setObjectName("gridlayout6")
 
-        self.echo_text = QtGui.QCheckBox(self.layoutWidget1)
+        self.echo_text = QtGui.QCheckBox(self.layoutWidget2)
         self.echo_text.setMinimumSize(QtCore.QSize(90,0))
         self.echo_text.setObjectName("echo_text")
         self.gridlayout6.addWidget(self.echo_text,0,0,1,1)
 
-        self.echo_color_button = QtGui.QPushButton(self.layoutWidget1)
+        self.echo_color_button = QtGui.QPushButton(self.layoutWidget2)
         self.echo_color_button.setMinimumSize(QtCore.QSize(80,26))
         self.echo_color_button.setMaximumSize(QtCore.QSize(80,26))
         self.echo_color_button.setIcon(QtGui.QIcon(":/images/button-color.png"))
         self.echo_color_button.setObjectName("echo_color_button")
         self.gridlayout6.addWidget(self.echo_color_button,0,1,1,1)
 
-        self.echo_color = QtGui.QLineEdit(self.layoutWidget1)
+        self.echo_color = QtGui.QLineEdit(self.layoutWidget2)
         self.echo_color.setEnabled(False)
         self.echo_color.setMinimumSize(QtCore.QSize(80,0))
         self.echo_color.setMaximumSize(QtCore.QSize(80,16777215))
         self.echo_color.setObjectName("echo_color")
         self.gridlayout6.addWidget(self.echo_color,0,2,1,1)
 
-        self.keep_text = QtGui.QCheckBox(self.layoutWidget1)
+        self.keep_text = QtGui.QCheckBox(self.layoutWidget2)
         self.keep_text.setMinimumSize(QtCore.QSize(195,0))
         self.keep_text.setObjectName("keep_text")
         self.gridlayout6.addWidget(self.keep_text,1,0,1,2)
@@ -466,14 +466,14 @@ class Ui_option(object):
         self.groupBox_2.setFlat(True)
         self.groupBox_2.setObjectName("groupBox_2")
 
-        self.layoutWidget2 = QtGui.QWidget(self.groupBox_2)
-        self.layoutWidget2.setGeometry(QtCore.QRect(0,19,306,156))
-        self.layoutWidget2.setObjectName("layoutWidget2")
+        self.layoutWidget3 = QtGui.QWidget(self.groupBox_2)
+        self.layoutWidget3.setGeometry(QtCore.QRect(0,19,306,156))
+        self.layoutWidget3.setObjectName("layoutWidget3")
 
-        self.gridlayout7 = QtGui.QGridLayout(self.layoutWidget2)
+        self.gridlayout7 = QtGui.QGridLayout(self.layoutWidget3)
         self.gridlayout7.setObjectName("gridlayout7")
 
-        self.save_log = QtGui.QCheckBox(self.layoutWidget2)
+        self.save_log = QtGui.QCheckBox(self.layoutWidget3)
         self.save_log.setMinimumSize(QtCore.QSize(100,0))
         self.save_log.setObjectName("save_log")
         self.gridlayout7.addWidget(self.save_log,0,0,1,1)
@@ -481,7 +481,7 @@ class Ui_option(object):
         spacerItem14 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout7.addItem(spacerItem14,0,1,1,1)
 
-        self.save_account = QtGui.QCheckBox(self.layoutWidget2)
+        self.save_account = QtGui.QCheckBox(self.layoutWidget3)
         self.save_account.setObjectName("save_account")
         self.gridlayout7.addWidget(self.save_account,1,0,1,1)
 
@@ -497,7 +497,7 @@ class Ui_option(object):
         spacerItem17 = QtGui.QSpacerItem(209,26,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.hboxlayout4.addItem(spacerItem17)
 
-        self.save_preferences = QtGui.QPushButton(self.layoutWidget2)
+        self.save_preferences = QtGui.QPushButton(self.layoutWidget3)
         self.save_preferences.setIcon(QtGui.QIcon(":/images/button-save.png"))
         self.save_preferences.setObjectName("save_preferences")
         self.hboxlayout4.addWidget(self.save_preferences)
@@ -508,6 +508,35 @@ class Ui_option(object):
         self.list_option.setCurrentRow(0)
         self.page_container.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(option)
+        option.setTabOrder(self.list_option,self.list_conn)
+        option.setTabOrder(self.list_conn,self.name_conn)
+        option.setTabOrder(self.name_conn,self.host_conn)
+        option.setTabOrder(self.host_conn,self.port_conn)
+        option.setTabOrder(self.port_conn,self.save_conn)
+        option.setTabOrder(self.save_conn,self.delete_conn)
+        option.setTabOrder(self.delete_conn,self.list_conn_account)
+        option.setTabOrder(self.list_conn_account,self.list_account)
+        option.setTabOrder(self.list_account,self.delete_account)
+        option.setTabOrder(self.delete_account,self.list_conn_alias)
+        option.setTabOrder(self.list_conn_alias,self.list_alias)
+        option.setTabOrder(self.list_alias,self.label_alias)
+        option.setTabOrder(self.label_alias,self.body_alias)
+        option.setTabOrder(self.body_alias,self.save_alias)
+        option.setTabOrder(self.save_alias,self.delete_alias)
+        option.setTabOrder(self.delete_alias,self.list_conn_macro)
+        option.setTabOrder(self.list_conn_macro,self.list_macro)
+        option.setTabOrder(self.list_macro,self.register_macro)
+        option.setTabOrder(self.register_macro,self.keys_macro)
+        option.setTabOrder(self.keys_macro,self.command_macro)
+        option.setTabOrder(self.command_macro,self.save_macro)
+        option.setTabOrder(self.save_macro,self.delete_macro)
+        option.setTabOrder(self.delete_macro,self.echo_text)
+        option.setTabOrder(self.echo_text,self.echo_color_button)
+        option.setTabOrder(self.echo_color_button,self.echo_color)
+        option.setTabOrder(self.echo_color,self.keep_text)
+        option.setTabOrder(self.keep_text,self.save_log)
+        option.setTabOrder(self.save_log,self.save_account)
+        option.setTabOrder(self.save_account,self.save_preferences)
 
     def retranslateUi(self, option):
         option.setWindowTitle(QtGui.QApplication.translate("option", "Option", None, QtGui.QApplication.UnicodeUTF8))

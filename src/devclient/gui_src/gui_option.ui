@@ -325,7 +325,7 @@
     </widget>
    </widget>
    <widget class="QWidget" name="account_page" >
-    <widget class="QWidget" name="" >
+    <widget class="QWidget" name="layoutWidget" >
      <property name="geometry" >
       <rect>
        <x>5</x>
@@ -1114,6 +1114,38 @@
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>list_option</tabstop>
+  <tabstop>list_conn</tabstop>
+  <tabstop>name_conn</tabstop>
+  <tabstop>host_conn</tabstop>
+  <tabstop>port_conn</tabstop>
+  <tabstop>save_conn</tabstop>
+  <tabstop>delete_conn</tabstop>
+  <tabstop>list_conn_account</tabstop>
+  <tabstop>list_account</tabstop>
+  <tabstop>delete_account</tabstop>
+  <tabstop>list_conn_alias</tabstop>
+  <tabstop>list_alias</tabstop>
+  <tabstop>label_alias</tabstop>
+  <tabstop>body_alias</tabstop>
+  <tabstop>save_alias</tabstop>
+  <tabstop>delete_alias</tabstop>
+  <tabstop>list_conn_macro</tabstop>
+  <tabstop>list_macro</tabstop>
+  <tabstop>register_macro</tabstop>
+  <tabstop>keys_macro</tabstop>
+  <tabstop>command_macro</tabstop>
+  <tabstop>save_macro</tabstop>
+  <tabstop>delete_macro</tabstop>
+  <tabstop>echo_text</tabstop>
+  <tabstop>echo_color_button</tabstop>
+  <tabstop>echo_color</tabstop>
+  <tabstop>keep_text</tabstop>
+  <tabstop>save_log</tabstop>
+  <tabstop>save_account</tabstop>
+  <tabstop>save_preferences</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../resources/gui.qrc" />
   <include location="../../../resources/gui_option.qrc" />
