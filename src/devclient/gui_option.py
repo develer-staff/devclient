@@ -468,27 +468,34 @@ class FormAccounts(object):
     def loadForm(self):
         connections = self.storage.connections()
         self.w.list_conn_account.clear()
-        self.w.list_conn_account.addItems([c[1] for c in connections])
-        self.w.frame_account_pwd.setVisible(False)
-        butt_enabled = True if connections else False
-        self.w.delete_account.setEnabled(butt_enabled)
-        self.w.pwd_account.setEnabled(butt_enabled)
+        for el in connections:
+            self.w.list_conn_account.addItem(el[1], QVariant(el[0]))
+        self._loadAccounts(0)
 
     def _setupSignal(self):
-        clicked = SIGNAL("clicked()")
-        self.w.connect(self.w.pwd_account, clicked, self._toggleFramePwd)
-        self.w.connect(self.w.save_pwd_account, clicked, self._changePwd)
+        self.w.connect(self.w.list_conn_account,
+                       SIGNAL("currentIndexChanged(int)"),
+                       self._loadAccounts)
+        self.w.connect(self.w.delete_account, SIGNAL("clicked()"),
+                       self.deleteAccount)
 
-    def _toggleFramePwd(self):
-        cur_state = self.w.frame_account_pwd.isVisible()
-        self.w.frame_account_pwd.setVisible(not cur_state)
-
-    def _changePwd(self):
-        print 'save!'
-        self._toggleFramePwd()
+    def _loadAccounts(self, idx):
+         id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
+         self.w.list_account.clear()
+         accounts = [a[0] for a in self.storage.accounts(id_conn)]
+         self.w.list_account.addItems(accounts)
+         self.w.delete_account.setEnabled(True if accounts else False)
 
     def disableSignal(self, disable):
         self.w.list_conn_account.blockSignals(disable)
+
+    def deleteAccount(self):
+        idx = self.w.list_conn_account.currentIndex()
+        id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
+        username = unicode(self.w.list_account.currentText())
+        self.storage.deleteAccount(id_conn, username)
+        self.w.list_account.removeItem(self.w.list_account.currentIndex())
+        self.w.emit(SIGNAL('reloadConnData(QString)'), '')
 
 
 class GuiOption(QDialog, Ui_option):
@@ -530,7 +537,7 @@ class GuiOption(QDialog, Ui_option):
         self.connect(self.list_alias,
                      SIGNAL("currentIndexChanged(int)"),
                      self._loadAlias)
-        self.connect(self.list_option, SIGNAL("itemClicked(QListWidgetItem *)"),
+        self.connect(self.list_option, SIGNAL("itemSelectionChanged()"),
                      self._changeForm)
 
     def disableSignal(self, disable):
@@ -559,7 +566,7 @@ class GuiOption(QDialog, Ui_option):
         if curr_page == "macro_page" and self.macro:
             self.macro.keyPressEvent(keyEvent)
 
-    def _changeForm(self, item):
+    def _changeForm(self):
         num = self.list_option.currentRow()
         self.page_container.setCurrentIndex(num)
 

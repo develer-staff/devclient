@@ -22,6 +22,8 @@
 class Server(object):
     # Default Server, don't remove it!
     right_widget = ''
+    cmds_account = 2
+    cmd_username = 1
 
 
 class DikuServer(Server):

@@ -21,14 +21,14 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import os.path
-import sqlite3
 import logging
+from sqlite3 import connect
 
 import exception
 from conf import config
 
 logger = logging.getLogger('storage')
+
 
 class Storage(object):
     """
@@ -37,12 +37,11 @@ class Storage(object):
 
     def __init__(self):
 
-        self.conn = sqlite3.connect(config['storage']['path'],
-                                    isolation_level=None)
+        self.conn = connect(config['storage']['path'], isolation_level=None)
 
         c = self.conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS
-                            connections(id integer primary key autoincrement,
+                            connections(id integer PRIMARY KEY AUTOINCREMENT,
                                         name text,
                                         host text,
                                         port integer)''')
@@ -52,6 +51,9 @@ class Storage(object):
                                     label text,
                                     body text)''')
 
+        c.execute('''CREATE INDEX IF NOT EXISTS aliases_conn_idx ON
+                     aliases(id_conn)''')
+
         c.execute('''CREATE TABLE IF NOT EXISTS
                             macros(id_conn integer,
                                    command text,
@@ -60,12 +62,35 @@ class Storage(object):
                                    ctrl integer,
                                    keycode integer)''')
 
+        c.execute('''CREATE INDEX IF NOT EXISTS macros_conn_idx ON
+                            macros(id_conn)''')
+
         c.execute('''CREATE TABLE IF NOT EXISTS
                             preferences(echo_text integer,
                                         echo_color text,
                                         keep_text integer,
                                         save_log integer,
                                         save_account integer)''')
+
+        c.execute('''CREATE TABLE IF NOT EXISTS
+                            accounts(id integer PRIMARY KEY AUTOINCREMENT,
+                                     id_conn integer,
+                                     username text,
+                                     UNIQUE (id_conn, username))''')
+
+        c.execute('''CREATE TRIGGER IF NOT EXISTS account_delete_trg AFTER
+                            DELETE ON accounts
+                              BEGIN
+                              DELETE FROM accounts_cmd WHERE id_account=old.id;
+                              END''')
+
+        c.execute('''CREATE TABLE IF NOT EXISTS
+                            accounts_cmd(id_account integer,
+                                         num integer,
+                                         command text)''')
+
+        c.execute('''CREATE INDEX IF NOT EXISTS accounts_cmd_idx ON
+                            accounts_cmd(id_account)''')
 
     def _execQuery(self, sql, params=(), cursor=None):
         """
@@ -208,3 +233,39 @@ class Storage(object):
         self._execQuery('INSERT INTO preferences VALUES(?, ?, ?, ?, ?)',
                         preferences)
 
+    def saveAccounts(self, commands, id_conn, cmd_user):
+        username = commands[cmd_user - 1]
+
+        c = self._execQuery('SELECT id FROM accounts WHERE id_conn=? ' +
+                            'AND username=?', (id_conn, username))
+        r = c.fetchone()
+        if r: # update the account replacing old command
+            id_account = r[0]
+            self._execQuery('DELETE FROM accounts_cmd WHERE id_account=?',
+                            (id_account,))
+        else:
+            self._execQuery('INSERT INTO accounts(id_conn, username) ' +
+                            'VALUES(?, ?)', (id_conn, username), c)
+            id_account = c.lastrowid
+
+        for num, cmd in enumerate(commands):
+            self._execQuery('INSERT INTO accounts_cmd VALUES (?, ?, ?)',
+                            (id_account, num, cmd), c)
+
+    def accounts(self, id_conn):
+        c = self._execQuery('SELECT username FROM accounts WHERE id_conn = ? ',
+                            (id_conn,))
+
+        return [row for row in c]
+
+    def accountDetail(self, id_conn, username):
+        c = self._execQuery('SELECT command FROM accounts AS a JOIN ' +
+                            'accounts_cmd AS c ON a.id=c.id_account WHERE ' +
+                            'id_conn = ? AND username = ? ORDER BY num',
+                            (id_conn, username))
+
+        return [row[0] for row in c]
+
+    def deleteAccount(self, id_conn, username):
+        self._execQuery('DELETE FROM accounts WHERE id_conn=? AND username=?',
+                        (id_conn, username))
