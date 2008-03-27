@@ -30,6 +30,12 @@ from conf import config
 logger = logging.getLogger('storage')
 
 
+class Option(object):
+    SAVE_ACCOUNT = 'save_account'
+    DEFAULT_ACCOUNT = 'default_account'
+    DEFAULT_CONNECTION = 'default_connection'
+
+
 class Storage(object):
     """
     Store dynamic data for all the client modules

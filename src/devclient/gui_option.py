@@ -25,7 +25,7 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL, Qt, QVariant
 from PyQt4.QtGui import QApplication, QDialog, QColorDialog
 
-from storage import Storage
+from storage import Storage, Option
 from gui_src.gui_option import Ui_option
 
 
@@ -468,7 +468,7 @@ class FormAccounts(object):
         for el in connections:
             self.w.list_conn_account.addItem(el[1], QVariant(el[0]))
         self._loadAccounts(0)
-        val = int(self.storage.option('save_account'))
+        val = int(self.storage.option(Option.SAVE_ACCOUNT))
         self.w.save_account.setCheckState(Qt.Checked if val else Qt.Unchecked)
 
 
@@ -500,7 +500,7 @@ class FormAccounts(object):
         self.w.emit(SIGNAL('reloadConnData(QString)'), '')
 
     def _saveAccounts(self, val):
-        self.storage.setOption('save_account', int(val == Qt.Checked))
+        self.storage.setOption(Option.SAVE_ACCOUNT, int(val == Qt.Checked))
 
 
 class GuiOption(QDialog, Ui_option):
