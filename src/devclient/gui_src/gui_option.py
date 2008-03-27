@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Thu Mar 27 00:13:07 2008
+# Created: Thu Mar 27 20:16:45 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -126,7 +126,7 @@ class Ui_option(object):
         self.account_page.setObjectName("account_page")
 
         self.layoutWidget1 = QtGui.QWidget(self.account_page)
-        self.layoutWidget1.setGeometry(QtCore.QRect(5,5,311,121))
+        self.layoutWidget1.setGeometry(QtCore.QRect(5,35,311,121))
         self.layoutWidget1.setObjectName("layoutWidget1")
 
         self.gridlayout1 = QtGui.QGridLayout(self.layoutWidget1)
@@ -177,6 +177,10 @@ class Ui_option(object):
         self.delete_account.setObjectName("delete_account")
         self.hboxlayout1.addWidget(self.delete_account)
         self.gridlayout1.addLayout(self.hboxlayout1,2,0,1,2)
+
+        self.save_account = QtGui.QCheckBox(self.account_page)
+        self.save_account.setGeometry(QtCore.QRect(5,10,115,22))
+        self.save_account.setObjectName("save_account")
         self.page_container.addWidget(self.account_page)
 
         self.alias_page = QtGui.QWidget()
@@ -481,21 +485,14 @@ class Ui_option(object):
         spacerItem14 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout7.addItem(spacerItem14,0,1,1,1)
 
-        self.save_account = QtGui.QCheckBox(self.layoutWidget3)
-        self.save_account.setObjectName("save_account")
-        self.gridlayout7.addWidget(self.save_account,1,0,1,1)
-
-        spacerItem15 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout7.addItem(spacerItem15,1,1,1,1)
-
-        spacerItem16 = QtGui.QSpacerItem(294,56,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout7.addItem(spacerItem16,2,0,1,2)
+        spacerItem15 = QtGui.QSpacerItem(294,56,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout7.addItem(spacerItem15,1,0,2,2)
 
         self.hboxlayout4 = QtGui.QHBoxLayout()
         self.hboxlayout4.setObjectName("hboxlayout4")
 
-        spacerItem17 = QtGui.QSpacerItem(209,26,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.hboxlayout4.addItem(spacerItem17)
+        spacerItem16 = QtGui.QSpacerItem(209,26,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.hboxlayout4.addItem(spacerItem16)
 
         self.save_preferences = QtGui.QPushButton(self.layoutWidget3)
         self.save_preferences.setIcon(QtGui.QIcon(":/images/button-save.png"))
@@ -535,8 +532,7 @@ class Ui_option(object):
         option.setTabOrder(self.echo_color_button,self.echo_color)
         option.setTabOrder(self.echo_color,self.keep_text)
         option.setTabOrder(self.keep_text,self.save_log)
-        option.setTabOrder(self.save_log,self.save_account)
-        option.setTabOrder(self.save_account,self.save_preferences)
+        option.setTabOrder(self.save_log,self.save_preferences)
 
     def retranslateUi(self, option):
         option.setWindowTitle(QtGui.QApplication.translate("option", "Option", None, QtGui.QApplication.UnicodeUTF8))
@@ -572,6 +568,7 @@ class Ui_option(object):
         self.label_conn_account.setText(QtGui.QApplication.translate("option", "Connection", None, QtGui.QApplication.UnicodeUTF8))
         self.label_account_account.setText(QtGui.QApplication.translate("option", "Account", None, QtGui.QApplication.UnicodeUTF8))
         self.delete_account.setText(QtGui.QApplication.translate("option", "Delete", None, QtGui.QApplication.UnicodeUTF8))
+        self.save_account.setText(QtGui.QApplication.translate("option", "Save accounts", None, QtGui.QApplication.UnicodeUTF8))
         self.label_conn_alias.setText(QtGui.QApplication.translate("option", "Connection", None, QtGui.QApplication.UnicodeUTF8))
         self.label_alias_alias.setText(QtGui.QApplication.translate("option", "Alias", None, QtGui.QApplication.UnicodeUTF8))
         self.label_label_alias.setText(QtGui.QApplication.translate("option", "Label", None, QtGui.QApplication.UnicodeUTF8))
@@ -591,7 +588,6 @@ class Ui_option(object):
         self.keep_text.setText(QtGui.QApplication.translate("option", "Keep text entered", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("option", "General", None, QtGui.QApplication.UnicodeUTF8))
         self.save_log.setText(QtGui.QApplication.translate("option", "Save log", None, QtGui.QApplication.UnicodeUTF8))
-        self.save_account.setText(QtGui.QApplication.translate("option", "Save accounts", None, QtGui.QApplication.UnicodeUTF8))
         self.save_preferences.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
 
 import gui_rc

@@ -1,3 +1,9 @@
-[0.4.01]
-sql1 = alter table preferences add column save_account integer
-sql2 = update preferences set save_account=0
+##### File to update database using sql query #####
+#
+# Update the database schema executing a sequence of querys.
+#
+# Example:
+# [version_number]
+# sql1 = query to execute
+# sql2 = another query to execute
+# ...

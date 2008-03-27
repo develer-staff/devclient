@@ -444,15 +444,12 @@ class FormPreferences(object):
             self.w.keep_text.setCheckState(keep_text)
             save_log = (Qt.Unchecked, Qt.Checked)[preferences[3]]
             self.w.save_log.setCheckState(save_log)
-            save_account = (Qt.Unchecked, Qt.Checked)[preferences[4]]
-            self.w.save_account.setCheckState(save_account)
 
     def save(self):
         preferences = (int(self.w.echo_text.checkState() == Qt.Checked),
                        unicode(self.w.echo_color.text()),
                        int(self.w.keep_text.checkState() == Qt.Checked),
-                       int(self.w.save_log.checkState() == Qt.Checked),
-                       int(self.w.save_account.checkState() == Qt.Checked))
+                       int(self.w.save_log.checkState() == Qt.Checked))
 
         self.storage.savePreferences(preferences)
         self.w.emit(SIGNAL('reloadPreferences()'))
@@ -471,6 +468,9 @@ class FormAccounts(object):
         for el in connections:
             self.w.list_conn_account.addItem(el[1], QVariant(el[0]))
         self._loadAccounts(0)
+        val = int(self.storage.option('save_account'))
+        self.w.save_account.setCheckState(Qt.Checked if val else Qt.Unchecked)
+
 
     def _setupSignal(self):
         self.w.connect(self.w.list_conn_account,
@@ -478,6 +478,8 @@ class FormAccounts(object):
                        self._loadAccounts)
         self.w.connect(self.w.delete_account, SIGNAL("clicked()"),
                        self.deleteAccount)
+        self.w.connect(self.w.save_account, SIGNAL('stateChanged(int)'),
+                       self._saveAccounts)
 
     def _loadAccounts(self, idx):
          id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
@@ -496,6 +498,9 @@ class FormAccounts(object):
         self.storage.deleteAccount(id_conn, username)
         self.w.list_account.removeItem(self.w.list_account.currentIndex())
         self.w.emit(SIGNAL('reloadConnData(QString)'), '')
+
+    def _saveAccounts(self, val):
+        self.storage.setOption('save_account', int(val == Qt.Checked))
 
 
 class GuiOption(QDialog, Ui_option):

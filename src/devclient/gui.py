@@ -250,14 +250,21 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self._storage = Storage()
         self.preferences = self._storage.preferences()
-        connections = self._storage.connections()
-        for el in connections:
-            self.list_conn.addItem(el[1], QVariant(el[0]))
-        if connections:
-            self._loadAccounts(connections[0][0])
-
+        self._loadConnections()
         self._setupSignal()
         self._translateText()
+
+    def _loadConnections(self):
+        connections = self._storage.connections()
+        def_conn = int(self._storage.option('default_connection'))
+        selected = 0
+        for i, el in enumerate(connections):
+            self.list_conn.addItem(el[1], QVariant(el[0]))
+            if el[0] == def_conn:
+                selected = i
+        self.list_conn.setCurrentIndex(selected)
+        if connections:
+            self._loadAccounts(def_conn if def_conn else connections[0][0])
 
     def _loadAccountsFromIdx(self, idx):
          id_conn = self.list_conn.itemData(idx).toInt()[0]
@@ -266,8 +273,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _loadAccounts(self, id_conn):
         self.list_account.clear()
         self.list_account.addItem('')
-        for a in self._storage.accounts(id_conn):
+        def_account = self._storage.option('default_account', '', id_conn)
+        selected = 0
+        for i, a in enumerate(self._storage.accounts(id_conn)):
             self.list_account.addItem(a[0])
+            if a[0] == def_account:
+                selected = i + 1
+        self.list_account.setCurrentIndex(selected)
 
     def setupUi(self, w):
         Ui_dev_client.setupUi(self, w)
@@ -440,11 +452,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         if not conn:
             self.list_conn.blockSignals(True)
             self.list_conn.clear()
-            connections = self._storage.connections()
-            for el in connections:
-                self.list_conn.addItem(el[1], QVariant(el[0]))
+            self._loadConnections()
             self.list_conn.blockSignals(False)
-            self._loadAccounts(connections[0][0])
 
         if self.connected and self.connected == conn:
             self.macros = self._storage.macros(self.connected)
@@ -458,16 +467,18 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.macros = self._storage.macros(self.connected)
         self.game_logger = GameLogger(self.connected, self.preferences)
         self._manageAccount(server, id_conn)
+        self._storage.setOption('default_connection', id_conn)
 
     def _manageAccount(self, server, id_conn):
         account = self.list_account
         account_user = unicode(account.itemText(account.currentIndex()))
         if account_user:
+            self._storage.setOption('default_account', account_user, id_conn)
             commands = self._storage.accountDetail(id_conn, account_user)
             for cmd in commands:
                 self.s_core.write(messages.MSG, cmd)
 
-        if self.preferences and self.preferences[4] and not account_user:
+        if int(self._storage.option('save_account')) and not account_user:
             self.account = AccountManager(self._storage, server, id_conn)
         else:
             self.account = None

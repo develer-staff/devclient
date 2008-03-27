@@ -69,8 +69,7 @@ class Storage(object):
                             preferences(echo_text integer,
                                         echo_color text,
                                         keep_text integer,
-                                        save_log integer,
-                                        save_account integer)''')
+                                        save_log integer)''')
 
         c.execute('''CREATE TABLE IF NOT EXISTS
                             accounts(id integer PRIMARY KEY AUTOINCREMENT,
@@ -91,6 +90,12 @@ class Storage(object):
 
         c.execute('''CREATE INDEX IF NOT EXISTS accounts_cmd_idx ON
                             accounts_cmd(id_account)''')
+
+        c.execute('''CREATE TABLE IF NOT EXISTS
+                            options(param_name text,
+                                    param_value text,
+                                    id_conn int,
+                                    PRIMARY KEY (param_name, id_conn))''')
 
     def _execQuery(self, sql, params=(), cursor=None):
         """
@@ -223,14 +228,20 @@ class Storage(object):
                             p, c)
 
     def preferences(self):
+        """
+        Return the list of preferences.
+
+        :return: a tuple (echo_text, echo_color, keep_text, save_log)
+        """
+
         c = self._execQuery('SELECT echo_text, echo_color, keep_text, ' +
-                            'save_log, save_account FROM preferences')
+                            'save_log FROM preferences')
         row = c.fetchone()
-        return row if row else []
+        return row if row else ()
 
     def savePreferences(self, preferences):
         self._execQuery('DELETE FROM preferences')
-        self._execQuery('INSERT INTO preferences VALUES(?, ?, ?, ?, ?)',
+        self._execQuery('INSERT INTO preferences VALUES(?, ?, ?, ?)',
                         preferences)
 
     def saveAccounts(self, commands, id_conn, cmd_user):
@@ -269,3 +280,14 @@ class Storage(object):
     def deleteAccount(self, id_conn, username):
         self._execQuery('DELETE FROM accounts WHERE id_conn=? AND username=?',
                         (id_conn, username))
+
+    def option(self, name, default=0, id_conn=0):
+        c = self._execQuery('SELECT param_value FROM options WHERE ' +
+                            'id_conn = ? AND param_name = ?', (id_conn, name))
+
+        row = c.fetchone()
+        return row[0] if row else default
+
+    def setOption(self, name, value, id_conn=0):
+        self._execQuery('REPLACE INTO options VALUES(?, ?, ?)',
+                        (name, value, id_conn))
