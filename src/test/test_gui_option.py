@@ -26,12 +26,16 @@ import os.path
 import unittest
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QApplication, QLineEdit
+from PyQt4.QtGui import QPushButton, QComboBox, QCheckBox
+
 
 sys.path.append('..')
 sys.path.append('../../resources')
 
 from devclient.conf import config
-from devclient.storage import Storage
+from devclient.storage import Storage, Option
 from devclient.gui_option import *
 
 
@@ -39,8 +43,8 @@ class GuiOptionTest(unittest.TestCase):
 
     def __init__(self, methodName='runTest'):
         super(GuiOptionTest, self).__init__(methodName)
-        if not QtGui.QApplication.instance():
-            self.app = QtGui.QApplication([])
+        if not QApplication.instance():
+            self.app = QApplication([])
 
     def setUp(self):
         abspath = os.path.abspath('../../data/storage/dbtest.sqlite')
@@ -57,13 +61,13 @@ class GuiOptionTest(unittest.TestCase):
 class GuiOptionMock(object):
 
     def __init__(self):
-        self.name_conn = QtGui.QLineEdit()
-        self.host_conn = QtGui.QLineEdit()
-        self.port_conn = QtGui.QLineEdit()
-        self.list_conn = QtGui.QComboBox()
-        self.save_conn = QtGui.QPushButton()
-        self.delete_conn = QtGui.QPushButton()
-        self.connect_conn = QtGui.QPushButton()
+        self.name_conn = QLineEdit()
+        self.host_conn = QLineEdit()
+        self.port_conn = QLineEdit()
+        self.list_conn = QComboBox()
+        self.save_conn = QPushButton()
+        self.delete_conn = QPushButton()
+        self.connect_conn = QPushButton()
         self.list_conn.addItem("Create New")
         self._warning = None
 
@@ -310,13 +314,13 @@ class TestFormConnection(GuiOptionTest):
 class GuiOptionMacroMock(object):
 
     def __init__(self):
-        self.register_macro = QtGui.QPushButton()
-        self.save_macro = QtGui.QPushButton()
-        self.delete_macro = QtGui.QPushButton()
-        self.list_macro = QtGui.QComboBox()
-        self.list_conn_macro = QtGui.QComboBox()
-        self.command_macro = QtGui.QLineEdit()
-        self.keys_macro = QtGui.QLineEdit()
+        self.register_macro = QPushButton()
+        self.save_macro = QPushButton()
+        self.delete_macro = QPushButton()
+        self.list_macro = QComboBox()
+        self.list_conn_macro = QComboBox()
+        self.command_macro = QLineEdit()
+        self.keys_macro = QLineEdit()
         self._warning = None
 
     def connect(self, widget, signal, callback):
@@ -463,17 +467,17 @@ class TestFormMacro(GuiOptionTest):
 class GuiOptionPrefMock(object):
 
     def __init__(self):
-        self.echo_text = QtGui.QCheckBox()
-        self.echo_color = QtGui.QLineEdit()
-        self.save_preferences = QtGui.QPushButton()
-        self.echo_color_button = QtGui.QPushButton()
-        self.keep_text = QtGui.QCheckBox()
-        self.save_log = QtGui.QCheckBox()
+        self.echo_text = QCheckBox()
+        self.echo_color = QLineEdit()
+        self.save_preferences = QPushButton()
+        self.echo_color_button = QPushButton()
+        self.keep_text = QCheckBox()
+        self.save_log = QCheckBox()
 
     def connect(self, widget, signal, callback):
         pass
 
-    def emit(self, signal):
+    def emit(self, signal, args=None):
         pass
 
 
@@ -481,46 +485,135 @@ class TestFormPreferences(GuiOptionTest):
 
     def testLoadEmpty(self):
         form = FormPreferences(GuiOptionPrefMock(), Storage())
-        self.assert_(form.w.echo_text.checkState() == QtCore.Qt.Unchecked)
+        self.assert_(form.w.echo_text.checkState() == Qt.Unchecked)
         self.assert_(not form.w.echo_color.text())
-        self.assert_(form.w.keep_text.checkState() == QtCore.Qt.Unchecked)
-        self.assert_(form.w.save_log.checkState() == QtCore.Qt.Unchecked)
+        self.assert_(form.w.keep_text.checkState() == Qt.Unchecked)
+        self.assert_(form.w.save_log.checkState() == Qt.Unchecked)
 
     def testSavePreferences(self):
         form = FormPreferences(GuiOptionPrefMock(), Storage())
-        form.w.echo_text.setCheckState(QtCore.Qt.Checked)
+        form.w.echo_text.setCheckState(Qt.Checked)
         form.save()
         self.assert_(Storage().preferences() == (1, '', 0, 0))
 
     def testSavePreferences2(self):
         form = FormPreferences(GuiOptionPrefMock(), Storage())
-        form.w.keep_text.setCheckState(QtCore.Qt.Checked)
+        form.w.keep_text.setCheckState(Qt.Checked)
         form.w.echo_color.setText('#CC0000')
         form.save()
         self.assert_(Storage().preferences() == (0, '#CC0000', 1, 0))
 
     def testSavePreferences3(self):
         form = FormPreferences(GuiOptionPrefMock(), Storage())
-        form.w.echo_text.setCheckState(QtCore.Qt.Checked)
-        form.w.keep_text.setCheckState(QtCore.Qt.Unchecked)
+        form.w.echo_text.setCheckState(Qt.Checked)
+        form.w.keep_text.setCheckState(Qt.Unchecked)
         form.w.echo_color.setText('#CC0000')
-        form.w.save_log.setCheckState(QtCore.Qt.Checked)
+        form.w.save_log.setCheckState(Qt.Checked)
         form.save()
         self.assert_(Storage().preferences() == (1, '#CC0000', 0, 1))
 
     def testSavePreferences4(self):
         form = FormPreferences(GuiOptionPrefMock(), Storage())
-        form.w.echo_text.setCheckState(QtCore.Qt.Checked)
-        form.w.keep_text.setCheckState(QtCore.Qt.Unchecked)
+        form.w.echo_text.setCheckState(Qt.Checked)
+        form.w.keep_text.setCheckState(Qt.Unchecked)
         form.w.echo_color.setText('#CC0000')
-        form.w.save_log.setCheckState(QtCore.Qt.Unchecked)
+        form.w.save_log.setCheckState(Qt.Unchecked)
         form.save()
-        form.w.echo_text.setCheckState(QtCore.Qt.Unchecked)
-        form.w.keep_text.setCheckState(QtCore.Qt.Checked)
+        form.w.echo_text.setCheckState(Qt.Unchecked)
+        form.w.keep_text.setCheckState(Qt.Checked)
         form.w.echo_color.setText('#000000')
-        form.w.save_log.setCheckState(QtCore.Qt.Checked)
+        form.w.save_log.setCheckState(Qt.Checked)
         form.save()
         self.assert_(Storage().preferences() == (0, '#000000', 1, 1))
+
+
+class GuiOptionAccMock(object):
+
+    def __init__(self):
+        self.save_account = QCheckBox()
+        self.delete_account = QPushButton()
+        self.list_account = QComboBox()
+        self.list_conn_account = QComboBox()
+
+    def connect(self, widget, signal, callback):
+        pass
+
+    def emit(self, signal, args):
+        pass
+
+
+class TestFormAccounts(GuiOptionTest):
+
+    def testLoadEmpty(self):
+        form = FormAccounts(GuiOptionAccMock(), Storage())
+        self.assert_(form.w.save_account.checkState() == Qt.Unchecked)
+        self.assert_(not form.w.delete_account.isEnabled())
+        self.assert_(form.w.list_conn_account.count() == 0)
+        self.assert_(form.w.list_account.count() == 0)
+
+    def testLoad1(self):
+        storage = Storage()
+        storage.addConnection([0, 'name', 'host', 4000])
+        form = FormAccounts(GuiOptionAccMock(), storage)
+        self.assert_(form.w.list_conn_account.count() == 1)
+        self.assert_(form.w.list_account.count() == 0)
+        self.assert_(not form.w.delete_account.isEnabled())
+
+    def testLoad2(self):
+        storage = Storage()
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAccounts(['john', 'john'], 1, 1)
+        form = FormAccounts(GuiOptionAccMock(), storage)
+        self.assert_(form.w.list_conn_account.count() == 1)
+        self.assert_(form.w.list_account.count() == 1)
+        self.assert_(form.w.delete_account.isEnabled())
+
+    def testLoad3(self):
+        storage = Storage()
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.addConnection([0, 'name2', 'host2', 5000])
+        storage.saveAccounts(['john', 'john'], 1, 1)
+        storage.saveAccounts(['sarah', 'sarah'], 2, 1)
+        form = FormAccounts(GuiOptionAccMock(), storage)
+        self.assert_(str(form.w.list_conn_account.currentText()) == 'name')
+        self.assert_(str(form.w.list_account.currentText()) == 'john')
+        self.assert_(form.w.delete_account.isEnabled())
+
+    def testChangeSaveAccount(self):
+        form = FormAccounts(GuiOptionAccMock(), Storage())
+        form.w.save_account.setCheckState(Qt.Checked)
+        form._saveAccounts(Qt.Checked)
+        self.assert_(Storage().option(Option.SAVE_ACCOUNT, 0) == 1)
+
+    def testChangeSaveAccount2(self):
+        form = FormAccounts(GuiOptionAccMock(), Storage())
+        form.w.save_account.setCheckState(Qt.Checked)
+        form._saveAccounts(Qt.Checked)
+        form.w.save_account.setCheckState(Qt.Unchecked)
+        form._saveAccounts(Qt.Unchecked)
+        self.assert_(Storage().option(Option.SAVE_ACCOUNT, 0) == 0)
+
+    def testDeleteAccount(self):
+        storage = Storage()
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAccounts(['john', 'john'], 1, 1)
+        form = FormAccounts(GuiOptionAccMock(), storage)
+        form.deleteAccount()
+        self.assert_(not form.w.delete_account.isEnabled())
+        self.assert_(form.w.list_conn_account.count() == 1)
+        self.assert_(form.w.list_account.count() == 0)
+
+    def testDeleteAccount2(self):
+        storage = Storage()
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAccounts(['john', 'john'], 1, 1)
+        storage.saveAccounts(['sarah', 'sarah'], 1, 1)
+        form = FormAccounts(GuiOptionAccMock(), storage)
+        form.deleteAccount()
+        self.assert_(form.w.delete_account.isEnabled())
+        self.assert_(form.w.list_conn_account.count() == 1)
+        self.assert_(form.w.list_account.count() == 1)
+        self.assert_(str(form.w.list_account.currentText()) == 'sarah')
 
 
 if __name__ == '__main__':
