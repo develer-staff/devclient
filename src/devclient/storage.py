@@ -22,8 +22,7 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import logging
-from sqlite3 import connect
-
+from sqlite3 import connect, OperationalError
 import exception
 from conf import config
 
@@ -83,11 +82,16 @@ class Storage(object):
                                      username text,
                                      UNIQUE (id_conn, username))''')
 
-        c.execute('''CREATE TRIGGER IF NOT EXISTS account_delete_trg AFTER
-                            DELETE ON accounts
-                              BEGIN
+        # To prevent a windows bug on 'IF NOT EXISTS' clause of CREATE TRIGGER
+        try:
+            c.execute('''DROP TRIGGER account_delete_trg''')
+        except OperationalError:
+            pass
+
+        c.execute('''CREATE TRIGGER account_delete_trg AFTER DELETE ON accounts
+                            BEGIN
                               DELETE FROM accounts_cmd WHERE id_account=old.id;
-                              END''')
+                            END''')
 
         c.execute('''CREATE TABLE IF NOT EXISTS
                             accounts_cmd(id_account integer,
