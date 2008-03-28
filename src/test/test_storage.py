@@ -109,7 +109,6 @@ class TestStorage(TestBase):
 
     def testSaveAliases2(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -119,7 +118,6 @@ class TestStorage(TestBase):
 
     def testSaveAliases3(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -129,7 +127,6 @@ class TestStorage(TestBase):
 
     def testSaveAliases4(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -142,7 +139,6 @@ class TestStorage(TestBase):
 
     def testSaveAliases5(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -155,7 +151,6 @@ class TestStorage(TestBase):
 
     def testSaveAliases6(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -179,7 +174,6 @@ class TestStorage(TestBase):
 
     def testSaveMacros2(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -189,7 +183,6 @@ class TestStorage(TestBase):
 
     def testSaveMacros3(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -199,7 +192,6 @@ class TestStorage(TestBase):
 
     def testSaveMacros4(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -212,7 +204,6 @@ class TestStorage(TestBase):
 
     def testSaveMacros5(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -225,7 +216,6 @@ class TestStorage(TestBase):
 
     def testSaveMacros6(self):
         conn_name = 'conn'
-
         conn = [0, conn_name, 'host', 111]
         self.storage.addConnection(conn)
 
@@ -237,10 +227,10 @@ class TestStorage(TestBase):
         self.assert_(self.storage.macros(conn_name) == macros)
 
     def testEmptyPreferences(self):
-        self.assert_(self.storage.preferences() == [])
+        self.assert_(self.storage.preferences() == ())
 
     def testSavePreferences(self):
-        preferences = (1, '#FF0000', 0, 1, 0)
+        preferences = (1, '#FF0000', 0, 1)
         self.storage.savePreferences(preferences)
         self.assert_(self.storage.preferences() == preferences)
 
