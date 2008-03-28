@@ -483,7 +483,7 @@ class FormAccounts(object):
     def _loadAccounts(self, idx):
          id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
          self.w.list_account.clear()
-         accounts = [a[0] for a in self.storage.accounts(id_conn)]
+         accounts = self.storage.accounts(id_conn)
          self.w.list_account.addItems(accounts)
          self.w.delete_account.setEnabled(True if accounts else False)
 

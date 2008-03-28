@@ -206,8 +206,8 @@ class AccountManager(object):
         if len(self._commands) < self._num_cmds:
             self._commands.append(text)
             if len(self._commands) == self._num_cmds:
-                self._storage.saveAccounts(self._commands, self._id_conn,
-                                           self._cmd_user)
+                self._storage.saveAccount(self._commands, self._id_conn,
+                                          self._cmd_user)
                 return True
         return False
 

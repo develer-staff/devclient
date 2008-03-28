@@ -234,6 +234,38 @@ class TestStorage(TestBase):
         self.storage.savePreferences(preferences)
         self.assert_(self.storage.preferences() == preferences)
 
+    def testEmptyAccounts(self):
+        self.assert_(self.storage.accounts(1) == [])
+
+    def testSaveAccounts(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.storage.saveAccount(['john', 'john'], 1, 1)
+        self.assert_(self.storage.accounts(1) == ['john'])
+
+    def testSaveAccounts2(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.storage.saveAccount(['john', 'johnpwd'], 1, 1)
+        self.storage.saveAccount(['sarah', 'sarahpwd'], 1, 1)
+        self.assert_(self.storage.accounts(1) == ['john', 'sarah'])
+
+    def testSaveAccounts3(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.storage.saveAccount(['john', 'pwd'], 1, 1)
+        self.assert_(self.storage.accountDetail(1, 'john') == ['john', 'pwd'])
+
+    def testSaveAccounts4(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.storage.saveAccount(['john', 'pwd'], 1, 1)
+        self.storage.saveAccount(['john', 'ola'], 1, 1)
+        self.assert_(self.storage.accountDetail(1, 'john') == ['john', 'ola'])
+
+    def testDeleteAccount(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.storage.saveAccount(['john', 'johnpwd'], 1, 1)
+        self.storage.saveAccount(['sarah', 'sarahpwd'], 1, 1)
+        self.storage.deleteAccount(1, 'john')
+        self.assert_(self.storage.accounts(1) == ['sarah'])
+
 
 class TestStorage2(TestBase):
 

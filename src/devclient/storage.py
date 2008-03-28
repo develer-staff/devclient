@@ -268,7 +268,7 @@ class Storage(object):
         self._execQuery('INSERT INTO preferences VALUES(?, ?, ?, ?)',
                         preferences)
 
-    def saveAccounts(self, commands, id_conn, cmd_user):
+    def saveAccount(self, commands, id_conn, cmd_user):
         username = commands[cmd_user - 1]
 
         c = self._execQuery('SELECT id FROM accounts WHERE id_conn=? ' +
@@ -291,7 +291,7 @@ class Storage(object):
         c = self._execQuery('SELECT username FROM accounts WHERE id_conn = ? ',
                             (id_conn,))
 
-        return [row for row in c]
+        return [row[0] for row in c]
 
     def accountDetail(self, id_conn, username):
         c = self._execQuery('SELECT command FROM accounts AS a JOIN ' +
