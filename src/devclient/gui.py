@@ -276,8 +276,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         def_account = self._storage.option(Option.DEFAULT_ACCOUNT, '', id_conn)
         selected = 0
         for i, a in enumerate(self._storage.accounts(id_conn)):
-            self.list_account.addItem(a[0])
-            if a[0] == def_account:
+            self.list_account.addItem(a)
+            if a == def_account:
                 selected = i + 1
         self.list_account.setCurrentIndex(selected)
 
