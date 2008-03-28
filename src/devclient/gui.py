@@ -256,7 +256,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _loadConnections(self):
         connections = self._storage.connections()
-        def_conn = int(self._storage.option(Option.DEFAULT_CONNECTION))
+        def_conn = self._storage.option(Option.DEFAULT_CONNECTION, 0)
         selected = 0
         for i, el in enumerate(connections):
             self.list_conn.addItem(el[1], QVariant(el[0]))
@@ -479,7 +479,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             for cmd in commands:
                 self.s_core.write(messages.MSG, cmd)
 
-        if int(self._storage.option(Option.SAVE_ACCOUNT)) and not account_user:
+        if self._storage.option(Option.SAVE_ACCOUNT, 0) and not account_user:
             self.account = AccountManager(self._storage, server, id_conn)
         else:
             self.account = None

@@ -51,6 +51,22 @@ class Storage(object):
                                         host text,
                                         port integer)''')
 
+        # To prevent a windows bug on 'IF NOT EXISTS' clause of CREATE TRIGGER
+        try:
+            c.execute('''DROP TRIGGER connection_delete_trg''')
+        except OperationalError:
+            pass
+
+        c.execute('''CREATE TRIGGER connection_delete_trg
+                            AFTER DELETE ON connections
+                            BEGIN
+                              DELETE FROM aliases WHERE id_conn=old.id;
+                              DELETE FROM macros WHERE id_conn=old.id;
+                              DELETE FROM accounts WHERE id_conn=old.id;
+                              DELETE FROM options WHERE id_conn=old.id;
+                            END''')
+
+
         c.execute('''CREATE TABLE IF NOT EXISTS
                             aliases(id_conn integer,
                                     label text,
@@ -82,7 +98,6 @@ class Storage(object):
                                      username text,
                                      UNIQUE (id_conn, username))''')
 
-        # To prevent a windows bug on 'IF NOT EXISTS' clause of CREATE TRIGGER
         try:
             c.execute('''DROP TRIGGER account_delete_trg''')
         except OperationalError:
@@ -164,7 +179,6 @@ class Storage(object):
     def deleteConnection(self, conn):
         c = self.conn.cursor()
         self._execQuery('DELETE FROM connections WHERE id = ?', (conn[0],), c)
-        self._execQuery('DELETE FROM aliases WHERE id_conn = ?', (conn[0],), c)
 
     def updateConnection(self, conn):
         params = conn[1:]
@@ -291,12 +305,17 @@ class Storage(object):
         self._execQuery('DELETE FROM accounts WHERE id_conn=? AND username=?',
                         (id_conn, username))
 
-    def option(self, name, default=0, id_conn=0):
+    def option(self, name, default, id_conn=0):
         c = self._execQuery('SELECT param_value FROM options WHERE ' +
                             'id_conn = ? AND param_name = ?', (id_conn, name))
 
         row = c.fetchone()
-        return row[0] if row else default
+        if row:
+            if type(default) == int:
+                return int(row[0])
+            else:
+                return row[0]
+        return default
 
     def setOption(self, name, value, id_conn=0):
         self._execQuery('REPLACE INTO options VALUES(?, ?, ?)',

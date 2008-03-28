@@ -468,9 +468,8 @@ class FormAccounts(object):
         for el in connections:
             self.w.list_conn_account.addItem(el[1], QVariant(el[0]))
         self._loadAccounts(0)
-        val = int(self.storage.option(Option.SAVE_ACCOUNT))
+        val = self.storage.option(Option.SAVE_ACCOUNT, 0)
         self.w.save_account.setCheckState(Qt.Checked if val else Qt.Unchecked)
-
 
     def _setupSignal(self):
         self.w.connect(self.w.list_conn_account,
@@ -498,6 +497,8 @@ class FormAccounts(object):
         self.storage.deleteAccount(id_conn, username)
         self.w.list_account.removeItem(self.w.list_account.currentIndex())
         self.w.emit(SIGNAL('reloadConnData(QString)'), '')
+        if not self.w.list_account.count():
+            self.w.delete_account.setEnabled(False)
 
     def _saveAccounts(self, val):
         self.storage.setOption(Option.SAVE_ACCOUNT, int(val == Qt.Checked))
