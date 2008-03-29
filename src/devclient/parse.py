@@ -78,6 +78,12 @@ class Parser(object):
         self._fg_code = None
         self._server = server
 
+    def _checkDefaultColor(self, model, text):
+        if model.bg_color is None and model.fg_color is None and \
+           len(text.strip()):
+            # Empty colors means default color
+            model.bg_color, model.fg_color = '', ''
+
     def buildModel(self, data):
         """
         Parse data and build the `Model` object.
@@ -93,11 +99,7 @@ class Parser(object):
         model.main_text = text_data
         model.original_text = text_data
         model.main_html = self._textToHtml(html_data)
-
-        if model.bg_color is None and model.fg_color is None and \
-           len(model.main_text.strip()):
-            # Empty colors means default color
-            model.bg_color, model.fg_color = '', ''
+        self._checkDefaultColor(model, model.main_text)
 
         if model.bg_color != self._default_bg:
             self._default_bg = model.bg_color
@@ -226,6 +228,7 @@ class Parser(object):
             return ''.join(html_res), parts[0]
 
         text_res = [parts[0]]
+        self._checkDefaultColor(model, parts[0])
         reg = compile('\[(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
 
         for i, s in enumerate(parts[1:]):

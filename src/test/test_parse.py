@@ -100,7 +100,7 @@ class TestParser(unittest.TestCase):
         m1 = self.parser.buildModel(txt1)
         m2 = self.parser.buildModel(txt2)
         self.assert_('hello' == m1.main_text)
-        self.assert_(self.parser._normal_color[3] == m1.fg_color)
+        self.assert_(m1.fg_color == '')
         self.assert_('<span style="color:#aaaa00">world</span>' == m2.main_html)
 
     def testParseMultiText8(self):
