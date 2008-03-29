@@ -40,7 +40,7 @@ class TestAlias(unittest.TestCase):
             os.unlink(config['storage']['path'])
 
         self.conn_name = 'conn'
-        conn = [0, self.conn_name, 'host', 111, 1]
+        conn = [0, self.conn_name, 'host', 111]
         self.storage = Storage()
         self.storage.addConnection(conn)
 
