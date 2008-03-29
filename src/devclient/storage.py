@@ -288,6 +288,14 @@ class Storage(object):
                             (id_account, num, cmd), c)
 
     def accounts(self, id_conn):
+        """
+        Return the list of (username of) account for a connection.
+
+        :Parameters:
+          id_conn : int
+            the id of connection.
+        """
+
         c = self._execQuery('SELECT username FROM accounts WHERE id_conn = ? ',
                             (id_conn,))
 
@@ -306,6 +314,20 @@ class Storage(object):
                         (id_conn, username))
 
     def option(self, name, default, id_conn=0):
+        """
+        Return the value of an option.
+
+        :Parameters:
+          name : str
+            the name of the option.
+
+          default : mix
+            the default value of the option.
+
+          id_conn : int
+            the id of connection.
+        """
+
         c = self._execQuery('SELECT param_value FROM options WHERE ' +
                             'id_conn = ? AND param_name = ?', (id_conn, name))
 
