@@ -266,6 +266,32 @@ class TestStorage(TestBase):
         self.storage.deleteAccount(1, 'john')
         self.assert_(self.storage.accounts(1) == ['sarah'])
 
+    def testGetOption1(self):
+        self.assert_(self.storage.option('test', 0) == 0)
+
+    def testGetOption2(self):
+        self.assert_(self.storage.option('test', '') == '')
+
+    def testSetOption1(self):
+        self.storage.setOption('test', 1)
+        self.assert_(self.storage.option('test', 0) == 1)
+
+    def testSetOption2(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.storage.setOption('test', 1, 1)
+        self.assert_(self.storage.option('test', 0, 1) == 1)
+
+    def testSetOption3(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.storage.setOption('test', 1)
+        self.assert_(self.storage.option('test', 0, 1) == 0)
+
+    def testSetOption4(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.storage.setOption('test', 1, 1)
+        self.storage.setOption('test', 2, 1)
+        self.assert_(self.storage.option('test', 0, 1) == 2)
+
 
 class TestStorage2(TestBase):
 
@@ -273,6 +299,7 @@ class TestStorage2(TestBase):
         conn = [0, 'name','host', 111]
         Storage().addConnection(conn)
         self.assert_(Storage().connections()[0] == tuple(conn))
+
 
 if __name__ == '__main__':
     unittest.main()
