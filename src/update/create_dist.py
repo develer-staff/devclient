@@ -36,8 +36,7 @@ sys.path.append(join(getcwd(), _SELF_DIR, '..'))
 from devclient import __version__
 """the public version of client"""
 
-_ADMITTED_EXT = ('py', 'ui', 'cfg', 'qrc', 'png', 'pro', 'qm', 'ts', 'GPL',
-                 'msg')
+_ADMITTED_EXT = ('py', 'ui', 'cfg', 'qrc', 'pro', 'qm', 'ts', 'GPL', 'msg')
 """the admitted extension"""
 
 _PROJECT_NAME = 'devclient'
