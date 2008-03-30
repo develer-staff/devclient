@@ -221,6 +221,9 @@
       <property name="focusPolicy" >
        <enum>Qt::NoFocus</enum>
       </property>
+      <property name="autoFillBackground" >
+       <bool>true</bool>
+      </property>
       <property name="styleSheet" >
        <string>QTextEdit { background-color: #000000; font: 10pt "Courier"; color: #FFFFFF;}</string>
       </property>

@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Mon Mar 24 12:55:29 2008
-#      by: PyQt4 UI code generator 4.3.3
+# Created: Sun Mar 30 20:11:50 2008
+#      by: PyQt4 UI code generator 4.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -94,6 +94,7 @@ class Ui_dev_client(object):
         self.text_output.setSizePolicy(sizePolicy)
         self.text_output.setMinimumSize(QtCore.QSize(690,0))
         self.text_output.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.text_output.setAutoFillBackground(True)
         self.text_output.setUndoRedoEnabled(False)
         self.text_output.setReadOnly(True)
         self.text_output.setObjectName("text_output")

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_map_noprompt.ui'
 #
-# Created: Mon Mar 17 23:03:11 2008
+# Created: Sun Mar 30 20:35:15 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,6 +18,7 @@ class Ui_RightWidget(object):
         self.text_map = QtGui.QTextEdit(RightWidget)
         self.text_map.setGeometry(QtCore.QRect(0,0,225,231))
         self.text_map.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.text_map.setAutoFillBackground(True)
         self.text_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.text_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.text_map.setUndoRedoEnabled(False)
