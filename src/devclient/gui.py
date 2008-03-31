@@ -40,11 +40,12 @@ import messages
 import exception
 import gui_option
 from conf import config
-from storage import Storage, Option
-from gui_src.gui import Ui_dev_client
+from alias import Alias
 from history import History
 from viewer import getViewer
 from servers import getServer
+from storage import Storage, Option
+from gui_src.gui import Ui_dev_client
 from constants import PUBLIC_VERSION, PROJECT_NAME
 
 logger = logging.getLogger('gui')
@@ -457,12 +458,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         if self.connected and self.connected == conn:
             self.macros = self._storage.macros(self.connected)
-            self.s_core.write(messages.RELOAD_CONN_DATA, unicode(conn))
+            self.alias = Alias(self.connected)
 
     def _startConnection(self, host, port):
         id_conn = self._storage.getIdConnection(self.connected)
         server = getServer(host, port)
         self.history.clear()
+        self.alias = Alias(self.connected)
         self.viewer = getViewer(self, server)
         self.macros = self._storage.macros(self.connected)
         self.game_logger = GameLogger(self.connected, self.preferences)
@@ -503,9 +505,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             if self.account.register(text):
                 id_conn = self._storage.getIdConnection(self.connected)
                 self._loadAccounts(id_conn)
+
+        self.s_core.write(messages.MSG, self.alias.check(text))
         self._appendEcho(text)
         self.history.add(text)
-        self.s_core.write(messages.MSG, text)
         self._manageLineInput(text)
 
     def _manageLineInput(self, text):

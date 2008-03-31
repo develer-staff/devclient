@@ -37,7 +37,6 @@ import conf
 import messages
 import exception
 import constants
-from alias import Alias
 from conf import config
 from parse import getParser
 from servers import getServer
@@ -192,9 +191,6 @@ class Core(object):
         self.s_gui = SocketToGui(port)
         """the interface with `Gui`, an instance of `SocketToGui`"""
 
-        self.alias = None
-        """the `Alias` instance, used to replace alias with text to send"""
-
         self.parser = None
         """the `Parser` instance, used to parse data from server"""
 
@@ -229,17 +225,6 @@ class Core(object):
 
         logging.debug('*** START %s ***' % constants.PROJECT_NAME.upper())
 
-    def _reloadConnData(self, conn):
-        """
-        Reload all data rely on connection.
-
-        :Parameters:
-          conn : str
-            the name of connection
-        """
-
-        self.alias = Alias(conn)
-
     def _readDataFromGui(self, sock_watched):
         """
         Read data from `Gui`
@@ -253,11 +238,9 @@ class Core(object):
 
         cmd, msg = self.s_gui.read()
         if cmd == messages.MSG and self.s_server.connected:
-            self.s_server.write(self.alias.check(msg))
+            self.s_server.write(msg)
         elif cmd == messages.END_APP:
             return False
-        elif cmd == messages.RELOAD_CONN_DATA:
-            self._reloadConnData(msg)
         elif cmd == messages.CONNECT:
             if self.s_server.connected:
                 sock_watched.remove(self.s_server)
@@ -272,7 +255,6 @@ class Core(object):
                 self.s_gui.write(messages.CONN_ESTABLISHED, msg)
 
             self.parser = getParser(getServer(*msg[1:]))
-            self.alias = Alias(msg[0])
         elif cmd == messages.UNKNOWN:
             logger.warning('SocketToGui: Unknown message')
 
