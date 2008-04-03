@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Thu Mar 27 20:16:45 2008
+# Created: Thu Apr  3 19:16:03 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,6 +17,7 @@ class Ui_option(object):
 
         self.list_option = QtGui.QListWidget(option)
         self.list_option.setGeometry(QtCore.QRect(5,5,90,280))
+        self.list_option.setAutoFillBackground(True)
         self.list_option.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.list_option.setTextElideMode(QtCore.Qt.ElideNone)
         self.list_option.setMovement(QtGui.QListView.Static)
