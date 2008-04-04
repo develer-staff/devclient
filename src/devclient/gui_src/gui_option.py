@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Fri Apr  4 22:07:48 2008
+# Created: Fri Apr  4 22:19:31 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -135,12 +135,12 @@ class Ui_option(object):
         self.account_page.setObjectName("account_page")
 
         self.layoutWidget1 = QtGui.QWidget(self.account_page)
-        self.layoutWidget1.setGeometry(QtCore.QRect(5,35,311,121))
+        self.layoutWidget1.setGeometry(QtCore.QRect(5,35,311,146))
         self.layoutWidget1.setObjectName("layoutWidget1")
 
         self.gridlayout1 = QtGui.QGridLayout(self.layoutWidget1)
         self.gridlayout1.setHorizontalSpacing(0)
-        self.gridlayout1.setVerticalSpacing(10)
+        self.gridlayout1.setVerticalSpacing(8)
         self.gridlayout1.setObjectName("gridlayout1")
 
         self.label_conn_account = QtGui.QLabel(self.layoutWidget1)
@@ -160,7 +160,7 @@ class Ui_option(object):
 
         self.label_account_account = QtGui.QLabel(self.layoutWidget1)
         self.label_account_account.setObjectName("label_account_account")
-        self.gridlayout1.addWidget(self.label_account_account,1,0,1,1)
+        self.gridlayout1.addWidget(self.label_account_account,3,0,1,1)
 
         self.list_account = QtGui.QComboBox(self.layoutWidget1)
 
@@ -171,7 +171,7 @@ class Ui_option(object):
         self.list_account.setSizePolicy(sizePolicy)
         self.list_account.setMinimumSize(QtCore.QSize(150,0))
         self.list_account.setObjectName("list_account")
-        self.gridlayout1.addWidget(self.list_account,1,1,1,1)
+        self.gridlayout1.addWidget(self.list_account,3,1,1,1)
 
         self.hboxlayout1 = QtGui.QHBoxLayout()
         self.hboxlayout1.setSpacing(3)
@@ -185,7 +185,16 @@ class Ui_option(object):
         self.delete_account.setIcon(QtGui.QIcon(":/images/button-cancel.png"))
         self.delete_account.setObjectName("delete_account")
         self.hboxlayout1.addWidget(self.delete_account)
-        self.gridlayout1.addLayout(self.hboxlayout1,2,0,1,2)
+        self.gridlayout1.addLayout(self.hboxlayout1,4,0,1,2)
+
+        self.line = QtGui.QFrame(self.layoutWidget1)
+        self.line.setFrameShape(QtGui.QFrame.HLine)
+        self.line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.gridlayout1.addWidget(self.line,1,0,1,2)
+
+        spacerItem6 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Fixed)
+        self.gridlayout1.addItem(spacerItem6,2,0,1,2)
 
         self.save_account = QtGui.QCheckBox(self.account_page)
         self.save_account.setGeometry(QtCore.QRect(5,10,115,22))
@@ -203,6 +212,8 @@ class Ui_option(object):
         self.gridlayout2.setObjectName("gridlayout2")
 
         self.gridlayout3 = QtGui.QGridLayout()
+        self.gridlayout3.setHorizontalSpacing(0)
+        self.gridlayout3.setVerticalSpacing(8)
         self.gridlayout3.setObjectName("gridlayout3")
 
         self.label_conn_alias = QtGui.QLabel(self.layoutWidget_2)
@@ -235,10 +246,10 @@ class Ui_option(object):
         self.label_alias_alias.setSizePolicy(sizePolicy)
         self.label_alias_alias.setMinimumSize(QtCore.QSize(66,0))
         self.label_alias_alias.setObjectName("label_alias_alias")
-        self.gridlayout3.addWidget(self.label_alias_alias,1,0,1,1)
+        self.gridlayout3.addWidget(self.label_alias_alias,3,0,1,1)
 
-        spacerItem6 = QtGui.QSpacerItem(80,20,QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Minimum)
-        self.gridlayout3.addItem(spacerItem6,1,1,1,2)
+        spacerItem7 = QtGui.QSpacerItem(80,20,QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Minimum)
+        self.gridlayout3.addItem(spacerItem7,3,1,1,2)
 
         self.list_alias = QtGui.QComboBox(self.layoutWidget_2)
         self.list_alias.setEnabled(False)
@@ -249,7 +260,7 @@ class Ui_option(object):
         sizePolicy.setHeightForWidth(self.list_alias.sizePolicy().hasHeightForWidth())
         self.list_alias.setSizePolicy(sizePolicy)
         self.list_alias.setObjectName("list_alias")
-        self.gridlayout3.addWidget(self.list_alias,1,3,1,1)
+        self.gridlayout3.addWidget(self.list_alias,3,3,1,1)
 
         self.label_label_alias = QtGui.QLabel(self.layoutWidget_2)
 
@@ -260,15 +271,15 @@ class Ui_option(object):
         self.label_label_alias.setSizePolicy(sizePolicy)
         self.label_label_alias.setMinimumSize(QtCore.QSize(66,0))
         self.label_label_alias.setObjectName("label_label_alias")
-        self.gridlayout3.addWidget(self.label_label_alias,2,0,1,1)
+        self.gridlayout3.addWidget(self.label_label_alias,4,0,1,1)
 
-        spacerItem7 = QtGui.QSpacerItem(80,20,QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Minimum)
-        self.gridlayout3.addItem(spacerItem7,2,1,1,2)
+        spacerItem8 = QtGui.QSpacerItem(80,20,QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Minimum)
+        self.gridlayout3.addItem(spacerItem8,4,1,1,2)
 
         self.label_alias = QtGui.QLineEdit(self.layoutWidget_2)
         self.label_alias.setEnabled(False)
         self.label_alias.setObjectName("label_alias")
-        self.gridlayout3.addWidget(self.label_alias,2,3,1,1)
+        self.gridlayout3.addWidget(self.label_alias,4,3,1,1)
 
         self.label_body_alias = QtGui.QLabel(self.layoutWidget_2)
 
@@ -279,19 +290,28 @@ class Ui_option(object):
         self.label_body_alias.setSizePolicy(sizePolicy)
         self.label_body_alias.setMinimumSize(QtCore.QSize(66,0))
         self.label_body_alias.setObjectName("label_body_alias")
-        self.gridlayout3.addWidget(self.label_body_alias,3,0,1,1)
+        self.gridlayout3.addWidget(self.label_body_alias,5,0,1,1)
 
         self.body_alias = QtGui.QLineEdit(self.layoutWidget_2)
         self.body_alias.setEnabled(False)
         self.body_alias.setObjectName("body_alias")
-        self.gridlayout3.addWidget(self.body_alias,3,1,1,3)
+        self.gridlayout3.addWidget(self.body_alias,5,1,1,3)
+
+        self.line_2 = QtGui.QFrame(self.layoutWidget_2)
+        self.line_2.setFrameShape(QtGui.QFrame.HLine)
+        self.line_2.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_2.setObjectName("line_2")
+        self.gridlayout3.addWidget(self.line_2,1,0,1,4)
+
+        spacerItem9 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Fixed)
+        self.gridlayout3.addItem(spacerItem9,2,0,1,4)
         self.gridlayout2.addLayout(self.gridlayout3,0,0,1,2)
 
-        spacerItem8 = QtGui.QSpacerItem(271,66,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout2.addItem(spacerItem8,1,0,1,2)
+        spacerItem10 = QtGui.QSpacerItem(271,66,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout2.addItem(spacerItem10,1,0,1,2)
 
-        spacerItem9 = QtGui.QSpacerItem(91,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout2.addItem(spacerItem9,2,0,1,1)
+        spacerItem11 = QtGui.QSpacerItem(91,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout2.addItem(spacerItem11,2,0,1,1)
 
         self.hboxlayout2 = QtGui.QHBoxLayout()
         self.hboxlayout2.setSpacing(6)
@@ -321,6 +341,8 @@ class Ui_option(object):
         self.gridlayout4.setObjectName("gridlayout4")
 
         self.gridlayout5 = QtGui.QGridLayout()
+        self.gridlayout5.setHorizontalSpacing(5)
+        self.gridlayout5.setVerticalSpacing(8)
         self.gridlayout5.setObjectName("gridlayout5")
 
         self.label_conn_macro = QtGui.QLabel(self.layoutWidget_3)
@@ -353,10 +375,10 @@ class Ui_option(object):
         self.label_macro_macro.setSizePolicy(sizePolicy)
         self.label_macro_macro.setMinimumSize(QtCore.QSize(66,0))
         self.label_macro_macro.setObjectName("label_macro_macro")
-        self.gridlayout5.addWidget(self.label_macro_macro,1,0,1,1)
+        self.gridlayout5.addWidget(self.label_macro_macro,3,0,1,1)
 
-        spacerItem10 = QtGui.QSpacerItem(80,20,QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Minimum)
-        self.gridlayout5.addItem(spacerItem10,1,1,1,2)
+        spacerItem12 = QtGui.QSpacerItem(80,20,QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Minimum)
+        self.gridlayout5.addItem(spacerItem12,3,1,1,2)
 
         self.list_macro = QtGui.QComboBox(self.layoutWidget_3)
         self.list_macro.setEnabled(False)
@@ -367,7 +389,7 @@ class Ui_option(object):
         sizePolicy.setHeightForWidth(self.list_macro.sizePolicy().hasHeightForWidth())
         self.list_macro.setSizePolicy(sizePolicy)
         self.list_macro.setObjectName("list_macro")
-        self.gridlayout5.addWidget(self.list_macro,1,3,1,1)
+        self.gridlayout5.addWidget(self.list_macro,3,3,1,1)
 
         self.label_keys_macro = QtGui.QLabel(self.layoutWidget_3)
 
@@ -378,13 +400,13 @@ class Ui_option(object):
         self.label_keys_macro.setSizePolicy(sizePolicy)
         self.label_keys_macro.setMinimumSize(QtCore.QSize(66,0))
         self.label_keys_macro.setObjectName("label_keys_macro")
-        self.gridlayout5.addWidget(self.label_keys_macro,2,0,1,1)
+        self.gridlayout5.addWidget(self.label_keys_macro,4,0,1,1)
 
         self.keys_macro = QtGui.QLineEdit(self.layoutWidget_3)
         self.keys_macro.setEnabled(False)
         self.keys_macro.setProperty("highlight_color",QtCore.QVariant(QtGui.QApplication.translate("option", "#e0e0e0", None, QtGui.QApplication.UnicodeUTF8)))
         self.keys_macro.setObjectName("keys_macro")
-        self.gridlayout5.addWidget(self.keys_macro,2,3,1,1)
+        self.gridlayout5.addWidget(self.keys_macro,4,3,1,1)
 
         self.label_command_macro = QtGui.QLabel(self.layoutWidget_3)
 
@@ -395,24 +417,33 @@ class Ui_option(object):
         self.label_command_macro.setSizePolicy(sizePolicy)
         self.label_command_macro.setMinimumSize(QtCore.QSize(66,0))
         self.label_command_macro.setObjectName("label_command_macro")
-        self.gridlayout5.addWidget(self.label_command_macro,3,0,1,1)
+        self.gridlayout5.addWidget(self.label_command_macro,5,0,1,1)
 
         self.command_macro = QtGui.QLineEdit(self.layoutWidget_3)
         self.command_macro.setEnabled(False)
         self.command_macro.setObjectName("command_macro")
-        self.gridlayout5.addWidget(self.command_macro,3,1,1,3)
+        self.gridlayout5.addWidget(self.command_macro,5,1,1,3)
 
         self.register_macro = QtGui.QPushButton(self.layoutWidget_3)
         self.register_macro.setEnabled(False)
         self.register_macro.setObjectName("register_macro")
-        self.gridlayout5.addWidget(self.register_macro,2,1,1,2)
+        self.gridlayout5.addWidget(self.register_macro,4,1,1,2)
+
+        self.line_3 = QtGui.QFrame(self.layoutWidget_3)
+        self.line_3.setFrameShape(QtGui.QFrame.HLine)
+        self.line_3.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_3.setObjectName("line_3")
+        self.gridlayout5.addWidget(self.line_3,1,0,1,4)
+
+        spacerItem13 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Fixed)
+        self.gridlayout5.addItem(spacerItem13,2,0,1,4)
         self.gridlayout4.addLayout(self.gridlayout5,0,0,1,2)
 
-        spacerItem11 = QtGui.QSpacerItem(271,66,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout4.addItem(spacerItem11,1,0,1,2)
+        spacerItem14 = QtGui.QSpacerItem(271,66,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout4.addItem(spacerItem14,1,0,1,2)
 
-        spacerItem12 = QtGui.QSpacerItem(91,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout4.addItem(spacerItem12,2,0,1,1)
+        spacerItem15 = QtGui.QSpacerItem(91,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout4.addItem(spacerItem15,2,0,1,1)
 
         self.hboxlayout3 = QtGui.QHBoxLayout()
         self.hboxlayout3.setSpacing(6)
@@ -471,8 +502,8 @@ class Ui_option(object):
         self.keep_text.setObjectName("keep_text")
         self.gridlayout6.addWidget(self.keep_text,1,0,1,2)
 
-        spacerItem13 = QtGui.QSpacerItem(76,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout6.addItem(spacerItem13,1,2,1,1)
+        spacerItem16 = QtGui.QSpacerItem(76,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout6.addItem(spacerItem16,1,2,1,1)
 
         self.groupBox_2 = QtGui.QGroupBox(self.pref_page)
         self.groupBox_2.setGeometry(QtCore.QRect(5,109,311,176))
@@ -491,17 +522,17 @@ class Ui_option(object):
         self.save_log.setObjectName("save_log")
         self.gridlayout7.addWidget(self.save_log,0,0,1,1)
 
-        spacerItem14 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout7.addItem(spacerItem14,0,1,1,1)
+        spacerItem17 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout7.addItem(spacerItem17,0,1,1,1)
 
-        spacerItem15 = QtGui.QSpacerItem(294,56,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout7.addItem(spacerItem15,1,0,2,2)
+        spacerItem18 = QtGui.QSpacerItem(294,56,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout7.addItem(spacerItem18,1,0,2,2)
 
         self.hboxlayout4 = QtGui.QHBoxLayout()
         self.hboxlayout4.setObjectName("hboxlayout4")
 
-        spacerItem16 = QtGui.QSpacerItem(209,26,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.hboxlayout4.addItem(spacerItem16)
+        spacerItem19 = QtGui.QSpacerItem(209,26,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.hboxlayout4.addItem(spacerItem19)
 
         self.save_preferences = QtGui.QPushButton(self.layoutWidget3)
         self.save_preferences.setIcon(QtGui.QIcon(":/images/button-save.png"))

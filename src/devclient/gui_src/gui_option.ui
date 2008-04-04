@@ -352,7 +352,7 @@
        <x>5</x>
        <y>35</y>
        <width>311</width>
-       <height>121</height>
+       <height>146</height>
       </rect>
      </property>
      <layout class="QGridLayout" >
@@ -360,7 +360,7 @@
        <number>0</number>
       </property>
       <property name="verticalSpacing" >
-       <number>10</number>
+       <number>8</number>
       </property>
       <item row="0" column="0" >
        <widget class="QLabel" name="label_conn_account" >
@@ -385,14 +385,14 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
+      <item row="3" column="0" >
        <widget class="QLabel" name="label_account_account" >
         <property name="text" >
          <string>Account</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
+      <item row="3" column="1" >
        <widget class="QComboBox" name="list_account" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
@@ -408,7 +408,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2" >
+      <item row="4" column="0" colspan="2" >
        <layout class="QHBoxLayout" >
         <property name="spacing" >
          <number>3</number>
@@ -441,6 +441,29 @@
         </item>
        </layout>
       </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="Line" name="line" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </widget>
     <widget class="QCheckBox" name="save_account" >
@@ -470,6 +493,12 @@
      <layout class="QGridLayout" >
       <item row="0" column="0" colspan="2" >
        <layout class="QGridLayout" >
+        <property name="horizontalSpacing" >
+         <number>0</number>
+        </property>
+        <property name="verticalSpacing" >
+         <number>8</number>
+        </property>
         <item row="0" column="0" colspan="2" >
          <widget class="QLabel" name="label_conn_alias" >
           <property name="sizePolicy" >
@@ -499,7 +528,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0" >
+        <item row="3" column="0" >
          <widget class="QLabel" name="label_alias_alias" >
           <property name="sizePolicy" >
            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
@@ -518,7 +547,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1" colspan="2" >
+        <item row="3" column="1" colspan="2" >
          <spacer>
           <property name="orientation" >
            <enum>Qt::Horizontal</enum>
@@ -534,7 +563,7 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="3" >
+        <item row="3" column="3" >
          <widget class="QComboBox" name="list_alias" >
           <property name="enabled" >
            <bool>false</bool>
@@ -547,7 +576,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0" >
+        <item row="4" column="0" >
          <widget class="QLabel" name="label_label_alias" >
           <property name="sizePolicy" >
            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
@@ -566,7 +595,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="1" colspan="2" >
+        <item row="4" column="1" colspan="2" >
          <spacer>
           <property name="orientation" >
            <enum>Qt::Horizontal</enum>
@@ -582,14 +611,14 @@
           </property>
          </spacer>
         </item>
-        <item row="2" column="3" >
+        <item row="4" column="3" >
          <widget class="QLineEdit" name="label_alias" >
           <property name="enabled" >
            <bool>false</bool>
           </property>
          </widget>
         </item>
-        <item row="3" column="0" >
+        <item row="5" column="0" >
          <widget class="QLabel" name="label_body_alias" >
           <property name="sizePolicy" >
            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
@@ -608,12 +637,35 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1" colspan="3" >
+        <item row="5" column="1" colspan="3" >
          <widget class="QLineEdit" name="body_alias" >
           <property name="enabled" >
            <bool>false</bool>
           </property>
          </widget>
+        </item>
+        <item row="1" column="0" colspan="4" >
+         <widget class="Line" name="line_2" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="4" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -698,6 +750,12 @@
      <layout class="QGridLayout" >
       <item row="0" column="0" colspan="2" >
        <layout class="QGridLayout" >
+        <property name="horizontalSpacing" >
+         <number>5</number>
+        </property>
+        <property name="verticalSpacing" >
+         <number>8</number>
+        </property>
         <item row="0" column="0" colspan="2" >
          <widget class="QLabel" name="label_conn_macro" >
           <property name="sizePolicy" >
@@ -727,7 +785,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0" >
+        <item row="3" column="0" >
          <widget class="QLabel" name="label_macro_macro" >
           <property name="sizePolicy" >
            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
@@ -746,7 +804,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1" colspan="2" >
+        <item row="3" column="1" colspan="2" >
          <spacer>
           <property name="orientation" >
            <enum>Qt::Horizontal</enum>
@@ -762,7 +820,7 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="3" >
+        <item row="3" column="3" >
          <widget class="QComboBox" name="list_macro" >
           <property name="enabled" >
            <bool>false</bool>
@@ -775,7 +833,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0" >
+        <item row="4" column="0" >
          <widget class="QLabel" name="label_keys_macro" >
           <property name="sizePolicy" >
            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
@@ -794,7 +852,7 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="3" >
+        <item row="4" column="3" >
          <widget class="QLineEdit" name="keys_macro" >
           <property name="enabled" >
            <bool>false</bool>
@@ -804,7 +862,7 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="0" >
+        <item row="5" column="0" >
          <widget class="QLabel" name="label_command_macro" >
           <property name="sizePolicy" >
            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
@@ -823,14 +881,14 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1" colspan="3" >
+        <item row="5" column="1" colspan="3" >
          <widget class="QLineEdit" name="command_macro" >
           <property name="enabled" >
            <bool>false</bool>
           </property>
          </widget>
         </item>
-        <item row="2" column="1" colspan="2" >
+        <item row="4" column="1" colspan="2" >
          <widget class="QPushButton" name="register_macro" >
           <property name="enabled" >
            <bool>false</bool>
@@ -839,6 +897,29 @@
            <string>Register</string>
           </property>
          </widget>
+        </item>
+        <item row="1" column="0" colspan="4" >
+         <widget class="Line" name="line_3" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="4" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
