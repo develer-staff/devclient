@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Thu Apr  3 19:16:03 2008
+# Created: Fri Apr  4 22:07:48 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,7 +13,15 @@ class Ui_option(object):
     def setupUi(self, option):
         option.setObjectName("option")
         option.setWindowModality(QtCore.Qt.ApplicationModal)
-        option.resize(QtCore.QSize(QtCore.QRect(0,0,414,290).size()).expandedTo(option.minimumSizeHint()))
+        option.resize(QtCore.QSize(QtCore.QRect(0,0,415,290).size()).expandedTo(option.minimumSizeHint()))
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(option.sizePolicy().hasHeightForWidth())
+        option.setSizePolicy(sizePolicy)
+        option.setMinimumSize(QtCore.QSize(415,290))
+        option.setMaximumSize(QtCore.QSize(415,290))
 
         self.list_option = QtGui.QListWidget(option)
         self.list_option.setGeometry(QtCore.QRect(5,5,90,280))
