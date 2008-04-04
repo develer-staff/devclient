@@ -27,11 +27,10 @@ __docformat__ = 'restructuredtext'
 
 import sys
 from subprocess import call
-from os.path import normpath, join, dirname
+from os.path import dirname
 
 if __name__ == '__main__':
-    retcode = call(['python', join(dirname(sys.argv[0]),
-                                   normpath('update/updater.py'))])
+    retcode = call(['python', dirname(sys.argv[0]) + '/update/updater.py'])
 
     # This import must stay after updating of client
     import devclient.engine
