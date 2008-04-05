@@ -27,8 +27,10 @@ import random
 import signal
 import os.path
 import subprocess
+from time import strftime
+from traceback import print_exc
 from os.path import dirname, join, abspath, normpath
-from sys import path, argv, platform
+from sys import path, argv, platform, exc_info
 
 import exception
 from constants import PROJECT_NAME
@@ -71,14 +73,53 @@ def startProcess(cmd):
 
     return subprocess.Popen(cmd, startupinfo=startupinfo)
 
+def save_exception():
+    """
+    Save a detailed traceback of a fatal exception.
+    """
+
+    fd = open('exception.txt', 'a+')
+    fd.write("%s FATAL EXCEPTION %s %s\n" % ('*' * 23,
+                                             strftime("%Y-%m-%d %H:%M"),
+                                             '*' * 23))
+    print_exc(file=fd)
+    fd.write("\n%s\n" % ('+' * 80, ))
+
+    tb = exc_info()[2]
+    while tb.tb_next:
+        tb = tb.tb_next
+
+    stack = []
+    f = tb.tb_frame
+    while f:
+        stack.append(f)
+        f = f.f_back
+    stack.reverse()
+
+    for frame in stack:
+        fd.write("\nFrame %s in %s at line %s\n" % (frame.f_code.co_name,
+                                                    frame.f_code.co_filename,
+                                                    frame.f_lineno))
+        for key, value in frame.f_locals.items():
+            if key not in ('__doc__', '__docformat__', '__builtins__'):
+                try:
+                    fd.write("%s = %s\n" % (key, value))
+                except:
+                    fd.write("%s = <UNKNOWN VALUE>\n" % key)
+
+    fd.write("%s\n" % ('*' * 80, ))
+    fd.close()
+
 def main(argv=argv, cfg_file=cfg_file, update=1):
     """
     The function is the client entry point.
     """
 
-    os.chdir(join(os.getcwd(), dirname(argv[0]), dirname(cfg_file)))
+    start_dir = os.getcwd()
+    os.chdir(join(start_dir, dirname(argv[0]), dirname(cfg_file)))
     cfg_file = join(os.getcwd(), os.path.basename(cfg_file))
     loadConfiguration(cfg_file)
+    os.chdir(start_dir)
     path.append(config['servers']['path'])
     path.append(config['resources']['path'])
 
@@ -102,8 +143,10 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
             gui.displayWarning(PROJECT_NAME, gui._text['UpdateFail'])
         gui.mainLoop()
     except exception.IPCError:
+        save_exception()
         terminateProcess(p.pid)
     except Exception, e:
         print 'Fatal Exception:', e
+        save_exception()
         terminateProcess(p.pid)
 
