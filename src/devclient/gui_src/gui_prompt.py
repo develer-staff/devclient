@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_prompt.ui'
 #
-# Created: Tue Feb 19 22:02:20 2008
+# Created: Sat Apr  5 17:14:07 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,11 +12,11 @@ from PyQt4 import QtCore, QtGui
 class Ui_RightWidget(object):
     def setupUi(self, RightWidget):
         RightWidget.setObjectName("RightWidget")
-        RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,230,615).size()).expandedTo(RightWidget.minimumSizeHint()))
-        RightWidget.setMinimumSize(QtCore.QSize(230,615))
+        RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,225,615).size()).expandedTo(RightWidget.minimumSizeHint()))
+        RightWidget.setMinimumSize(QtCore.QSize(225,615))
 
         self.layoutWidget = QtGui.QWidget(RightWidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,5,226,121))
+        self.layoutWidget.setGeometry(QtCore.QRect(0,5,221,121))
         self.layoutWidget.setObjectName("layoutWidget")
 
         self.gridlayout = QtGui.QGridLayout(self.layoutWidget)

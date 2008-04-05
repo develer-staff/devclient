@@ -225,7 +225,7 @@
        <bool>true</bool>
       </property>
       <property name="styleSheet" >
-       <string>QTextEdit { background-color: #000000; font: 10pt "Courier"; color: #FFFFFF;}</string>
+       <string>QTextEdit { background-color: #000000; font: 13px "Courier"; color: #FFFFFF;}</string>
       </property>
       <property name="undoRedoEnabled" >
        <bool>false</bool>
@@ -245,7 +245,7 @@
       </property>
       <property name="minimumSize" >
        <size>
-        <width>230</width>
+        <width>225</width>
         <height>615</height>
        </size>
       </property>

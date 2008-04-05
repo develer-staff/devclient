@@ -5,13 +5,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>230</width>
+    <width>225</width>
     <height>615</height>
    </rect>
   </property>
   <property name="minimumSize" >
    <size>
-    <width>230</width>
+    <width>225</width>
     <height>615</height>
    </size>
   </property>
@@ -23,7 +23,7 @@
     <rect>
      <x>0</x>
      <y>235</y>
-     <width>226</width>
+     <width>221</width>
      <height>121</height>
     </rect>
    </property>
@@ -180,6 +180,12 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
      <height>231</height>
     </rect>
    </property>
+   <property name="sizePolicy" >
+    <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="focusPolicy" >
     <enum>Qt::NoFocus</enum>
    </property>
@@ -187,7 +193,7 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
     <bool>true</bool>
    </property>
    <property name="styleSheet" >
-    <string>QTextEdit { background-color: #000000; font: 10pt "Courier"; color: #FFFFFF;}</string>
+    <string>QTextEdit { background-color: #000000; font: 13px "Courier"; color: #FFFFFF;}</string>
    </property>
    <property name="verticalScrollBarPolicy" >
     <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -204,8 +210,8 @@ QProgressBar::chunk {background-color:#33CC33;}</string>
    <property name="html" >
     <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Courier'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Courier'; font-weight:400; font-style:normal;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;">&lt;/p>&lt;/body>&lt;/html></string>
    </property>
    <property name="char_width" stdset="0" >
     <number>27</number>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sat Apr  5 16:22:48 2008
+# Created: Sat Apr  5 17:13:54 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -107,7 +107,7 @@ class Ui_dev_client(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.rightpanel.sizePolicy().hasHeightForWidth())
         self.rightpanel.setSizePolicy(sizePolicy)
-        self.rightpanel.setMinimumSize(QtCore.QSize(230,615))
+        self.rightpanel.setMinimumSize(QtCore.QSize(225,615))
         self.rightpanel.setFrameShape(QtGui.QFrame.NoFrame)
         self.rightpanel.setObjectName("rightpanel")
         self.gridlayout.addWidget(self.rightpanel,1,1,2,1)
@@ -137,6 +137,6 @@ class Ui_dev_client(object):
         self.button_connect.setShortcut(QtGui.QApplication.translate("dev_client", "Alt+C", None, QtGui.QApplication.UnicodeUTF8))
         self.button_option.setText(QtGui.QApplication.translate("dev_client", "Option", None, QtGui.QApplication.UnicodeUTF8))
         self.button_option.setShortcut(QtGui.QApplication.translate("dev_client", "Alt+O", None, QtGui.QApplication.UnicodeUTF8))
-        self.text_output.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #000000; font: 10pt \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
+        self.text_output.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
 
 import gui_rc
