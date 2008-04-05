@@ -36,8 +36,7 @@ import exception
 from constants import PROJECT_NAME
 from conf import loadConfiguration, config
 
-_DEF_CONFIG_FILE = "../../etc/devclient.cfg"
-cfg_file = normpath(join(dirname(abspath(__file__)), _DEF_CONFIG_FILE))
+cfg_file = normpath(dirname(abspath(__file__)) + "/../../etc/devclient.cfg")
 
 def terminateProcess(pid):
     """
@@ -78,23 +77,27 @@ def save_exception():
     Save a detailed traceback of a fatal exception.
     """
 
+    def extract_stack():
+        tb = exc_info()[2]
+        while tb.tb_next:
+            tb = tb.tb_next
+
+        stack = []
+        f = tb.tb_frame
+        while f:
+            stack.append(f)
+            f = f.f_back
+        stack.reverse()
+
+    return stack
+
     fd = open('exception.txt', 'a+')
     fd.write("%s FATAL EXCEPTION %s %s\n" % ('*' * 23,
                                              strftime("%Y-%m-%d %H:%M"),
                                              '*' * 23))
     print_exc(file=fd)
     fd.write("\n%s\n" % ('+' * 80, ))
-
-    tb = exc_info()[2]
-    while tb.tb_next:
-        tb = tb.tb_next
-
-    stack = []
-    f = tb.tb_frame
-    while f:
-        stack.append(f)
-        f = f.f_back
-    stack.reverse()
+    stack = extract_stack()
 
     for frame in stack:
         fd.write("\nFrame %s in %s at line %s\n" % (frame.f_code.co_name,
