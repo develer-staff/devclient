@@ -234,6 +234,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         QtGui.QMainWindow.__init__(self)
         self.setupUi(self)
         self.setupLogger()
+        self._translateText()
 
         self.s_core = SocketToCore(self, port)
         """the interface with `Core`, an instance of `SocketToCore`"""
@@ -253,7 +254,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.preferences = self._storage.preferences()
         self._loadConnections()
         self._setupSignal()
-        self._translateText()
 
     def _loadConnections(self):
         connections = self._storage.connections()
