@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sun Mar 30 20:11:50 2008
-#      by: PyQt4 UI code generator 4.3
+# Created: Sat Apr  5 16:22:48 2008
+#      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_dev_client(object):
     def setupUi(self, dev_client):
         dev_client.setObjectName("dev_client")
-        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,935,698).size()).expandedTo(dev_client.minimumSizeHint()))
+        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,935,660).size()).expandedTo(dev_client.minimumSizeHint()))
 
         self.centralwidget = QtGui.QWidget(dev_client)
         self.centralwidget.setObjectName("centralwidget")
