@@ -34,12 +34,11 @@ class FormConnection(object):
     Manage the connection part of gui option.
     """
 
-    def __init__(self, widget, storage):
+    def __init__(self, widget):
         self.w = widget
-        self.storage = storage
         self.w.port_conn.setValidator(QtGui.QIntValidator(self.w.port_conn))
 
-        self.connections = self.storage.connections()
+        self.connections = Storage().connections()
         for el in self.connections:
             self.w.list_conn.addItem(el[1], QVariant(el[0]))
 
@@ -147,14 +146,14 @@ class FormConnection(object):
                 int(self.w.port_conn.text())]
 
         if not self.w.list_conn.currentIndex():
-            self.storage.addConnection(conn)
+            Storage().addConnection(conn)
             self.w.list_conn.addItem(self.w.name_conn.text(), QVariant(conn[0]))
             self.connections.append(conn)
         else:
             self.connections[self.w.list_conn.currentIndex() - 1] = conn
             self.w.list_conn.setItemText(self.w.list_conn.currentIndex(),
                                          conn[1])
-            self.storage.updateConnection(conn)
+            Storage().updateConnection(conn)
 
         self.w.list_conn.setCurrentIndex(0)
         self.w.emit(SIGNAL('reloadConnData(QString)'), '')
@@ -169,7 +168,7 @@ class FormConnection(object):
             return
 
         index = self.w.list_conn.currentIndex() - 1
-        self.storage.deleteConnection(self.connections[index])
+        Storage().deleteConnection(self.connections[index])
         self.w.list_conn.removeItem(self.w.list_conn.currentIndex())
         self.w.emit(SIGNAL('reloadConnData(QString)'), '')
         del self.connections[index]
@@ -180,7 +179,7 @@ class FormMacro(object):
     Manage the macro part of gui option.
     """
 
-    def __init__(self, widget, storage):
+    def __init__(self, widget):
         self.w = widget
         self._translateText()
 
@@ -189,13 +188,12 @@ class FormMacro(object):
             if k.startswith('Key_'):
                 self._key_descr[v] = k[4:]
 
-        self.loadForm(storage)
+        self.loadForm()
         self.start_reg = False
         self._setupSignal()
 
-    def loadForm(self, storage):
-        self.storage = storage
-        connections = storage.connections()
+    def loadForm(self):
+        connections = Storage().connections()
         self.w.list_conn_macro.clear()
         self.w.list_conn_macro.addItems([c[1] for c in connections])
         for o in (self.w.list_macro, self.w.command_macro,
@@ -256,7 +254,7 @@ class FormMacro(object):
         if not signal:
             self.disableSignal(True)
 
-        self.macros = self.storage.macros(unicode(conn)) if conn else []
+        self.macros = Storage().macros(unicode(conn)) if conn else []
         self.w.list_macro.clear()
         self.w.list_macro.addItem(self._text['new_macro'])
         self.w.list_macro.addItems([self.getKeyDescr(*m[1:]) for m in
@@ -324,7 +322,7 @@ class FormMacro(object):
                                           self.getKeyDescr(*macro[1:]))
 
         conn_name = self.w.list_conn_macro.currentText()
-        self.storage.saveMacros(unicode(conn_name), self.macros)
+        Storage().saveMacros(unicode(conn_name), self.macros)
         self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
         self._clear()
 
@@ -337,7 +335,7 @@ class FormMacro(object):
         del self.macros[list_idx - 1]
         self.w.list_macro.removeItem(list_idx)
         conn_name = self.w.list_conn_macro.currentText()
-        self.storage.saveMacros(unicode(conn_name), self.macros)
+        Storage().saveMacros(unicode(conn_name), self.macros)
         self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
 
     def _clear(self):
@@ -419,9 +417,8 @@ class FormPreferences(object):
     Manage the preferences part of gui option.
     """
 
-    def __init__(self, widget, storage):
+    def __init__(self, widget):
         self.w = widget
-        self.storage = storage
         self._loadForm()
         self._setupSignal()
 
@@ -435,7 +432,7 @@ class FormPreferences(object):
         self.w.echo_color.setText(unicode(color).upper())
 
     def _loadForm(self):
-        preferences = self.storage.preferences()
+        preferences = Storage().preferences()
         if preferences:
             echo_text = (Qt.Unchecked, Qt.Checked)[preferences[0]]
             self.w.echo_text.setCheckState(echo_text)
@@ -451,24 +448,28 @@ class FormPreferences(object):
                        int(self.w.keep_text.checkState() == Qt.Checked),
                        int(self.w.save_log.checkState() == Qt.Checked))
 
-        self.storage.savePreferences(preferences)
+        Storage().savePreferences(preferences)
         self.w.emit(SIGNAL('reloadPreferences()'))
 
 
 class FormAccounts(object):
-    def __init__(self, widget, storage):
+    """
+    Manage the accounts part of gui option.
+    """
+
+    def __init__(self, widget):
         self.w = widget
-        self.storage = storage
         self.loadForm()
         self._setupSignal()
 
     def loadForm(self):
-        connections = self.storage.connections()
+        s = Storage()
+        connections = s.connections()
         self.w.list_conn_account.clear()
         for el in connections:
             self.w.list_conn_account.addItem(el[1], QVariant(el[0]))
         self._loadAccounts(0)
-        val = self.storage.option(Option.SAVE_ACCOUNT, 0)
+        val = s.option(Option.SAVE_ACCOUNT, 0)
         self.w.save_account.setCheckState(Qt.Checked if val else Qt.Unchecked)
         self.w.box_prompt.setVisible(False)
 
@@ -490,7 +491,7 @@ class FormAccounts(object):
         id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
         self.w.list_account.blockSignals(True)
         self.w.list_account.clear()
-        accounts = self.storage.accounts(id_conn)
+        accounts = Storage().accounts(id_conn)
         self.w.list_account.addItems(accounts)
         self.w.list_account.blockSignals(False)
         self.w.delete_account.setEnabled(True if accounts else False)
@@ -503,7 +504,7 @@ class FormAccounts(object):
         id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
         username = unicode(self.w.list_account.currentText())
         if id_conn and username:
-            n_prompt, f_prompt = self.storage.prompt(id_conn, username)
+            n_prompt, f_prompt = Storage().prompt(id_conn, username)
             self.w.normal_prompt.setText(n_prompt)
             self.w.fight_prompt.setText(f_prompt)
 
@@ -515,14 +516,15 @@ class FormAccounts(object):
         idx = self.w.list_conn_account.currentIndex()
         id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
         username = unicode(self.w.list_account.currentText())
-        self.storage.deleteAccount(id_conn, username)
+        Storage().deleteAccount(id_conn, username)
         self.w.list_account.removeItem(self.w.list_account.currentIndex())
         self.w.emit(SIGNAL('reloadConnData(QString)'), '')
         if not self.w.list_account.count():
             self.w.delete_account.setEnabled(False)
+            self.w.change_prompt.setEnabled(False)
 
     def _saveAccounts(self, val):
-        self.storage.setOption(Option.SAVE_ACCOUNT, int(val == Qt.Checked))
+        Storage().setOption(Option.SAVE_ACCOUNT, int(val == Qt.Checked))
 
     def _savePrompt(self):
         idx = self.w.list_conn_account.currentIndex()
@@ -530,7 +532,7 @@ class FormAccounts(object):
         username = unicode(self.w.list_account.currentText())
         normal = unicode(self.w.normal_prompt.text())
         fight = unicode(self.w.fight_prompt.text())
-        self.storage.savePrompt(id_conn, username, normal, fight)
+        Storage().savePrompt(id_conn, username, normal, fight)
         self.w.box_prompt.setVisible(False)
 
 
@@ -545,19 +547,16 @@ class GuiOption(QDialog, Ui_option):
         self._setupSignal()
         self._translateText()
 
-        self.storage = Storage()
-        """an instance of `Storage`, used to maintain persistence."""
-
-        self.conn = FormConnection(self, self.storage)
+        self.conn = FormConnection(self)
         """the `FormConnection` instance, used to manage form of connections."""
 
-        self.macro = FormMacro(self, self.storage)
+        self.macro = FormMacro(self)
         """the `FormMacro` instance, used to manage form of macros."""
 
-        self.preferences = FormPreferences(self, self.storage)
+        self.preferences = FormPreferences(self)
         """the `FormPreferences` instance, used to manage form of preferences."""
 
-        self.accounts = FormAccounts(self, self.storage)
+        self.accounts = FormAccounts(self)
         """the FormAccounts instance, used to manage form of accounts."""
 
     def _displayWarning(self, title, message):
@@ -619,7 +618,7 @@ class GuiOption(QDialog, Ui_option):
 
         elif curr_page == "macro_page":
             self.macro.disableSignal(True)
-            self.macro.loadForm(self.storage)
+            self.macro.loadForm()
             self.macro.disableSignal(False)
 
         elif curr_page == "account_page":
@@ -631,7 +630,7 @@ class GuiOption(QDialog, Ui_option):
         self.disableSignal(True)
         self.list_alias.clear()
         self.list_alias.addItem(self._text['new_alias'])
-        self.aliases = self.storage.aliases(unicode(conn))
+        self.aliases = Storage().aliases(unicode(conn))
         self.list_alias.addItems([l for l, b in self.aliases])
         self.disableSignal(False)
         self._loadAlias(0)
@@ -682,7 +681,7 @@ class GuiOption(QDialog, Ui_option):
             self.list_alias.setItemText(list_idx, alias[0])
 
         conn_name = self.list_conn_alias.currentText()
-        self.storage.saveAliases(unicode(conn_name), self.aliases)
+        Storage().saveAliases(unicode(conn_name), self.aliases)
         self.emit(SIGNAL('reloadConnData(QString)'), conn_name)
         self.list_alias.setCurrentIndex(0)
         self._loadAlias(0)
@@ -696,5 +695,5 @@ class GuiOption(QDialog, Ui_option):
         del self.aliases[list_idx - 1]
         self.list_alias.removeItem(list_idx)
         conn_name = self.list_conn_alias.currentText()
-        self.storage.saveAliases(unicode(conn_name), self.aliases)
+        Storage().saveAliases(unicode(conn_name), self.aliases)
         self.emit(SIGNAL('reloadConnData(QString)'), conn_name)

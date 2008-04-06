@@ -93,7 +93,7 @@ class TestFormConnection(GuiOptionTest):
         return True
 
     def _buildForm(self, name, host, port):
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
         form_conn.w.name_conn.setText(name)
         form_conn.w.host_conn.setText(host)
         form_conn.w.port_conn.setText(str(port))
@@ -108,7 +108,7 @@ class TestFormConnection(GuiOptionTest):
         return False
 
     def testEmpty(self):
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
         self.assert_(len(form_conn.connections) == 0)
 
     def testLoad(self):
@@ -118,7 +118,7 @@ class TestFormConnection(GuiOptionTest):
         conn = [id_conn, name, host, port]
 
         Storage().addConnection(conn)
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
 
         form_conn.load(name)
         self.assert_(self._formCompare(form_conn, conn))
@@ -132,19 +132,19 @@ class TestFormConnection(GuiOptionTest):
         storage = Storage()
         storage.addConnection(conn)
         storage.addConnection([0, 'test', 'test', 4000])
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
 
         form_conn.load(name)
         self.assert_(self._formCompare(form_conn, conn))
 
     def testLoad3(self):
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
 
         form_conn.load('fake')
         self.assert_(self._formCompare(form_conn, [0, '', '', '']))
 
     def testLoad4(self):
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
 
         form_conn.load('')
         self.assert_(self._formCompare(form_conn, [0, '', '', '']))
@@ -153,7 +153,7 @@ class TestFormConnection(GuiOptionTest):
         """Verify error with empty fields."""
 
         Storage().addConnection([0, 'name', 'host', 4000])
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
         self.assert_(not form_conn._checkFields())
         self.assert_(form_conn.w._warning)
 
@@ -192,7 +192,7 @@ class TestFormConnection(GuiOptionTest):
         """Verify no error on right update"""
 
         Storage().addConnection([0, 'name', 'host', 4000])
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
         form_conn.load('name')
         form_conn.w.list_conn.setCurrentIndex(1)
         self.assert_(form_conn._checkFields())
@@ -284,7 +284,7 @@ class TestFormConnection(GuiOptionTest):
         """Delete 'create new' item."""
 
         Storage().addConnection([0, 'name', 'host', 4000])
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 1)
 
@@ -292,7 +292,7 @@ class TestFormConnection(GuiOptionTest):
         """Delete a connection."""
 
         Storage().addConnection([0, 'name', 'host', 4000])
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
         form_conn.w.list_conn.setCurrentIndex(1)
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 0)
@@ -304,7 +304,7 @@ class TestFormConnection(GuiOptionTest):
         s.addConnection([0, 'name', 'host', 4000])
         conn = [0, 'name2', 'host2', 3000]
         s.addConnection(conn)
-        form_conn = FormConnection(GuiOptionMock(), Storage())
+        form_conn = FormConnection(GuiOptionMock())
         form_conn.w.list_conn.setCurrentIndex(1)
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 1)
@@ -353,21 +353,21 @@ class TestFormMacro(GuiOptionTest):
 
     def testLoadEmpty(self):
         Storage().addConnection([0, 'name', 'host', 4000])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
         self.assert_(form_macro.w.list_macro.count() == 1)
 
     def testLoadEmpty2(self):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
 
         form_macro.load(0)
         self.assert_(not form_macro.w.command_macro.text() and
                      not form_macro.w.keys_macro.text())
 
     def testLoadEmpty3(self):
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
         self.assert_(form_macro.w.list_macro.count() == 1)
 
     def testLoad(self):
@@ -375,7 +375,7 @@ class TestFormMacro(GuiOptionTest):
         s.addConnection([0, 'name', 'host', 4000])
         macro = ('command', 1, 0, 0, 65)
         s.saveMacros('name', [macro])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
 
         form_macro.load(1)
         self.assert_(self._formCompare(form_macro, macro))
@@ -385,13 +385,13 @@ class TestFormMacro(GuiOptionTest):
         s.addConnection([0, 'name', 'host', 4000])
         macro = ('command', 0, 1, 1, 72)
         s.saveMacros('name', [('command', 1, 0, 0, 65), macro])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
 
     def testCheckField1(self):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
         form_macro.load(1)
         self.assert_(not form_macro._checkFields())
 
@@ -399,7 +399,7 @@ class TestFormMacro(GuiOptionTest):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
         form_macro.load(1)
         form_macro.w.list_macro.setCurrentIndex(1)
         self.assert_(form_macro._checkFields())
@@ -409,7 +409,7 @@ class TestFormMacro(GuiOptionTest):
         s.addConnection([0, 'name', 'host', 4000])
         macro = ('command', 1, 0, 1, 77)
         s.saveMacros('name', [('command', 1, 0, 0, 65), macro])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
         form_macro.load(1)
         form_macro.w.list_macro.setCurrentIndex(1)
         form_macro.w.keys_macro.setText(form_macro.getKeyDescr(*macro[1:]))
@@ -420,7 +420,7 @@ class TestFormMacro(GuiOptionTest):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
         self._setFormFields(form_macro, ('command', 0, 0, 0, 78))
         form_macro.save()
         self._setFormFields(form_macro, ('check', 0, 0, 0, 78))
@@ -431,7 +431,7 @@ class TestFormMacro(GuiOptionTest):
         s.addConnection([0, 'name', 'host', 4000])
         macro = ('command', 1, 0, 0, 65)
         s.saveMacros('name', [macro])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
         form_macro.load(1)
         form_macro.w.list_macro.setCurrentIndex(1)
         form_macro.save()
@@ -442,7 +442,7 @@ class TestFormMacro(GuiOptionTest):
 
     def testSaveAdd(self):
         Storage().addConnection([0, 'name', 'host', 4000])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
         macro = ('command', 1, 0, 0, 65)
         self._setFormFields(form_macro, macro)
         form_macro.save()
@@ -455,7 +455,7 @@ class TestFormMacro(GuiOptionTest):
         s = Storage()
         s.addConnection([0, 'name', 'host', 4000])
         s.saveMacros('name', [('command', 1, 0, 0, 65)])
-        form_macro = FormMacro(GuiOptionMacroMock(), Storage())
+        form_macro = FormMacro(GuiOptionMacroMock())
         macro = ('command', 0, 0, 0, 78)
         self._setFormFields(form_macro, macro)
         form_macro.save()
@@ -485,27 +485,27 @@ class GuiOptionPrefMock(object):
 class TestFormPreferences(GuiOptionTest):
 
     def testLoadEmpty(self):
-        form = FormPreferences(GuiOptionPrefMock(), Storage())
+        form = FormPreferences(GuiOptionPrefMock())
         self.assert_(form.w.echo_text.checkState() == Qt.Unchecked)
         self.assert_(not form.w.echo_color.text())
         self.assert_(form.w.keep_text.checkState() == Qt.Unchecked)
         self.assert_(form.w.save_log.checkState() == Qt.Unchecked)
 
     def testSavePreferences(self):
-        form = FormPreferences(GuiOptionPrefMock(), Storage())
+        form = FormPreferences(GuiOptionPrefMock())
         form.w.echo_text.setCheckState(Qt.Checked)
         form.save()
         self.assert_(Storage().preferences() == (1, '', 0, 0))
 
     def testSavePreferences2(self):
-        form = FormPreferences(GuiOptionPrefMock(), Storage())
+        form = FormPreferences(GuiOptionPrefMock())
         form.w.keep_text.setCheckState(Qt.Checked)
         form.w.echo_color.setText('#CC0000')
         form.save()
         self.assert_(Storage().preferences() == (0, '#CC0000', 1, 0))
 
     def testSavePreferences3(self):
-        form = FormPreferences(GuiOptionPrefMock(), Storage())
+        form = FormPreferences(GuiOptionPrefMock())
         form.w.echo_text.setCheckState(Qt.Checked)
         form.w.keep_text.setCheckState(Qt.Unchecked)
         form.w.echo_color.setText('#CC0000')
@@ -514,7 +514,7 @@ class TestFormPreferences(GuiOptionTest):
         self.assert_(Storage().preferences() == (1, '#CC0000', 0, 1))
 
     def testSavePreferences4(self):
-        form = FormPreferences(GuiOptionPrefMock(), Storage())
+        form = FormPreferences(GuiOptionPrefMock())
         form.w.echo_text.setCheckState(Qt.Checked)
         form.w.keep_text.setCheckState(Qt.Unchecked)
         form.w.echo_color.setText('#CC0000')
@@ -551,28 +551,37 @@ class GuiOptionAccMock(object):
 class TestFormAccounts(GuiOptionTest):
 
     def testLoadEmpty(self):
-        form = FormAccounts(GuiOptionAccMock(), Storage())
+        form = FormAccounts(GuiOptionAccMock())
         self.assert_(form.w.save_account.checkState() == Qt.Unchecked)
         self.assert_(not form.w.delete_account.isEnabled())
+        self.assert_(not form.w.change_prompt.isEnabled())
         self.assert_(form.w.list_conn_account.count() == 0)
         self.assert_(form.w.list_account.count() == 0)
+        self.assert_(not form.w.normal_prompt.text())
+        self.assert_(not form.w.fight_prompt.text())
+        self.assert_(not form.w.box_prompt.isVisible())
 
     def testLoad1(self):
         storage = Storage()
         storage.addConnection([0, 'name', 'host', 4000])
-        form = FormAccounts(GuiOptionAccMock(), storage)
+        form = FormAccounts(GuiOptionAccMock())
         self.assert_(form.w.list_conn_account.count() == 1)
         self.assert_(form.w.list_account.count() == 0)
         self.assert_(not form.w.delete_account.isEnabled())
+        self.assert_(not form.w.normal_prompt.text())
+        self.assert_(not form.w.fight_prompt.text())
 
     def testLoad2(self):
         storage = Storage()
         storage.addConnection([0, 'name', 'host', 4000])
         storage.saveAccount(['john', 'john'], 1, 1)
-        form = FormAccounts(GuiOptionAccMock(), storage)
+        form = FormAccounts(GuiOptionAccMock())
         self.assert_(form.w.list_conn_account.count() == 1)
         self.assert_(form.w.list_account.count() == 1)
         self.assert_(form.w.delete_account.isEnabled())
+        self.assert_(form.w.change_prompt.isEnabled())
+        self.assert_(not form.w.normal_prompt.text())
+        self.assert_(not form.w.fight_prompt.text())
 
     def testLoad3(self):
         storage = Storage()
@@ -580,19 +589,28 @@ class TestFormAccounts(GuiOptionTest):
         storage.addConnection([0, 'name2', 'host2', 5000])
         storage.saveAccount(['john', 'john'], 1, 1)
         storage.saveAccount(['sarah', 'sarah'], 2, 1)
-        form = FormAccounts(GuiOptionAccMock(), storage)
+        form = FormAccounts(GuiOptionAccMock())
         self.assert_(str(form.w.list_conn_account.currentText()) == 'name')
         self.assert_(str(form.w.list_account.currentText()) == 'john')
         self.assert_(form.w.delete_account.isEnabled())
 
+    def testLoad4(self):
+        storage = Storage()
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAccount(['john', 'john'], 1, 1)
+        storage.savePrompt(1, 'john', 'normal prompt', 'fight prompt')
+        form = FormAccounts(GuiOptionAccMock())
+        self.assert_(str(form.w.normal_prompt.text()) == 'normal prompt')
+        self.assert_(str(form.w.fight_prompt.text()) == 'fight prompt')
+
     def testChangeSaveAccount(self):
-        form = FormAccounts(GuiOptionAccMock(), Storage())
+        form = FormAccounts(GuiOptionAccMock())
         form.w.save_account.setCheckState(Qt.Checked)
         form._saveAccounts(Qt.Checked)
         self.assert_(Storage().option(Option.SAVE_ACCOUNT, 0) == 1)
 
     def testChangeSaveAccount2(self):
-        form = FormAccounts(GuiOptionAccMock(), Storage())
+        form = FormAccounts(GuiOptionAccMock())
         form.w.save_account.setCheckState(Qt.Checked)
         form._saveAccounts(Qt.Checked)
         form.w.save_account.setCheckState(Qt.Unchecked)
@@ -603,9 +621,10 @@ class TestFormAccounts(GuiOptionTest):
         storage = Storage()
         storage.addConnection([0, 'name', 'host', 4000])
         storage.saveAccount(['john', 'john'], 1, 1)
-        form = FormAccounts(GuiOptionAccMock(), storage)
+        form = FormAccounts(GuiOptionAccMock())
         form.deleteAccount()
         self.assert_(not form.w.delete_account.isEnabled())
+        self.assert_(not form.w.change_prompt.isEnabled())
         self.assert_(form.w.list_conn_account.count() == 1)
         self.assert_(form.w.list_account.count() == 0)
 
@@ -614,12 +633,27 @@ class TestFormAccounts(GuiOptionTest):
         storage.addConnection([0, 'name', 'host', 4000])
         storage.saveAccount(['john', 'john'], 1, 1)
         storage.saveAccount(['sarah', 'sarah'], 1, 1)
-        form = FormAccounts(GuiOptionAccMock(), storage)
+        form = FormAccounts(GuiOptionAccMock())
         form.deleteAccount()
         self.assert_(form.w.delete_account.isEnabled())
+        self.assert_(form.w.change_prompt.isEnabled())
         self.assert_(form.w.list_conn_account.count() == 1)
         self.assert_(form.w.list_account.count() == 1)
         self.assert_(str(form.w.list_account.currentText()) == 'sarah')
+
+    def testSavePrompt(self):
+        storage = Storage()
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAccount(['john', 'john'], 1, 1)
+        form = FormAccounts(GuiOptionAccMock())
+        form.w.box_prompt.setVisible(True)
+        form.w.normal_prompt.setText('normal prompt')
+        form.w.fight_prompt.setText('fight prompt')
+        form._savePrompt()
+        normal, fight = Storage().prompt(1, 'john')
+        self.assert_(not form.w.box_prompt.isVisible())
+        self.assert_(normal == 'normal prompt')
+        self.assert_(fight == 'fight prompt')
 
 
 if __name__ == '__main__':
