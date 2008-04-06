@@ -256,7 +256,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self._setupSignal()
 
     def _loadConnections(self):
-        connections = self._storage.connections()
+        connections = Storage().connections()
         def_conn = self._storage.option(Option.DEFAULT_CONNECTION, 0)
         selected = 0
         for i, el in enumerate(connections):
