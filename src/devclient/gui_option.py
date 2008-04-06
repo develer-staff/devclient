@@ -495,7 +495,7 @@ class FormAccounts(object):
         self.w.list_account.addItems(accounts)
         self.w.list_account.blockSignals(False)
         self.w.delete_account.setEnabled(True if accounts else False)
-        self.w.change_prompt.setEnabled(True if accounts else False)
+        #self.w.change_prompt.setEnabled(True if accounts else False)
         self.w.box_prompt.setVisible(False)
         self._loadAccount()
 
