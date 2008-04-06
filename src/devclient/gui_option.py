@@ -470,6 +470,7 @@ class FormAccounts(object):
         self._loadAccounts(0)
         val = self.storage.option(Option.SAVE_ACCOUNT, 0)
         self.w.save_account.setCheckState(Qt.Checked if val else Qt.Unchecked)
+        self.w.box_prompt.setVisible(False)
 
     def _setupSignal(self):
         self.w.connect(self.w.list_conn_account,
@@ -479,6 +480,11 @@ class FormAccounts(object):
                        self.deleteAccount)
         self.w.connect(self.w.save_account, SIGNAL('stateChanged(int)'),
                        self._saveAccounts)
+        self.w.connect(self.w.change_prompt, SIGNAL("clicked()"),
+                       self._togglePrompt)
+
+    def _togglePrompt(self):
+        self.w.box_prompt.setVisible(not self.w.box_prompt.isVisible())
 
     def _loadAccounts(self, idx):
          id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
@@ -486,6 +492,8 @@ class FormAccounts(object):
          accounts = self.storage.accounts(id_conn)
          self.w.list_account.addItems(accounts)
          self.w.delete_account.setEnabled(True if accounts else False)
+         self.w.change_prompt.setEnabled(True if accounts else False)
+         self.w.box_prompt.setVisible(False)
 
     def disableSignal(self, disable):
         self.w.list_conn_account.blockSignals(disable)

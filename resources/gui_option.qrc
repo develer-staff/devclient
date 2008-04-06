@@ -8,5 +8,6 @@
      <file>images/button-save.png</file>
      <file>images/button-cancel.png</file>
      <file>images/button-color.png</file>
+     <file>images/prompt.png</file>
  </qresource>
  </RCC>
