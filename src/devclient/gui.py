@@ -196,14 +196,24 @@ class GameLogger(object):
 
 class AccountManager(object):
 
-    def __init__(self, server, id_conn):
+    def __init__(self, widget, server, id_conn):
+        s = Storage()
+        self._user = unicode(widget.list_account.currentText())
+        if self._user:
+            s.setOption(Option.DEFAULT_ACCOUNT, self._user, id_conn)
+            commands = s.accountDetail(id_conn, self._user)
+
+            for cmd in commands:
+                widget.s_core.write(messages.MSG, cmd)
+
         self._num_cmds = server.cmds_account
         self._cmd_user = server.cmd_username
         self._id_conn = id_conn
         self._commands = []
 
     def register(self, text):
-        if len(self._commands) < self._num_cmds:
+        if not self._user and Storage().option(Option.SAVE_ACCOUNT, 0) and \
+           len(self._commands) < self._num_cmds:
             self._commands.append(text)
             if len(self._commands) == self._num_cmds:
                 Storage().saveAccount(self._commands, self._id_conn,
@@ -468,23 +478,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.macros = s.macros(self.connected)
         self.game_logger = GameLogger(self.connected, self.preferences)
         s.setOption(Option.DEFAULT_CONNECTION, id_conn)
-        self._manageAccount(server, id_conn)
+        self.account = AccountManager(self, server, id_conn)
 
-    def _manageAccount(self, server, id_conn):
-        s = Storage()
-        account = self.list_account
-        account_user = unicode(account.itemText(account.currentIndex()))
-        if account_user:
-            s.setOption(Option.DEFAULT_ACCOUNT, account_user,
-                                    id_conn)
-            commands = s.accountDetail(id_conn, account_user)
-            for cmd in commands:
-                self.s_core.write(messages.MSG, cmd)
-
-        if s.option(Option.SAVE_ACCOUNT, 0) and not account_user:
-            self.account = AccountManager(server, id_conn)
-        else:
-            self.account = None
 
     def _appendEcho(self, text):
         if not self.preferences or not self.preferences[0]:
@@ -501,10 +496,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             return
 
         text = unicode(self.text_input.currentText())
-        if self.account:
-            if self.account.register(text):
-                id_conn = Storage().getIdConnection(self.connected)
-                self._loadAccounts(id_conn)
+        if self.account.register(text):
+            id_conn = Storage().getIdConnection(self.connected)
+            self._loadAccounts(id_conn)
 
         self.s_core.write(messages.MSG, self.alias.check(text))
         self._appendEcho(text)
