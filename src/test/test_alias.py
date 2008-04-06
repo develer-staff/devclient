@@ -28,7 +28,7 @@ import unittest
 sys.path.append('..')
 
 from devclient.conf import config
-from devclient.storage import Storage
+from devclient.storage import Storage, adjustSchema
 from devclient.alias import Alias
 
 class TestAlias(unittest.TestCase):
@@ -41,6 +41,7 @@ class TestAlias(unittest.TestCase):
 
         self.conn_name = 'conn'
         conn = [0, self.conn_name, 'host', 111]
+        adjustSchema()
         self.storage = Storage()
         self.storage.addConnection(conn)
 

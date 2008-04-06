@@ -30,7 +30,7 @@ sys.path.append('..')
 
 import devclient.conf as conf
 import devclient.exception as exception
-from devclient.storage import Storage
+from devclient.storage import Storage, adjustSchema
 
 class TestBase(unittest.TestCase):
 
@@ -50,6 +50,7 @@ class TestStorage(TestBase):
 
     def setUp(self):
         super(TestStorage, self).setUp()
+        adjustSchema()
         self.storage = Storage()
 
     def tearDown(self):
@@ -296,6 +297,7 @@ class TestStorage(TestBase):
 class TestStorage2(TestBase):
 
     def testMultiConnection(self):
+        adjustSchema()
         conn = [0, 'name','host', 111]
         Storage().addConnection(conn)
         self.assert_(Storage().connections()[0] == tuple(conn))

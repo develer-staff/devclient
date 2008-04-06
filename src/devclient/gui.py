@@ -44,7 +44,7 @@ from alias import Alias
 from history import History
 from viewer import getViewer
 from servers import getServer
-from storage import Storage, Option
+from storage import Storage, Option, adjustSchema
 from gui_src.gui import Ui_dev_client
 from constants import PUBLIC_VERSION, PROJECT_NAME
 
@@ -196,19 +196,18 @@ class GameLogger(object):
 
 class AccountManager(object):
 
-    def __init__(self, storage, server, id_conn):
+    def __init__(self, server, id_conn):
         self._num_cmds = server.cmds_account
         self._cmd_user = server.cmd_username
         self._id_conn = id_conn
-        self._storage = storage
         self._commands = []
 
     def register(self, text):
         if len(self._commands) < self._num_cmds:
             self._commands.append(text)
             if len(self._commands) == self._num_cmds:
-                self._storage.saveAccount(self._commands, self._id_conn,
-                                          self._cmd_user)
+                Storage().saveAccount(self._commands, self._id_conn,
+                                      self._cmd_user)
                 return True
         return False
 
@@ -250,14 +249,14 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         logger.debug('PyQt version: %s, Qt version: %s' %
             (PYQT_VERSION_STR, QT_VERSION_STR))
 
-        self._storage = Storage()
-        self.preferences = self._storage.preferences()
+        adjustSchema()
+        self.preferences = Storage().preferences()
         self._loadConnections()
         self._setupSignal()
 
     def _loadConnections(self):
         connections = Storage().connections()
-        def_conn = self._storage.option(Option.DEFAULT_CONNECTION, 0)
+        def_conn = Storage().option(Option.DEFAULT_CONNECTION, 0)
         selected = 0
         for i, el in enumerate(connections):
             self.list_conn.addItem(el[1], QVariant(el[0]))
@@ -274,9 +273,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _loadAccounts(self, id_conn):
         self.list_account.clear()
         self.list_account.addItem('')
-        def_account = self._storage.option(Option.DEFAULT_ACCOUNT, '', id_conn)
+        def_account = Storage().option(Option.DEFAULT_ACCOUNT, '', id_conn)
         selected = 0
-        for i, a in enumerate(self._storage.accounts(id_conn)):
+        for i, a in enumerate(Storage().accounts(id_conn)):
             self.list_account.addItem(a)
             if a == def_account:
                 selected = i + 1
@@ -313,11 +312,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                             stream=sys.stdout)
 
     def _setupSignal(self):
-        self.connect(self.button_connect, SIGNAL("clicked()"),
-                     self._connect)
-
-        self.connect(self.button_option, SIGNAL("clicked()"),
-                     self._showOption)
+        clicked = SIGNAL("clicked()")
+        self.connect(self.button_connect, clicked, self._connect)
+        self.connect(self.button_option, clicked, self._showOption)
 
         self.connect(self.list_conn,
                      SIGNAL("currentIndexChanged(int)"),
@@ -423,22 +420,23 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         opt.show()
 
     def _connect(self):
+        connections = Storage().connections()
         if self.connected:
             if not self._displayQuestion(self._text['Connect'],
                                          self._text['CloseConn']):
                 return
 
-        if not self._storage.connections():
+        if not connections:
             self.displayWarning(self._text['Connect'], self._text['NoConn'])
             return
 
         data = self.list_conn.itemData(self.list_conn.currentIndex())
         id_conn = data.toInt()[0]
-        conn = [el for el in self._storage.connections() if el[0] == id_conn]
+        conn = [el for el in connections if el[0] == id_conn]
         self.s_core.write(messages.CONNECT, conn[0][1:4])
 
     def _reloadPreferences(self):
-        self.preferences = self._storage.preferences()
+        self.preferences = Storage().preferences()
         self.game_logger = GameLogger(self.connected, self.preferences)
 
     def _reloadConnData(self, conn):
@@ -457,32 +455,34 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self.list_conn.blockSignals(False)
 
         if self.connected and self.connected == conn:
-            self.macros = self._storage.macros(self.connected)
+            self.macros = Storage().macros(self.connected)
             self.alias = Alias(self.connected)
 
     def _startConnection(self, host, port):
-        id_conn = self._storage.getIdConnection(self.connected)
+        s = Storage()
+        id_conn = s.getIdConnection(self.connected)
         server = getServer(host, port)
         self.history.clear()
         self.alias = Alias(self.connected)
         self.viewer = getViewer(self, server)
-        self.macros = self._storage.macros(self.connected)
+        self.macros = s.macros(self.connected)
         self.game_logger = GameLogger(self.connected, self.preferences)
-        self._storage.setOption(Option.DEFAULT_CONNECTION, id_conn)
+        s.setOption(Option.DEFAULT_CONNECTION, id_conn)
         self._manageAccount(server, id_conn)
 
     def _manageAccount(self, server, id_conn):
+        s = Storage()
         account = self.list_account
         account_user = unicode(account.itemText(account.currentIndex()))
         if account_user:
-            self._storage.setOption(Option.DEFAULT_ACCOUNT, account_user,
+            s.setOption(Option.DEFAULT_ACCOUNT, account_user,
                                     id_conn)
-            commands = self._storage.accountDetail(id_conn, account_user)
+            commands = s.accountDetail(id_conn, account_user)
             for cmd in commands:
                 self.s_core.write(messages.MSG, cmd)
 
-        if self._storage.option(Option.SAVE_ACCOUNT, 0) and not account_user:
-            self.account = AccountManager(self._storage, server, id_conn)
+        if s.option(Option.SAVE_ACCOUNT, 0) and not account_user:
+            self.account = AccountManager(server, id_conn)
         else:
             self.account = None
 
@@ -503,7 +503,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         text = unicode(self.text_input.currentText())
         if self.account:
             if self.account.register(text):
-                id_conn = self._storage.getIdConnection(self.connected)
+                id_conn = Storage().getIdConnection(self.connected)
                 self._loadAccounts(id_conn)
 
         self.s_core.write(messages.MSG, self.alias.check(text))

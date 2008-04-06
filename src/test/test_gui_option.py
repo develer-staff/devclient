@@ -27,7 +27,7 @@ import unittest
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QApplication, QLineEdit
+from PyQt4.QtGui import QApplication, QLineEdit, QGroupBox
 from PyQt4.QtGui import QPushButton, QComboBox, QCheckBox
 
 
@@ -35,7 +35,7 @@ sys.path.append('..')
 sys.path.append('../../resources')
 
 from devclient.conf import config
-from devclient.storage import Storage, Option
+from devclient.storage import Storage, Option, adjustSchema
 from devclient.gui_option import *
 
 
@@ -52,6 +52,7 @@ class GuiOptionTest(unittest.TestCase):
 
         if os.path.exists(config['storage']['path']):
             os.unlink(config['storage']['path'])
+        adjustSchema()
 
     def tearDown(self):
         if os.path.exists(config['storage']['path']):
@@ -534,6 +535,11 @@ class GuiOptionAccMock(object):
         self.delete_account = QPushButton()
         self.list_account = QComboBox()
         self.list_conn_account = QComboBox()
+        self.change_prompt = QPushButton()
+        self.save_prompt = QPushButton()
+        self.normal_prompt = QLineEdit()
+        self.fight_prompt = QLineEdit()
+        self.box_prompt = QGroupBox()
 
     def connect(self, widget, signal, callback):
         pass

@@ -473,30 +473,43 @@ class FormAccounts(object):
         self.w.box_prompt.setVisible(False)
 
     def _setupSignal(self):
-        self.w.connect(self.w.list_conn_account,
-                       SIGNAL("currentIndexChanged(int)"),
-                       self._loadAccounts)
-        self.w.connect(self.w.delete_account, SIGNAL("clicked()"),
-                       self.deleteAccount)
+        clicked = SIGNAL("clicked()")
+        change_idx = SIGNAL("currentIndexChanged(int)")
+        self.w.connect(self.w.list_conn_account, change_idx, self._loadAccounts)
+        self.w.connect(self.w.delete_account, clicked, self.deleteAccount)
         self.w.connect(self.w.save_account, SIGNAL('stateChanged(int)'),
                        self._saveAccounts)
-        self.w.connect(self.w.change_prompt, SIGNAL("clicked()"),
-                       self._togglePrompt)
+        self.w.connect(self.w.change_prompt, clicked, self._togglePrompt)
+        self.w.connect(self.w.save_prompt, clicked, self._savePrompt)
+        self.w.connect(self.w.list_account, change_idx, self._loadAccount)
 
     def _togglePrompt(self):
         self.w.box_prompt.setVisible(not self.w.box_prompt.isVisible())
 
     def _loadAccounts(self, idx):
-         id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
-         self.w.list_account.clear()
-         accounts = self.storage.accounts(id_conn)
-         self.w.list_account.addItems(accounts)
-         self.w.delete_account.setEnabled(True if accounts else False)
-         self.w.change_prompt.setEnabled(True if accounts else False)
-         self.w.box_prompt.setVisible(False)
+        id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
+        self.w.list_account.blockSignals(True)
+        self.w.list_account.clear()
+        accounts = self.storage.accounts(id_conn)
+        self.w.list_account.addItems(accounts)
+        self.w.list_account.blockSignals(False)
+        self.w.delete_account.setEnabled(True if accounts else False)
+        self.w.change_prompt.setEnabled(True if accounts else False)
+        self.w.box_prompt.setVisible(False)
+        self._loadAccount()
+
+    def _loadAccount(self, i=0):
+        idx = self.w.list_conn_account.currentIndex()
+        id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
+        username = unicode(self.w.list_account.currentText())
+        if id_conn and username:
+            n_prompt, f_prompt = self.storage.prompt(id_conn, username)
+            self.w.normal_prompt.setText(n_prompt)
+            self.w.fight_prompt.setText(f_prompt)
 
     def disableSignal(self, disable):
         self.w.list_conn_account.blockSignals(disable)
+        self.w.list_account.blockSignals(disable)
 
     def deleteAccount(self):
         idx = self.w.list_conn_account.currentIndex()
@@ -510,6 +523,15 @@ class FormAccounts(object):
 
     def _saveAccounts(self, val):
         self.storage.setOption(Option.SAVE_ACCOUNT, int(val == Qt.Checked))
+
+    def _savePrompt(self):
+        idx = self.w.list_conn_account.currentIndex()
+        id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
+        username = unicode(self.w.list_account.currentText())
+        normal = unicode(self.w.normal_prompt.text())
+        fight = unicode(self.w.fight_prompt.text())
+        self.storage.savePrompt(id_conn, username, normal, fight)
+        self.w.box_prompt.setVisible(False)
 
 
 class GuiOption(QDialog, Ui_option):

@@ -28,6 +28,91 @@ from conf import config
 
 logger = logging.getLogger('storage')
 
+def adjustSchema():
+    c = connect(config['storage']['path'], isolation_level=None).cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS
+                        connections(id integer PRIMARY KEY AUTOINCREMENT,
+                                    name text,
+                                    host text,
+                                    port integer)''')
+
+    # To prevent a windows bug on 'IF NOT EXISTS' clause of CREATE TRIGGER
+    try:
+        c.execute('''DROP TRIGGER connection_delete_trg''')
+    except OperationalError:
+        pass
+
+    c.execute('''CREATE TRIGGER connection_delete_trg
+                        AFTER DELETE ON connections
+                        BEGIN
+                            DELETE FROM aliases WHERE id_conn=old.id;
+                            DELETE FROM macros WHERE id_conn=old.id;
+                            DELETE FROM accounts WHERE id_conn=old.id;
+                            DELETE FROM options WHERE id_conn=old.id;
+                        END''')
+
+
+    c.execute('''CREATE TABLE IF NOT EXISTS
+                        aliases(id_conn integer,
+                                label text,
+                                body text)''')
+
+    c.execute('''CREATE INDEX IF NOT EXISTS aliases_conn_idx ON
+                    aliases(id_conn)''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS
+                        macros(id_conn integer,
+                                command text,
+                                shift integer,
+                                alt integer,
+                                ctrl integer,
+                                keycode integer)''')
+
+    c.execute('''CREATE INDEX IF NOT EXISTS macros_conn_idx ON
+                        macros(id_conn)''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS
+                        preferences(echo_text integer,
+                                    echo_color text,
+                                    keep_text integer,
+                                    save_log integer)''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS
+                        accounts(id integer PRIMARY KEY AUTOINCREMENT,
+                                    id_conn integer,
+                                    username text,
+                                    UNIQUE (id_conn, username))''')
+
+    try:
+        c.execute('''DROP TRIGGER account_delete_trg''')
+    except OperationalError:
+        pass
+
+    c.execute('''CREATE TRIGGER account_delete_trg AFTER DELETE ON accounts
+                        BEGIN
+                            DELETE FROM accounts_cmd WHERE id_account=old.id;
+                            DELETE FROM accounts_prompt WHERE id_account=old.id;
+                        END''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS
+                        accounts_cmd(id_account integer,
+                                        num integer,
+                                        command text)''')
+
+    c.execute('''CREATE INDEX IF NOT EXISTS accounts_cmd_idx ON
+                        accounts_cmd(id_account)''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS
+                        options(param_name text,
+                                param_value text,
+                                id_conn int,
+                                PRIMARY KEY (param_name, id_conn))''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS
+                        accounts_prompt(id_account integer PRIMARY KEY,
+                                        normal text,
+                                        fight text)''')
+
 
 class Option(object):
     SAVE_ACCOUNT = 'save_account'
@@ -41,86 +126,8 @@ class Storage(object):
     """
 
     def __init__(self):
-
         self.conn = connect(config['storage']['path'], isolation_level=None)
-
         c = self.conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS
-                            connections(id integer PRIMARY KEY AUTOINCREMENT,
-                                        name text,
-                                        host text,
-                                        port integer)''')
-
-        # To prevent a windows bug on 'IF NOT EXISTS' clause of CREATE TRIGGER
-        try:
-            c.execute('''DROP TRIGGER connection_delete_trg''')
-        except OperationalError:
-            pass
-
-        c.execute('''CREATE TRIGGER connection_delete_trg
-                            AFTER DELETE ON connections
-                            BEGIN
-                              DELETE FROM aliases WHERE id_conn=old.id;
-                              DELETE FROM macros WHERE id_conn=old.id;
-                              DELETE FROM accounts WHERE id_conn=old.id;
-                              DELETE FROM options WHERE id_conn=old.id;
-                            END''')
-
-
-        c.execute('''CREATE TABLE IF NOT EXISTS
-                            aliases(id_conn integer,
-                                    label text,
-                                    body text)''')
-
-        c.execute('''CREATE INDEX IF NOT EXISTS aliases_conn_idx ON
-                     aliases(id_conn)''')
-
-        c.execute('''CREATE TABLE IF NOT EXISTS
-                            macros(id_conn integer,
-                                   command text,
-                                   shift integer,
-                                   alt integer,
-                                   ctrl integer,
-                                   keycode integer)''')
-
-        c.execute('''CREATE INDEX IF NOT EXISTS macros_conn_idx ON
-                            macros(id_conn)''')
-
-        c.execute('''CREATE TABLE IF NOT EXISTS
-                            preferences(echo_text integer,
-                                        echo_color text,
-                                        keep_text integer,
-                                        save_log integer)''')
-
-        c.execute('''CREATE TABLE IF NOT EXISTS
-                            accounts(id integer PRIMARY KEY AUTOINCREMENT,
-                                     id_conn integer,
-                                     username text,
-                                     UNIQUE (id_conn, username))''')
-
-        try:
-            c.execute('''DROP TRIGGER account_delete_trg''')
-        except OperationalError:
-            pass
-
-        c.execute('''CREATE TRIGGER account_delete_trg AFTER DELETE ON accounts
-                            BEGIN
-                              DELETE FROM accounts_cmd WHERE id_account=old.id;
-                            END''')
-
-        c.execute('''CREATE TABLE IF NOT EXISTS
-                            accounts_cmd(id_account integer,
-                                         num integer,
-                                         command text)''')
-
-        c.execute('''CREATE INDEX IF NOT EXISTS accounts_cmd_idx ON
-                            accounts_cmd(id_account)''')
-
-        c.execute('''CREATE TABLE IF NOT EXISTS
-                            options(param_name text,
-                                    param_value text,
-                                    id_conn int,
-                                    PRIMARY KEY (param_name, id_conn))''')
 
     def _execQuery(self, sql, params=(), cursor=None):
         """
@@ -342,3 +349,28 @@ class Storage(object):
     def setOption(self, name, value, id_conn=0):
         self._execQuery('REPLACE INTO options VALUES(?, ?, ?)',
                         (name, value, id_conn))
+
+    def deleteAccount(self, id_conn, username):
+        self._execQuery('DELETE FROM accounts WHERE id_conn=? AND username=?',
+                        (id_conn, username))
+
+    def savePrompt(self, id_conn, username, normal, fight):
+        c = self._execQuery('SELECT id FROM accounts WHERE id_conn=? ' +
+                            'AND username=?', (id_conn, username))
+
+        id_account = c.fetchone()[0]
+        self._execQuery('REPLACE INTO accounts_prompt VALUES(?, ?, ?)',
+                        (id_account, normal, fight), c)
+
+    def prompt(self, id_conn, username):
+        c = self._execQuery('SELECT id FROM accounts WHERE id_conn=? ' +
+                            'AND username=?', (id_conn, username))
+
+        id_account = c.fetchone()[0]
+        self._execQuery('SELECT normal, fight FROM accounts_prompt WHERE ' +
+                        'id_account = ?', (id_account, ), c)
+
+        r = self._execQuery('SELECT normal, fight FROM accounts_prompt WHERE ' +
+                            'id_account = ?', (id_account, ), c).fetchone()
+
+        return (r[0], r[1]) if r else ('', '')
