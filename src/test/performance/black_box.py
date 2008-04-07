@@ -36,7 +36,7 @@ sys.path.append('../..')
 import devclient.exception as exception
 from devclient.engine import terminateProcess, startProcess
 from devclient.conf import loadConfiguration, config
-from devclient.storage import Storage
+from devclient.storage import Storage, adjustSchema
 
 _DEF_CONFIG_FILE = "../../../etc/devclient.cfg"
 cfg_file = normpath(join(dirname(abspath(__file__)), _DEF_CONFIG_FILE))
@@ -77,6 +77,7 @@ def main(cfg_file=cfg_file):
     cfg_file = join(os.getcwd(), basename(cfg_file))
     loadConfiguration(cfg_file)
     config['storage']['path'] = abspath('../data/storage/dbtest.sqlite')
+    adjustSchema()  #create the schema must be before adding the connection
     Storage().addConnection([0, 'localhost', 'localhost', 6666])
     sys.path.append(config['servers']['path'])
     sys.path.append(config['resources']['path'])
