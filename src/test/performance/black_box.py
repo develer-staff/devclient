@@ -18,15 +18,18 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
+__version__ = "$Revision$"[11:-2]
+__docformat__ = 'restructuredtext'
+
 import os
 import sys
 import random
 import subprocess
-from os.path import *
 from time import time
+from os.path import basename, abspath, normpath, join, dirname
 
-from PyQt4.QtCore import QTimer, Qt
 from PyQt4.QtTest import QTest
+from PyQt4.QtCore import QTimer, Qt
 
 sys.path.append('../..')
 
@@ -71,9 +74,9 @@ def main(cfg_file=cfg_file):
 
     old_dir = os.getcwd()
     os.chdir(join(os.getcwd(), dirname(sys.argv[0]), dirname(cfg_file)))
-    cfg_file = join(os.getcwd(), os.path.basename(cfg_file))
+    cfg_file = join(os.getcwd(), basename(cfg_file))
     loadConfiguration(cfg_file)
-    config['storage']['path'] = os.path.abspath('../data/storage/dbtest.sqlite')
+    config['storage']['path'] = abspath('../data/storage/dbtest.sqlite')
     Storage().addConnection([0, 'localhost', 'localhost', 6666])
     sys.path.append(config['servers']['path'])
     sys.path.append(config['resources']['path'])

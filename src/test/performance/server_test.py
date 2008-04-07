@@ -18,7 +18,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -42,7 +42,7 @@ print 'READY'
 conn, addr = s.accept()
 
 while data:
-    conn.send(data[:1024])
-    data = data[1024:]
+    conn.send(data[:1536])
+    data = data[1536:]
     time.sleep(.1)
 conn.close()
