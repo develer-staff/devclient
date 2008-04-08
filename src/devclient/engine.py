@@ -89,7 +89,7 @@ def save_exception():
             f = f.f_back
         stack.reverse()
 
-    return stack
+        return stack
 
     fd = open('exception.txt', 'a+')
     fd.write("%s FATAL EXCEPTION %s %s\n" % ('*' * 23,
