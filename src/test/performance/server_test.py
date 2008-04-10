@@ -30,7 +30,7 @@ parser = optparse.OptionParser()
 parser.add_option('--port', type='int', default=6666)
 o, args = parser.parse_args()
 
-f = open('ansi_test.txt')
+f = open('ansi.txt')
 data = f.read()
 f.close()
 

@@ -21,17 +21,17 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import sys
 import random
 import subprocess
 from time import time
+from sys import argv, path
 from os import getcwd, chdir
 from os.path import basename, abspath, normpath, join, dirname
 
 from PyQt4.QtTest import QTest
 from PyQt4.QtCore import QTimer, Qt
 
-sys.path.append(join(dirname(abspath(__file__)), '../..'))
+path.append(join(dirname(abspath(argv[0])), '../..'))
 
 import devclient.exception as exception
 from devclient.engine import terminateProcess, startProcess
@@ -39,7 +39,7 @@ from devclient.conf import loadConfiguration, config
 from devclient.storage import Storage, adjustSchema
 
 _DEF_CONFIG_FILE = "../../../etc/devclient.cfg"
-cfg_file = normpath(join(dirname(abspath(__file__)), _DEF_CONFIG_FILE))
+cfg_file = normpath(join(dirname(abspath(argv[0])), _DEF_CONFIG_FILE))
 
 
 class StartConnection(object):
@@ -73,14 +73,14 @@ def callback():
 def main(cfg_file=cfg_file):
 
     old_dir = getcwd()
-    chdir(join(getcwd(), dirname(sys.argv[0]), dirname(cfg_file)))
+    chdir(join(getcwd(), dirname(argv[0]), dirname(cfg_file)))
     cfg_file = join(getcwd(), basename(cfg_file))
     loadConfiguration(cfg_file)
     config['storage']['path'] = abspath('../data/storage/dbtest.sqlite')
     adjustSchema()  #create the schema must be before adding the connection
     Storage().addConnection([0, 'localhost', 'localhost', 6666])
-    sys.path.append(config['servers']['path'])
-    sys.path.append(config['resources']['path'])
+    path.append(config['servers']['path'])
+    path.append(config['resources']['path'])
 
     chdir(old_dir)
     # this import must stay here, after the appending of resources path to path
@@ -100,7 +100,7 @@ def main(cfg_file=cfg_file):
     try:
         gui = Gui(port)
         gui.p = subprocess.Popen(['python', '-u','server_test.py'],
-                                 stdout=subprocess.PIPE, cwd=dirname(__file__))
+                                 stdout=subprocess.PIPE, cwd=dirname(argv[0]))
 
         try:
             buf = gui.p.stdout.read(6) # read READY\n from stdout
