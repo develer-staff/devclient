@@ -99,8 +99,9 @@ def main(cfg_file=cfg_file):
 
     try:
         gui = Gui(port)
+        cwd = dirname(argv[0]) if dirname(argv[0]) else None
         gui.p = subprocess.Popen(['python', '-u','server_test.py'],
-                                 stdout=subprocess.PIPE, cwd=dirname(argv[0]))
+                                 stdout=subprocess.PIPE, cwd=cwd)
 
         try:
             buf = gui.p.stdout.read(6) # read READY\n from stdout
