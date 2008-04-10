@@ -21,17 +21,17 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import os
 import sys
 import random
 import subprocess
 from time import time
+from os import getcwd, chdir
 from os.path import basename, abspath, normpath, join, dirname
 
 from PyQt4.QtTest import QTest
 from PyQt4.QtCore import QTimer, Qt
 
-sys.path.append('../..')
+sys.path.append(join(dirname(abspath(__file__)), '../..'))
 
 import devclient.exception as exception
 from devclient.engine import terminateProcess, startProcess
@@ -72,9 +72,9 @@ def callback():
 
 def main(cfg_file=cfg_file):
 
-    old_dir = os.getcwd()
-    os.chdir(join(os.getcwd(), dirname(sys.argv[0]), dirname(cfg_file)))
-    cfg_file = join(os.getcwd(), basename(cfg_file))
+    old_dir = getcwd()
+    chdir(join(getcwd(), dirname(sys.argv[0]), dirname(cfg_file)))
+    cfg_file = join(getcwd(), basename(cfg_file))
     loadConfiguration(cfg_file)
     config['storage']['path'] = abspath('../data/storage/dbtest.sqlite')
     adjustSchema()  #create the schema must be before adding the connection
@@ -82,7 +82,7 @@ def main(cfg_file=cfg_file):
     sys.path.append(config['servers']['path'])
     sys.path.append(config['resources']['path'])
 
-    os.chdir(old_dir)
+    chdir(old_dir)
     # this import must stay here, after the appending of resources path to path
     from devclient.gui import Gui
 
@@ -99,8 +99,8 @@ def main(cfg_file=cfg_file):
 
     try:
         gui = Gui(port)
-        gui.p = subprocess.Popen(['python', '-u', 'server_test.py'],
-                                 stdout=subprocess.PIPE)
+        gui.p = subprocess.Popen(['python', '-u','server_test.py'],
+                                 stdout=subprocess.PIPE, cwd=dirname(__file__))
 
         try:
             buf = gui.p.stdout.read(6) # read READY\n from stdout
