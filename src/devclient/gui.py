@@ -197,14 +197,9 @@ class GameLogger(object):
 class AccountManager(object):
 
     def __init__(self, widget, server, id_conn):
-        s = Storage()
-        self._user = unicode(widget.list_account.currentText())
-        if self._user:
-            s.setOption(Option.DEFAULT_ACCOUNT, self._user, id_conn)
-            commands = s.accountDetail(id_conn, self._user)
-
-            for cmd in commands:
-                widget.s_core.write(messages.MSG, cmd)
+        self.user = unicode(widget.list_account.currentText())
+        if self.user:
+            Storage().setOption(Option.DEFAULT_ACCOUNT, self.user, id_conn)
 
         self._num_cmds = server.cmds_account
         self._cmd_user = server.cmd_username
@@ -212,7 +207,7 @@ class AccountManager(object):
         self._commands = []
 
     def register(self, text):
-        if not self._user and Storage().option(Option.SAVE_ACCOUNT, 0) and \
+        if not self.user and Storage().option(Option.SAVE_ACCOUNT, 0) and \
            len(self._commands) < self._num_cmds:
             self._commands.append(text)
             if len(self._commands) == self._num_cmds:
@@ -442,8 +437,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         data = self.list_conn.itemData(self.list_conn.currentIndex())
         id_conn = data.toInt()[0]
-        conn = [el for el in connections if el[0] == id_conn]
-        self.s_core.write(messages.CONNECT, conn[0][1:4])
+        conn = [el for el in connections if el[0] == id_conn][0]
+        self.account = AccountManager(self, getServer(*conn[2:4]), id_conn)
+        self.s_core.write(messages.CONNECT, conn[1:4])
+
 
     def _reloadPreferences(self):
         self.preferences = Storage().preferences()
@@ -478,8 +475,12 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.macros = s.macros(self.connected)
         self.game_logger = GameLogger(self.connected, self.preferences)
         s.setOption(Option.DEFAULT_CONNECTION, id_conn)
-        self.account = AccountManager(self, server, id_conn)
 
+        if self.account.user:
+            commands = s.accountDetail(id_conn, self.account.user)
+
+            for cmd in commands:
+                self.s_core.write(messages.MSG, cmd)
 
     def _appendEcho(self, text):
         if not self.preferences or not self.preferences[0]:
