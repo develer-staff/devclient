@@ -47,7 +47,7 @@ class GuiMock(object):
     def _readDataFromCore(self):
         pass
 
-    def _displayWarning(self, title, message):
+    def displayWarning(self, title, message):
         self._warning = (title, message)
 
 
