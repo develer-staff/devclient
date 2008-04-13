@@ -540,6 +540,10 @@ class GuiOptionAccMock(object):
         self.normal_prompt = QLineEdit()
         self.fight_prompt = QLineEdit()
         self.box_prompt = QGroupBox()
+        self._warning = None
+
+    def _displayWarning(self, title, message):
+        self._warning = (title, message)
 
     def connect(self, widget, signal, callback):
         pass
@@ -647,14 +651,24 @@ class TestFormAccounts(GuiOptionTest):
         storage.saveAccount(['john', 'john'], 1, 1)
         form = FormAccounts(GuiOptionAccMock())
         form.w.box_prompt.setVisible(True)
-        form.w.normal_prompt.setText('normal prompt')
-        form.w.fight_prompt.setText('fight prompt')
+        form.w.normal_prompt.setText('Hp:%h/%H Mn:%m/%M Mv:%v/%V>')
+        form.w.fight_prompt.setText('Hp:%h/%H Mn:%m/%M Mv:%v/%V Opp:%c>')
         form._savePrompt()
         normal, fight = Storage().prompt(1, 'john')
         self.assert_(not form.w.box_prompt.isVisible())
-        self.assert_(normal == 'normal prompt')
-        self.assert_(fight == 'fight prompt')
+        self.assert_(normal == 'Hp:%h/%H Mn:%m/%M Mv:%v/%V>')
+        self.assert_(fight == 'Hp:%h/%H Mn:%m/%M Mv:%v/%V Opp:%c>')
 
+    def testSavePrompt2(self):
+        storage = Storage()
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAccount(['john', 'john'], 1, 1)
+        form = FormAccounts(GuiOptionAccMock())
+        form.w.box_prompt.setVisible(True)
+        form.w.normal_prompt.setText('normal prompt')
+        form.w.fight_prompt.setText('fight prompt')
+        form._savePrompt()
+        self.assert_(form.w._warning)
 
 if __name__ == '__main__':
     unittest.main()

@@ -82,12 +82,17 @@ class BarMock(object):
         self._value = value
 
 
+class FrameMock(object):
+    def setVisible(self, display):
+        pass
+
+
 class RightWidget(object):
     def __init__(self):
         self.bar_health = BarMock()
         self.bar_mana = BarMock()
         self.bar_movement = BarMock()
-
+        self.box_status = FrameMock()
 
 class WidgetMock(object):
 
