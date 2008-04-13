@@ -460,6 +460,7 @@ class FormAccounts(object):
     def __init__(self, widget):
         self.w = widget
         self.loadForm()
+        self._translateText()
         self._setupSignal()
 
     def loadForm(self):
@@ -483,6 +484,15 @@ class FormAccounts(object):
         self.w.connect(self.w.change_prompt, clicked, self._togglePrompt)
         self.w.connect(self.w.save_prompt, clicked, self._savePrompt)
         self.w.connect(self.w.list_account, change_idx, self._loadAccount)
+
+    def _translateText(self):
+        self._text = {}
+
+        self._text['accounts'] = QApplication.translate("option",
+            "Accounts", None, QApplication.UnicodeUTF8)
+
+        self._text['bad_format'] = QApplication.translate("option",
+            "Bad format on prompt", "accounts",  QApplication.UnicodeUTF8)
 
     def _togglePrompt(self):
         self.w.box_prompt.setVisible(not self.w.box_prompt.isVisible())
@@ -527,12 +537,21 @@ class FormAccounts(object):
         Storage().setOption(Option.SAVE_ACCOUNT, int(val == Qt.Checked))
 
     def _savePrompt(self):
-        # TODO: validate prompt!
         idx = self.w.list_conn_account.currentIndex()
         id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
         username = unicode(self.w.list_account.currentText())
         normal = unicode(self.w.normal_prompt.text())
         fight = unicode(self.w.fight_prompt.text())
+        d = {normal: self.w.normal_prompt, fight: self.w.fight_prompt}
+        for text, field in d.iteritems():
+            if text:
+                for c in 'hHmMvV':
+                    if text.count('%' + c) != 1:
+                        self.w._displayWarning(self._text['accounts'],
+                                               self._text['bad_format'])
+                        field.setFocus()
+                        return
+
         Storage().savePrompt(id_conn, username, normal, fight)
         self.w.box_prompt.setVisible(False)
 
