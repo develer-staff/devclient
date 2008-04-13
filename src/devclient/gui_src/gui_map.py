@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_map.ui'
 #
-# Created: Sat Apr  5 17:14:36 2008
+# Created: Sun Apr 13 21:53:38 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,12 +15,36 @@ class Ui_RightWidget(object):
         RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,225,615).size()).expandedTo(RightWidget.minimumSizeHint()))
         RightWidget.setMinimumSize(QtCore.QSize(225,615))
 
-        self.layoutWidget = QtGui.QWidget(RightWidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,235,221,121))
+        self.text_map = QtGui.QTextEdit(RightWidget)
+        self.text_map.setGeometry(QtCore.QRect(0,0,225,231))
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.text_map.sizePolicy().hasHeightForWidth())
+        self.text_map.setSizePolicy(sizePolicy)
+        self.text_map.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.text_map.setAutoFillBackground(True)
+        self.text_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.text_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.text_map.setUndoRedoEnabled(False)
+        self.text_map.setReadOnly(True)
+        self.text_map.setProperty("char_width",QtCore.QVariant(27))
+        self.text_map.setProperty("char_height",QtCore.QVariant(11))
+        self.text_map.setObjectName("text_map")
+
+        self.box_status = QtGui.QFrame(RightWidget)
+        self.box_status.setGeometry(QtCore.QRect(0,235,225,131))
+        self.box_status.setFrameShape(QtGui.QFrame.NoFrame)
+        self.box_status.setObjectName("box_status")
+
+        self.layoutWidget = QtGui.QWidget(self.box_status)
+        self.layoutWidget.setGeometry(QtCore.QRect(0,5,226,121))
         self.layoutWidget.setObjectName("layoutWidget")
 
         self.gridlayout = QtGui.QGridLayout(self.layoutWidget)
-        self.gridlayout.setContentsMargins(5,-1,-1,-1)
+        self.gridlayout.setContentsMargins(5,-1,2,-1)
+        self.gridlayout.setHorizontalSpacing(0)
         self.gridlayout.setVerticalSpacing(5)
         self.gridlayout.setObjectName("gridlayout")
 
@@ -81,29 +105,16 @@ class Ui_RightWidget(object):
         self.bar_movement.setObjectName("bar_movement")
         self.gridlayout.addWidget(self.bar_movement,2,1,1,1)
 
-        self.text_map = QtGui.QTextEdit(RightWidget)
-        self.text_map.setGeometry(QtCore.QRect(0,0,225,231))
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.text_map.sizePolicy().hasHeightForWidth())
-        self.text_map.setSizePolicy(sizePolicy)
-        self.text_map.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.text_map.setAutoFillBackground(True)
-        self.text_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.text_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.text_map.setUndoRedoEnabled(False)
-        self.text_map.setReadOnly(True)
-        self.text_map.setProperty("char_width",QtCore.QVariant(27))
-        self.text_map.setProperty("char_height",QtCore.QVariant(11))
-        self.text_map.setObjectName("text_map")
-
         self.retranslateUi(RightWidget)
         QtCore.QMetaObject.connectSlotsByName(RightWidget)
 
     def retranslateUi(self, RightWidget):
         RightWidget.setWindowTitle(QtGui.QApplication.translate("RightWidget", "Form", None, QtGui.QApplication.UnicodeUTF8))
+        self.text_map.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
+        self.text_map.setHtml(QtGui.QApplication.translate("RightWidget", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+        "p, li { white-space: pre-wrap; }\n"
+        "</style></head><body style=\" font-family:\'Courier\'; font-weight:400; font-style:normal;\">\n"
+        "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.label_health.setText(QtGui.QApplication.translate("RightWidget", "Health", None, QtGui.QApplication.UnicodeUTF8))
         self.bar_health.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
         "QProgressBar::chunk {background-color:#FF3333;}", None, QtGui.QApplication.UnicodeUTF8))
@@ -113,9 +124,4 @@ class Ui_RightWidget(object):
         self.label_movement.setText(QtGui.QApplication.translate("RightWidget", "Movement", None, QtGui.QApplication.UnicodeUTF8))
         self.bar_movement.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
         "QProgressBar::chunk {background-color:#33CC33;}", None, QtGui.QApplication.UnicodeUTF8))
-        self.text_map.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
-        self.text_map.setHtml(QtGui.QApplication.translate("RightWidget", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Courier\'; font-weight:400; font-style:normal;\">\n"
-        "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_prompt.ui'
 #
-# Created: Sat Apr  5 17:14:07 2008
+# Created: Sun Apr 13 21:53:46 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,12 +15,18 @@ class Ui_RightWidget(object):
         RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,225,615).size()).expandedTo(RightWidget.minimumSizeHint()))
         RightWidget.setMinimumSize(QtCore.QSize(225,615))
 
-        self.layoutWidget = QtGui.QWidget(RightWidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,5,221,121))
+        self.box_status = QtGui.QFrame(RightWidget)
+        self.box_status.setGeometry(QtCore.QRect(0,5,225,130))
+        self.box_status.setFrameShape(QtGui.QFrame.NoFrame)
+        self.box_status.setObjectName("box_status")
+
+        self.layoutWidget = QtGui.QWidget(self.box_status)
+        self.layoutWidget.setGeometry(QtCore.QRect(0,5,226,121))
         self.layoutWidget.setObjectName("layoutWidget")
 
         self.gridlayout = QtGui.QGridLayout(self.layoutWidget)
-        self.gridlayout.setContentsMargins(5,-1,-1,-1)
+        self.gridlayout.setContentsMargins(5,-1,2,-1)
+        self.gridlayout.setHorizontalSpacing(0)
         self.gridlayout.setVerticalSpacing(5)
         self.gridlayout.setObjectName("gridlayout")
 

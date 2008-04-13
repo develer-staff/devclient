@@ -52,6 +52,7 @@ def _setRightPanel(widget, widget_name):
             return False
         else:
             widget.rightwidget = RightWidget(widget.rightpanel)
+            widget.rightwidget.box_status.setVisible(False)
             widget.rightwidget.setVisible(True)
 
             # resize the window to display properly the new widget
@@ -63,11 +64,11 @@ def _setRightPanel(widget, widget_name):
     return True
 
 
-def getViewer(widget, server):
+def getViewer(widget, server, custom_prompt=False):
 
     viewer = TextViewer(widget)
     if _setRightPanel(widget, server.right_widget):
-        if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
+        if hasattr(server, 'prompt_reg') or custom_prompt:
             viewer = StatusViewer(viewer)
 
         if hasattr(server, 'wild_chars'):
@@ -174,6 +175,7 @@ class StatusViewer(TextViewer):
     def __init__(self, v):
         super(StatusViewer, self).__init__(v.w)
         self.v = v
+        v.w.rightwidget.box_status.setVisible(True)
         self._last_values = {'Hp': None, 'Mn': None, 'Mv': None}
 
     def process(self, model):

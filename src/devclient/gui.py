@@ -472,7 +472,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         server = getServer(host, port)
         self.history.clear()
         self.alias = Alias(self.connected)
-        self.viewer = getViewer(self, server)
+        custom_prompt = [p for p in s.prompt(id_conn, self.account.user) if p]
+        self.viewer = getViewer(self, server, custom_prompt)
         self.macros = s.macros(self.connected)
         self.game_logger = GameLogger(self.connected, self.preferences)
         s.setOption(Option.DEFAULT_CONNECTION, id_conn)

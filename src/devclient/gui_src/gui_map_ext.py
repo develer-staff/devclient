@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_map_ext.ui'
 #
-# Created: Sat Apr  5 17:32:34 2008
+# Created: Sun Apr 13 21:53:55 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,12 +33,18 @@ class Ui_RightWidget(object):
         self.text_map.setProperty("char_height",QtCore.QVariant(21))
         self.text_map.setObjectName("text_map")
 
-        self.layoutWidget = QtGui.QWidget(RightWidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,433,251,116))
+        self.box_status = QtGui.QFrame(RightWidget)
+        self.box_status.setGeometry(QtCore.QRect(0,430,256,131))
+        self.box_status.setFrameShape(QtGui.QFrame.NoFrame)
+        self.box_status.setObjectName("box_status")
+
+        self.layoutWidget = QtGui.QWidget(self.box_status)
+        self.layoutWidget.setGeometry(QtCore.QRect(0,5,256,116))
         self.layoutWidget.setObjectName("layoutWidget")
 
         self.gridlayout = QtGui.QGridLayout(self.layoutWidget)
-        self.gridlayout.setContentsMargins(5,-1,-1,-1)
+        self.gridlayout.setContentsMargins(5,-1,2,-1)
+        self.gridlayout.setHorizontalSpacing(0)
         self.gridlayout.setVerticalSpacing(5)
         self.gridlayout.setObjectName("gridlayout")
 
