@@ -463,8 +463,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self.list_conn.blockSignals(False)
 
         if self.connected and self.connected == conn:
-            self.macros = Storage().macros(self.connected)
+            s = Storage()
+            self.macros = s.macros(self.connected)
             self.alias = Alias(self.connected)
+
+            id_conn = s.getIdConnection(self.connected)
+            prompt = [p for p in s.prompt(id_conn, self.account.user) if p]
+            self.s_core.write(messages.CUSTOM_PROMPT, prompt)
 
     def _startConnection(self, host, port):
         s = Storage()

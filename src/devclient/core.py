@@ -239,6 +239,8 @@ class Core(object):
         cmd, msg = self.s_gui.read()
         if cmd == messages.MSG and self.s_server.connected:
             self.s_server.write(msg)
+        elif cmd == messages.CUSTOM_PROMPT:
+            self.parser.setVars({'custom_prompt': msg})
         elif cmd == messages.END_APP:
             return False
         elif cmd == messages.CONNECT:

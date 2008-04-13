@@ -86,6 +86,9 @@ class Parser(object):
             # Empty colors means default color
             model.bg_color, model.fg_color = '', ''
 
+    def setVars(self, d):
+        pass
+
     def buildModel(self, data):
         """
         Parse data and build the `Model` object.
@@ -306,6 +309,11 @@ class PromptParser(Parser):
                             'Mn': (d['%m'], d['%M']),
                             'Mv': (d['%v'], d['%V'])}
 
+    def setVars(self, d):
+        self._p.setVars(d)
+        if 'custom_prompt' in d:
+            self._custom_prompt = [p for p in d['custom_prompt'] if p]
+
     def buildModel(self, data):
         model = self._p.buildModel(data)
         if self._custom_prompt:
@@ -460,6 +468,9 @@ class WildMapParser(Parser):
         model.main_text, model.main_html, self._incomplete_map = \
             extractIncompleteMap(text, html)
         return False
+
+    def setVars(self, d):
+        self._p.setVars(d)
 
     def buildModel(self, data):
         model = self._p.buildModel(data)

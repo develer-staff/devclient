@@ -553,6 +553,8 @@ class FormAccounts(object):
                         return
 
         Storage().savePrompt(id_conn, username, normal, fight)
+        conn_name = self.w.list_conn_account.currentText()
+        self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
         self.w.box_prompt.setVisible(False)
 
 
