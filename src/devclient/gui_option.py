@@ -495,7 +495,7 @@ class FormAccounts(object):
         self.w.list_account.addItems(accounts)
         self.w.list_account.blockSignals(False)
         self.w.delete_account.setEnabled(True if accounts else False)
-        #self.w.change_prompt.setEnabled(True if accounts else False)
+        self.w.change_prompt.setEnabled(True if accounts else False)
         self.w.box_prompt.setVisible(False)
         self._loadAccount()
 
@@ -527,6 +527,7 @@ class FormAccounts(object):
         Storage().setOption(Option.SAVE_ACCOUNT, int(val == Qt.Checked))
 
     def _savePrompt(self):
+        # TODO: validate prompt!
         idx = self.w.list_conn_account.currentIndex()
         id_conn = self.w.list_conn_account.itemData(idx).toInt()[0]
         username = unicode(self.w.list_account.currentText())

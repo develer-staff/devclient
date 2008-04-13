@@ -28,19 +28,21 @@ import exception
 from messages import Model
 
 
-def getParser(server):
+def getParser(server, prompt):
     """
     Build and return the appropriate `Parser` instance for the server.
 
     :Parameters:
         server : class
           the class of server connected
+        prompt : tuple
+          the custom prompt
     """
 
     parser = Parser(server)
 
-    if hasattr(server, 'prompt_reg') and hasattr(server, 'prompt_sep'):
-        parser = PromptParser(parser)
+    if hasattr(server, 'prompt_reg') or [p for p in prompt if p]:
+        parser = PromptParser(parser, prompt)
 
     if hasattr(server, 'wild_chars'):
         parser = WildMapParser(parser)
@@ -272,8 +274,9 @@ class PromptParser(Parser):
 .. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
     """
 
-    def __init__(self, parser):
+    def __init__(self, parser, custom_prompt):
         super(PromptParser, self).__init__(parser._server)
+        self._custom_prompt = [p for p in custom_prompt if p]
         self._p = parser
 
     def _parsePrompt(self, model):
@@ -285,9 +288,30 @@ class PromptParser(Parser):
                 p[i] = p[i].split(self._p._server.prompt_sep)
             model.prompt = {'Hp': p[0], 'Mn': p[1], 'Mv': p[2]}
 
+    def _parseCustomPrompt(self, model):
+        prompts = []
+        for i, p in enumerate(self._custom_prompt):
+            p = escape(p).replace('\*', '.*?')
+            for c in 'hHmMvV':
+                p = p.replace('\%' + c, '(\d+)')
+            m = compile('(.*)%s' % p, re.S).match(model.main_text)
+            if m:
+                prompts.append((len(m.group(1)), i, list(m.groups())[1:]))
+
+        if prompts:
+            i, val = max(prompts)[1:]  # take the last prompt
+            key = compile('%[hHmMvV]').findall(self._custom_prompt[i])
+            d = dict(zip(key, val))
+            model.prompt = {'Hp': (d['%h'], d['%H']),
+                            'Mn': (d['%m'], d['%M']),
+                            'Mv': (d['%v'], d['%V'])}
+
     def buildModel(self, data):
         model = self._p.buildModel(data)
-        self._parsePrompt(model)
+        if self._custom_prompt:
+            self._parseCustomPrompt(model)
+        else:
+            self._parsePrompt(model)
         return model
 
 

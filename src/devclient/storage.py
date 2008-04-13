@@ -363,6 +363,9 @@ class Storage(object):
                         (id_account, normal, fight), c)
 
     def prompt(self, id_conn, username):
+        if not username:
+            return ('', '')
+
         c = self._execQuery('SELECT id FROM accounts WHERE id_conn=? ' +
                             'AND username=?', (id_conn, username))
 

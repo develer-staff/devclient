@@ -247,14 +247,14 @@ class Core(object):
                 self.s_gui.write(messages.CONN_CLOSED, '')
                 self.s_server.disconnect()
             try:
-                self.s_server.connect(*msg[1:])
+                self.s_server.connect(*msg[1:3])
             except exception.ConnectionRefused:
                 self.s_gui.write(messages.CONN_REFUSED, "")
             else:
                 sock_watched.append(self.s_server)
-                self.s_gui.write(messages.CONN_ESTABLISHED, msg)
+                self.s_gui.write(messages.CONN_ESTABLISHED, msg[:3])
 
-            self.parser = getParser(getServer(*msg[1:]))
+            self.parser = getParser(getServer(*msg[1:3]), msg[3:])
         elif cmd == messages.UNKNOWN:
             logger.warning('SocketToGui: Unknown message')
 

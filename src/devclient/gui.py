@@ -425,7 +425,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         opt.show()
 
     def _connect(self):
-        connections = Storage().connections()
+        s = Storage()
+        connections = s.connections()
         if self.connected:
             if not self._displayQuestion(self._text['Connect'],
                                          self._text['CloseConn']):
@@ -439,8 +440,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         id_conn = data.toInt()[0]
         conn = [el for el in connections if el[0] == id_conn][0]
         self.account = AccountManager(self, getServer(*conn[2:4]), id_conn)
-        self.s_core.write(messages.CONNECT, conn[1:4])
-
+        msg = conn[1:4] + s.prompt(id_conn, self.account.user)
+        self.s_core.write(messages.CONNECT, msg)
 
     def _reloadPreferences(self):
         self.preferences = Storage().preferences()
