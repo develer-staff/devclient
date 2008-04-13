@@ -274,7 +274,7 @@ class PromptParser(Parser):
 .. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
     """
 
-    def __init__(self, parser, custom_prompt):
+    def __init__(self, parser, custom_prompt=[]):
         super(PromptParser, self).__init__(parser._server)
         self._custom_prompt = [p for p in custom_prompt if p]
         self._p = parser

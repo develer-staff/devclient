@@ -319,6 +319,30 @@ class TestAfkParser(unittest.TestCase):
         self.assert_(self.m.prompt == prompt)
 
 
+class CustomPromptParser(unittest.TestCase):
+
+    def testEmptyPrompt(self):
+        parser = PromptParser(Parser(Server), ['Hp->%h/%H Mn->%m-%M Mv->%v/%V'])
+        m = parser.buildModel('')
+        self.assert_(m.prompt is None)
+
+    def testPrompt1(self):
+        parser = PromptParser(Parser(Server), ['Hp->%h/%H Mn->%m-%M Mv->%v/%V'])
+        m = parser.buildModel('')
+        m.main_text = 'bla bla Hp->23/24 Mn->101-102 Mv->26/102 bla'
+        parser._parseCustomPrompt(m)
+        prompt = {'Hp': ('23', '24'), 'Mn': ('101', '102'), 'Mv': ('26', '102')}
+        self.assert_(m.prompt == prompt)
+
+    def testPrompt2(self):
+        parser = PromptParser(Parser(Server), ['H[%h/%H]* M[%m/%M] V[%v/%V]'])
+        m = parser.buildModel('')
+        m.main_text = 'H[23/24] Liv[1001/2133] M[101/102] V[26/102]'
+        parser._parseCustomPrompt(m)
+        prompt = {'Hp': ('23', '24'), 'Mn': ('101', '102'), 'Mv': ('26', '102')}
+        self.assert_(m.prompt == prompt)
+
+
 class TestWildMapParser(unittest.TestCase):
 
     def setUp(self):
