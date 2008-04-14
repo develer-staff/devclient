@@ -154,7 +154,7 @@ class TextViewer(object):
         self.appendHtml(model.main_html)
 
     def selectedText(self):
-        return self.w.text_output.textCursor().selectedText()
+        return self.w.text_output.textCursor().selection().toPlainText()
 
     def clearSelection(self):
         cursor = self.w.text_output.textCursor()
