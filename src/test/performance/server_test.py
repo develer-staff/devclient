@@ -44,5 +44,5 @@ conn, addr = s.accept()
 while data:
     conn.send(data[:1024])
     data = data[1024:]
-    time.sleep(.1)
+    time.sleep(.01)
 conn.close()
