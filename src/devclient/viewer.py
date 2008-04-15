@@ -247,6 +247,6 @@ class MapViewer(TextViewer):
             w = w_map.property('char_width').toInt()[0]
             h = w_map.property('char_height').toInt()[0]
             self._centerMap(model, w, h)
-            w_map.setHtml(model.map_html)
+            w_map.document().setHtml(model.map_html)
         elif model.map_text is None:
-            w_map.clear()
+            w_map.document().clear()
