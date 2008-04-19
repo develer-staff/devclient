@@ -137,6 +137,7 @@ def main(cfg_file=cfg_file):
         print 'Fatal Exception:', e
         terminateProcess(p.pid)
     finally:
+        unlink(config['storage']['path'])
         fn = join(config['servers']['path'], 'localhost_server.py')
         if exists(fn):
             unlink(fn)
