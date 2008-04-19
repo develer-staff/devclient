@@ -198,8 +198,7 @@ class AccountManager(object):
 
     def __init__(self, widget, server, id_conn):
         self.user = unicode(widget.list_account.currentText())
-        if self.user:
-            Storage().setOption(Option.DEFAULT_ACCOUNT, self.user, id_conn)
+        Storage().setOption(Option.DEFAULT_ACCOUNT, self.user, id_conn)
 
         self._num_cmds = server.cmds_account
         self._cmd_user = server.cmd_username
