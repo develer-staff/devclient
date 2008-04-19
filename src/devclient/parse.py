@@ -435,7 +435,7 @@ class WildMapParser(Parser):
 
         # wild end text must contain at least one char that not is contained
         # into room description.
-        room_desc = '\w\s\.\'",:;'
+        room_desc = '\w\s\.\'",:;\(\)'
         reg = compile('(.*?\s)([%s]{8,})[%s]*?%s' %
                       (wild_chars, room_desc, escape(wild_end)), re.S)
 
