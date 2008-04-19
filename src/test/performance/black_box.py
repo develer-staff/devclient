@@ -27,6 +27,7 @@ import subprocess
 from time import time
 from shutil import copy
 from sys import argv, path
+from optparse import OptionParser
 from os import getcwd, chdir, unlink
 from os.path import basename, abspath, normpath, join, dirname, exists
 
@@ -72,7 +73,7 @@ def startAction(gui):
 def callback():
     print 'total time:' ,callback.e.time - callback.s.time
 
-def readOptions(dirname):
+def readTestOptions(dirname):
     if exists(join(dirname, 'options.cfg')):
         fd = open(join(dirname, 'options.cfg'))
         data = [r.split('=') for r in fd.readlines()]
@@ -80,10 +81,17 @@ def readOptions(dirname):
         return dict([(k.strip(), v.strip()) for k,v in data])
     return {}
 
+
 def main(cfg_file=cfg_file):
 
-    test = 'test' if len(argv) < 2 else argv[1]
-    options = readOptions(test)
+    parser = OptionParser()
+    parser.add_option('-t', '--test', default='test',
+                      help='the test directory (default %default)')
+    parser.add_option('--core-port', type='int', default=0, dest="core_port",
+                      help='the port where the process core is listening ' +
+                           'for connection')
+    o, args = parser.parse_args()
+    test_options = readTestOptions(o.test)
 
     old_dir = getcwd()
     chdir(join(getcwd(), dirname(argv[0]), dirname(cfg_file)))
@@ -96,31 +104,34 @@ def main(cfg_file=cfg_file):
     path.append(config['resources']['path'])
 
     chdir(old_dir)
-    if exists(join(test, 'localhost_server.py')):
-        copy(join(test, 'localhost_server.py'), config['servers']['path'])
+    if exists(join(o.test, 'localhost_server.py')):
+        copy(join(o.test, 'localhost_server.py'), config['servers']['path'])
 
     # this import must stay here, after the appending of resources path to path
     from devclient.gui import Gui
 
-    port = random.randint(2000, 10000)
+    if not o.core_port:
+        port = random.randint(2000, 10000)
 
-    p = startProcess(['python',
-                      join(config['devclient']['path'], 'core.py'),
-                      '--config=%s' % cfg_file,
-                      '--port=%d' % port])
+        p = startProcess(['python',
+                        join(config['devclient']['path'], 'core.py'),
+                        '--config=%s' % cfg_file,
+                        '--port=%d' % port])
 
-    # FIX! To prevent connectionRefused from SocketToGui
-    import time
-    time.sleep(.5)
+        # FIX! To prevent connectionRefused from SocketToGui
+        import time
+        time.sleep(.5)
+    else:
+        port = o.core_port
 
     try:
         gui = Gui(port)
         cwd = dirname(argv[0]) if dirname(argv[0]) else None
         cmd = ['python', '-u', 'server_test.py']
-        if 'delay' in options:
+        if 'delay' in test_options:
             cmd.append('-d')
-            cmd.append(options['delay'])
-        cmd.append(test + '/data.txt')
+            cmd.append(test_options['delay'])
+        cmd.append(o.test + '/data.txt')
         gui.p = subprocess.Popen(cmd, stdout=subprocess.PIPE, cwd=cwd)
 
         try:
@@ -132,10 +143,12 @@ def main(cfg_file=cfg_file):
         QTimer.singleShot(2000, gui.startAction)
         gui.mainLoop()
     except exception.IPCError:
-        terminateProcess(p.pid)
+        if not o.core_port:
+            terminateProcess(p.pid)
     except Exception, e:
         print 'Fatal Exception:', e
-        terminateProcess(p.pid)
+        if not o.core_port:
+            terminateProcess(p.pid)
     finally:
         unlink(config['storage']['path'])
         fn = join(config['servers']['path'], 'localhost_server.py')
