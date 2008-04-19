@@ -21,12 +21,14 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+
 import random
 import subprocess
 from time import time
+from shutil import copy
 from sys import argv, path
-from os import getcwd, chdir
-from os.path import basename, abspath, normpath, join, dirname
+from os import getcwd, chdir, unlink
+from os.path import basename, abspath, normpath, join, dirname, exists
 
 from PyQt4.QtTest import QTest
 from PyQt4.QtCore import QTimer, Qt
@@ -70,19 +72,33 @@ def startAction(gui):
 def callback():
     print 'total time:' ,callback.e.time - callback.s.time
 
+def readOptions(dirname):
+    if exists(join(dirname, 'options.cfg')):
+        fd = open(join(dirname, 'options.cfg'))
+        data = [r.split('=') for r in fd.readlines()]
+        fd.close()
+        return dict([(k.strip(), v.strip()) for k,v in data])
+    return {}
+
 def main(cfg_file=cfg_file):
+
+    test = 'test' if len(argv) < 2 else argv[1]
+    options = readOptions(test)
 
     old_dir = getcwd()
     chdir(join(getcwd(), dirname(argv[0]), dirname(cfg_file)))
     cfg_file = join(getcwd(), basename(cfg_file))
     loadConfiguration(cfg_file)
     config['storage']['path'] = abspath('../data/storage/dbtest.sqlite')
-    adjustSchema()  #create the schema must be before adding the connection
+    adjustSchema()  #create schema must be before adding the connection
     Storage().addConnection([0, 'localhost', 'localhost', 6666])
     path.append(config['servers']['path'])
     path.append(config['resources']['path'])
 
     chdir(old_dir)
+    if exists(join(test, 'localhost_server.py')):
+        copy(join(test, 'localhost_server.py'), config['servers']['path'])
+
     # this import must stay here, after the appending of resources path to path
     from devclient.gui import Gui
 
@@ -100,8 +116,12 @@ def main(cfg_file=cfg_file):
     try:
         gui = Gui(port)
         cwd = dirname(argv[0]) if dirname(argv[0]) else None
-        gui.p = subprocess.Popen(['python', '-u','server_test.py'],
-                                 stdout=subprocess.PIPE, cwd=cwd)
+        cmd = ['python', '-u', 'server_test.py']
+        if 'delay' in options:
+            cmd.append('-d')
+            cmd.append(options['delay'])
+        cmd.append(test + '/data.txt')
+        gui.p = subprocess.Popen(cmd, stdout=subprocess.PIPE, cwd=cwd)
 
         try:
             buf = gui.p.stdout.read(6) # read READY\n from stdout
@@ -116,6 +136,10 @@ def main(cfg_file=cfg_file):
     except Exception, e:
         print 'Fatal Exception:', e
         terminateProcess(p.pid)
+    finally:
+        fn = join(config['servers']['path'], 'localhost_server.py')
+        if exists(fn):
+            unlink(fn)
 
 if __name__ == '__main__':
     main()

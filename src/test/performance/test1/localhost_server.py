@@ -18,36 +18,13 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision$"[11:-2]
-__docformat__ = 'restructuredtext'
+from generics import *
 
-import sys
-import time
-import socket
-import optparse
-
-if len(sys.argv) < 2:
-    print 'Usage: python server_test.py [-p port] [-d delay] <datafile>'
-    exit(1)
-
-parser = optparse.OptionParser()
-parser.add_option('-p', '--port', type='int', default=6666)
-parser.add_option('-d', '--delay', type='int', default=1)
-o, args = parser.parse_args()
-
-f = open(sys.argv[-1])
-data = f.read()
-f.close()
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind(("localhost", o.port))
-s.listen(1)
-print 'READY'
-conn, addr = s.accept()
-
-while data:
-    conn.send(data[:1024])
-    data = data[1024:]
-    time.sleep(o.delay / 100.0)
-conn.close()
+class LocalhostServer(DikuServer):
+    right_widget = 'gui_map'
+    wild_chars = '\^\.xX@\*\s&-\?'
+    wild_end_text = '\n[Uscite:'
+    wild_prec_char = '123456789'
+    room_map = '|\-#?@'
+    host = 'localhost'
+    port = 6666
