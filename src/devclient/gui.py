@@ -197,17 +197,18 @@ class GameLogger(object):
 class AccountManager(object):
 
     def __init__(self, widget, server, id_conn):
+        s = Storage()
         self.user = unicode(widget.list_account.currentText())
-        Storage().setOption(Option.DEFAULT_ACCOUNT, self.user, id_conn)
-
+        s.setOption(Option.DEFAULT_ACCOUNT, self.user, id_conn)
+        self._save_account = s.option(Option.SAVE_ACCOUNT, 0)
         self._num_cmds = server.cmds_account
         self._cmd_user = server.cmd_username
         self._id_conn = id_conn
         self._commands = []
 
     def register(self, text):
-        if not self.user and Storage().option(Option.SAVE_ACCOUNT, 0) and \
-           len(self._commands) < self._num_cmds:
+        if not self.user and self._save_account \
+           and len(self._commands) < self._num_cmds:
             self._commands.append(text)
             if len(self._commands) == self._num_cmds:
                 Storage().saveAccount(self._commands, self._id_conn,
