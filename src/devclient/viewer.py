@@ -112,6 +112,7 @@ class TextViewer(object):
         new_html = html.split('<br>')
         cursor = self.w.text_output.textCursor()
         cursor.movePosition(QTextCursor.End)
+        cursor.beginEditBlock()
 
         new_block = True
         while(new_html):
@@ -124,6 +125,7 @@ class TextViewer(object):
             self._cur_rows = (num_rows + self._cur_rows) % self.ROW_BLOCK
             new_block = False
 
+        cursor.endEditBlock()
         self.w.text_output.setTextCursor(cursor)
 
     def _textEditColors(self, model, text_edit):
