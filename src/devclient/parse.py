@@ -61,12 +61,6 @@ class Parser(object):
     _bright_color = ('444444', 'ff4444', '44ff44', 'ffff44', '4444ff',
                      'ff44ff', '44ffff', 'ffffff')
 
-    _text_to_html = {' ': '&nbsp;', '<': '&lt;', '>': '&gt;', '&': '&amp;',
-                     '"': '&quot;', '\n': '<br>'}
-
-    _html_to_text = {'&nbsp;': ' ', '&lt;': '<', '&gt;': '>', '&amp;': '&',
-                     '&quot;': '"', '<br>': '\n'}
-
     def __init__(self, server):
         """
         Create the `Parser` instance.
@@ -102,8 +96,8 @@ class Parser(object):
         html_data, text_data = self._replaceAnsiColor(data, model)
 
         model.main_text = text_data
+        model.main_html = html_data
         model.original_text = text_data
-        model.main_html = self._textToHtml(html_data)
         self._checkDefaultColor(model, model.main_text)
 
         if model.bg_color != self._default_bg:
@@ -114,19 +108,13 @@ class Parser(object):
 
         return model
 
-    def _textToHtml(self, html, out=None):
+    def _replaceTextChars(self, text):
+        _text_to_html = (('&', '&amp;'), (' ', '&nbsp;'), ('<', '&lt;'),
+                         ('>', '&gt;'), ('"', '&quot;'), ('\n', '<br>'))
 
-        out = [out] if out else []
-        while html:
-            if html.startswith('<span') or html.startswith('</span>'):
-                pos = html.find('>') + 1
-                out.append(html[:pos])
-                html = html[pos:]
-            else:
-                out.append(self._text_to_html.get(html[0], html[0]))
-                html = html[1:]
-
-        return ''.join(out)
+        for k, v in _text_to_html:
+            text = text.replace(k, v)
+        return text
 
     def _evalStyle(self, ansi_code, model):
 
@@ -226,8 +214,9 @@ class Parser(object):
 
         style = self._style
         parts = data.split(START_TOKEN)
-        html_res = ['<span style="%s">%s</span>' % (style, parts[0]) if style
-                    else parts[0]]
+        html_part = self._replaceTextChars(parts[0])
+        html_res = ['<span style="%s">%s</span>' % (style, html_part) if style
+                    else html_part]
 
         if len(parts) == 1:
             return ''.join(html_res), parts[0]
@@ -241,16 +230,17 @@ class Parser(object):
             if m:
                 ansi_code = m.group(1)
                 code_length = len(ansi_code) + len(COLOR_TOKEN) + len('[')
+                html_part = self._replaceTextChars(s[code_length:])
                 if m.group(2) == COLOR_TOKEN and ansi_code:
                     # evalStyle must be always called to set color attributes
                     style = self._evalStyle(ansi_code, model)
                     if style and self._styleVisible(ansi_code, s[code_length:]):
                         html_res.append('<span style="%s">%s</span>' %
-                                         (style, s[code_length:]))
+                                         (style, html_part))
                     else:
-                        html_res.append(s[code_length:])
+                        html_res.append(html_part)
                 else:
-                    html_res.append(s[code_length:])
+                    html_res.append(html_part)
 
                 text_res.append(s[code_length:])
             else:
@@ -259,7 +249,7 @@ class Parser(object):
                 if i == len(parts) - 2:
                     self._incomplete_seq = START_TOKEN + s
                 else:
-                    html_res.append(s)
+                    html_res.append(self._replaceTextChars(s))
                     text_res.append(s)
 
         self._style = style
@@ -333,6 +323,10 @@ class WildMapParser(Parser):
 .. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
     """
 
+    _html_entities = ('&nbsp;', '&lt;', '&gt;', '&amp;', '&quot;', '<br>')
+
+    _html_tags = _html_entities + ('<span', '</span>')
+
     def __init__(self, parser):
         super(WildMapParser, self).__init__(parser._server)
         self._incomplete_map = []
@@ -340,14 +334,26 @@ class WildMapParser(Parser):
 
     def _getHtmlFromText(self, html, parts):
 
-        for h, t in self._html_to_text.iteritems():
-            html = html.replace(h, t)
+        def findHtmlTags(html):
+            """Find the nearest html-tag and return its position"""
+            min_pos = len(html)
+            for e in self._html_tags:
+                p = html.find(e)
+                if p != -1:
+                    min_pos = min(p, min_pos)
+            return min_pos
+
+        def startsWithEntities(html):
+            """Check if html starts with an html-entity and return its length"""
+            for e in self._html_entities:
+                if html.startswith(e):
+                    return len(e)
+            return 0
 
         html_parts = []
         span = ''
         for p in parts:
             p_html = [span] if span else []
-
             while p:
                 if html.startswith('</span>') and span or \
                    html.startswith('<span'):
@@ -356,9 +362,16 @@ class WildMapParser(Parser):
                     p_html.append(html[:pos])
                     html = html[pos:]
                 else:
-                    p_html.append(self._text_to_html.get(html[0], html[0]))
-                    html = html[1:]
-                    p = p[1:]
+                    pos = startsWithEntities(html)
+                    if pos:
+                        p_html.append(html[:pos])
+                        html = html[pos:]
+                        p = p[1:]
+                    else:
+                        pos = findHtmlTags(html)
+                        p_html.append(html[:pos])
+                        html = html[pos:]
+                        p = p[pos:]
 
             if html.startswith('</span>') or span:
                 p_html.append('</span>')
@@ -368,10 +381,10 @@ class WildMapParser(Parser):
 
             html_parts.append(''.join(p_html))
 
-        # append the remaining part
-        p_html = self._textToHtml(html, span)
-        if p_html:
-            html_parts.append(p_html)
+        if span:
+            html = span + html
+        if html:
+            html_parts.append(html)
         return html_parts
 
     def _parseWild(self, model):
