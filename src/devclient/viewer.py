@@ -86,10 +86,10 @@ class TextViewer(object):
     Build the html visualization from model.
     """
 
-    MAX_ROWS = 300
+    MAX_ROWS = 500
     """The max number of rows displayed in textEdit field"""
 
-    ROW_BLOCK = 10
+    _ROW_BLOCK = 10
     """The max number of rows per block"""
 
     def __init__(self, widget):
@@ -97,7 +97,7 @@ class TextViewer(object):
         self._bg = None
         self._fg = None
         doc = self.w.text_output.document()
-        doc.setMaximumBlockCount(self.MAX_ROWS / self.ROW_BLOCK)
+        doc.setMaximumBlockCount(self.MAX_ROWS / self._ROW_BLOCK)
         self._cur_rows = 0
 
     def _resetWidgets(self):
@@ -111,18 +111,18 @@ class TextViewer(object):
     def appendHtml(self, html):
         new_html = html.split('<br>')
         cursor = self.w.text_output.textCursor()
-        cursor.movePosition(QTextCursor.End)
         cursor.beginEditBlock()
+        cursor.movePosition(QTextCursor.End)
 
         new_block = True
         while(new_html):
             if not self._cur_rows and not new_block:
                 cursor.insertBlock()
 
-            num_rows = len(new_html[:self.ROW_BLOCK - self._cur_rows])
+            num_rows = len(new_html[:self._ROW_BLOCK - self._cur_rows])
             cursor.insertHtml('<br>'.join(new_html[:num_rows]))
             new_html = new_html[num_rows:]
-            self._cur_rows = (num_rows + self._cur_rows) % self.ROW_BLOCK
+            self._cur_rows = (num_rows + self._cur_rows) % self._ROW_BLOCK
             new_block = False
 
         cursor.endEditBlock()
