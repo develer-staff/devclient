@@ -50,6 +50,12 @@ class TextCursorMock(object):
     def insertHtml(self, html):
         self.text_mock._html += html
 
+    def beginEditBlock(self):
+        pass
+
+    def endEditBlock(self):
+        pass
+
 
 class TextMock(object):
 
