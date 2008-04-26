@@ -55,6 +55,7 @@ SB =  chr(250)
 SE  = chr(240)
 
 MCCP2 = chr(86)
+MCCP = chr(85)
 
 
 class SocketToServer(object):
@@ -80,6 +81,7 @@ class SocketToServer(object):
 
     def connect(self, host, port):
         self._stats = [0, 0]
+        self._mccp_ver = None
         self._compress = 0
         self._rawbuf = ''
         self._buffer = ''
@@ -116,6 +118,10 @@ class SocketToServer(object):
         exception of the MCCP sequence.
         """
 
+        # the subnegoziation sequence, which is used to indicate the start of
+        # compresses stream
+        MCCP_SUB = (SB + MCCP + WILL + SE, SB + MCCP2 + IAC + SE)
+
         while len(self._buffer) >= 3 and self._buffer[0] == IAC:
             cmd = self._buffer[1]
             opt = self._buffer[2]
@@ -126,27 +132,32 @@ class SocketToServer(object):
                 self._buffer = self._buffer[3:]
             elif cmd in (WILL, WONT):
                 self._msg('IAC %s %d', ('WILL', 'WONT')[cmd == WONT], ord(opt))
-                if cmd == WILL and opt == MCCP2:
+                if cmd == WILL and opt == MCCP2 and not self._mccp_ver:
                     self._s.sendall(IAC + DO + opt)
-                    self._msg('ENABLE MCCP2')
+                    self._msg('ENABLE MCCP v2')
+                    self._mccp_ver = 2
+                elif cmd == WILL and opt == MCCP and not self._mccp_ver:
+                    self._s.sendall(IAC + DO + opt)
+                    self._msg('ENABLE MCCP v1')
+                    self._mccp_ver = 1
                 else:
                     self._s.sendall(IAC + DONT + opt)
                 self._buffer = self._buffer[3:]
             elif cmd == SB:
-                pos = self._buffer.find(IAC + SE, 2)
-                if pos != -1:
-                    self._msg('SUBNEGOZIATION OPTION: %d', ord(opt))
-                    self._msg('SUBNEGOZIATION PARAMETERS: %s',
-                              self._buffer[3:pos])
-                    if opt == MCCP2:
-                        self._msg('START COMPRESSED STREAM (MCCP2)')
-                        self._rawbuf = self._buffer[pos + 2:] + self._rawbuf
-                        self._d = zlib.decompressobj(15)
-                        self._compress = 1
-                        self._buffer = ''
-                        self._processRawBuf()
+                if self._buffer[1:5] in MCCP_SUB:
+                    self._msg('START COMPRESSED STREAM (MCCP v%d)',
+                              self._mccp_ver)
+                    self._rawbuf = self._buffer[5:] + self._rawbuf
+                    self._d = zlib.decompressobj(15)
+                    self._compress = 1
+                    self._buffer = ''
+                    self._processRawBuf()
                 else:
-                    # to avoid non-terminating loop
+                    pos = self._buffer.find(IAC + SE, 2)
+                    if pos != -1:
+                        self._msg('SUBNEGOZIATION OPTION: %d', ord(opt))
+                        self._msg('SUBNEGOZIATION PARAMETERS: %s',
+                                  self._buffer[3:pos])
                     break
             else:
                 self._msg('UNKNOWN COMMAND: %d', ord(cmd))
@@ -162,7 +173,8 @@ class SocketToServer(object):
                 self._stats[1] += len(new_data)
             self._buffer += new_data
             if self._d.unused_data:
-                self._msg('END OF COMPRESSED STREAM (MCCP2)')
+                self._msg('END OF COMPRESSED STREAM (MCCP v%d)', self._mccp_ver)
+                self._mccp_ver = None
                 self._compress = 0
                 self._d = None
         else:
