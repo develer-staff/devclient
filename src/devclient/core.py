@@ -148,6 +148,9 @@ class SocketToServer(object):
                 else:
                     # to avoid non-terminating loop
                     break
+            else:
+                self._msg('UNKNOWN COMMAND: %d', ord(cmd))
+                break
 
     def _processRawBuf(self):
         """Process all data found in `self._rawbuf`"""
