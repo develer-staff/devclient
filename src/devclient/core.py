@@ -183,6 +183,8 @@ class SocketToServer(object):
                 self._compress = 0
                 self._d = None
         else:
+            self._stats[0] += len(self._rawbuf)
+            self._stats[1] += len(self._rawbuf)
             self._buffer += self._rawbuf
 
         self._rawbuf = ''
@@ -238,10 +240,10 @@ class SocketToServer(object):
     def disconnect(self):
         if self.connected:
             if self._debug:
-                self._msg('%s MCCP STATS %s', '*' * 20, '*' * 20)
-                self._msg('Original data received: %d', self._stats[0])
-                self._msg('Uncompress total data: %d', self._stats[1])
-                self._msg('*' * 52)
+                self._msg('%s CONNECTION STATS %s', '*' * 20, '*' * 20)
+                self._msg(' Original data received: %d', self._stats[0])
+                self._msg(' Uncompress total data: %d', self._stats[1])
+                self._msg('*' * 58)
             self._s.close()
             self.connected = 0
 
