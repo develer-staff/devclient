@@ -23,13 +23,13 @@ __docformat__ = 'restructuredtext'
 
 import os
 import sys
+import zlib
 import select
 import socket
 import struct
 import cPickle
 import logging
 import os.path
-import telnetlib
 from os.path import dirname, join
 from optparse import OptionParser
 
@@ -44,25 +44,54 @@ from servers import getServer
 logger = logging.getLogger('core')
 
 
+# Telnet protocol characters
+IAC  = chr(255)
+DONT = chr(254)
+DO   = chr(253)
+WONT = chr(252)
+WILL = chr(251)
+
+SB =  chr(250)
+SE  = chr(240)
+
+MCCP2 = chr(86)
+
+
 class SocketToServer(object):
     """
     Provide a socket interface to Mud server.
+
+    This class handles some of TELNET negoziation sequences (see `RFC854`_ and
+    `RFC855`_), however is not intended to replace the telnetlib module of
+    standard library, but to provide a fast implementation of some sequences
+    specific for MUD, as the `MCCP protocol`_.
+
+.. _RFC854: http://www.rfc-editor.org/rfc/rfc854.txt
+.. _RFC855: http://www.rfc-editor.org/rfc/rfc855.txt
+.. _MCCP protocol: http://mccp.smaugmuds.org/protocol.html
     """
 
     encoding = "ISO-8859-1"
 
     def __init__(self, timeout=1):
-        # setting a default timeout is the only way to set a timeout for the
-        # Telnet object before establish the connection.
-        socket.setdefaulttimeout(timeout)
+        self._timeout = timeout
         self.connected = 0
-        self._t = telnetlib.Telnet()
+        self._debug = 0
 
     def connect(self, host, port):
+        self._stats = [0, 0]
+        self._compress = 0
+        self._rawbuf = ''
+        self._buffer = ''
+        self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._s.settimeout(self._timeout)
+
         try:
-            self._t.open(host, port)
+            self._s.connect((host, port))
         except socket.error:
             raise exception.ConnectionRefused()
+
+        self._msg('Connection established with %s:%d', host, port)
         self.connected = 1
 
     def fileno(self):
@@ -70,7 +99,101 @@ class SocketToServer(object):
         Return the fileno() of the socket object used internally.
         """
 
-        return self._t.get_socket().fileno()
+        return self._s.fileno()
+
+    def _msg(self, msg, *args):
+        if not self._debug:
+            return
+
+        if args:
+            msg = msg % args
+
+        print msg
+
+    def _processIACSeq(self):
+        """
+        Process one or more IAC sequences, refusing all options with the
+        exception of the MCCP sequence.
+        """
+
+        while len(self._buffer) >= 3 and self._buffer[0] == IAC:
+            cmd = self._buffer[1]
+            opt = self._buffer[2]
+
+            if cmd in (DO, DONT):
+                self._msg('IAC %s %d', ('DO', 'DONT')[cmd == DONT], ord(opt))
+                self._s.sendall(IAC + WONT + opt)
+                self._buffer = self._buffer[3:]
+            elif cmd in (WILL, WONT):
+                self._msg('IAC %s %d', ('WILL', 'WONT')[cmd == WONT], ord(opt))
+                if cmd == WILL and opt == MCCP2:
+                    self._s.sendall(IAC + DO + opt)
+                    self._msg('ENABLE MCCP2')
+                else:
+                    self._s.sendall(IAC + DONT + opt)
+                self._buffer = self._buffer[3:]
+            elif cmd == SB:
+                pos = self._buffer.find(IAC + SE, 2)
+                if pos != -1:
+                    self._msg('SUBNEGOZIATION OPTION: %d', ord(opt))
+                    self._msg('SUBNEGOZIATION PARAMETERS: %s',
+                              self._buffer[3:pos])
+                    if opt == MCCP2:
+                        self._msg('START COMPRESSED STREAM (MCCP2)')
+                        self._rawbuf = self._buffer[pos + 2:] + self._rawbuf
+                        self._d = zlib.decompressobj(15)
+                        self._compress = 1
+                        self._buffer = ''
+                        self._processRawBuf()
+                else:
+                    # to avoid non-terminating loop
+                    break
+
+    def _processRawBuf(self):
+        """Process all data found in `self._rawbuf`"""
+
+        if self._compress and self._rawbuf:
+            new_data = self._d.decompress(self._rawbuf) + self._d.unused_data
+            if self._debug:
+                self._stats[0] += len(self._rawbuf)
+                self._stats[1] += len(new_data)
+            self._buffer += new_data
+            if self._d.unused_data:
+                self._msg('END OF COMPRESSED STREAM (MCCP2)')
+                self._compress = 0
+                self._d = None
+        else:
+            self._buffer += self._rawbuf
+
+        self._rawbuf = ''
+
+    def _getData(self):
+        """
+        Return all data in `self._buffer` until IAC char.
+        """
+
+        self._processIACSeq()
+        pos = self._buffer.find(IAC)
+        if pos != -1:
+            data = self._buffer[:pos]
+            self._buffer = self._buffer[pos:]
+        else:
+            data, self._buffer = self._buffer, ''
+        return data
+
+    def _process(self):
+        data = ''
+        self._processRawBuf()
+        buf = self._getData()
+        while 1:
+            if not buf:
+                break
+
+            data += buf
+            buf = self._getData()
+
+        # self._buffer is empty unless it ends with an incomplete IAC sequence.
+        return data
 
     def read(self):
         """
@@ -78,18 +201,28 @@ class SocketToServer(object):
         """
 
         try:
-            return unicode(self._t.read_very_eager(), self.encoding)
+            buf = self._s.recv(1024)
+            if not buf:
+                raise EOFError
+            self._rawbuf += buf
+            return unicode(self._process(), self.encoding)
         except (EOFError, socket.error):
             # disconnection must be called outside this class to remove
             # the socket from the list of sockets watched.
             raise exception.ConnectionLost()
 
     def write(self, msg):
-        self._t.write(msg.encode(self.encoding) + "\n")
+        msg = msg.encode(self.encoding).replace(IAC, IAC + IAC)
+        self._s.sendall(msg + "\n")
 
     def disconnect(self):
         if self.connected:
-            self._t.close()
+            if self._debug:
+                self._msg('%s MCCP STATS %s', '*' * 20, '*' * 20)
+                self._msg('Original data received: %d', self._stats[0])
+                self._msg('Uncompress total data: %d', self._stats[1])
+                self._msg('*' * 52)
+            self._s.close()
             self.connected = 0
 
     def __del__(self):
