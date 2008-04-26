@@ -158,10 +158,15 @@ class SocketToServer(object):
                         self._msg('SUBNEGOZIATION OPTION: %d', ord(opt))
                         self._msg('SUBNEGOZIATION PARAMETERS: %s',
                                   self._buffer[3:pos])
-                    break
+                        self._buffer = self._buffer[pos + 2:]
+                    else:
+                        # to avoid non-terminating loop (but waiting for SE)
+                        # Note that if the server don't send SE the processing
+                        # is blocked here!
+                        break
             else:
                 self._msg('UNKNOWN COMMAND: %d', ord(cmd))
-                break
+                self._buffer = self._buffer[2:]
 
     def _processRawBuf(self):
         """Process all data found in `self._rawbuf`"""
