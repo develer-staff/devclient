@@ -21,23 +21,25 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import sys
 import os
+import sys
+import zlib
 import time
-import random
 import socket
 import unittest
 import subprocess
+from random import randint
 
 sys.path.append('..')
 
 import communication
 import devclient.exception as exception
 from devclient.core import SocketToServer, SocketToGui
+from devclient.core import IAC, DONT, DO, WONT, WILL, SB, SE, MCCP2, MCCP
 
 
 def start_server_echo():
-    port = random.randint(2000, 10000)
+    port = randint(2000, 10000)
     p = subprocess.Popen(['python', '-u', 'server_echo.py',
                          '--port=%d' % port],
                          stdout=subprocess.PIPE)
@@ -95,10 +97,63 @@ class TestSocketToServer(unittest.TestCase):
         self.assert_(not s.connected)
 
 
+class TestMCCP(unittest.TestCase):
+    def start_connection(self, port):
+        root = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        root.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        root.bind(("localhost", port))
+        root.listen(1)
+        client = SocketToServer()
+        client.connect("localhost", port)
+        server = root.accept()[0]
+        return (root, server, client)
+
+    def sendMccpV2Data(self, socket, data):
+        socket.send(IAC + WILL + MCCP2)
+        socket.send(IAC + SB + MCCP2 + IAC + SE)
+        c = zlib.compressobj()
+        to_send = c.compress(data)
+        to_send += c.flush()
+        socket.send(to_send)
+
+    def testMccpV1(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        server.send(IAC + WILL + MCCP)
+        server.send(IAC + SB + MCCP + WILL + SE)
+        c = zlib.compressobj()
+        to_send = c.compress('hello')
+        to_send += c.flush()
+        server.send(to_send)
+        self.assert_(client.read() == 'hello')
+
+    def testMccpV2(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        self.sendMccpV2Data(server, 'hello')
+        self.assert_(client.read() == 'hello')
+
+    def testMulti(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        server.send('hello ')
+        self.sendMccpV2Data(server, 'world')
+        self.assert_(client.read() == 'hello world')
+
+    def testMulti2(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        self.sendMccpV2Data(server, 'hello ')
+        server.send('world')
+        self.assert_(client.read() == 'hello world')
+
+    def testMulti3(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        self.sendMccpV2Data(server, 'hello ')
+        self.sendMccpV2Data(server, 'world')
+        self.assert_(client.read() == 'hello world')
+
+
 class TestSocketToGui(unittest.TestCase, communication.TestSocket):
 
     def startCommunication(self):
-        port = random.randint(2000, 10000)
+        port = randint(2000, 10000)
         s_gui = SocketToGui(port)
         s_mock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s_mock.connect(('localhost', port))
