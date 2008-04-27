@@ -21,19 +21,17 @@
 
 class Server(object):
     # Default Server, don't remove it!
-    right_widget = ''
+    right_widget = 'gui_prompt'
     cmds_account = 2
     cmd_username = 1
 
 
 class DikuServer(Server):
-    right_widget = 'gui_prompt'
     prompt_reg = 'Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>'
     prompt_sep = '/'
 
 
 class AfkServer(Server):
-    right_widget = 'gui_prompt'
     prompt_reg = '\[Pf:\s*(\d+-\d+)\] \[Mana:\s*(\d+-\d+)\] ' + \
                  '\[Mv:\s*(\d+-\d+)\] \[Mon:\s*\d+\] \[S:\s*Xp:\s*\d+\]'
     prompt_sep = '-'
