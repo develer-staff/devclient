@@ -26,6 +26,7 @@ import struct
 import cPickle
 import logging
 from os import mkdir
+from glob import glob
 from time import strftime
 from os.path import join, exists
 
@@ -394,12 +395,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         Translate application according to system locale
         """
 
-        locale = str(QLocale.system().name())
-        fn = join(config['translation']['path'], locale + '.qm')
-        if exists(fn):
-            self.translator = QtCore.QTranslator()
-            self.translator.load(fn)
-            QApplication.installTranslator(self.translator)
+        locale = str(QLocale.system().name())[:2]
+        self._translators = {}
+        files = glob(join(config['translation']['path'], '*_' + locale + '.qm'))
+        for fn in files:
+            self._translators[fn] = QtCore.QTranslator()
+            self._translators[fn].load(fn)
+            QApplication.installTranslator(self._translators[fn])
 
     def _translateText(self):
         self._text = {}
