@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Sun Apr  6 14:34:17 2008
+# Created: Tue Apr 29 23:07:45 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -120,11 +120,15 @@ class Ui_option(object):
         self.hboxlayout.addItem(spacerItem4)
 
         self.save_conn = QtGui.QPushButton(self.layoutWidget)
+        self.save_conn.setMinimumSize(QtCore.QSize(0,28))
+        self.save_conn.setMaximumSize(QtCore.QSize(16777215,28))
         self.save_conn.setIcon(QtGui.QIcon(":/images/button-save.png"))
         self.save_conn.setObjectName("save_conn")
         self.hboxlayout.addWidget(self.save_conn)
 
         self.delete_conn = QtGui.QPushButton(self.layoutWidget)
+        self.delete_conn.setMinimumSize(QtCore.QSize(0,28))
+        self.delete_conn.setMaximumSize(QtCore.QSize(16777215,28))
         self.delete_conn.setIcon(QtGui.QIcon(":/images/button-cancel.png"))
         self.delete_conn.setObjectName("delete_conn")
         self.hboxlayout.addWidget(self.delete_conn)
@@ -175,6 +179,8 @@ class Ui_option(object):
         self.gridlayout1.addItem(spacerItem5,2,0,1,2)
 
         self.save_prompt = QtGui.QPushButton(self.layoutWidget1)
+        self.save_prompt.setMinimumSize(QtCore.QSize(0,28))
+        self.save_prompt.setMaximumSize(QtCore.QSize(16777215,28))
         self.save_prompt.setIcon(QtGui.QIcon(":/images/button-save.png"))
         self.save_prompt.setObjectName("save_prompt")
         self.gridlayout1.addWidget(self.save_prompt,2,2,1,1)
@@ -237,12 +243,16 @@ class Ui_option(object):
 
         self.change_prompt = QtGui.QPushButton(self.layoutWidget2)
         self.change_prompt.setEnabled(False)
+        self.change_prompt.setMinimumSize(QtCore.QSize(0,28))
+        self.change_prompt.setMaximumSize(QtCore.QSize(16777215,28))
         self.change_prompt.setIcon(QtGui.QIcon(":/images/prompt.png"))
         self.change_prompt.setObjectName("change_prompt")
         self.hboxlayout1.addWidget(self.change_prompt)
 
         self.delete_account = QtGui.QPushButton(self.layoutWidget2)
         self.delete_account.setEnabled(False)
+        self.delete_account.setMinimumSize(QtCore.QSize(0,28))
+        self.delete_account.setMaximumSize(QtCore.QSize(16777215,28))
         self.delete_account.setIcon(QtGui.QIcon(":/images/button-cancel.png"))
         self.delete_account.setObjectName("delete_account")
         self.hboxlayout1.addWidget(self.delete_account)
@@ -367,11 +377,15 @@ class Ui_option(object):
         self.hboxlayout2.setObjectName("hboxlayout2")
 
         self.save_alias = QtGui.QPushButton(self.layoutWidget_2)
+        self.save_alias.setMinimumSize(QtCore.QSize(0,28))
+        self.save_alias.setMaximumSize(QtCore.QSize(16777215,28))
         self.save_alias.setIcon(QtGui.QIcon(":/images/button-save.png"))
         self.save_alias.setObjectName("save_alias")
         self.hboxlayout2.addWidget(self.save_alias)
 
         self.delete_alias = QtGui.QPushButton(self.layoutWidget_2)
+        self.delete_alias.setMinimumSize(QtCore.QSize(0,28))
+        self.delete_alias.setMaximumSize(QtCore.QSize(16777215,28))
         self.delete_alias.setIcon(QtGui.QIcon(":/images/button-cancel.png"))
         self.delete_alias.setObjectName("delete_alias")
         self.hboxlayout2.addWidget(self.delete_alias)
@@ -474,6 +488,8 @@ class Ui_option(object):
 
         self.register_macro = QtGui.QPushButton(self.layoutWidget_3)
         self.register_macro.setEnabled(False)
+        self.register_macro.setMinimumSize(QtCore.QSize(0,26))
+        self.register_macro.setMaximumSize(QtCore.QSize(16777215,26))
         self.register_macro.setObjectName("register_macro")
         self.gridlayout6.addWidget(self.register_macro,4,1,1,2)
 
@@ -499,11 +515,15 @@ class Ui_option(object):
         self.hboxlayout3.setObjectName("hboxlayout3")
 
         self.save_macro = QtGui.QPushButton(self.layoutWidget_3)
+        self.save_macro.setMinimumSize(QtCore.QSize(0,28))
+        self.save_macro.setMaximumSize(QtCore.QSize(16777215,28))
         self.save_macro.setIcon(QtGui.QIcon(":/images/button-save.png"))
         self.save_macro.setObjectName("save_macro")
         self.hboxlayout3.addWidget(self.save_macro)
 
         self.delete_macro = QtGui.QPushButton(self.layoutWidget_3)
+        self.delete_macro.setMinimumSize(QtCore.QSize(0,28))
+        self.delete_macro.setMaximumSize(QtCore.QSize(16777215,28))
         self.delete_macro.setIcon(QtGui.QIcon(":/images/button-cancel.png"))
         self.delete_macro.setObjectName("delete_macro")
         self.hboxlayout3.addWidget(self.delete_macro)
@@ -583,6 +603,8 @@ class Ui_option(object):
         self.hboxlayout4.addItem(spacerItem20)
 
         self.save_preferences = QtGui.QPushButton(self.layoutWidget4)
+        self.save_preferences.setMinimumSize(QtCore.QSize(0,28))
+        self.save_preferences.setMaximumSize(QtCore.QSize(16777215,28))
         self.save_preferences.setIcon(QtGui.QIcon(":/images/button-save.png"))
         self.save_preferences.setObjectName("save_preferences")
         self.hboxlayout4.addWidget(self.save_preferences)
