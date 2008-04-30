@@ -50,6 +50,7 @@ DONT = chr(254)
 DO   = chr(253)
 WONT = chr(252)
 WILL = chr(251)
+theNULL = chr(0)
 
 SB =  chr(250)
 SE  = chr(240)
@@ -176,7 +177,6 @@ class SocketToServer(object):
             if self._debug:
                 self._stats[0] += len(self._rawbuf)
                 self._stats[1] += len(new_data)
-            self._buffer += new_data
             if self._d.unused_data:
                 self._msg('END OF COMPRESSED STREAM (MCCP v%d)', self._mccp_ver)
                 self._mccp_ver = None
@@ -185,8 +185,9 @@ class SocketToServer(object):
         else:
             self._stats[0] += len(self._rawbuf)
             self._stats[1] += len(self._rawbuf)
-            self._buffer += self._rawbuf
+            new_data = self._rawbuf
 
+        self._buffer += new_data.replace(theNULL, '')
         self._rawbuf = ''
 
     def _getData(self):

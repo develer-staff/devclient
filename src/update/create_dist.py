@@ -24,7 +24,8 @@ __docformat__ = 'restructuredtext'
 import sys
 import tarfile
 from os import makedirs, chdir, getcwd, walk
-from os.path import exists, abspath, dirname, join, normpath, splitext, isfile
+from os.path import exists, abspath, dirname, join
+from os.path import normpath, splitext, isfile, isdir
 
 _SELF_DIR = dirname(sys.argv[0])
 """directory of the module itself"""
@@ -36,7 +37,7 @@ sys.path.append(join(getcwd(), _SELF_DIR, '..'))
 from devclient import __version__
 """the public version of client"""
 
-_ADMITTED_EXT = ('py', 'ui', 'cfg', 'qrc', 'pro', 'qm', 'ts', 'GPL', 'msg')
+_ADMITTED_EXT = ('py', 'ui', 'cfg', 'qrc', 'pro', 'qm', 'GPL', 'msg')
 """the admitted extension"""
 
 _PROJECT_NAME = 'devclient'
@@ -44,6 +45,9 @@ _PROJECT_NAME = 'devclient'
 
 _DIST_DIR = abspath(join(_SELF_DIR, 'dist'))
 """the directory of distribution's file"""
+
+_EXCLUDE_DIRS = ('src/test', 'resources/images', 'data/log')
+"""the directories to exclude"""
 
 
 def createVersionFile():
@@ -64,6 +68,11 @@ def createArchive():
 
         if isfile(name) and splitext(name)[1][1:] not in _ADMITTED_EXT:
             return False
+
+        for d in _EXCLUDE_DIRS:
+            if normpath(dirname(name)).startswith(normpath(d)):
+                return False
+
         return True
 
     tar = tarfile.open(_PROJECT_NAME + '.tar.bz2', 'w:bz2')
@@ -71,13 +80,13 @@ def createArchive():
     chdir(_ROOT_DIR)
     for root, dirs, files in walk('.'):
         for d in dirs:
-            dirname = normpath(join(root, d))
-            if is_admitted(dirname):
-                tar.add(dirname, join(_PROJECT_NAME, dirname), False)
+            d = normpath(join(root, d))
+            if is_admitted(d):
+                tar.add(d, join(_PROJECT_NAME, d), False)
         for f in files:
-            filename = normpath(join(root, f))
-            if is_admitted(filename):
-                tar.add(filename, join(_PROJECT_NAME, filename))
+            f = normpath(join(root, f))
+            if is_admitted(f):
+                tar.add(f, join(_PROJECT_NAME, f))
     tar.close()
     chdir(old_dir)
 
