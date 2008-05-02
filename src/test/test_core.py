@@ -34,8 +34,11 @@ sys.path.append('..')
 
 import communication
 import devclient.exception as exception
-from devclient.core import SocketToServer, SocketToGui
+from devclient.core import SocketToServer, SocketToGui, theNULL
 from devclient.core import IAC, DONT, DO, WONT, WILL, SB, SE, MCCP2, MCCP
+
+# Telnet protocol characters (only used in test)
+GA = chr(249)
 
 
 def start_server_echo():
@@ -97,7 +100,7 @@ class TestSocketToServer(unittest.TestCase):
         self.assert_(not s.connected)
 
 
-class TestMCCP(unittest.TestCase):
+class TestProtocol(unittest.TestCase):
     def start_connection(self, port):
         root = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         root.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -147,6 +150,58 @@ class TestMCCP(unittest.TestCase):
         root, server, client = self.start_connection(randint(2000, 10000))
         self.sendMccpV2Data(server, 'hello ')
         self.sendMccpV2Data(server, 'world')
+        self.assert_(client.read() == 'hello world')
+
+    def testMulti4(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        server.send(IAC + WILL + MCCP2)
+        server.send(IAC + SB + MCCP2 + IAC + SE)
+        c = zlib.compressobj()
+        to_send = c.compress('hello' + IAC)
+        server.send(to_send)
+        data = client.read()
+        to_send = c.compress(GA + ' world')
+        to_send += c.flush()
+        server.send(to_send)
+        data += client.read()
+        self.assert_(data == 'hello world')
+
+    def testMulti5(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        server.send(IAC + WILL + MCCP2)
+        data = client.read()
+        server.send('hello')
+        server.send(IAC + SB + MCCP2)
+        data += client.read()
+        server.send(IAC + SE)
+        c = zlib.compressobj()
+        to_send = c.compress(' world')
+        to_send += c.flush()
+        server.send(to_send)
+        data += client.read()
+        self.assert_(data == 'hello world')
+
+    def testNotPrintableChar(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        self.sendMccpV2Data(server, 'hello ' + theNULL)
+        self.sendMccpV2Data(server, 'world')
+        self.assert_(client.read() == 'hello world')
+
+    def testNotPrintableChar2(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        self.sendMccpV2Data(server, 'hello ' + IAC + GA)
+        self.sendMccpV2Data(server, 'world')
+        self.assert_(client.read() == 'hello world')
+
+    def testNoCompress(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        server.send('hello')
+        self.assert_(client.read() == 'hello')
+
+    def testNoCompress2(self):
+        root, server, client = self.start_connection(randint(2000, 10000))
+        server.send('hello' + IAC)
+        server.send(GA + ' world')
         self.assert_(client.read() == 'hello world')
 
 
