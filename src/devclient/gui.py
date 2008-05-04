@@ -334,6 +334,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         QShortcut(QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
 
+    def _checkModifier(self, event, mod):
+        """
+        Check keyboard's modifier.
+        """
+
+        return int((event.modifiers() & mod) == mod)
+
     def _getKeySeq(self, event):
         """
         Given a keyboard event, return a tuple of its components.
@@ -345,16 +352,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         :return: a tuple of the form (shift, alt, ctrl, keycode)
         """
 
-        def _checkModifier(value, mod):
-            """
-            Check keyboard's modifier.
-            """
-
-            return int((value & mod) == mod)
-
-        s = _checkModifier(event.modifiers(), Qt.ShiftModifier)
-        a = _checkModifier(event.modifiers(), Qt.AltModifier)
-        c = _checkModifier(event.modifiers(), Qt.ControlModifier)
+        s = self._checkModifier(event, Qt.ShiftModifier)
+        a = self._checkModifier(event, Qt.AltModifier)
+        c = self._checkModifier(event, Qt.ControlModifier)
         return (s, a, c, event.key())
 
     def eventFilter(self, target, event):
@@ -364,21 +364,19 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                                Qt.Key_Alt):
 
             key_seq = self._getKeySeq(event)
-
             for m in self.macros:
                 if m[1:] == key_seq:
                     self.s_core.write(messages.MSG, m[0])
                     self._appendEcho(m[0])
                     return True
 
-        elif event.type() == QEvent.MouseButtonPress and \
-            event.button() == Qt.LeftButton and self.viewer and \
-            unicode(self.viewer.selectedText()):
-            text = unicode(self.text_input.currentText())
-            text += unicode(self.viewer.selectedText())
-            self.text_input.setItemText(0, text)
-            self.viewer.clearSelection()
-            return True
+            # Ctrl-C is used to copy selected text of text_output to clipboard
+            if self._checkModifier(event, Qt.ControlModifier) and \
+               not self._checkModifier(event, Qt.ShiftModifier) and \
+               not self._checkModifier(event, Qt.AltModifier) and \
+               event.key() == Qt.Key_C:
+                self.text_output.copy()
+                return True
 
         return False
 

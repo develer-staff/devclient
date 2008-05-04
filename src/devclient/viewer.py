@@ -166,14 +166,6 @@ class TextViewer(object):
         self._textEditColors(model, self.w.text_output)
         self.appendHtml(model.main_html)
 
-    def selectedText(self):
-        return self.w.text_output.textCursor().selection().toPlainText()
-
-    def clearSelection(self):
-        cursor = self.w.text_output.textCursor()
-        cursor.clearSelection()
-        self.w.text_output.setTextCursor(cursor)
-
 
 class StatusViewer(TextViewer):
     """

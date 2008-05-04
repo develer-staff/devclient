@@ -187,7 +187,7 @@ class SocketToServer(object):
             self._stats[1] += len(self._rawbuf)
             new_data = self._rawbuf
 
-        self._buffer += new_data.replace(theNULL, '')
+        self._buffer += new_data
         self._rawbuf = ''
 
     def _getData(self):
@@ -202,7 +202,7 @@ class SocketToServer(object):
             self._buffer = self._buffer[pos:]
         else:
             data, self._buffer = self._buffer, ''
-        return data
+        return data.replace(theNULL, '')
 
     def _process(self):
         data = ''
