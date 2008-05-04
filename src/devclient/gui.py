@@ -334,12 +334,12 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         QShortcut(QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
 
-    def _checkModifier(self, value, mod):
+    def _checkModifier(self, event, mod):
         """
         Check keyboard's modifier.
         """
 
-        return int((value & mod) == mod)
+        return int((event.modifiers() & mod) == mod)
 
     def _getKeySeq(self, event):
         """
@@ -352,9 +352,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         :return: a tuple of the form (shift, alt, ctrl, keycode)
         """
 
-        s = self._checkModifier(event.modifiers(), Qt.ShiftModifier)
-        a = self._checkModifier(event.modifiers(), Qt.AltModifier)
-        c = self._checkModifier(event.modifiers(), Qt.ControlModifier)
+        s = self._checkModifier(event, Qt.ShiftModifier)
+        a = self._checkModifier(event, Qt.AltModifier)
+        c = self._checkModifier(event, Qt.ControlModifier)
         return (s, a, c, event.key())
 
     def eventFilter(self, target, event):
@@ -371,7 +371,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                     return True
 
             # Ctrl-C is used to copy selected text of text_output to clipboard
-            if self._checkModifier(event.modifiers(), Qt.ControlModifier) and \
+            if self._checkModifier(event, Qt.ControlModifier) and \
+               not self._checkModifier(event, Qt.ShiftModifier) and \
+               not self._checkModifier(event, Qt.AltModifier) and \
                event.key() == Qt.Key_C:
                 self.text_output.copy()
                 return True

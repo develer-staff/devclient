@@ -366,16 +366,16 @@ class FormMacro(object):
         :return: a tuple of the form (shift, alt, ctrl, keycode)
         """
 
-        def _checkModifier(value, mod):
+        def _checkModifier(event, mod):
             """
             Check keyboard's modifier.
             """
 
-            return int((value & mod) == mod)
+            return int((event.modifiers() & mod) == mod)
 
-        s = _checkModifier(event.modifiers(), Qt.ShiftModifier)
-        a = _checkModifier(event.modifiers(), Qt.AltModifier)
-        c = _checkModifier(event.modifiers(), Qt.ControlModifier)
+        s = _checkModifier(event, Qt.ShiftModifier)
+        a = _checkModifier(event, Qt.AltModifier)
+        c = _checkModifier(event, Qt.ControlModifier)
         return (s, a, c, event.key())
 
     def getKeyDescr(self, shift, alt, ctrl, key):
