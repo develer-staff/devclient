@@ -23,34 +23,42 @@ __docformat__ = 'restructuredtext'
 
 import os
 import sys
+import shutil
 import os.path
 import unittest
 
+# FIX
 sys.path.append('..')
+sys.path.append('../configobj')
 
-import devclient.conf as conf
+import devclient.storage
 import devclient.exception as exception
-from devclient.storage import Storage, adjustSchema
+from devclient.conf import config
+from devclient.storage import Storage
+
 
 class TestBase(unittest.TestCase):
 
-    def setUp(self):
-        abspath = os.path.abspath('../../data/storage/dbtest.sqlite')
-        conf.config['storage'] = {'path': abspath}
+    def __init__(self, methodName='runTest'):
+        super(TestBase, self).__init__(methodName)
+        self.test_dir = '../../data/storage/test_dir'
 
-        if os.path.exists(conf.config['storage']['path']):
-            os.unlink(conf.config['storage']['path'])
+    def setUp(self):
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+        os.mkdir(self.test_dir)
+        config['storage'] = {'path': os.path.abspath(self.test_dir)}
+        devclient.storage._config = {}
 
     def tearDown(self):
-        if os.path.exists(conf.config['storage']['path']):
-            os.unlink(conf.config['storage']['path'])
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
 
 
 class TestStorage(TestBase):
 
     def setUp(self):
         super(TestStorage, self).setUp()
-        adjustSchema()
         self.storage = Storage()
 
     def tearDown(self):
@@ -98,7 +106,13 @@ class TestStorage(TestBase):
         self.assert_(self.storage.connections()[0] == tuple(conn))
 
     def testEmptyAliases(self):
-        self.assert_(self.storage.aliases('conn_name') == [])
+        self.assertRaises(exception.ConnectionNotFound,
+                          self.storage.aliases,
+                          'conn_name')
+
+    def testEmptyAliases2(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.assert_(self.storage.aliases('name') == [])
 
     def testSaveAliases(self):
         conn_name = 'conn'
@@ -163,7 +177,13 @@ class TestStorage(TestBase):
         self.assert_(self.storage.aliases(conn_name) == aliases)
 
     def testEmptyMacros(self):
-        self.assert_(self.storage.macros('conn_name') == [])
+        self.assertRaises(exception.ConnectionNotFound,
+                          self.storage.macros,
+                          'conn_name')
+
+    def testEmptyMacros2(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.assert_(self.storage.macros('name') == [])
 
     def testSaveMacros(self):
         conn_name = 'conn'
@@ -228,14 +248,19 @@ class TestStorage(TestBase):
         self.assert_(self.storage.macros(conn_name) == macros)
 
     def testEmptyPreferences(self):
-        self.assert_(self.storage.preferences() == ())
+        self.assert_(self.storage.preferences() == (1, '#00AA00', 0, 0))
 
     def testSavePreferences(self):
-        preferences = (1, '#FF0000', 0, 1)
+        preferences = (0, '#FF0000', 0, 1)
         self.storage.savePreferences(preferences)
         self.assert_(self.storage.preferences() == preferences)
 
     def testEmptyAccounts(self):
+        self.assertRaises(exception.ConnectionNotFound,
+                          self.storage.accounts, 1)
+
+    def testEmptyAccounts2(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
         self.assert_(self.storage.accounts(1) == [])
 
     def testSaveAccounts(self):
@@ -268,36 +293,46 @@ class TestStorage(TestBase):
         self.assert_(self.storage.accounts(1) == ['sarah'])
 
     def testGetOption1(self):
-        self.assert_(self.storage.option('test', 0) == 0)
-
-    def testGetOption2(self):
-        self.assert_(self.storage.option('test', '') == '')
+        self.assert_(self.storage.option('save_account') == 0)
 
     def testSetOption1(self):
-        self.storage.setOption('test', 1)
-        self.assert_(self.storage.option('test', 0) == 1)
+        self.storage.setOption('save_account', 1)
+        self.assert_(self.storage.option('save_account') == 1)
 
     def testSetOption2(self):
         self.storage.addConnection([0, 'name', 'host', 111])
-        self.storage.setOption('test', 1, 1)
-        self.assert_(self.storage.option('test', 0, 1) == 1)
+        self.storage.setOption('default_account', 1, 1)
+        self.assert_(self.storage.option('default_account', 1) == 1)
 
     def testSetOption3(self):
         self.storage.addConnection([0, 'name', 'host', 111])
-        self.storage.setOption('test', 1)
-        self.assert_(self.storage.option('test', 0, 1) == 0)
+        self.storage.setOption('default_connection', 1)
+        self.assert_(self.storage.option('default_connection') == 1)
 
     def testSetOption4(self):
         self.storage.addConnection([0, 'name', 'host', 111])
-        self.storage.setOption('test', 1, 1)
-        self.storage.setOption('test', 2, 1)
-        self.assert_(self.storage.option('test', 0, 1) == 2)
+        self.storage.setOption('default_account', 1, 1)
+        self.storage.setOption('default_account', 2, 1)
+        self.assert_(self.storage.option('default_account', 1) == 2)
+
+    def testSetOption5(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.assertRaises(exception.ConnectionNotFound,
+                          self.storage.setOption,
+                          'default_account', 20, 2)
+
+    def testSetOption6(self):
+        self.storage.addConnection([0, 'name', 'host', 111])
+        self.storage.addConnection([0, 'name2', 'host2', 222])
+        self.storage.setOption('default_account', 10, 1)
+        self.storage.setOption('default_account', 20, 2)
+        self.assert_(self.storage.option('default_account', 1) == 10)
+        self.assert_(self.storage.option('default_account', 2) == 20)
 
 
 class TestStorage2(TestBase):
 
     def testMultiConnection(self):
-        adjustSchema()
         conn = [0, 'name','host', 111]
         Storage().addConnection(conn)
         self.assert_(Storage().connections()[0] == tuple(conn))

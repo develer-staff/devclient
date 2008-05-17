@@ -21,34 +21,42 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import os
 import sys
+import shutil
 import os.path
 import unittest
 
+# FIX
 sys.path.append('..')
+sys.path.append('../configobj')
 
+import devclient.storage
 from devclient.conf import config
-from devclient.storage import Storage, adjustSchema
+from devclient.storage import Storage
 from devclient.alias import Alias
 
 class TestAlias(unittest.TestCase):
-    def setUp(self):
-        abspath = os.path.abspath('../../data/storage/dbtest.sqlite')
-        config['storage'] = {'path': abspath}
+    def __init__(self, methodName='runTest'):
+        super(TestAlias, self).__init__(methodName)
+        self.test_dir = '../../data/storage/test_dir'
 
-        if os.path.exists(config['storage']['path']):
-            os.unlink(config['storage']['path'])
+    def setUp(self):
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+        os.mkdir(self.test_dir)
+        config['storage'] = {'path': os.path.abspath(self.test_dir)}
+        devclient.storage._config = {}
 
         self.conn_name = 'conn'
         conn = [0, self.conn_name, 'host', 111]
-        adjustSchema()
         self.storage = Storage()
         self.storage.addConnection(conn)
 
     def tearDown(self):
         del self.storage
-        if os.path.exists(config['storage']['path']):
-            os.unlink(config['storage']['path'])
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
 
     def testCheck1(self):
         aliases = [('h', 'hello world')]

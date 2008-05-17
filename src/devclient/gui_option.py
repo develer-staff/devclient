@@ -469,8 +469,9 @@ class FormAccounts(object):
         self.w.list_conn_account.clear()
         for el in connections:
             self.w.list_conn_account.addItem(el[1], QVariant(el[0]))
-        self._loadAccounts(0)
-        val = s.option(Option.SAVE_ACCOUNT, 0)
+        if connections:
+            self._loadAccounts(0)
+        val = s.option(Option.SAVE_ACCOUNT)
         self.w.save_account.setCheckState(Qt.Checked if val else Qt.Unchecked)
         self.w.box_prompt.setVisible(False)
 

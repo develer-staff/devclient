@@ -21,7 +21,9 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import os
 import sys
+import shutil
 import os.path
 import unittest
 
@@ -30,12 +32,14 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QApplication, QLineEdit, QGroupBox
 from PyQt4.QtGui import QPushButton, QComboBox, QCheckBox
 
-
+# FIX
 sys.path.append('..')
+sys.path.append('../configobj')
 sys.path.append('../../resources')
 
+import devclient.storage
 from devclient.conf import config
-from devclient.storage import Storage, Option, adjustSchema
+from devclient.storage import Storage, Option
 from devclient.gui_option import *
 
 
@@ -46,17 +50,18 @@ class GuiOptionTest(unittest.TestCase):
         if not QApplication.instance():
             self.app = QApplication([])
 
-    def setUp(self):
-        abspath = os.path.abspath('../../data/storage/dbtest.sqlite')
-        config['storage'] = {'path': abspath}
+        self.test_dir = '../../data/storage/test_dir'
 
-        if os.path.exists(config['storage']['path']):
-            os.unlink(config['storage']['path'])
-        adjustSchema()
+    def setUp(self):
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+        os.mkdir(self.test_dir)
+        config['storage'] = {'path': os.path.abspath(self.test_dir)}
+        devclient.storage._config = {}
 
     def tearDown(self):
-        if os.path.exists(config['storage']['path']):
-            os.unlink(config['storage']['path'])
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
 
 
 class GuiOptionMock(object):
@@ -191,7 +196,8 @@ class TestFormConnection(GuiOptionTest):
     def testCheckField6(self):
         """Verify no error on right update"""
 
-        Storage().addConnection([0, 'name', 'host', 4000])
+        s = Storage()
+        s.addConnection([0, 'name', 'host', 4000])
         form_conn = FormConnection(GuiOptionMock())
         form_conn.load('name')
         form_conn.w.list_conn.setCurrentIndex(1)
@@ -486,23 +492,23 @@ class TestFormPreferences(GuiOptionTest):
 
     def testLoadEmpty(self):
         form = FormPreferences(GuiOptionPrefMock())
-        self.assert_(form.w.echo_text.checkState() == Qt.Unchecked)
-        self.assert_(not form.w.echo_color.text())
+        self.assert_(form.w.echo_text.checkState() == Qt.Checked)
+        self.assert_(form.w.echo_color.text() == '#00AA00')
         self.assert_(form.w.keep_text.checkState() == Qt.Unchecked)
         self.assert_(form.w.save_log.checkState() == Qt.Unchecked)
 
     def testSavePreferences(self):
         form = FormPreferences(GuiOptionPrefMock())
-        form.w.echo_text.setCheckState(Qt.Checked)
+        form.w.echo_text.setCheckState(Qt.Unchecked)
         form.save()
-        self.assert_(Storage().preferences() == (1, '', 0, 0))
+        self.assert_(Storage().preferences() == (0, '#00AA00', 0, 0))
 
     def testSavePreferences2(self):
         form = FormPreferences(GuiOptionPrefMock())
         form.w.keep_text.setCheckState(Qt.Checked)
         form.w.echo_color.setText('#CC0000')
         form.save()
-        self.assert_(Storage().preferences() == (0, '#CC0000', 1, 0))
+        self.assert_(Storage().preferences() == (1, '#CC0000', 1, 0))
 
     def testSavePreferences3(self):
         form = FormPreferences(GuiOptionPrefMock())
@@ -541,6 +547,8 @@ class GuiOptionAccMock(object):
         self.fight_prompt = QLineEdit()
         self.box_prompt = QGroupBox()
         self._warning = None
+        self.delete_account.setEnabled(False)
+        self.change_prompt.setEnabled(False)
 
     def _displayWarning(self, title, message):
         self._warning = (title, message)

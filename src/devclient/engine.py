@@ -125,6 +125,7 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
     os.chdir(start_dir)
     path.append(config['servers']['path'])
     path.append(config['resources']['path'])
+    path.append(config['configobj']['path'])
 
     # this import must stay here, after the appending of resources path to path
     from gui import Gui

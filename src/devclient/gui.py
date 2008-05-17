@@ -45,7 +45,7 @@ from alias import Alias
 from history import History
 from viewer import getViewer
 from servers import getServer
-from storage import Storage, Option, adjustSchema
+from storage import Storage, Option
 from gui_src.gui import Ui_dev_client
 from constants import PUBLIC_VERSION, PROJECT_NAME
 
@@ -201,7 +201,7 @@ class AccountManager(object):
         s = Storage()
         self.user = unicode(widget.list_account.currentText())
         s.setOption(Option.DEFAULT_ACCOUNT, self.user, id_conn)
-        self._save_account = s.option(Option.SAVE_ACCOUNT, 0)
+        self._save_account = s.option(Option.SAVE_ACCOUNT)
         self._num_cmds = server.cmds_account
         self._cmd_user = server.cmd_username
         self._id_conn = id_conn
@@ -255,14 +255,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         logger.debug('PyQt version: %s, Qt version: %s' %
             (PYQT_VERSION_STR, QT_VERSION_STR))
 
-        adjustSchema()
         self.preferences = Storage().preferences()
         self._loadConnections()
         self._setupSignal()
 
     def _loadConnections(self):
         connections = Storage().connections()
-        def_conn = Storage().option(Option.DEFAULT_CONNECTION, 0)
+        def_conn = Storage().option(Option.DEFAULT_CONNECTION)
         selected = 0
         for i, el in enumerate(connections):
             self.list_conn.addItem(el[1], QVariant(el[0]))
@@ -279,7 +278,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _loadAccounts(self, id_conn):
         self.list_account.clear()
         self.list_account.addItem('')
-        def_account = Storage().option(Option.DEFAULT_ACCOUNT, '', id_conn)
+        def_account = Storage().option(Option.DEFAULT_ACCOUNT, id_conn)
         selected = 0
         for i, a in enumerate(Storage().accounts(id_conn)):
             self.list_account.addItem(a)
