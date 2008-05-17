@@ -27,7 +27,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 import tarfile
-import sqlite3
+import subprocess
 from filecmp import cmp
 from optparse import OptionParser
 from socket import setdefaulttimeout
@@ -41,27 +41,21 @@ from os.path import exists, join, normpath, dirname
 _SELF_MODULE = basename(sys.argv[0])
 """name of the module itself"""
 
-_SELF_DIR = dirname(sys.argv[0])
+_SELF_DIR = abspath(dirname(sys.argv[0]))
 """directory of the module itself"""
 
-sys.path.append(join(getcwd(), _SELF_DIR, '..'))
-from devclient import __version__
+sys.path.append(join(_SELF_DIR, '..'))
+from devclient import __version__ as local_version
 """the public version of client"""
 
-_ROOT_DIR = abspath(join(getcwd(), _SELF_DIR, '../..'))
+_ROOT_DIR = abspath(join(_SELF_DIR, '../..'))
 """the root directory of client"""
 
-_TMP_DIR = abspath(join(getcwd(), _SELF_DIR, 'temp'))
+_TMP_DIR = abspath(join(_SELF_DIR, 'temp'))
 """temp directory where store data for the process of updating"""
 
-_CONFIG_FILE = join(abspath(_SELF_DIR), 'updater.cfg')
+_CONFIG_FILE = join(_SELF_DIR, 'updater.cfg')
 """the configuration file"""
-
-_UPDATE_DB_FILE = join(abspath(_SELF_DIR), 'updater.sql')
-"""the file that contains the changes to apply at db"""
-
-_DB_FILE = join(_ROOT_DIR, 'data/storage/db.sqlite')
-"""the database file"""
 
 
 class UpdaterError(Exception):
@@ -91,9 +85,9 @@ def newVersion(client_version):
         print 'Unknown online version, download new version'
         return True
 
-    local_version = map(int, __version__.split('.'))
-    print 'online version:', online_str, 'local version:', __version__
-    return online_version > local_version
+    version = map(int, local_version.split('.'))
+    print 'online version:', online_str, 'local version:', local_version
+    return online_version > version
 
 def downloadFile(url, timeout=2):
     """
@@ -198,24 +192,10 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             copyfile(source, dest)
             copymode(source, dest)
 
-def updateDatabase():
-    local_version = map(int, __version__.split('.'))
-
-    cp = SafeConfigParser()
-    cp.read(_UPDATE_DB_FILE)
-    statements = {}
-    for s in cp.sections():
-        ver = map(int, s.split('.'))
-        if ver > local_version:
-            statements[tuple(ver)] = sorted(cp.items(s))
-
-    conn = sqlite3.connect(_DB_FILE, isolation_level=None)
-    c = conn.cursor()
-
-    for v, s in sorted(statements.items()):
-        for label, sql in s:
-            print 'Execute query:', sql
-            c.execute(sql)
+def updateStorage():
+    version = map(int, local_version.split('.'))
+    if version < [0, 5, 90]:
+        subprocess.call(['python', 'storage_convert.py'], cwd=_SELF_DIR)
 
 def updateClient():
     cp = SafeConfigParser()
@@ -239,7 +219,7 @@ def updateClient():
             downloadClient(config['client']['url'])
             base_dir = uncompressClient(basename(config['client']['url']))
             replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
-            updateDatabase()
+            updateStorage()
     except UpdaterError, e:
         print 'ERROR:', e
     else:

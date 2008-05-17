@@ -91,7 +91,7 @@ def convert(db_file):
         config['port'] = c[3]
         config['default_account'] = option(curs, 'default_account', '', c[0])
         config.filename = dirname(db_file) + '/' + c[1] + '.save'
-        print 'connessione:', c
+        print 'connection:', c
         aliases = getAliases(curs, c[1])
         if aliases:
             config['aliases'] = {}
