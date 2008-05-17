@@ -61,21 +61,24 @@ def _readStorageFile(f, spec):
     c = ConfigObj(f, configspec=spec)
     d = c.validate(Validator(), preserve_errors=True)
     if d != True:
-        logger.warning(' error in loading storage file: %s' % f)
+        logger.warning('format error in storage file: %s' % f)
         for k, v in d.iteritems():
             if v != True:
-                logger.warning(" %s: %s" % (k, v))
+                logger.warning("%s: %s" % (k, v))
         return None
 
     return c
 
-def loadSaveFiles():
+def loadStorageFiles():
     cfg = _config
 
     if not cfg:
         files = glob(join(config['storage']['path'], '*.' + _STORAGE_EXT))
         for f in files:
-            if basename(f) != 'general.' + _STORAGE_EXT:
+            if basename(f) == 'passwords.' + _STORAGE_EXT:
+                cfg['passwords'] = ConfigObj(f, options={'indent_type': '  '})
+
+            elif basename(f) != 'general.' + _STORAGE_EXT:
                 c = _readStorageFile(f, server_spec)
                 if c:
                     if 'name' in c:
@@ -100,7 +103,7 @@ def loadSaveFiles():
 class Storage(object):
     def __init__(self):
         self._storage_dir = config['storage']['path']
-        self._config = loadSaveFiles()
+        self._config = loadStorageFiles()
 
     def preferences(self):
         """
@@ -192,7 +195,7 @@ class Storage(object):
 
         data = []
         for k, v in self._config.iteritems():
-            if k != 'general':
+            if k not in ('general', 'passwords'):
                 data.append((v['id'], v['name'], v['host'], v['port']))
 
         data.sort()
@@ -210,7 +213,7 @@ class Storage(object):
 
         m = 0
         for k, v in self._config.iteritems():
-            if k != 'general':
+            if k not in ('general', 'passwords'):
                 m = max(v['id'], m)
 
         c = ConfigObj(options={'indent_type': '  '}, configspec=server_spec)
@@ -231,7 +234,7 @@ class Storage(object):
     def updateConnection(self, conn):
         m = 0
         for k, c in self._config.iteritems():
-            if k != 'general' and c['id'] == conn[0]:
+            if k not in ('general', 'passwords') and c['id'] == conn[0]:
                 unlink(c.filename)
                 del  self._config[k]
                 c['name'], c['host'], c['port'] = conn[1:]
@@ -264,7 +267,7 @@ class Storage(object):
 
         if id_conn:
             for k, c in self._config.iteritems():
-                if k != 'general' and c['id'] == id_conn:
+                if k not in ('general', 'passwords') and c['id'] == id_conn:
                     return c[name]
             else:
                 raise exception.ConnectionNotFound
@@ -274,7 +277,7 @@ class Storage(object):
     def setOption(self, name, value, id_conn=0):
         if id_conn:
             for k, v in self._config.iteritems():
-                if k != 'general' and v['id'] == id_conn:
+                if k not in ('general', 'passwords') and v['id'] == id_conn:
                     c = v
                     break
             else:
@@ -296,40 +299,67 @@ class Storage(object):
 
         if id_conn:
             for k, c in self._config.iteritems():
-                if k != 'general' and c['id'] == id_conn:
+                if k not in ('general', 'passwords') and c['id'] == id_conn:
                     return c['accounts'].keys() if 'accounts' in c else []
 
         raise exception.ConnectionNotFound
 
+    def _getAccountPwd(self, conn, user):
+        c =  self._config
+        if 'passwords' in c and conn in c['passwords'] and \
+           user in c['passwords'][conn]:
+            return b64decode(c['passwords'][conn][user])
+        return None
+
+    def _delAccountPwd(self, conn, user):
+        c =  self._config
+        if 'passwords' in c and conn in c['passwords'] and \
+           user in c['passwords'][conn]:
+            del c['passwords'][conn][user]
+            c['passwords'].write()
+
+
+    def _saveAccountPwd(self, conn, user, pwd):
+        c =  self._config
+        if 'passwords' not in c:
+            c['passwords'] = ConfigObj(options={'indent_type': '  '})
+            c['passwords'].filename = join(self._storage_dir,
+                                           'passwords.' + _STORAGE_EXT)
+
+        if conn not in c['passwords']:
+            c['passwords'][conn] = {}
+
+        c['passwords'][conn][user] = b64encode(pwd)
+        c['passwords'].write()
+
     def accountDetail(self, id_conn, username):
         if id_conn:
-            for k, v in self._config.iteritems():
-                if k != 'general' and v['id'] == id_conn:
-                    if 'accounts' in v:
-                        accounts = [(l, c) for l, c in
-                                    v['accounts'][username].iteritems()
-                                    if l.startswith('cmd-')]
-                        accounts.sort()
-                        data = []
-                        for i, el in enumerate(accounts):
-                            if i > 0 and accounts[i - 1][1] == username:
-                                data.append(b64decode(el[1]))
-                            else:
-                                data.append(el[1])
-                        return data
+            for k, c in self._config.iteritems():
+                if k not in ('general', 'passwords') and c['id'] == id_conn and \
+                   'accounts' in c:
+                    accounts = [(l, cmd) for l, cmd in
+                                c['accounts'][username].iteritems()
+                                if l.startswith('cmd-')]
+                    accounts.sort()
+                    data = [el[1] for el in accounts]
+                    pwd = self._getAccountPwd(c['name'], username)
+                    if pwd:
+                        data.append(pwd)
+                    return data
 
         raise exception.ConnectionNotFound
 
     def deleteAccount(self, id_conn, username):
         if id_conn:
             for k, c in self._config.iteritems():
-                if k != 'general' and c['id'] == id_conn:
-                    if 'accounts' in c:
-                        del c['accounts'][username]
-                        if not c['accounts']:
-                            del c['accounts']
-                        c.write()
-                        return
+                if k not in ('general', 'passwords') and c['id'] == id_conn and \
+                   'accounts' in c:
+                    self._delAccountPwd(c['name'], username)
+                    del c['accounts'][username]
+                    if not c['accounts']:
+                        del c['accounts']
+                    c.write()
+                    return
 
         raise exception.ConnectionNotFound
 
@@ -337,7 +367,7 @@ class Storage(object):
         username = commands[cmd_user - 1]
         if id_conn:
             for k, c in self._config.iteritems():
-                if k != 'general' and c['id'] == id_conn:
+                if k not in ('general', 'passwords') and c['id'] == id_conn:
                     if 'accounts' not in c:
                         c['accounts'] = {}
                     if username not in c['accounts']:
@@ -350,9 +380,9 @@ class Storage(object):
                         for d in dead_list:
                             del c['accounts'][username][d]
 
+                    self._saveAccountPwd(c['name'], username, commands[-1])
+                    commands = commands[:-1]
                     for i, cmd in enumerate(commands):
-                        if i > 0 and commands[i - 1] == username:
-                            cmd = b64encode(cmd)
                         c['accounts'][username]['cmd-%d' % (i + 1)] = cmd
                     c.write()
                     return
@@ -365,7 +395,7 @@ class Storage(object):
 
         if id_conn:
             for k, c in self._config.iteritems():
-                if k != 'general' and c['id'] == id_conn:
+                if k not in ('general', 'passwords') and c['id'] == id_conn:
                     a = c['accounts'][username]
                     n = a['normal_prompt'] if 'normal_prompt' in a else ''
                     f = a['fight_prompt'] if 'fight_prompt' in a else ''
@@ -376,7 +406,7 @@ class Storage(object):
     def savePrompt(self, id_conn, username, normal, fight):
         if id_conn:
             for k, c in self._config.iteritems():
-                if k != 'general' and c['id'] == id_conn:
+                if k not in ('general', 'passwords') and c['id'] == id_conn:
                     c['accounts'][username]['normal_prompt'] = normal
                     c['accounts'][username]['fight_prompt'] = fight
                     c.write()

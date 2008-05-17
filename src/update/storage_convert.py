@@ -83,6 +83,8 @@ def convert(db_file):
 
     connections = getConnections(curs)
 
+    config_pwd = ConfigObj(options={'indent_type': '  '})
+
     for c in connections:
         config = ConfigObj(None, options={'indent_type': '  '})
         config['id'] = c[0]
@@ -118,10 +120,11 @@ def convert(db_file):
                     continue
                 if 'accounts' not in config:
                     config['accounts'] = {}
+                    config_pwd[c[1]] = {}
                 config['accounts']['%s' % a[1]] = {}
                 account_cmds = getAccountDetail(curs, c[0], a[1])
-                pwd_idx = account_cmds.index(a[1]) + 1
-                account_cmds[pwd_idx] = b64encode(account_cmds[pwd_idx])
+                config_pwd[c[1]]['%s' % a[1]] = b64encode(account_cmds[-1])
+                account_cmds.pop()
                 i = 1
                 for cmd in account_cmds:
                     config['accounts']['%s' % a[1]]['cmd-%d' % i] = cmd
@@ -134,18 +137,22 @@ def convert(db_file):
 
         config.write()
 
-        config = ConfigObj(options={'indent_type': '  '})
-        config.filename = dirname(db_file) + '/general.save'
-        p = getPreferences(curs)
-        config['echo_text'] = p[0]
-        config['echo_color'] = p[1]
-        config['keep_text'] = p[2]
-        config['save_log'] = p[3]
+    if config_pwd:
+        config_pwd.filename = dirname(db_file) + '/passwords.save'
+        config_pwd.write()
 
-        config['save_account'] = option(curs, 'save_account', 0)
-        config['default_connection'] = option(curs, 'default_connection', 0)
+    config = ConfigObj(options={'indent_type': '  '})
+    config.filename = dirname(db_file) + '/general.save'
+    p = getPreferences(curs)
+    config['echo_text'] = p[0]
+    config['echo_color'] = p[1]
+    config['keep_text'] = p[2]
+    config['save_log'] = p[3]
 
-        config.write()
+    config['save_account'] = option(curs, 'save_account', 0)
+    config['default_connection'] = option(curs, 'default_connection', 0)
+
+    config.write()
 
 
 if __name__ == '__main__':
