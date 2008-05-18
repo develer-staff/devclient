@@ -6,10 +6,6 @@ NoConn = QApplication.translate("dev_client", "There aren't connections defined"
 
 ConnError= QApplication.translate("dev_client", "Unable to establish connection", None, QApplication.UnicodeUTF8)
 
-Yes = QApplication.translate("dev_client", "Yes", None, QApplication.UnicodeUTF8)
-
-No = QApplication.translate("dev_client", "No", None, QApplication.UnicodeUTF8)
-
 CloseConfirm = QApplication.translate("dev_client", "Really quit?", None, QApplication.UnicodeUTF8)
 
 CloseConn = QApplication.translate("dev_client", "Really close connection?", None, QApplication.UnicodeUTF8)

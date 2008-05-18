@@ -34,12 +34,15 @@ from os.path import basename, abspath, normpath, join, dirname, exists
 from PyQt4.QtTest import QTest
 from PyQt4.QtCore import QTimer, Qt
 
+# FIX
 path.append(join(dirname(abspath(argv[0])), '../..'))
+path.append(join(dirname(abspath(argv[0])), '../../configobj'))
 
+import devclient.storage as storage
 import devclient.exception as exception
 from devclient.engine import terminateProcess, startProcess
 from devclient.conf import loadConfiguration, config
-from devclient.storage import Storage, adjustSchema
+from devclient.storage import Storage
 
 _DEF_CONFIG_FILE = "../../../etc/devclient.cfg"
 cfg_file = normpath(join(dirname(abspath(argv[0])), _DEF_CONFIG_FILE))
@@ -97,9 +100,11 @@ def main(cfg_file=cfg_file):
     chdir(join(getcwd(), dirname(argv[0]), dirname(cfg_file)))
     cfg_file = join(getcwd(), basename(cfg_file))
     loadConfiguration(cfg_file)
-    config['storage']['path'] = abspath('../data/storage/dbtest.sqlite')
-    adjustSchema()  #create schema must be before adding the connection
-    Storage().addConnection([0, 'localhost', 'localhost', 6666])
+    conn = [0, 'black_box_test', 'localhost', 6666]
+    s = Storage()
+    s.addConnection(conn)
+    default_conn = s.option('default_connection')
+    s.setOption('default_connection', conn[0])
     path.append(config['servers']['path'])
     path.append(config['resources']['path'])
 
@@ -150,7 +155,9 @@ def main(cfg_file=cfg_file):
         if not o.core_port:
             terminateProcess(p.pid)
     finally:
-        unlink(config['storage']['path'])
+        s = Storage()
+        s.deleteConnection(conn)
+        s.setOption('default_connection', default_conn)
         fn = join(config['servers']['path'], 'localhost_server.py')
         if exists(fn):
             unlink(fn)

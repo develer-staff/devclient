@@ -83,31 +83,21 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/devclient/gui.msg" line="11"/>
-        <source>Yes</source>
-        <translation>Si</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui.msg" line="13"/>
-        <source>No</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui.msg" line="15"/>
         <source>Really quit?</source>
         <translation>Vuoi davvero uscire?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.msg" line="17"/>
+        <location filename="../../src/devclient/gui.msg" line="13"/>
         <source>Really close connection?</source>
         <translation>Vuoi davvero chiudere la connessione?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.msg" line="19"/>
+        <location filename="../../src/devclient/gui.msg" line="15"/>
         <source>Fatal Error, please restart your client</source>
         <translation>Errore irreversibile, riavviare il client</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.msg" line="21"/>
+        <location filename="../../src/devclient/gui.msg" line="17"/>
         <source>Connection lost</source>
         <translation>Connessione persa</translation>
     </message>
@@ -122,12 +112,12 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.msg" line="23"/>
+        <location filename="../../src/devclient/gui.msg" line="19"/>
         <source>Client is not connected</source>
         <translation>Il client non è connesso</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.msg" line="23"/>
+        <location filename="../../src/devclient/gui.msg" line="19"/>
         <source>Unable to download updates</source>
         <translation>Impossibile scaricare gli aggiornamenti</translation>
     </message>
@@ -170,7 +160,7 @@ p, li { white-space: pre-wrap; }
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1331"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1463"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
@@ -180,7 +170,7 @@ p, li { white-space: pre-wrap; }
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1116"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1236"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
@@ -241,7 +231,7 @@ p, li { white-space: pre-wrap; }
         <translation>Comando</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1031"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1127"/>
         <source>Register</source>
         <translation>Registra</translation>
     </message>
@@ -257,7 +247,7 @@ p, li { white-space: pre-wrap; }
         <translation>La sequenza dei tasti deve essere univoca</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="995"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1079"/>
         <source>#e0e0e0</source>
         <translation></translation>
     </message>
@@ -267,27 +257,27 @@ p, li { white-space: pre-wrap; }
         <translation>Preferenze</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1226"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1346"/>
         <source>Keep text entered</source>
         <translation>Tieni testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1142"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1262"/>
         <source>Text inserted</source>
         <translation>Testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1169"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1289"/>
         <source>Echo text</source>
         <translation>Echo testo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1259"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1379"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1283"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1403"/>
         <source>Save log</source>
         <translation>Salva log</translation>
     </message>
@@ -307,17 +297,17 @@ p, li { white-space: pre-wrap; }
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1188"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1308"/>
         <source>Color</source>
         <translation>Colore</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="548"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="584"/>
         <source>Account</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="359"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="383"/>
         <source>Save accounts</source>
         <translation>Salva account</translation>
     </message>
@@ -327,7 +317,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="372"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="396"/>
         <source>&lt;table&gt;
 &lt;tr&gt;&lt;td colspan=3&gt;&lt;b&gt;Prompt format:&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;%h&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Current hit points&lt;/td&gt;&lt;/tr&gt;
@@ -349,22 +339,22 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td colspan=3&gt;&lt;b&gt;Formato prompt:&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%h&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti vita attuali&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%H&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti vita massimi&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%m&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti mana attuali&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%M&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti mana massimi&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%v&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti movimento attuali&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%V&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti movimento massimi&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;*&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Indica un carattere qualsiasi&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;ripetuto zero o più volte&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=3&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;table&gt;&lt;tr&gt;&lt;td colspan=3&gt;&lt;b&gt;Esempio:&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=3&gt;Pf:%h/%H Mn:%m/%M Mv:%v/%v *&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=3&gt;è un formato valido per:&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=3&gt;Pf:30/30 Mn:117/117 Mv:108/108 Br:100&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="392"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="416"/>
         <source>Prompt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="425"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="449"/>
         <source>Normal</source>
         <translation>Normale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="447"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="471"/>
         <source>Fight</source>
         <translation>Combattimento</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="592"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="640"/>
         <source>Change Prompt</source>
         <translation>Cambia Prompt</translation>
     </message>

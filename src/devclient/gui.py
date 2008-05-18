@@ -37,6 +37,7 @@ from PyQt4.QtGui import QApplication, QIcon
 from PyQt4.QtGui import QMessageBox, QShortcut, QKeySequence
 from PyQt4.QtNetwork import QHostAddress, QTcpSocket
 
+import storage
 import messages
 import exception
 import gui_option
@@ -45,7 +46,6 @@ from alias import Alias
 from history import History
 from viewer import getViewer
 from servers import getServer
-from storage import Storage, Option, adjustSchema
 from gui_src.gui import Ui_dev_client
 from constants import PUBLIC_VERSION, PROJECT_NAME
 
@@ -198,10 +198,9 @@ class GameLogger(object):
 class AccountManager(object):
 
     def __init__(self, widget, server, id_conn):
-        s = Storage()
         self.user = unicode(widget.list_account.currentText())
-        s.setOption(Option.DEFAULT_ACCOUNT, self.user, id_conn)
-        self._save_account = s.option(Option.SAVE_ACCOUNT, 0)
+        storage.setOption('save_account', self.user, id_conn)
+        self._save_account = storage.option('save_account')
         self._num_cmds = server.cmds_account
         self._cmd_user = server.cmd_username
         self._id_conn = id_conn
@@ -212,8 +211,8 @@ class AccountManager(object):
            and len(self._commands) < self._num_cmds:
             self._commands.append(text)
             if len(self._commands) == self._num_cmds:
-                Storage().saveAccount(self._commands, self._id_conn,
-                                      self._cmd_user)
+                storage.saveAccount(self._commands, self._id_conn,
+                                    self._cmd_user)
                 return True
         return False
 
@@ -255,14 +254,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         logger.debug('PyQt version: %s, Qt version: %s' %
             (PYQT_VERSION_STR, QT_VERSION_STR))
 
-        adjustSchema()
-        self.preferences = Storage().preferences()
+        self.preferences = storage.preferences()
         self._loadConnections()
         self._setupSignal()
 
     def _loadConnections(self):
-        connections = Storage().connections()
-        def_conn = Storage().option(Option.DEFAULT_CONNECTION, 0)
+        connections = storage.connections()
+        def_conn = storage.option('default_connection')
         selected = 0
         for i, el in enumerate(connections):
             self.list_conn.addItem(el[1], QVariant(el[0]))
@@ -279,9 +277,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _loadAccounts(self, id_conn):
         self.list_account.clear()
         self.list_account.addItem('')
-        def_account = Storage().option(Option.DEFAULT_ACCOUNT, '', id_conn)
+        def_account = storage.option('default_account', id_conn)
         selected = 0
-        for i, a in enumerate(Storage().accounts(id_conn)):
+        for i, a in enumerate(storage.accounts(id_conn)):
             self.list_account.addItem(a)
             if a == def_account:
                 selected = i + 1
@@ -425,8 +423,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         opt.show()
 
     def _connect(self):
-        s = Storage()
-        connections = s.connections()
+        connections = storage.connections()
         if self.connected:
             if not self._displayQuestion(self._text['Connect'],
                                          self._text['CloseConn']):
@@ -440,11 +437,11 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         id_conn = data.toInt()[0]
         conn = [el for el in connections if el[0] == id_conn][0]
         self.account = AccountManager(self, getServer(*conn[2:4]), id_conn)
-        msg = conn[1:4] + s.prompt(id_conn, self.account.user)
+        msg = conn[1:4] + storage.prompt(id_conn, self.account.user)
         self.s_core.write(messages.CONNECT, msg)
 
     def _reloadPreferences(self):
-        self.preferences = Storage().preferences()
+        self.preferences = storage.preferences()
         self.game_logger = GameLogger(self.connected, self.preferences)
 
     def _reloadConnData(self, conn):
@@ -463,28 +460,27 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self.list_conn.blockSignals(False)
 
         if self.connected and self.connected == conn:
-            s = Storage()
-            self.macros = s.macros(self.connected)
+            self.macros = storage.macros(self.connected)
             self.alias = Alias(self.connected)
 
-            id_conn = s.getIdConnection(self.connected)
-            prompt = [p for p in s.prompt(id_conn, self.account.user) if p]
+            id_conn = storage.getIdConnection(self.connected)
+            prompt = [p for p in storage.prompt(id_conn, self.account.user) if p]
             self.s_core.write(messages.CUSTOM_PROMPT, prompt)
 
     def _startConnection(self, host, port):
-        s = Storage()
-        id_conn = s.getIdConnection(self.connected)
+        id_conn = storage.getIdConnection(self.connected)
         server = getServer(host, port)
         self.history.clear()
         self.alias = Alias(self.connected)
-        custom_prompt = [p for p in s.prompt(id_conn, self.account.user) if p]
+        custom_prompt = [p for p in storage.prompt(id_conn, self.account.user)
+                         if p]
         self.viewer = getViewer(self, server, custom_prompt)
-        self.macros = s.macros(self.connected)
+        self.macros = storage.macros(self.connected)
         self.game_logger = GameLogger(self.connected, self.preferences)
-        s.setOption(Option.DEFAULT_CONNECTION, id_conn)
+        storage.setOption('default_connection', id_conn)
 
         if self.account.user:
-            commands = s.accountDetail(id_conn, self.account.user)
+            commands = storage.accountDetail(id_conn, self.account.user)
 
             for cmd in commands:
                 self.s_core.write(messages.MSG, cmd)
@@ -505,7 +501,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         text = unicode(self.text_input.currentText())
         if self.account.register(text):
-            id_conn = Storage().getIdConnection(self.connected)
+            id_conn = storage.getIdConnection(self.connected)
             self._loadAccounts(id_conn)
 
         self.s_core.write(messages.MSG, self.alias.check(text))
@@ -549,18 +545,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 logger.warning('SocketToCore: Unknown message')
 
     def _displayQuestion(self, title, message):
-        box = QMessageBox(self)
-        box.setWindowTitle(title)
-        box.setText(message)
-        box.setIcon(QMessageBox.Question)
-        yes = box.addButton(self._text['Yes'], QMessageBox.AcceptRole)
-        yes.setIcon(QIcon(":/images/button-yes.png"))
-        no = box.addButton(self._text['No'], QMessageBox.RejectRole)
-        no.setIcon(QIcon(":/images/button-no.png"))
-        box.setDefaultButton(no)
-        box.setEscapeButton(no)
-        box.exec_()
-        return box.clickedButton() == yes
+        b = QMessageBox.question(self, title, message,
+                                 QMessageBox.Yes, QMessageBox.No)
+        return b == QMessageBox.Yes
 
     def displayWarning(self, title, message):
         QMessageBox.warning(self, title, message)

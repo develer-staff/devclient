@@ -21,13 +21,13 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-from storage import Storage
+import storage
 
 class Alias(object):
     _PLACEHOLDER = '%s'
 
     def __init__(self, conn_name):
-        self._list = Storage().aliases(conn_name)
+        self._list = storage.aliases(conn_name)
 
     def check(self, msg):
         """

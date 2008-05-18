@@ -26,5 +26,5 @@
 .. _Develer: http://www.develer.com/
 """
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'

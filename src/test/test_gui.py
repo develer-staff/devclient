@@ -28,6 +28,7 @@ import random
 import unittest
 
 sys.path.append('..')
+sys.path.append('../configobj')
 sys.path.append('../../resources')
 
 import communication

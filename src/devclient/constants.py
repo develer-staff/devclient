@@ -21,7 +21,7 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-PUBLIC_VERSION = '0.5.14'
+PUBLIC_VERSION = '0.5.92'
 """Public version of client."""
 
 PROJECT_NAME = 'DevClient'

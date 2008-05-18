@@ -22,358 +22,411 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import logging
-from sqlite3 import connect, OperationalError
+from glob import glob
+from os import unlink, chmod
+from base64 import b64decode, b64encode
+from os.path import dirname, join, basename, exists
+
+from validate import Validator
+from configobj import ConfigObj
+
+import conf
 import exception
-from conf import config
 
 logger = logging.getLogger('storage')
+_STORAGE_EXT = 'save'
 
-def adjustSchema():
-    c = connect(config['storage']['path'], isolation_level=None).cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS
-                        connections(id integer PRIMARY KEY AUTOINCREMENT,
-                                    name text,
-                                    host text,
-                                    port integer)''')
+server_spec = {'id': 'integer',
+               'port': 'integer',
+               'macros': { '__many__': {'shift': 'integer(0, 1)',
+                                        'alt': 'integer(0, 1)',
+                                        'ctrl': 'integer(0, 1)',
+                                        'keycode': 'integer'}},
+               'default_account': "string(default='')"
+              }
 
-    # To prevent a windows bug on 'IF NOT EXISTS' clause of CREATE TRIGGER
-    try:
-        c.execute('''DROP TRIGGER connection_delete_trg''')
-    except OperationalError:
-        pass
+general_spec = {'echo_text': 'integer(0, 1, default=1)',
+                'echo_color': 'string(min=7, max=7, default=#00AA00)',
+                'keep_text': 'integer(0, 1, default=0)',
+                'save_log': 'integer(0, 1, default=0)',
+                'save_account': 'integer(0, 1, default=0)',
+                'default_connection': 'integer(default=0)'
+               }
 
-    c.execute('''CREATE TRIGGER connection_delete_trg
-                        AFTER DELETE ON connections
-                        BEGIN
-                            DELETE FROM aliases WHERE id_conn=old.id;
-                            DELETE FROM macros WHERE id_conn=old.id;
-                            DELETE FROM accounts WHERE id_conn=old.id;
-                            DELETE FROM options WHERE id_conn=old.id;
-                        END''')
+_config = {}
+"""The dict that contain the ConfigObj objs for connections and general pref"""
 
 
-    c.execute('''CREATE TABLE IF NOT EXISTS
-                        aliases(id_conn integer,
-                                label text,
-                                body text)''')
+def loadStorage():
 
-    c.execute('''CREATE INDEX IF NOT EXISTS aliases_conn_idx ON
-                    aliases(id_conn)''')
+    def _readStorageFile(f, spec):
+        c = ConfigObj(f, configspec=spec)
+        d = c.validate(Validator(), preserve_errors=True)
+        if d != True:
+            logger.warning('format error in storage file: %s' % f)
+            for k, v in d.iteritems():
+                if v != True:
+                    logger.warning("%s: %s" % (k, v))
+            return None
 
-    c.execute('''CREATE TABLE IF NOT EXISTS
-                        macros(id_conn integer,
-                                command text,
-                                shift integer,
-                                alt integer,
-                                ctrl integer,
-                                keycode integer)''')
+        return c
 
-    c.execute('''CREATE INDEX IF NOT EXISTS macros_conn_idx ON
-                        macros(id_conn)''')
+    if _config:
+        _config.clear()
 
-    c.execute('''CREATE TABLE IF NOT EXISTS
-                        preferences(echo_text integer,
-                                    echo_color text,
-                                    keep_text integer,
-                                    save_log integer)''')
+    files = glob(join(conf.config['storage']['path'], '*.' + _STORAGE_EXT))
+    for f in files:
+        if basename(f) == 'passwords.' + _STORAGE_EXT:
+            _config['passwords'] = ConfigObj(f, options={'indent_type': '  '})
 
-    c.execute('''CREATE TABLE IF NOT EXISTS
-                        accounts(id integer PRIMARY KEY AUTOINCREMENT,
-                                    id_conn integer,
-                                    username text,
-                                    UNIQUE (id_conn, username))''')
+        elif basename(f) != 'general.' + _STORAGE_EXT:
+            c = _readStorageFile(f, server_spec)
+            if c:
+                if 'name' in c:
+                    _config[c['name']] = c
+                else:
+                    logger.warning(" format error in storage file %s" % f)
 
-    try:
-        c.execute('''DROP TRIGGER account_delete_trg''')
-    except OperationalError:
-        pass
+    general = join(conf.config['storage']['path'], 'general.' + _STORAGE_EXT)
+    c = _readStorageFile(general, general_spec)
+    if not c:
+        # format error: restore defaults
+        c = ConfigObj(options={'indent_type': '  '}, configspec=general_spec)
+        c.validate(Validator())
+        c.filename = general
 
-    c.execute('''CREATE TRIGGER account_delete_trg AFTER DELETE ON accounts
-                        BEGIN
-                            DELETE FROM accounts_cmd WHERE id_account=old.id;
-                            DELETE FROM accounts_prompt WHERE id_account=old.id;
-                        END''')
-
-    c.execute('''CREATE TABLE IF NOT EXISTS
-                        accounts_cmd(id_account integer,
-                                        num integer,
-                                        command text)''')
-
-    c.execute('''CREATE INDEX IF NOT EXISTS accounts_cmd_idx ON
-                        accounts_cmd(id_account)''')
-
-    c.execute('''CREATE TABLE IF NOT EXISTS
-                        options(param_name text,
-                                param_value text,
-                                id_conn int,
-                                PRIMARY KEY (param_name, id_conn))''')
-
-    c.execute('''CREATE TABLE IF NOT EXISTS
-                        accounts_prompt(id_account integer PRIMARY KEY,
-                                        normal text,
-                                        fight text)''')
+    _config['general'] = c
 
 
-class Option(object):
-    SAVE_ACCOUNT = 'save_account'
-    DEFAULT_ACCOUNT = 'default_account'
-    DEFAULT_CONNECTION = 'default_connection'
-
-
-class Storage(object):
+def preferences():
     """
-    Store dynamic data for all the client modules
+    Return the list of preferences.
+
+    :return: a tuple (echo_text, echo_color, keep_text, save_log)
     """
 
-    def __init__(self):
-        self.conn = connect(config['storage']['path'], isolation_level=None)
-        c = self.conn.cursor()
+    c = _config['general']
+    return (c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'])
 
-    def _execQuery(self, sql, params=(), cursor=None):
-        """
-        Execute a query.
+def savePreferences(pref):
+    c = _config['general']
+    c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'] = pref
+    c.write()
 
-        :Parameters:
-          sql : str
-            the string of query
-          params : tuple
-            the tuple of params
-          cursor : object
-            the cursor object
+def aliases(conn_name):
+    """
+    Load the list of alias for a connection.
 
-        :return: a cursor object.
-        """
+    :Parameters:
+        conn_name : str
+        the name of connection.
 
-        if not cursor:
-            cursor = self.conn.cursor()
+    :return: a list of tuples (label, body)
+    """
 
-        cursor.execute(sql, params)
+    if conn_name not in _config:
+        raise exception.ConnectionNotFound
 
-        for p in params:
-            sql = sql.replace('?', "'%s'" % p, 1)
-        logger.debug('sql: ' + sql)
+    c = _config[conn_name]
+    return c['aliases'].items() if 'aliases' in c else []
 
-        return cursor
+def saveAliases(conn_name, aliases):
+    if conn_name not in _config:
+        raise exception.ConnectionNotFound
 
-    def connections(self):
-        """
-        Load the list of connections.
+    c = _config[conn_name]
+    c['aliases'] = {}
+    for alias in aliases:
+        c['aliases'][alias[0]] = alias[1]
+    c.write()
 
-        :return: a list of tuples (id, name, host, port)
-        """
+def macros(conn_name):
+    """
+    Load the list of macro for a connection.
 
-        data = [row for row in self._execQuery('SELECT id, name, host, port ' +
-                                               'FROM connections')]
-        return data
+    :Parameters:
+        conn_name : str
+        the name of connection.
 
-    def addConnection(self, conn):
-        """
-        Add a new connection at list of connections.
+    :return: a list of tuples (command, shift, alt, ctrl, keycode)
+    """
 
-        :Parameters:
-          conn : list
-            the params of connection to add. The id param should be return
-            valued.
-        """
+    if conn_name not in _config:
+        raise exception.ConnectionNotFound
 
-        c = self.conn.cursor()
-        self._execQuery('INSERT INTO connections (name, host, port) ' +
-                        'VALUES(?, ?, ?)', conn[1:], c)
+    c = _config[conn_name]
+    macros = []
+    if 'macros' in c:
+        for m in c['macros'].itervalues():
+            macros.append((m['command'], m['shift'], m['alt'],
+                           m['ctrl'], m['keycode']))
 
-        conn[0] = self.getIdConnection(conn[1], c)
-        logger.debug('id connection obtained: %d' % conn[0])
+    return macros
 
-    def deleteConnection(self, conn):
-        c = self.conn.cursor()
-        self._execQuery('DELETE FROM connections WHERE id = ?', (conn[0],), c)
+def saveMacros(conn_name, macros):
+    if conn_name not in _config:
+        raise exception.ConnectionNotFound
 
-    def updateConnection(self, conn):
-        params = conn[1:]
-        params.append(conn[0])
-        self._execQuery('UPDATE connections SET name = ?, host = ?, port = ? ' +
-                        'WHERE id = ?', params)
+    c = _config[conn_name]
+    c['macros'] = {}
+    i = 1
+    for macro in macros:
+        m = {}
+        m['command'], m['shift'], m['alt'], m['ctrl'], m['keycode'] = macro
+        c['macros'][str(i)] = m
+        i += 1
 
-    def getIdConnection(self, conn_name, cursor=None):
-        row = self._execQuery('SELECT id FROM connections WHERE name = ?',
-                              (conn_name,), cursor).fetchone()
+    c.write()
 
-        if not row:
-            raise exception.ConnectionNotFound
+def connections():
+    """
+    Load the list of connections.
 
-        return row[0]
+    :return: a list of tuples (id, name, host, port)
+    """
 
-    def aliases(self, conn_name):
-        """
-        Load the list of alias for a connection.
+    data = []
+    for k, v in _config.iteritems():
+        if k not in ('general', 'passwords'):
+            data.append((v['id'], v['name'], v['host'], v['port']))
 
-        :Parameters:
-          conn_name : str
-            the name of connection.
+    data.sort()
+    return data
 
-        :return: a list of tuples (label, body)
-        """
+def addConnection(conn):
+    """
+    Add a new connection at list of connections.
 
-        c = self._execQuery('SELECT label, body FROM aliases AS a ' +
-                            'JOIN connections AS c ON a.id_conn = c.id ' +
-                            'WHERE c.name = ?', (conn_name,))
-        return [row for row in c]
+    :Parameters:
+        conn : list
+        the params of connection to add. The id param should be return
+        valued.
+    """
 
-    def saveAliases(self, conn_name, aliases):
+    m = 0
+    for k, v in _config.iteritems():
+        if k not in ('general', 'passwords'):
+            m = max(v['id'], m)
 
-        c = self.conn.cursor()
-        id_conn = self.getIdConnection(conn_name, c)
-        self._execQuery('DELETE FROM aliases WHERE id_conn = ?', (id_conn,))
+    c = ConfigObj(options={'indent_type': '  '}, configspec=server_spec)
+    c.validate(Validator())
+    c['id'] = conn[0] = m + 1
+    c['name'], c['host'], c['port'] = conn[1:]
+    c.filename = join(conf.config['storage']['path'],
+                      conn[1] + '.' + _STORAGE_EXT)
+    _config[conn[1]] = c
+    c.write()
 
-        for alias in aliases:
-            self._execQuery('INSERT INTO aliases VALUES(?, ?, ?)',
-                            (id_conn, alias[0], alias[1]), c)
+def deleteConnection(conn):
+    unlink(_config[conn[1]].filename)
+    del _config[conn[1]]
 
-    def macros(self, conn_name):
-        """
-        Load the list of macro for a connection.
+def updateConnection(conn):
+    m = 0
+    for k, c in _config.iteritems():
+        if k not in ('general', 'passwords') and c['id'] == conn[0]:
+            if c['name'] != conn[1] and 'passwords' in _config and \
+               c['name'] in _config['passwords']:
+                _config['passwords'][conn[1]] = _config['passwords'][c['name']]
+                del _config['passwords'][c['name']]
+                _config['passwords'].write()
+            unlink(c.filename)
+            del  _config[k]
+            c['name'], c['host'], c['port'] = conn[1:]
+            c.filename = join(conf.config['storage']['path'],
+                              conn[1] + '.' + _STORAGE_EXT)
+            _config[conn[1]] = c
+            c.write()
+            return
+    else:
+        raise exception.ConnectionNotFound
 
-        :Parameters:
-          conn_name : str
-            the name of connection.
+def getIdConnection(conn_name, cursor=None):
+    for k, c in _config.iteritems():
+        if k == conn_name:
+            return c['id']
+    else:
+        raise exception.ConnectionNotFound
 
-        :return: a list of tuples (command, shift, alt, ctrl, keycode)
-        """
+def option(name, id_conn=0):
+    """
+    Return the value of an option.
 
-        c = self._execQuery('SELECT command, shift, alt, ctrl, keycode ' +
-                            'FROM macros AS m JOIN connections AS c ' +
-                            'ON m.id_conn = c.id WHERE c.name = ?',
-                            (conn_name,))
+    :Parameters:
+        name : str
+        the name of the option.
 
-        return [row for row in c]
+        id_conn : int
+        the id of connection.
+    """
 
-    def saveMacros(self, conn_name, macros):
-        c = self.conn.cursor()
-        id_conn = self.getIdConnection(conn_name, c)
-
-        self._execQuery('DELETE FROM macros WHERE id_conn = ?', (id_conn,))
-
-        for m in macros:
-            p = list(m)
-            p.insert(0, id_conn)
-            self._execQuery('INSERT INTO macros VALUES(?, ?, ?, ?, ?, ?)',
-                            p, c)
-
-    def preferences(self):
-        """
-        Return the list of preferences.
-
-        :return: a tuple (echo_text, echo_color, keep_text, save_log)
-        """
-
-        c = self._execQuery('SELECT echo_text, echo_color, keep_text, ' +
-                            'save_log FROM preferences')
-        row = c.fetchone()
-        return row if row else ()
-
-    def savePreferences(self, preferences):
-        self._execQuery('DELETE FROM preferences')
-        self._execQuery('INSERT INTO preferences VALUES(?, ?, ?, ?)',
-                        preferences)
-
-    def saveAccount(self, commands, id_conn, cmd_user):
-        username = commands[cmd_user - 1]
-
-        c = self._execQuery('SELECT id FROM accounts WHERE id_conn=? ' +
-                            'AND username=?', (id_conn, username))
-        r = c.fetchone()
-        if r: # update the account replacing old command
-            id_account = r[0]
-            self._execQuery('DELETE FROM accounts_cmd WHERE id_account=?',
-                            (id_account,))
+    if id_conn:
+        for k, c in _config.iteritems():
+            if k not in ('general', 'passwords') and c['id'] == id_conn:
+                return c[name]
         else:
-            self._execQuery('INSERT INTO accounts(id_conn, username) ' +
-                            'VALUES(?, ?)', (id_conn, username), c)
-            id_account = c.lastrowid
+            raise exception.ConnectionNotFound
+    else:
+        return _config['general'][name]
 
-        for num, cmd in enumerate(commands):
-            self._execQuery('INSERT INTO accounts_cmd VALUES (?, ?, ?)',
-                            (id_account, num, cmd), c)
+def setOption(name, value, id_conn=0):
+    if id_conn:
+        for k, v in _config.iteritems():
+            if k not in ('general', 'passwords') and v['id'] == id_conn:
+                c = v
+                break
+        else:
+            raise exception.ConnectionNotFound
+    else:
+        c = _config['general']
 
-    def accounts(self, id_conn):
-        """
-        Return the list of (username of) account for a connection.
+    c[name] = value
+    c.write()
 
-        :Parameters:
-          id_conn : int
-            the id of connection.
-        """
+def accounts(id_conn):
+    """
+    Return the list of (username of) account for a connection.
 
-        c = self._execQuery('SELECT username FROM accounts WHERE id_conn = ? ',
-                            (id_conn,))
+    :Parameters:
+        id_conn : int
+        the id of connection.
+    """
 
-        return [row[0] for row in c]
+    if id_conn:
+        for k, c in _config.iteritems():
+            if k not in ('general', 'passwords') and c['id'] == id_conn:
+                return c['accounts'].keys() if 'accounts' in c else []
 
-    def accountDetail(self, id_conn, username):
-        c = self._execQuery('SELECT command FROM accounts AS a JOIN ' +
-                            'accounts_cmd AS c ON a.id=c.id_account WHERE ' +
-                            'id_conn = ? AND username = ? ORDER BY num',
-                            (id_conn, username))
+    raise exception.ConnectionNotFound
 
-        return [row[0] for row in c]
+def accountDetail(id_conn, username):
+    """
+    Return the list of command defined for an account.
 
-    def deleteAccount(self, id_conn, username):
-        self._execQuery('DELETE FROM accounts WHERE id_conn=? AND username=?',
-                        (id_conn, username))
+    :Parameters:
+        id_conn : int
+        the id of connection.
 
-    def option(self, name, default, id_conn=0):
-        """
-        Return the value of an option.
+        username : str
+        the username of account.
+    """
 
-        :Parameters:
-          name : str
-            the name of the option.
+    def _getAccountPwd(conn, user):
+        c =  _config
+        if 'passwords' in c and conn in c['passwords'] and \
+           user in c['passwords'][conn]:
+            return b64decode(c['passwords'][conn][user])
+        return None
 
-          default : mix
-            the default value of the option.
+    if id_conn:
+        for k, c in _config.iteritems():
+            if k not in ('general', 'passwords') and c['id'] == id_conn and \
+                'accounts' in c:
+                accounts = [(l, cmd) for l, cmd in
+                            c['accounts'][username].iteritems()
+                            if l.startswith('cmd-')]
+                accounts.sort()
+                data = [el[1] for el in accounts]
+                pwd = _getAccountPwd(c['name'], username)
+                if pwd:
+                    data.append(pwd)
+                return data
 
-          id_conn : int
-            the id of connection.
-        """
+    raise exception.ConnectionNotFound
 
-        c = self._execQuery('SELECT param_value FROM options WHERE ' +
-                            'id_conn = ? AND param_name = ?', (id_conn, name))
+def deleteAccount(id_conn, username):
+    """
+    Erase an account.
 
-        row = c.fetchone()
-        if row:
-            if type(default) == int:
-                return int(row[0])
-            else:
-                return row[0]
-        return default
+    :Parameters:
+        id_conn : int
+        the id of connection.
 
-    def setOption(self, name, value, id_conn=0):
-        self._execQuery('REPLACE INTO options VALUES(?, ?, ?)',
-                        (name, value, id_conn))
+        username : str
+        the username of account.
+    """
 
-    def deleteAccount(self, id_conn, username):
-        self._execQuery('DELETE FROM accounts WHERE id_conn=? AND username=?',
-                        (id_conn, username))
+    def _delAccountPwd(conn, user):
+        c =  _config
+        if 'passwords' in c and conn in c['passwords'] and \
+           user in c['passwords'][conn]:
+            del c['passwords'][conn][user]
+            c['passwords'].write()
 
-    def savePrompt(self, id_conn, username, normal, fight):
-        c = self._execQuery('SELECT id FROM accounts WHERE id_conn=? ' +
-                            'AND username=?', (id_conn, username))
+    if id_conn:
+        for k, c in _config.iteritems():
+            if k not in ('general', 'passwords') and c['id'] == id_conn and \
+               'accounts' in c:
+                _delAccountPwd(c['name'], username)
+                del c['accounts'][username]
+                if not c['accounts']:
+                    del c['accounts']
+                c.write()
+                return
 
-        id_account = c.fetchone()[0]
-        self._execQuery('REPLACE INTO accounts_prompt VALUES(?, ?, ?)',
-                        (id_account, normal, fight), c)
+    raise exception.ConnectionNotFound
 
-    def prompt(self, id_conn, username):
-        if not username:
-            return ('', '')
+def saveAccount(commands, id_conn, cmd_user):
 
-        c = self._execQuery('SELECT id FROM accounts WHERE id_conn=? ' +
-                            'AND username=?', (id_conn, username))
+    def _saveAccountPwd(conn, user, pwd):
+        c =  _config
+        if 'passwords' not in c:
+            c['passwords'] = ConfigObj(options={'indent_type': '  '})
+            c['passwords'].filename = join(conf.config['storage']['path'],
+                                           'passwords.' + _STORAGE_EXT)
 
-        id_account = c.fetchone()[0]
-        self._execQuery('SELECT normal, fight FROM accounts_prompt WHERE ' +
-                        'id_account = ?', (id_account, ), c)
+        if conn not in c['passwords']:
+            c['passwords'][conn] = {}
 
-        r = self._execQuery('SELECT normal, fight FROM accounts_prompt WHERE ' +
-                            'id_account = ?', (id_account, ), c).fetchone()
+        c['passwords'][conn][user] = b64encode(pwd)
+        c['passwords'].write()
+        chmod(c['passwords'].filename, 0600)
 
-        return (r[0], r[1]) if r else ('', '')
+    username = commands[cmd_user - 1]
+    if id_conn:
+        for k, c in _config.iteritems():
+            if k not in ('general', 'passwords') and c['id'] == id_conn:
+                if 'accounts' not in c:
+                    c['accounts'] = {}
+                if username not in c['accounts']:
+                    c['accounts'][username] = {}
+                else:
+                    dead_list = [kk for kk in c['accounts'][username].iterkeys()
+                                 if kk.startswith('cmd-')]
+
+                    for d in dead_list:
+                        del c['accounts'][username][d]
+
+                _saveAccountPwd(c['name'], username, commands[-1])
+                commands = commands[:-1]
+                for i, cmd in enumerate(commands):
+                    c['accounts'][username]['cmd-%d' % (i + 1)] = cmd
+                c.write()
+                return
+
+    raise exception.ConnectionNotFound
+
+def prompt(id_conn, username):
+    if not username:
+        return ('', '')
+
+    if id_conn:
+        for k, c in _config.iteritems():
+            if k not in ('general', 'passwords') and c['id'] == id_conn:
+                a = c['accounts'][username]
+                n = a['normal_prompt'] if 'normal_prompt' in a else ''
+                f = a['fight_prompt'] if 'fight_prompt' in a else ''
+                return (n, f)
+
+    raise exception.ConnectionNotFound
+
+def savePrompt(id_conn, username, normal, fight):
+    if id_conn:
+        for k, c in _config.iteritems():
+            if k not in ('general', 'passwords') and c['id'] == id_conn:
+                c['accounts'][username]['normal_prompt'] = normal
+                c['accounts'][username]['fight_prompt'] = fight
+                c.write()
+                return
+
+    raise exception.ConnectionNotFound
