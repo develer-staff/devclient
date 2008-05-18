@@ -31,9 +31,8 @@ import unittest
 sys.path.append('..')
 sys.path.append('../configobj')
 
-import devclient.storage
+import devclient.storage as storage
 from devclient.conf import config
-from devclient.storage import Storage
 from devclient.alias import Alias
 
 class TestAlias(unittest.TestCase):
@@ -46,51 +45,49 @@ class TestAlias(unittest.TestCase):
             shutil.rmtree(self.test_dir)
         os.mkdir(self.test_dir)
         config['storage'] = {'path': os.path.abspath(self.test_dir)}
-        devclient.storage._config = {}
+        storage.loadStorage()
 
         self.conn_name = 'conn'
         conn = [0, self.conn_name, 'host', 111]
-        self.storage = Storage()
-        self.storage.addConnection(conn)
+        storage.addConnection(conn)
 
     def tearDown(self):
-        del self.storage
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
 
     def testCheck1(self):
         aliases = [('h', 'hello world')]
-        self.storage.saveAliases(self.conn_name, aliases)
+        storage.saveAliases(self.conn_name, aliases)
         self.assert_(Alias(self.conn_name).check("h, I'm Gianni") ==
                      "hello world, I'm Gianni")
 
     def testCheck2(self):
         aliases = [('h', 'hello world')]
-        self.storage.saveAliases(self.conn_name, aliases)
+        storage.saveAliases(self.conn_name, aliases)
         self.assert_(Alias(self.conn_name).check("I'm Gianni, h") ==
                      "I'm Gianni, h")
 
     def testCheck3(self):
         aliases = [('h', 'hello %s')]
-        self.storage.saveAliases(self.conn_name, aliases)
+        storage.saveAliases(self.conn_name, aliases)
         self.assert_(Alias(self.conn_name).check("h world") ==
                      "hello world")
 
     def testCheck4(self):
         aliases = [('h', "hello %s, nice to meet you")]
-        self.storage.saveAliases(self.conn_name, aliases)
+        storage.saveAliases(self.conn_name, aliases)
         self.assert_(Alias(self.conn_name).check("h Gianni") ==
                      "hello Gianni, nice to meet you")
 
     def testCheck5(self):
         aliases = [('h', "hello %s, nice to %s you")]
-        self.storage.saveAliases(self.conn_name, aliases)
+        storage.saveAliases(self.conn_name, aliases)
         self.assert_(Alias(self.conn_name).check("h Gianni meet") ==
                      "hello Gianni, nice to meet you")
 
     def testCheck6(self):
         aliases = [('h', "hello %s, nice to %s you")]
-        self.storage.saveAliases(self.conn_name, aliases)
+        storage.saveAliases(self.conn_name, aliases)
         self.assert_(Alias(self.conn_name).check("h Gianni") ==
                      "hello Gianni, nice to  you")
 

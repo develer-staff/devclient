@@ -127,9 +127,12 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
     path.append(config['resources']['path'])
     path.append(config['configobj']['path'])
 
+    # this import must stay here, after the appending of configobj path to path
+    import storage
+    storage.loadStorage()
+
     # this import must stay here, after the appending of resources path to path
     from gui import Gui
-
     port = random.randint(2000, 10000)
 
     p = startProcess(['python',
