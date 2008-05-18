@@ -634,7 +634,8 @@ class GuiOption(QDialog, Ui_option):
             self.list_conn_alias.clear()
             self.list_conn_alias.addItems([c[1] for c in self.conn.connections])
             self.disableSignal(False)
-            self._loadAliases(unicode(self.list_conn_alias.currentText()))
+            if self.list_conn_alias.count():
+                self._loadAliases(unicode(self.list_conn_alias.currentText()))
 
             for o in (self.list_alias, self.label_alias, self.body_alias):
                 o.setEnabled(bool(self.list_conn_alias.count()))
