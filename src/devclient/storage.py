@@ -218,14 +218,11 @@ class Storage(object):
 
         c = ConfigObj(options={'indent_type': '  '}, configspec=server_spec)
         c.validate(Validator())
-        c['id'] = m + 1
+        c['id'] = conn[0] = m + 1
         c['name'], c['host'], c['port'] = conn[1:]
         c.filename = join(self._storage_dir, conn[1] + '.' + _STORAGE_EXT)
         self._config[conn[1]] = c
         c.write()
-
-        conn[0] = m + 1
-        logger.debug('id connection obtained: %d' % conn[0])
 
     def deleteConnection(self, conn):
         unlink(self._config[conn[1]].filename)
