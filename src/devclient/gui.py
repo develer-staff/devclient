@@ -545,18 +545,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 logger.warning('SocketToCore: Unknown message')
 
     def _displayQuestion(self, title, message):
-        box = QMessageBox(self)
-        box.setWindowTitle(title)
-        box.setText(message)
-        box.setIcon(QMessageBox.Question)
-        yes = box.addButton(self._text['Yes'], QMessageBox.AcceptRole)
-        yes.setIcon(QIcon(":/images/button-yes.png"))
-        no = box.addButton(self._text['No'], QMessageBox.RejectRole)
-        no.setIcon(QIcon(":/images/button-no.png"))
-        box.setDefaultButton(no)
-        box.setEscapeButton(no)
-        box.exec_()
-        return box.clickedButton() == yes
+        b = QMessageBox.question(self, title, message,
+                                 QMessageBox.Yes, QMessageBox.No)
+        return b == QMessageBox.Yes
 
     def displayWarning(self, title, message):
         QMessageBox.warning(self, title, message)
