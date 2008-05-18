@@ -22,11 +22,13 @@ import sys
 from os import chmod
 from sqlite3 import connect
 from base64 import b64encode
-from os.path import dirname, abspath
+from os.path import dirname, abspath, join
 
 from PyQt4.QtCore import Qt
 
-sys.path.append('../configobj')
+_SELF_DIR = abspath(dirname(sys.argv[0]))
+
+sys.path.append(join(_SELF_DIR, '../configobj'))
 
 from configobj import ConfigObj
 
@@ -158,4 +160,4 @@ def convert(db_file):
 
 
 if __name__ == '__main__':
-    convert(abspath('../../data/storage/db.sqlite'))
+    convert(abspath(join(_SELF_DIR, '../../data/storage/db.sqlite')))

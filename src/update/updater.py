@@ -192,11 +192,6 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             copyfile(source, dest)
             copymode(source, dest)
 
-def updateStorage():
-    version = map(int, local_version.split('.'))
-    if version < [0, 5, 90]:
-        subprocess.call(['python', 'storage_convert.py'], cwd=_SELF_DIR)
-
 def updateClient():
     cp = SafeConfigParser()
     cp.read(_CONFIG_FILE)
@@ -219,7 +214,6 @@ def updateClient():
             downloadClient(config['client']['url'])
             base_dir = uncompressClient(basename(config['client']['url']))
             replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
-            updateStorage()
     except UpdaterError, e:
         print 'ERROR:', e
     else:
