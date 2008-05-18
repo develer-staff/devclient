@@ -86,6 +86,15 @@ class TestStorage(TestBase):
         storage.updateConnection(conn)
         self.assert_(storage.connections()[0] == tuple(conn))
 
+    def testUpdateConnection2(self):
+        conn = [0, 'name', 'host', 111]
+        storage.addConnection(conn)
+        storage.saveAccount(['john', 'john'], 1, 1)
+
+        conn[1] = 'new_name'
+        storage.updateConnection(conn)
+        self.assert_(storage.accountDetail(1, 'john') == ['john', 'john'])
+
     def testDeleteConnection(self):
         conn = [0, 'name', 'host', 111]
         storage.addConnection(conn)

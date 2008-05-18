@@ -19,6 +19,7 @@
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
 import sys
+from os import chmod
 from sqlite3 import connect
 from base64 import b64encode
 from os.path import dirname, abspath
@@ -140,6 +141,7 @@ def convert(db_file):
     if config_pwd:
         config_pwd.filename = dirname(db_file) + '/passwords.save'
         config_pwd.write()
+        chmod(config_pwd.filename, 0600)
 
     config = ConfigObj(options={'indent_type': '  '})
     config.filename = dirname(db_file) + '/general.save'

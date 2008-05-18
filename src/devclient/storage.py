@@ -23,7 +23,7 @@ __docformat__ = 'restructuredtext'
 
 import logging
 from glob import glob
-from os import unlink
+from os import unlink, chmod
 from base64 import b64decode, b64encode
 from os.path import dirname, join, basename, exists
 
@@ -225,6 +225,11 @@ def updateConnection(conn):
     m = 0
     for k, c in _config.iteritems():
         if k not in ('general', 'passwords') and c['id'] == conn[0]:
+            if c['name'] != conn[1] and 'passwords' in _config and \
+               c['name'] in _config['passwords']:
+                _config['passwords'][conn[1]] = _config['passwords'][c['name']]
+                del _config['passwords'][c['name']]
+                _config['passwords'].write()
             unlink(c.filename)
             del  _config[k]
             c['name'], c['host'], c['port'] = conn[1:]
@@ -375,6 +380,7 @@ def saveAccount(commands, id_conn, cmd_user):
 
         c['passwords'][conn][user] = b64encode(pwd)
         c['passwords'].write()
+        chmod(c['passwords'].filename, 0600)
 
     username = commands[cmd_user - 1]
     if id_conn:
