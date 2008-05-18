@@ -26,7 +26,6 @@ from PyQt4.QtCore import SIGNAL, Qt, QVariant
 from PyQt4.QtGui import QApplication, QDialog, QColorDialog
 
 import storage
-from storage import Option
 from gui_src.gui_option import Ui_option
 
 
@@ -471,7 +470,7 @@ class FormAccounts(object):
             self.w.list_conn_account.addItem(el[1], QVariant(el[0]))
         if connections:
             self._loadAccounts(0)
-        val = storage.option(Option.SAVE_ACCOUNT)
+        val = storage.option('save_account')
         self.w.save_account.setCheckState(Qt.Checked if val else Qt.Unchecked)
         self.w.box_prompt.setVisible(False)
 
@@ -535,7 +534,7 @@ class FormAccounts(object):
             self.w.change_prompt.setEnabled(False)
 
     def _saveAccounts(self, val):
-        storage.setOption(Option.SAVE_ACCOUNT, int(val == Qt.Checked))
+        storage.setOption('save_account', int(val == Qt.Checked))
 
     def _savePrompt(self):
         idx = self.w.list_conn_account.currentIndex()

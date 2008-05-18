@@ -39,7 +39,6 @@ sys.path.append('../../resources')
 
 import devclient.storage
 from devclient.conf import config
-from devclient.storage import Option
 from devclient.gui_option import *
 
 
@@ -602,7 +601,7 @@ class TestFormAccounts(GuiOptionTest):
         form = FormAccounts(GuiOptionAccMock())
         form.w.save_account.setCheckState(Qt.Checked)
         form._saveAccounts(Qt.Checked)
-        self.assert_(storage.option(Option.SAVE_ACCOUNT, 0) == 1)
+        self.assert_(storage.option('save_account', 0) == 1)
 
     def testChangeSaveAccount2(self):
         form = FormAccounts(GuiOptionAccMock())
@@ -610,7 +609,7 @@ class TestFormAccounts(GuiOptionTest):
         form._saveAccounts(Qt.Checked)
         form.w.save_account.setCheckState(Qt.Unchecked)
         form._saveAccounts(Qt.Unchecked)
-        self.assert_(storage.option(Option.SAVE_ACCOUNT, 0) == 0)
+        self.assert_(storage.option('save_account', 0) == 0)
 
     def testDeleteAccount(self):
         storage.addConnection([0, 'name', 'host', 4000])

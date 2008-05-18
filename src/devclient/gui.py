@@ -46,7 +46,6 @@ from alias import Alias
 from history import History
 from viewer import getViewer
 from servers import getServer
-from storage import Option
 from gui_src.gui import Ui_dev_client
 from constants import PUBLIC_VERSION, PROJECT_NAME
 
@@ -200,8 +199,8 @@ class AccountManager(object):
 
     def __init__(self, widget, server, id_conn):
         self.user = unicode(widget.list_account.currentText())
-        storage.setOption(Option.DEFAULT_ACCOUNT, self.user, id_conn)
-        self._save_account = storage.option(Option.SAVE_ACCOUNT)
+        storage.setOption('save_account', self.user, id_conn)
+        self._save_account = storage.option('save_account')
         self._num_cmds = server.cmds_account
         self._cmd_user = server.cmd_username
         self._id_conn = id_conn
@@ -261,7 +260,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def _loadConnections(self):
         connections = storage.connections()
-        def_conn = storage.option(Option.DEFAULT_CONNECTION)
+        def_conn = storage.option('default_connection')
         selected = 0
         for i, el in enumerate(connections):
             self.list_conn.addItem(el[1], QVariant(el[0]))
@@ -278,7 +277,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _loadAccounts(self, id_conn):
         self.list_account.clear()
         self.list_account.addItem('')
-        def_account = storage.option(Option.DEFAULT_ACCOUNT, id_conn)
+        def_account = storage.option('default_account', id_conn)
         selected = 0
         for i, a in enumerate(storage.accounts(id_conn)):
             self.list_account.addItem(a)
@@ -478,7 +477,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.viewer = getViewer(self, server, custom_prompt)
         self.macros = storage.macros(self.connected)
         self.game_logger = GameLogger(self.connected, self.preferences)
-        storage.setOption(Option.DEFAULT_CONNECTION, id_conn)
+        storage.setOption('default_connection', id_conn)
 
         if self.account.user:
             commands = storage.accountDetail(id_conn, self.account.user)

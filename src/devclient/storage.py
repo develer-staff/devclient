@@ -404,9 +404,3 @@ def savePrompt(id_conn, username, normal, fight):
                 return
 
     raise exception.ConnectionNotFound
-
-
-class Option(object):
-    SAVE_ACCOUNT = 'save_account'
-    DEFAULT_ACCOUNT = 'default_account'
-    DEFAULT_CONNECTION = 'default_connection'
