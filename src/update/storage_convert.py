@@ -22,7 +22,7 @@ import sys
 from os import chmod
 from sqlite3 import connect
 from base64 import b64encode
-from os.path import dirname, abspath, join
+from os.path import dirname, abspath, join, exists
 
 from PyQt4.QtCore import Qt
 
@@ -81,6 +81,8 @@ def option(curs, name, default, id_conn=0):
 
 
 def convert(db_file):
+    if not exists(db_file):
+        return
     conn = connect(db_file)
     curs = conn.cursor()
 
