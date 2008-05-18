@@ -57,19 +57,20 @@ _config = {}
 """The dict that contain the ConfigObj objs for connections and general pref"""
 
 
-def _readStorageFile(f, spec):
-    c = ConfigObj(f, configspec=spec)
-    d = c.validate(Validator(), preserve_errors=True)
-    if d != True:
-        logger.warning('format error in storage file: %s' % f)
-        for k, v in d.iteritems():
-            if v != True:
-                logger.warning("%s: %s" % (k, v))
-        return None
-
-    return c
-
 def loadStorage():
+
+    def _readStorageFile(f, spec):
+        c = ConfigObj(f, configspec=spec)
+        d = c.validate(Validator(), preserve_errors=True)
+        if d != True:
+            logger.warning('format error in storage file: %s' % f)
+            for k, v in d.iteritems():
+                if v != True:
+                    logger.warning("%s: %s" % (k, v))
+            return None
+
+        return c
+
     if _config:
         _config.clear()
 
@@ -90,8 +91,7 @@ def loadStorage():
     c = _readStorageFile(general, general_spec)
     if not c:
         # format error: restore defaults
-        c = ConfigObj(options={'indent_type': '  '},
-                        configspec=general_spec)
+        c = ConfigObj(options={'indent_type': '  '}, configspec=general_spec)
         c.validate(Validator())
         c.filename = general
 
@@ -108,10 +108,9 @@ def preferences():
     c = _config['general']
     return (c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'])
 
-def savePreferences(preferences):
+def savePreferences(pref):
     c = _config['general']
-    c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'] = \
-        preferences
+    c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'] = pref
     c.write()
 
 def aliases(conn_name):
@@ -160,7 +159,7 @@ def macros(conn_name):
     if 'macros' in c:
         for m in c['macros'].itervalues():
             macros.append((m['command'], m['shift'], m['alt'],
-                            m['ctrl'], m['keycode']))
+                           m['ctrl'], m['keycode']))
 
     return macros
 
@@ -295,35 +294,25 @@ def accounts(id_conn):
 
     raise exception.ConnectionNotFound
 
-def _getAccountPwd(conn, user):
-    c =  _config
-    if 'passwords' in c and conn in c['passwords'] and \
-        user in c['passwords'][conn]:
-        return b64decode(c['passwords'][conn][user])
-    return None
-
-def _delAccountPwd(conn, user):
-    c =  _config
-    if 'passwords' in c and conn in c['passwords'] and \
-        user in c['passwords'][conn]:
-        del c['passwords'][conn][user]
-        c['passwords'].write()
-
-
-def _saveAccountPwd(conn, user, pwd):
-    c =  _config
-    if 'passwords' not in c:
-        c['passwords'] = ConfigObj(options={'indent_type': '  '})
-        c['passwords'].filename = join(conf.config['storage']['path'],
-                                       'passwords.' + _STORAGE_EXT)
-
-    if conn not in c['passwords']:
-        c['passwords'][conn] = {}
-
-    c['passwords'][conn][user] = b64encode(pwd)
-    c['passwords'].write()
-
 def accountDetail(id_conn, username):
+    """
+    Return the list of command defined for an account.
+
+    :Parameters:
+        id_conn : int
+        the id of connection.
+
+        username : str
+        the username of account.
+    """
+
+    def _getAccountPwd(conn, user):
+        c =  _config
+        if 'passwords' in c and conn in c['passwords'] and \
+           user in c['passwords'][conn]:
+            return b64decode(c['passwords'][conn][user])
+        return None
+
     if id_conn:
         for k, c in _config.iteritems():
             if k not in ('general', 'passwords') and c['id'] == id_conn and \
@@ -341,10 +330,28 @@ def accountDetail(id_conn, username):
     raise exception.ConnectionNotFound
 
 def deleteAccount(id_conn, username):
+    """
+    Erase an account.
+
+    :Parameters:
+        id_conn : int
+        the id of connection.
+
+        username : str
+        the username of account.
+    """
+
+    def _delAccountPwd(conn, user):
+        c =  _config
+        if 'passwords' in c and conn in c['passwords'] and \
+           user in c['passwords'][conn]:
+            del c['passwords'][conn][user]
+            c['passwords'].write()
+
     if id_conn:
         for k, c in _config.iteritems():
             if k not in ('general', 'passwords') and c['id'] == id_conn and \
-                'accounts' in c:
+               'accounts' in c:
                 _delAccountPwd(c['name'], username)
                 del c['accounts'][username]
                 if not c['accounts']:
@@ -355,6 +362,20 @@ def deleteAccount(id_conn, username):
     raise exception.ConnectionNotFound
 
 def saveAccount(commands, id_conn, cmd_user):
+
+    def _saveAccountPwd(conn, user, pwd):
+        c =  _config
+        if 'passwords' not in c:
+            c['passwords'] = ConfigObj(options={'indent_type': '  '})
+            c['passwords'].filename = join(conf.config['storage']['path'],
+                                           'passwords.' + _STORAGE_EXT)
+
+        if conn not in c['passwords']:
+            c['passwords'][conn] = {}
+
+        c['passwords'][conn][user] = b64encode(pwd)
+        c['passwords'].write()
+
     username = commands[cmd_user - 1]
     if id_conn:
         for k, c in _config.iteritems():
@@ -364,9 +385,8 @@ def saveAccount(commands, id_conn, cmd_user):
                 if username not in c['accounts']:
                     c['accounts'][username] = {}
                 else:
-                    dead_list = [kk for kk in
-                                    c['accounts'][username].iterkeys()
-                                    if kk.startswith('cmd-')]
+                    dead_list = [kk for kk in c['accounts'][username].iterkeys()
+                                 if kk.startswith('cmd-')]
 
                     for d in dead_list:
                         del c['accounts'][username][d]
