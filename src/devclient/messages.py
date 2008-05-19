@@ -42,8 +42,6 @@ class Model(object):
         self.main_text = ''
         self.main_html = ''
         self.original_text = ''
-        self.bg_color = None
-        self.fg_color = None
         self.map_html = ''
         self.map_text = ''
         self.prompt = None

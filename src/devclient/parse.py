@@ -68,17 +68,9 @@ class Parser(object):
 
         self._incomplete_seq = None
         self._style = None
-        self._default_bg = None
-        self._default_fg = None
         self._bg_code = None
         self._fg_code = None
         self._server = server
-
-    def _checkDefaultColor(self, model, text):
-        if model.bg_color is None and model.fg_color is None and \
-           len(text.strip()):
-            # Empty colors means default color
-            model.bg_color, model.fg_color = '', ''
 
     def setVars(self, d):
         pass
@@ -89,23 +81,12 @@ class Parser(object):
         """
 
         model = Model()
-        model.bg_color = self._default_bg
-        model.fg_color = self._default_fg
-
         data = data.replace('\r', '')
         html_data, text_data = self._replaceAnsiColor(data, model)
 
         model.main_text = text_data
         model.main_html = html_data
         model.original_text = text_data
-        self._checkDefaultColor(model, model.main_text)
-
-        if model.bg_color != self._default_bg:
-            self._default_bg = model.bg_color
-
-        if model.fg_color != self._default_fg:
-            self._default_fg = model.fg_color
-
         return model
 
     def _replaceTextChars(self, text):
@@ -142,19 +123,12 @@ class Parser(object):
             else:
                 color = self._normal_color[self._fg_code]
 
-            if model.fg_color is None:
-                model.fg_color = color
-
             style.append('color:#%s' % color)
 
 
         if self._bg_code is not None:
             color = self._normal_color[self._bg_code]
-
-            if model.bg_color is None:
-                model.bg_color = color
-            elif color != model.bg_color:
-                style.append('background-color:#%s' % color)
+            style.append('background-color:#%s' % color)
 
         return ';'.join(style)
 
@@ -222,7 +196,6 @@ class Parser(object):
             return ''.join(html_res), parts[0]
 
         text_res = [parts[0]]
-        self._checkDefaultColor(model, parts[0])
         reg = compile('\[(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
 
         for i, s in enumerate(parts[1:]):

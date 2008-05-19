@@ -75,47 +75,42 @@ class TestParser(unittest.TestCase):
         m1 = self.parser.buildModel(txt1)
         m2 = self.parser.buildModel(txt2)
         self.assert_('<span style="color:#aaaa00">hello</span>' == m2.main_html)
-        self.assert_(self.parser._normal_color[3] == m2.fg_color)
 
     def testParseMultiText5(self):
-        txt1, txt2 = '\x1b[0;32mh\x1b[0;33mello', 'world,\x1b[0;34mhello'
-        m1 = self.parser.buildModel(txt1)
-        m2 = self.parser.buildModel(txt2)
-        self.assert_('hello' == m1.main_text)
-        self.assert_(self.parser._normal_color[2] == m1.fg_color)
-        self.assert_('<span style="color:#aaaa00">world,</span>' + \
-                     '<span style="color:#0000aa">hello</span>' ==
-                     m2.main_html)
-
-    def testParseMultiText6(self):
         txt1, txt2 = '\x1b[0;32mh\x1b[0;33mello', 'world'
         m1 = self.parser.buildModel(txt1)
         m2 = self.parser.buildModel(txt2)
-        self.assert_('hello' == m1.main_text)
-        self.assert_(self.parser._normal_color[2] == m1.fg_color)
+        self.assert_('<span style="color:#00aa00">h</span>' +
+                     '<span style="color:#aaaa00">ello</span>' ==
+                     m1.main_html)
+        self.assert_('<span style="color:#aaaa00">world</span>' == m2.main_html)
+
+    def testParseMultiText6(self):
+        txt1, txt2 = '\x1b[0;42mh\x1b[0;33mello', 'world'
+        m1 = self.parser.buildModel(txt1)
+        m2 = self.parser.buildModel(txt2)
+        self.assert_('<span style="background-color:#00aa00">h</span>' +
+                     '<span style="color:#aaaa00">ello</span>' == m1.main_html)
         self.assert_('<span style="color:#aaaa00">world</span>' == m2.main_html)
 
     def testParseMultiText7(self):
-        txt1, txt2 = 'h\x1b[0;33me\x1b[0;32m\x1b[0;33mllo', 'world'
+        txt1, txt2 = '\x1b[0;42mh\x1b[33mello', 'world'
         m1 = self.parser.buildModel(txt1)
         m2 = self.parser.buildModel(txt2)
-        self.assert_('hello' == m1.main_text)
-        self.assert_(m1.fg_color == '')
-        self.assert_('<span style="color:#aaaa00">world</span>' == m2.main_html)
+        self.assert_('<span style="background-color:#00aa00">h</span>' +
+                     '<span style="color:#aaaa00;background-color:#00aa00">' +
+                     'ello</span>' == m1.main_html)
+        self.assert_('<span style="color:#aaaa00;background-color:#00aa00">' +
+                     'world</span>' == m2.main_html)
 
     def testParseMultiText8(self):
-        m = self.parser.buildModel('hello')
-        txt = '\x1b[33m\x1b[42mworld'
-        m = self.parser.buildModel(txt)
-        self.assert_(m.main_html == '<span style="color:#aaaa00;' + \
-                                    'background-color:#00aa00">world</span>')
-
-    def testParseMultiText9(self):
-        m = self.parser.buildModel('hello')
-        txt = '\x1b[42m\x1b[33mworld'
-        m = self.parser.buildModel(txt)
-        self.assert_(m.main_html == '<span style="color:#aaaa00;' + \
-                                    'background-color:#00aa00">world</span>')
+        txt1, txt2 = '\x1b[0;42mh\x1b[33mello\x1b[0m', 'world'
+        m1 = self.parser.buildModel(txt1)
+        m2 = self.parser.buildModel(txt2)
+        self.assert_('<span style="background-color:#00aa00">h</span>' +
+                     '<span style="color:#aaaa00;background-color:#00aa00">' +
+                     'ello</span>' == m1.main_html)
+        self.assert_('world' == m2.main_html)
 
     def testParseSpace(self):
         txt = 'hello world'
@@ -124,55 +119,37 @@ class TestParser(unittest.TestCase):
 
     def testEvalStyle1(self):
         m = Model()
-        self.parser._evalStyle('31', m)
-        self.assert_(self.parser._normal_color[1] == m.fg_color)
-
-    def testEvalStyle2(self):
-        m = Model()
-        self.parser._evalStyle('42', m)
-        self.assert_(self.parser._normal_color[2] == m.bg_color)
-
-    def testEvalStyle3(self):
-        m = Model()
-        self.parser._evalStyle('35;40', m)
-        self.assert_(self.parser._normal_color[5] == m.fg_color)
-        self.assert_(self.parser._normal_color[0] == m.bg_color)
-
-    def testEvalStyle4(self):
-        m = Model()
-        self.parser._evalStyle('1;36;41', m)
-        self.assert_(self.parser._normal_color[1] == m.bg_color)
-        self.assert_(self.parser._bright_color[6] == m.fg_color)
-
-    def testEvalStyle5(self):
-        m = Model()
-        self.parser._evalStyle('0;42', m)
-        self.assert_(self.parser._evalStyle('0;42', m) == '')
-
-    def testEvalStyle6(self):
-        m = Model()
-        self.parser._evalStyle('0;42', m)
         style = self.parser._evalStyle('0;41', m)
         self.assert_(style == 'background-color:#%s' %
                                self.parser._normal_color[1])
 
-    def testEvalStyle7(self):
+    def testEvalStyle2(self):
         m = Model()
-        m.fg_color, m.bg_color = 'FFFFFF', '000000'
-        self.parser._evalStyle('33;42', m)
         style = self.parser._evalStyle('0;31', m)
         self.assert_(style == 'color:#%s' % self.parser._normal_color[1])
 
-    def testEvalStyle8(self):
+    def testEvalStyle3(self):
         m = Model()
-        m.fg_color, m.bg_color = 'FFFFFF', '000000'
+        style = self.parser._evalStyle('35;42', m)
+        d = dict([el.split(':') for el in style.split(';')])
+        self.assert_('#' + self.parser._normal_color[2] == d['background-color'])
+        self.assert_('#' + self.parser._normal_color[5] == d['color'])
+
+    def testEvalStyle4(self):
+        m = Model()
+        style = self.parser._evalStyle('1;36;41', m)
+        d = dict([el.split(':') for el in style.split(';')])
+        self.assert_('#' + self.parser._normal_color[1] == d['background-color'])
+        self.assert_('#' + self.parser._bright_color[6] == d['color'])
+
+    def testEvalStyle5(self):
+        m = Model()
         self.parser._evalStyle('1;33;42', m)
         style = self.parser._evalStyle('31;0', m)
         self.assert_(style == 'color:#%s' % self.parser._normal_color[1])
 
-    def testEvalStyle9(self):
+    def testEvalStyle6(self):
         m = Model()
-        m.fg_color, m.bg_color = 'FFFFFF', '000000'
         self.parser._evalStyle('33;42', m)
         self.assert_(self.parser._evalStyle('0', m) == '')
 
@@ -182,7 +159,6 @@ class TestParser(unittest.TestCase):
         html_res, text_res = self.parser._replaceAnsiColor(txt, m)
         self.assert_(text_res == 'hello')
         self.assert_(html_res == '<span style="color:#aaaa00">hello</span>')
-        self.assert_(m.fg_color == self.parser._normal_color[3])
 
     def testReplaceAnsiColor2(self):
         m = Model()

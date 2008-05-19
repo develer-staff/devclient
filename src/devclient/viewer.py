@@ -22,14 +22,13 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import re
+import storage
 import logging
 
 from sip import delete
 from PyQt4.QtGui import QWidget, QTextCursor
 
 logger = logging.getLogger('viewer')
-
-_default_styles = {}
 
 def _setRightPanel(widget, widget_name):
 
@@ -94,19 +93,13 @@ class TextViewer(object):
 
     def __init__(self, widget):
         self.w = widget
-        self._bg = None
-        self._fg = None
         doc = self.w.text_output.document()
         doc.setMaximumBlockCount(self.MAX_ROWS / self._ROW_BLOCK)
         self._cur_rows = 0
 
     def _resetWidgets(self):
-        t_out = self.w.text_output
-        if not _default_styles.has_key('text_output'):
-            _default_styles['text_output'] = unicode(t_out.styleSheet())
-        else:
-            t_out.setStyleSheet(_default_styles['text_output'])
-            t_out.clear()
+        self._textEditColors(self.w.text_output)
+        self.w.text_output.clear()
 
     def appendHtml(self, html):
         new_html = html.split('<br>')
@@ -128,19 +121,7 @@ class TextViewer(object):
         cursor.endEditBlock()
         self.w.text_output.setTextCursor(cursor)
 
-    def _textEditColors(self, model, text_edit):
-        set_colors = False
-
-        if model.bg_color is not None and self._bg != model.bg_color:
-            self._bg = model.bg_color
-            set_colors = True
-
-        if model.fg_color is not None and self._fg != model.fg_color:
-            self._fg = model.fg_color
-            set_colors = True
-
-        if not set_colors:
-            return
+    def _textEditColors(self, text_edit):
 
         style = unicode(text_edit.styleSheet())
         m = re.search('QTextEdit\s*{(.*)}', style)
@@ -152,18 +133,16 @@ class TextViewer(object):
             oldstyle = None
             d = {}
 
-        if self._bg: d['background-color'] = '#' + self._bg
-        if self._fg: d['color'] = '#' + self._fg
+        d['color'] = storage.option('fg_color')
+        d['background-color'] = storage.option('bg_color')
 
         newstyle = ';'.join([k + ':' + v for k, v in d.iteritems()])
-
         if oldstyle:
             text_edit.setStyleSheet(style.replace(oldstyle, newstyle))
         else:
             text_edit.setStyleSheet('QTextEdit {%s}' % newstyle)
 
     def process(self, model):
-        self._textEditColors(model, self.w.text_output)
         self.appendHtml(model.main_html)
 
 
@@ -200,6 +179,8 @@ class StatusViewer(TextViewer):
                     self._last_values[k] = v
                     bar.setValue(v)
 
+    def _resetWidgets(self):
+        self.v._resetWidgets()
 
 class MapViewer(TextViewer):
     """
@@ -235,7 +216,6 @@ class MapViewer(TextViewer):
     def process(self, model):
         self.v.process(model)
         w_map = self.w.rightwidget.text_map
-        self._textEditColors(model, w_map)
 
         if model.map_text:
             w = w_map.property('char_width').toInt()[0]
@@ -244,3 +224,7 @@ class MapViewer(TextViewer):
             w_map.document().setHtml(model.map_html)
         elif model.map_text is None:
             w_map.document().clear()
+
+    def _resetWidgets(self):
+        self.v._resetWidgets()
+        self._textEditColors(self.w.rightwidget.text_map)

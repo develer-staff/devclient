@@ -22,11 +22,15 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
+import shutil
 import os.path
 import unittest
 
+# FIX
 sys.path.append('..')
+sys.path.append('../configobj')
 
+import devclient.storage
 from devclient.viewer import *
 from devclient.conf import config
 from devclient.messages import Model
@@ -78,6 +82,9 @@ class TextMock(object):
     def setStyleSheet(self, style):
         self._style = style
 
+    def clear(self):
+        pass
+
 
 class BarMock(object):
 
@@ -100,6 +107,7 @@ class RightWidget(object):
         self.bar_movement = BarMock()
         self.box_status = FrameMock()
 
+
 class WidgetMock(object):
 
     def __init__(self):
@@ -112,10 +120,23 @@ class WidgetMock(object):
 
 class TestTextViewer(unittest.TestCase):
 
+    def __init__(self, methodName='runTest'):
+        super(TestTextViewer, self).__init__(methodName)
+        self.test_dir = '../../data/storage/test_dir'
+
     def setUp(self):
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+        os.mkdir(self.test_dir)
+        config['storage'] = {'path': os.path.abspath(self.test_dir)}
+        storage.loadStorage()
         self.widget = WidgetMock()
         self.viewer = TextViewer(self.widget)
         self.m = Model()
+
+    def tearDown(self):
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
 
     def testTextProcess1(self):
         """Test processing of a model of a single string"""
@@ -150,21 +171,17 @@ class TestTextViewer(unittest.TestCase):
     def testTextProcess4(self):
         """Verify background and text color without a previus style"""
 
-        self.m.bg_color = '000000'
-        self.m.fg_color = 'FFFFFF'
-        self.viewer.process(self.m)
-        self.assert_('QTextEdit {color:#FFFFFF;background-color:#000000}' ==
+        self.viewer._resetWidgets()
+        self.assert_('QTextEdit {color:#AAAAAA;background-color:#000000}' ==
                      self.widget.text_output.styleSheet())
 
     def testTextProcess5(self):
         """Verify background and text color with a previus style"""
 
         viewer = TextViewer(self.widget)
-        self.m.bg_color = 'FF00FF'
-        self.m.fg_color = 'CCCCCC'
         self.widget.text_output.setStyleSheet('QTextEdit {color:#FFFF00}')
-        viewer.process(self.m)
-        self.assert_('QTextEdit {color:#CCCCCC;background-color:#FF00FF}' ==
+        viewer._resetWidgets()
+        self.assert_('QTextEdit {color:#AAAAAA;background-color:#000000}' ==
                      self.widget.text_output.styleSheet())
 
 
