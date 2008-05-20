@@ -556,8 +556,9 @@ class FormAliases(object):
 
     def __init__(self, widget):
         self.w = widget
-        self._setupSignal()
         self._translateText()
+        self.loadForm()
+        self._setupSignal()
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
@@ -583,6 +584,8 @@ class FormAliases(object):
         self._text['alias'] = QApplication.translate("option", "Alias")
         self._text['label'] = QApplication.translate("option", "Label")
         self._text['body'] = QApplication.translate("option", "Body")
+        self._text['unique_label'] = QApplication.translate("option",
+            "Alias label must be unique")
 
     def loadForm(self):
         self.w.list_conn_alias.clear()
@@ -630,6 +633,16 @@ class FormAliases(object):
             self.w._displayWarning(self._text['alias'],
                 "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
             return False
+
+
+        if [el[0] for el in self.aliases if
+            el[0] == self.w.label_alias.text() and
+            not self.w.list_alias.currentIndex()]:
+            self.w._displayWarning(self._text['alias'],
+                                   self._text['unique_label'])
+            return False
+
+
         return True
 
     def _saveAlias(self):

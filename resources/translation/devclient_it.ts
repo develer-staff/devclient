@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="it_IT">
+<defaultcodec></defaultcodec>
 <context>
     <name>RightWidget</name>
     <message>
@@ -180,32 +181,32 @@ p, li { white-space: pre-wrap; }
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="600"/>
+        <location filename="../../src/devclient/gui_option.py" line="582"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="603"/>
+        <location filename="../../src/devclient/gui_option.py" line="62"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="606"/>
+        <location filename="../../src/devclient/gui_option.py" line="585"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="607"/>
+        <location filename="../../src/devclient/gui_option.py" line="586"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="609"/>
+        <location filename="../../src/devclient/gui_option.py" line="587"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="605"/>
+        <location filename="../../src/devclient/gui_option.py" line="584"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>
@@ -363,6 +364,11 @@ p, li { white-space: pre-wrap; }
         <source>Bad format on prompt</source>
         <comment>accounts</comment>
         <translation>Formato del prompt errato</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.py" line="590"/>
+        <source>Alias label must be unique</source>
+        <translation>L&apos;etichetta dell&apos;alias deve essere unica</translation>
     </message>
 </context>
 </TS>

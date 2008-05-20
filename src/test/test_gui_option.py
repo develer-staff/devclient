@@ -656,5 +656,176 @@ class TestFormAccounts(GuiOptionTest):
         form._savePrompt()
         self.assert_(form.w._warning)
 
+
+class GuiOptionAliasMock(object):
+
+    def __init__(self):
+        self.list_alias = QComboBox()
+        self.list_conn_alias = QComboBox()
+        self.label_alias = QLineEdit()
+        self.body_alias = QLineEdit()
+        self._warning = None
+        self.delete_alias = QPushButton()
+        self.save_alias = QPushButton()
+
+    def _displayWarning(self, title, message):
+        self._warning = (title, message)
+
+    def connect(self, widget, signal, callback):
+        pass
+
+    def emit(self, signal, args):
+        pass
+
+
+class TestFormAliases(GuiOptionTest):
+
+    def testLoadEmpty(self):
+        form = FormAliases(GuiOptionAliasMock())
+        self.assert_(not form.w.list_conn_alias.count())
+        self.assert_(not form.w.list_alias.count())
+        self.assert_(not form.w.label_alias.text())
+        self.assert_(not form.w.body_alias.text())
+
+    def testLoad1(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        form = FormAliases(GuiOptionAliasMock())
+        self.assert_(form.w.list_conn_alias.count() == 1)
+        self.assert_(form.w.list_alias.count() == 1)
+        self.assert_(not form.w.label_alias.text())
+        self.assert_(not form.w.body_alias.text())
+
+    def testLoad2(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body')])
+        form = FormAliases(GuiOptionAliasMock())
+        self.assert_(form.w.list_alias.count() == 2)
+        self.assert_(not form.w.label_alias.text())
+        self.assert_(not form.w.body_alias.text())
+
+    def testLoad3(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body')])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.list_alias.setCurrentIndex(1)
+        form._loadAlias(1)
+        self.assert_(form.w.list_alias.count() == 2)
+        self.assert_(form.w.label_alias.text() == 'label')
+        self.assert_(form.w.body_alias.text() == 'body')
+
+    def testLoad4(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body'),
+                                     ('label2', 'body2'),
+                                     ('label3', 'body3')])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.list_alias.setCurrentIndex(2)
+        form._loadAlias(2)
+        self.assert_(form.w.list_alias.count() == 4)
+        self.assert_(form.w.label_alias.text() == 'label2')
+        self.assert_(form.w.body_alias.text() == 'body2')
+
+    def testDelete1(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body')])
+        form = FormAliases(GuiOptionAliasMock())
+        form._loadAlias(0)
+        form._deleteAlias()
+        self.assert_(form.w.list_alias.count() == 2)
+
+    def testDelete2(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body')])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.list_alias.setCurrentIndex(1)
+        form._loadAlias(1)
+        form._deleteAlias()
+        self.assert_(form.w.list_alias.count() == 1)
+
+    def testDelete3(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body'), ('label2', 'body2')])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.list_alias.setCurrentIndex(1)
+        form._loadAlias(1)
+        form._deleteAlias()
+        # Delete an element of combobox change the current index of it and emit
+        # a currentIndexChanged signal.
+        form._loadAlias(1)
+        self.assert_(form.w.list_alias.count() == 2)
+        self.assert_(form.w.label_alias.text() == 'label2')
+        self.assert_(form.w.body_alias.text() == 'body2')
+
+    def testDelete4(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body'), ('label2', 'body2')])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.list_alias.setCurrentIndex(2)
+        form._loadAlias(2)
+        form._deleteAlias()
+        # Delete an element of combobox change the current index of it and emit
+        # a currentIndexChanged signal.
+        form._loadAlias(1)
+        self.assert_(form.w.list_alias.count() == 2)
+        self.assert_(form.w.label_alias.text() == 'label')
+        self.assert_(form.w.body_alias.text() == 'body')
+
+    def testCheckAliasFields1(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        form = FormAliases(GuiOptionAliasMock())
+        self.assert_(not form._checkAliasFields())
+        self.assert_(form.w._warning)
+
+    def testCheckAliasFields2(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.label_alias.setText('label')
+        self.assert_(not form._checkAliasFields())
+        self.assert_(form.w._warning)
+
+    def testCheckAliasFields3(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.body_alias.setText('body')
+        self.assert_(not form._checkAliasFields())
+        self.assert_(form.w._warning)
+
+    def testCheckAliasFields4(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.label_alias.setText('label')
+        form.w.body_alias.setText('body')
+        self.assert_(form._checkAliasFields())
+        self.assert_(not form.w._warning)
+
+    def testSave1(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.label_alias.setText('label')
+        form.w.body_alias.setText('body')
+        form._saveAlias()
+        self.assert_(storage.aliases('name') == [('label', 'body')])
+
+    def testSave2(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body')])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.label_alias.setText('label')
+        form.w.body_alias.setText('body')
+        form._saveAlias()
+        self.assert_(form.w._warning)
+        self.assert_(storage.aliases('name') == [('label', 'body')])
+
+    def testSave3(self):
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body')])
+        form = FormAliases(GuiOptionAliasMock())
+        form.w.list_alias.setCurrentIndex(1)
+        form._loadAlias(1)
+        form.w.body_alias.setText('body2')
+        form._saveAlias()
+        self.assert_(not form.w._warning)
+        self.assert_(storage.aliases('name') == [('label', 'body2')])
+
 if __name__ == '__main__':
     unittest.main()
