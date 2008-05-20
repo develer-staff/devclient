@@ -549,6 +549,124 @@ class FormAccounts(object):
         self.w.box_prompt.setVisible(False)
 
 
+class FormAliases(object):
+    """
+    Manage the aliases part of gui option.
+    """
+
+    def __init__(self, widget):
+        self.w = widget
+        self._setupSignal()
+        self._translateText()
+
+    def _setupSignal(self):
+        clicked = SIGNAL("clicked()")
+        self.w.connect(self.w.save_alias, clicked, self._saveAlias)
+        self.w.connect(self.w.delete_alias, clicked, self._deleteAlias)
+        self.w.connect(self.w.list_conn_alias,
+                      SIGNAL("currentIndexChanged(QString)"),
+                      self._loadAliases)
+        self.w.connect(self.w.list_alias,
+                      SIGNAL("currentIndexChanged(int)"),
+                      self._loadAlias)
+
+    def disableSignal(self, disable):
+        self.w.list_alias.blockSignals(disable)
+        self.w.list_conn_alias.blockSignals(disable)
+
+    def _translateText(self):
+        self._text = {}
+        self._text['req_fields'] = QApplication.translate("option",
+            "The following fields are required")
+        self._text['new_alias'] = QApplication.translate("option",
+            "Create New", "alias")
+        self._text['alias'] = QApplication.translate("option", "Alias")
+        self._text['label'] = QApplication.translate("option", "Label")
+        self._text['body'] = QApplication.translate("option", "Body")
+
+    def loadForm(self):
+        self.w.list_conn_alias.clear()
+        self.w.list_conn_alias.addItems([c[1] for c in storage.connections()])
+
+        if self.w.list_conn_alias.count():
+            self._loadAliases(unicode(self.w.list_conn_alias.currentText()))
+
+        for o in (self.w.list_alias, self.w.label_alias, self.w.body_alias):
+            o.setEnabled(bool(self.w.list_conn_alias.count()))
+
+    def _loadAliases(self, conn):
+        self.disableSignal(True)
+        self.w.list_alias.clear()
+        self.w.list_alias.addItem(self._text['new_alias'])
+        self.aliases = storage.aliases(unicode(conn))
+        self.w.list_alias.addItems([l for l, b in self.aliases])
+        self.disableSignal(False)
+        self._loadAlias(0)
+
+    def _loadAlias(self, idx):
+        if not idx:
+            l, b = '', ''
+        else:
+            l, b = self.aliases[idx - 1]
+
+        self.w.label_alias.setText(l)
+        self.w.body_alias.setText(b)
+
+    def _checkAliasFields(self):
+        """
+        Check validity of alias fields.
+        """
+
+        msg = []
+
+        alias_fields = {self._text['label']: self.w.label_alias,
+                        self._text['body']: self.w.body_alias}
+
+        for text, field in alias_fields.iteritems():
+            if not field.text():
+                msg.append(unicode(text))
+
+        if msg:
+            self.w._displayWarning(self._text['alias'],
+                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
+            return False
+        return True
+
+    def _saveAlias(self):
+
+        if not self._checkAliasFields():
+            return
+
+        alias = (unicode(self.w.label_alias.text()),
+                 unicode(self.w.body_alias.text()))
+
+        list_idx = self.w.list_alias.currentIndex()
+        if not list_idx:
+            self.aliases.append(alias)
+            self.w.list_alias.addItem(alias[0])
+        else:
+            self.aliases[list_idx - 1] = alias
+            self.w.list_alias.setItemText(list_idx, alias[0])
+
+        conn_name = self.w.list_conn_alias.currentText()
+        storage.saveAliases(unicode(conn_name), self.aliases)
+        self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
+        self.w.list_alias.setCurrentIndex(0)
+        self._loadAlias(0)
+
+    def _deleteAlias(self):
+
+        list_idx = self.w.list_alias.currentIndex()
+        if not list_idx:
+            return
+
+        del self.aliases[list_idx - 1]
+        self.w.list_alias.removeItem(list_idx)
+        conn_name = self.w.list_conn_alias.currentText()
+        storage.saveAliases(unicode(conn_name), self.aliases)
+        self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
+
+
 class GuiOption(QDialog, Ui_option):
     """
     The Gui dialog for setup option.
@@ -558,7 +676,6 @@ class GuiOption(QDialog, Ui_option):
         QDialog.__init__(self, parent)
         self.setupUi(self)
         self._setupSignal()
-        self._translateText()
 
         self.conn = FormConnection(self)
         """the `FormConnection` instance, used to manage form of connections."""
@@ -572,39 +689,15 @@ class GuiOption(QDialog, Ui_option):
         self.accounts = FormAccounts(self)
         """the FormAccounts instance, used to manage form of accounts."""
 
+        self.alias = FormAliases(self)
+        """the FormAliases instance, used to manage form of aliases."""
+
     def _displayWarning(self, title, message):
         QtGui.QMessageBox.warning(self, title, message)
 
     def _setupSignal(self):
-        clicked = SIGNAL("clicked()")
-        self.connect(self.save_alias, clicked, self._saveAlias)
-        self.connect(self.delete_alias, clicked, self._deleteAlias)
-        self.connect(self.list_conn_alias,
-                     SIGNAL("currentIndexChanged(QString)"),
-                     self._loadAliases)
-        self.connect(self.list_alias,
-                     SIGNAL("currentIndexChanged(int)"),
-                     self._loadAlias)
         self.connect(self.list_option, SIGNAL("itemSelectionChanged()"),
                      self._changeForm)
-
-    def disableSignal(self, disable):
-        self.list_alias.blockSignals(disable)
-        self.list_conn_alias.blockSignals(disable)
-
-    def _translateText(self):
-        self._text = {}
-
-        self._text['req_fields'] = QApplication.translate("option",
-            "The following fields are required")
-        self._text['unique_name'] = QApplication.translate("option",
-            "Connection name must be unique")
-
-        self._text['new_alias'] = QApplication.translate("option",
-            "Create New", "alias")
-        self._text['alias'] = QApplication.translate("option", "Alias")
-        self._text['label'] = QApplication.translate("option", "Label")
-        self._text['body'] = QApplication.translate("option", "Body")
 
     def keyPressEvent(self, keyEvent):
         curr_page = self.page_container.currentWidget().objectName()
@@ -612,99 +705,15 @@ class GuiOption(QDialog, Ui_option):
             self.macro.keyPressEvent(keyEvent)
 
     def _changeForm(self):
-        num = self.list_option.currentRow()
-        self.page_container.setCurrentIndex(num)
+        self.page_container.setCurrentIndex(self.list_option.currentRow())
+        curr_page = str(self.page_container.currentWidget().objectName())
 
-        curr_page = self.page_container.currentWidget().objectName()
-        if curr_page == "alias_page":
-            self.disableSignal(True)
-            self.list_conn_alias.clear()
-            self.list_conn_alias.addItems([c[1] for c in self.conn.connections])
-            self.disableSignal(False)
-            if self.list_conn_alias.count():
-                self._loadAliases(unicode(self.list_conn_alias.currentText()))
+        objs = {'alias_page': self.alias,
+                'macro_page': self.macro,
+                'account_page': self.accounts}
 
-            for o in (self.list_alias, self.label_alias, self.body_alias):
-                o.setEnabled(bool(self.list_conn_alias.count()))
-
-        elif curr_page == "macro_page":
-            self.macro.disableSignal(True)
-            self.macro.loadForm()
-            self.macro.disableSignal(False)
-
-        elif curr_page == "account_page":
-            self.accounts.disableSignal(True)
-            self.accounts.loadForm()
-            self.accounts.disableSignal(False)
-
-    def _loadAliases(self, conn):
-        self.disableSignal(True)
-        self.list_alias.clear()
-        self.list_alias.addItem(self._text['new_alias'])
-        self.aliases = storage.aliases(unicode(conn))
-        self.list_alias.addItems([l for l, b in self.aliases])
-        self.disableSignal(False)
-        self._loadAlias(0)
-
-    def _loadAlias(self, idx):
-        if not idx:
-            l, b = '', ''
-        else:
-            l, b = self.aliases[idx - 1]
-
-        self.label_alias.setText(l)
-        self.body_alias.setText(b)
-
-    def _checkAliasFields(self):
-        """
-        Check validity of alias fields.
-        """
-
-        msg = []
-
-        alias_fields = {self._text['label']: self.label_alias,
-                        self._text['body']: self.body_alias}
-
-        for text, field in alias_fields.iteritems():
-            if not field.text():
-                msg.append(unicode(text))
-
-        if msg:
-            self._displayWarning(self._text['alias'],
-                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
-            return False
-        return True
-
-    def _saveAlias(self):
-
-        if not self._checkAliasFields():
-            return
-
-        alias = (unicode(self.label_alias.text()),
-                 unicode(self.body_alias.text()))
-
-        list_idx = self.list_alias.currentIndex()
-        if not list_idx:
-            self.aliases.append(alias)
-            self.list_alias.addItem(alias[0])
-        else:
-            self.aliases[list_idx - 1] = alias
-            self.list_alias.setItemText(list_idx, alias[0])
-
-        conn_name = self.list_conn_alias.currentText()
-        storage.saveAliases(unicode(conn_name), self.aliases)
-        self.emit(SIGNAL('reloadConnData(QString)'), conn_name)
-        self.list_alias.setCurrentIndex(0)
-        self._loadAlias(0)
-
-    def _deleteAlias(self):
-
-        list_idx = self.list_alias.currentIndex()
-        if not list_idx:
-            return
-
-        del self.aliases[list_idx - 1]
-        self.list_alias.removeItem(list_idx)
-        conn_name = self.list_conn_alias.currentText()
-        storage.saveAliases(unicode(conn_name), self.aliases)
-        self.emit(SIGNAL('reloadConnData(QString)'), conn_name)
+        form = objs.get(curr_page, None)
+        if form:
+            form.disableSignal(True)
+            form.loadForm()
+            form.disableSignal(False)
