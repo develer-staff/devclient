@@ -47,21 +47,17 @@ class FormConnection(object):
 
     def _translateText(self):
         self._text = {}
-        self._text['name'] = QApplication.translate("option", "Name", None,
-                                                    QApplication.UnicodeUTF8)
-        self._text['host'] = QApplication.translate("option", "Host", None,
-                                                    QApplication.UnicodeUTF8)
-        self._text['port'] = QApplication.translate("option", "Port", None,
-                                                    QApplication.UnicodeUTF8)
+        self._text['name'] = QApplication.translate("option", "Name")
+        self._text['host'] = QApplication.translate("option", "Host")
+        self._text['port'] = QApplication.translate("option", "Port")
 
-        self._text['connection'] = QApplication.translate("option",
-            "Connection", None, QApplication.UnicodeUTF8)
+        self._text['connection'] = QApplication.translate("option", "Connection")
 
         self._text['req_fields'] = QApplication.translate("option",
-            "The following fields are required", None, QApplication.UnicodeUTF8)
+            "The following fields are required")
 
         self._text['unique_name'] = QApplication.translate("option",
-            "Connection name must be unique", None, QApplication.UnicodeUTF8)
+            "Connection name must be unique")
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
@@ -206,23 +202,19 @@ class FormMacro(object):
     def _translateText(self):
         self._text = {}
 
-        self._text['new_macro'] = QApplication.translate("option",
-            "Create New", "macro",  QApplication.UnicodeUTF8)
+        self._text['new_macro'] = QApplication.translate("option", "Create New",
+            "macro")
 
-        self._text['macro'] = QApplication.translate("option",
-            "Macro", None, QApplication.UnicodeUTF8)
+        self._text['macro'] = QApplication.translate("option", "Macro")
 
         self._text['req_fields'] = QApplication.translate("option",
-            "The following fields are required", None, QApplication.UnicodeUTF8)
+            "The following fields are required")
 
-        self._text['keys'] = QApplication.translate("option",
-            "Keys", None, QApplication.UnicodeUTF8)
-
-        self._text['command'] = QApplication.translate("option",
-            "Command", None, QApplication.UnicodeUTF8)
+        self._text['keys'] = QApplication.translate("option", "Keys")
+        self._text['command'] = QApplication.translate("option", "Command")
 
         self._text['unique_keys'] = QApplication.translate("option",
-            "Key sequence must be unique", None, QApplication.UnicodeUTF8)
+            "Key sequence must be unique")
 
     def disableSignal(self, disable):
         self.w.list_macro.blockSignals(disable)
@@ -488,11 +480,10 @@ class FormAccounts(object):
     def _translateText(self):
         self._text = {}
 
-        self._text['accounts'] = QApplication.translate("option",
-            "Accounts", None, QApplication.UnicodeUTF8)
+        self._text['accounts'] = QApplication.translate("option", "Accounts")
 
         self._text['bad_format'] = QApplication.translate("option",
-            "Bad format on prompt", "accounts",  QApplication.UnicodeUTF8)
+            "Bad format on prompt", "accounts")
 
     def _togglePrompt(self):
         self.w.box_prompt.setVisible(not self.w.box_prompt.isVisible())
@@ -605,18 +596,15 @@ class GuiOption(QDialog, Ui_option):
         self._text = {}
 
         self._text['req_fields'] = QApplication.translate("option",
-            "The following fields are required", None, QApplication.UnicodeUTF8)
+            "The following fields are required")
         self._text['unique_name'] = QApplication.translate("option",
-            "Connection name must be unique", None, QApplication.UnicodeUTF8)
+            "Connection name must be unique")
 
         self._text['new_alias'] = QApplication.translate("option",
-            "Create New", "alias", QApplication.UnicodeUTF8)
-        self._text['alias'] = QApplication.translate("option",
-            "Alias", None, QApplication.UnicodeUTF8)
-        self._text['label'] = QApplication.translate("option", "Label", None,
-                                                    QApplication.UnicodeUTF8)
-        self._text['body'] = QApplication.translate("option", "Body", None,
-                                                    QApplication.UnicodeUTF8)
+            "Create New", "alias")
+        self._text['alias'] = QApplication.translate("option", "Alias")
+        self._text['label'] = QApplication.translate("option", "Label")
+        self._text['body'] = QApplication.translate("option", "Body")
 
     def keyPressEvent(self, keyEvent):
         curr_page = self.page_container.currentWidget().objectName()
