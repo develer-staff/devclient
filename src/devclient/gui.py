@@ -446,6 +446,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         data = self.list_conn.itemData(self.list_conn.currentIndex())
         id_conn = data.toInt()[0]
         conn = [el for el in connections if el[0] == id_conn][0]
+
+        # AccountManager is built here to get the custom prompt from the user
         self.account = AccountManager(self, getServer(*conn[2:4]), id_conn)
         msg = conn[1:4] + storage.prompt(id_conn, self.account.user)
         self.s_core.write(messages.CONNECT, msg)
@@ -497,7 +499,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 self.s_core.write(messages.MSG, cmd)
 
     def _appendEcho(self, text):
-        if not self.preferences or not self.preferences[0]:
+        if not self.preferences[0]:
             text = '<br>'
         else:
             text = '<span style="color:%s">%s</span><br>' % \
@@ -527,7 +529,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.addItem('')
         self.text_input.addItems(hist)
         self.text_input.setCurrentIndex(0)
-        if not self.preferences or not self.preferences[2]:
+        if not self.preferences[2]:
             text = ''
         self.text_input.setItemText(0, text)
         self.text_input.lineEdit().selectAll()
