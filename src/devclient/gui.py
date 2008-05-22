@@ -33,7 +33,7 @@ from os.path import join, exists
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import QEvent, Qt, QLocale, QVariant
 from PyQt4.QtCore import SIGNAL, PYQT_VERSION_STR, QT_VERSION_STR
-from PyQt4.QtGui import QApplication, QIcon
+from PyQt4.QtGui import QApplication, QIcon, QLineEdit
 from PyQt4.QtGui import QMessageBox, QShortcut, QKeySequence
 from PyQt4.QtNetwork import QHostAddress, QTcpSocket
 
@@ -198,21 +198,31 @@ class GameLogger(object):
 class AccountManager(object):
 
     def __init__(self, widget, server, id_conn):
+        self._w = widget
         self.user = unicode(widget.list_account.currentText())
         storage.setOption('save_account', self.user, id_conn)
         self._save_account = storage.option('save_account')
-        self._num_cmds = server.cmds_account
-        self._cmd_user = server.cmd_username
+        self._cmd_pwd = server.cmd_password
         self._id_conn = id_conn
+        self.cmd_counter = 0
         self._commands = []
 
     def register(self, text):
+        self.cmd_counter += 1
+
+        if self.cmd_counter == self._cmd_pwd - 1:
+            echo_mode = QLineEdit.Password
+        else:
+            echo_mode = QLineEdit.Normal
+
+        self._w.text_input.lineEdit().setEchoMode(echo_mode)
+
         if not self.user and self._save_account \
-           and len(self._commands) < self._num_cmds:
+           and self.cmd_counter < self._cmd_pwd:
             self._commands.append(text)
-            if len(self._commands) == self._num_cmds:
+            if self.cmd_counter == self._cmd_pwd:
                 storage.saveAccount(self._commands, self._id_conn,
-                                    self._cmd_user)
+                                    self._cmd_pwd - 1)
                 return True
         return False
 
@@ -483,6 +493,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             commands = storage.accountDetail(id_conn, self.account.user)
 
             for cmd in commands:
+                self.account.cmd_counter += 1
                 self.s_core.write(messages.MSG, cmd)
 
     def _appendEcho(self, text):

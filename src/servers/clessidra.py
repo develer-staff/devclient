@@ -28,5 +28,4 @@ class Clessidra(DikuServer):
     gui_width = 975
     host = 'mud.clessidra.it'
     port = 4000
-    cmds_account = 3
-    cmd_username = 2
+    cmd_password = 3

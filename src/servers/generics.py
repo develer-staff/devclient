@@ -22,9 +22,7 @@
 class Server(object):
     # Default Server, don't remove it!
     right_widget = 'gui_prompt'
-    cmds_account = 2
-    cmd_username = 1
-
+    cmd_password = 2
 
 class DikuServer(Server):
     prompt_reg = 'Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>'
