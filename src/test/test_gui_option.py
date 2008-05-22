@@ -75,12 +75,16 @@ class GuiOptionMock(object):
         self.connect_conn = QPushButton()
         self.list_conn.addItem("Create New")
         self._warning = None
+        self._question = None
 
     def connect(self, widget, signal, callback):
         pass
 
     def _displayWarning(self, title, message):
         self._warning = (title, message)
+
+    def _displayQuestion(self, title, message):
+        self._question = (title, message)
 
     def emit(self, signal, args):
         pass
@@ -282,7 +286,7 @@ class TestFormConnection(GuiOptionTest):
         form_conn.save()
         self.assert_(self._checkEmptyForm(form_conn))
 
-    def testDelete(self):
+    def xtestDelete(self):
         """Delete 'create new' item."""
 
         storage.addConnection([0, 'name', 'host', 4000])
@@ -290,7 +294,7 @@ class TestFormConnection(GuiOptionTest):
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 1)
 
-    def testDelete2(self):
+    def xtestDelete2(self):
         """Delete a connection."""
 
         storage.addConnection([0, 'name', 'host', 4000])
@@ -299,7 +303,7 @@ class TestFormConnection(GuiOptionTest):
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 0)
 
-    def testDelete3(self):
+    def xtestDelete3(self):
         """Delete a connection on a storage of two connections."""
 
         storage.addConnection([0, 'name', 'host', 4000])
@@ -311,6 +315,17 @@ class TestFormConnection(GuiOptionTest):
         self.assert_(len(form_conn.connections) == 1)
         self.assert_(len(storage.connections()) == 1)
         self.assert_(form_conn.connections[0][1:] == tuple(conn[1:]))
+
+    def testDelete4(self):
+        """Show a question if the connection has a child"""
+
+        storage.addConnection([0, 'name', 'host', 4000])
+        storage.saveAliases('name', [('label', 'body')])
+        form_conn = FormConnection(GuiOptionMock())
+        form_conn.w.list_conn.setCurrentIndex(1)
+        form_conn.delete()
+        self.assert_(len(form_conn.connections) == 1)
+        self.assert_(form_conn.w._question)
 
 
 class GuiOptionMacroMock(object):

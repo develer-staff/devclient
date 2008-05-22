@@ -23,7 +23,7 @@ __docformat__ = 'restructuredtext'
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL, Qt, QVariant
-from PyQt4.QtGui import QApplication, QDialog, QColorDialog
+from PyQt4.QtGui import QApplication, QDialog, QColorDialog, QMessageBox
 
 import storage
 from gui_src.gui_option import Ui_option
@@ -58,6 +58,9 @@ class FormConnection(object):
 
         self._text['unique_name'] = QApplication.translate("option",
             "Connection name must be unique")
+
+        self._text['confirm_delete'] = QApplication.translate("option",
+            "Are you sure to delete the connection?")
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
@@ -161,6 +164,11 @@ class FormConnection(object):
         """
 
         if not self.w.list_conn.currentIndex():
+            return
+
+        if storage.connectionHasChild(unicode(self.w.list_conn.currentText())) \
+           and not self.w._displayQuestion(self._text['connection'],
+                                           self._text['confirm_delete']):
             return
 
         index = self.w.list_conn.currentIndex() - 1
@@ -706,7 +714,12 @@ class GuiOption(QDialog, Ui_option):
         """the FormAliases instance, used to manage form of aliases."""
 
     def _displayWarning(self, title, message):
-        QtGui.QMessageBox.warning(self, title, message)
+        QMessageBox.warning(self, title, message)
+
+    def _displayQuestion(self, title, message):
+        b = QMessageBox.question(self, title, message,
+                                 QMessageBox.Yes, QMessageBox.No)
+        return b == QMessageBox.Yes
 
     def _setupSignal(self):
         self.connect(self.list_option, SIGNAL("itemSelectionChanged()"),
@@ -725,7 +738,7 @@ class GuiOption(QDialog, Ui_option):
                 'macro_page': self.macro,
                 'account_page': self.accounts}
 
-        form = objs.get(curr_page, None)
+        form = objs.get(curr_page)
         if form:
             form.disableSignal(True)
             form.loadForm()

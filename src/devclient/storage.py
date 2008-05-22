@@ -243,6 +243,10 @@ def updateConnection(conn):
     else:
         raise exception.ConnectionNotFound
 
+def connectionHasChild(conn_name):
+    c = _config[conn_name]
+    return c.get('aliases') or c.get('macros') or c.get('accounts')
+
 def getIdConnection(conn_name, cursor=None):
     for k, c in _config.iteritems():
         if k == conn_name:
