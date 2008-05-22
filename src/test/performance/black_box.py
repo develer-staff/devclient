@@ -42,7 +42,6 @@ import devclient.storage as storage
 import devclient.exception as exception
 from devclient.engine import terminateProcess, startProcess
 from devclient.conf import loadConfiguration, config
-from devclient.storage import Storage
 
 _DEF_CONFIG_FILE = "../../../etc/devclient.cfg"
 cfg_file = normpath(join(dirname(abspath(argv[0])), _DEF_CONFIG_FILE))
@@ -100,11 +99,11 @@ def main(cfg_file=cfg_file):
     chdir(join(getcwd(), dirname(argv[0]), dirname(cfg_file)))
     cfg_file = join(getcwd(), basename(cfg_file))
     loadConfiguration(cfg_file)
+    storage.loadStorage()
     conn = [0, 'black_box_test', 'localhost', 6666]
-    s = Storage()
-    s.addConnection(conn)
-    default_conn = s.option('default_connection')
-    s.setOption('default_connection', conn[0])
+    storage.addConnection(conn)
+    default_conn = storage.option('default_connection')
+    storage.setOption('default_connection', conn[0])
     path.append(config['servers']['path'])
     path.append(config['resources']['path'])
 
@@ -155,9 +154,8 @@ def main(cfg_file=cfg_file):
         if not o.core_port:
             terminateProcess(p.pid)
     finally:
-        s = Storage()
-        s.deleteConnection(conn)
-        s.setOption('default_connection', default_conn)
+        storage.deleteConnection(conn)
+        storage.setOption('default_connection', default_conn)
         fn = join(config['servers']['path'], 'localhost_server.py')
         if exists(fn):
             unlink(fn)
