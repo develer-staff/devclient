@@ -286,7 +286,7 @@ class TestFormConnection(GuiOptionTest):
         form_conn.save()
         self.assert_(self._checkEmptyForm(form_conn))
 
-    def xtestDelete(self):
+    def testDelete(self):
         """Delete 'create new' item."""
 
         storage.addConnection([0, 'name', 'host', 4000])
@@ -294,7 +294,7 @@ class TestFormConnection(GuiOptionTest):
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 1)
 
-    def xtestDelete2(self):
+    def testDelete2(self):
         """Delete a connection."""
 
         storage.addConnection([0, 'name', 'host', 4000])
@@ -303,7 +303,7 @@ class TestFormConnection(GuiOptionTest):
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 0)
 
-    def xtestDelete3(self):
+    def testDelete3(self):
         """Delete a connection on a storage of two connections."""
 
         storage.addConnection([0, 'name', 'host', 4000])
