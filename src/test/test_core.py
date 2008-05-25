@@ -209,11 +209,12 @@ class TestSocketToGui(unittest.TestCase, communication.TestSocket):
 
     def startCommunication(self):
         port = randint(2000, 10000)
-        s_gui = SocketToGui(port)
         s_mock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s_mock.connect(('localhost', port))
-        s_gui.accept()
-        return s_gui, s_mock
+        s_mock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s_mock.bind(("localhost", port))
+        s_mock.listen(1)
+        s_gui = SocketToGui(port)
+        return s_gui, s_mock.accept()[0]
 
 
 if __name__ == '__main__':

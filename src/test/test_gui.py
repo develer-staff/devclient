@@ -24,7 +24,6 @@ __docformat__ = 'restructuredtext'
 import sys
 import time
 import socket
-import random
 import unittest
 
 sys.path.append('..')
@@ -52,16 +51,25 @@ class GuiMock(object):
         self._warning = (title, message)
 
 
-class TestSocketToCore(unittest.TestCase, communication.TestSocket):
+def fakeStartCore(self, cfg_file):
+    self._server.listen()
+    port = self._server.serverPort()
+    self._client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    self._client.connect(("localhost", port))
+    self._server.waitForNewConnection(500)
+    self._s = self._server.nextPendingConnection()
 
+
+def fakeDel(self):
+    pass
+
+
+class TestSocketToCore(unittest.TestCase, communication.TestSocket):
     def startCommunication(self):
-        port = random.randint(2000, 10000)
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind(("localhost", 7890))
-        s.listen(1)
-        s_core = SocketToCore(GuiMock())
-        return s_core, s.accept()[0]
+        SocketToCore._startCore = fakeStartCore
+        SocketToCore.__del__ = fakeDel
+        s_core = SocketToCore(GuiMock(), '')
+        return s_core, s_core._client
 
 
 if __name__ == '__main__':

@@ -40,7 +40,7 @@ path.append(join(dirname(abspath(argv[0])), '../../configobj'))
 
 import devclient.storage as storage
 import devclient.exception as exception
-from devclient.engine import terminateProcess, startProcess
+from devclient.utils import terminateProcess, startProcess
 from devclient.conf import loadConfiguration, config
 
 _DEF_CONFIG_FILE = "../../../etc/devclient.cfg"
@@ -89,9 +89,6 @@ def main(cfg_file=cfg_file):
     parser = OptionParser()
     parser.add_option('-t', '--test', default='test',
                       help='the test directory (default %default)')
-    parser.add_option('--core-port', type='int', default=0, dest="core_port",
-                      help='the port where the process core is listening ' +
-                           'for connection')
     o, args = parser.parse_args()
     test_options = readTestOptions(o.test)
 
@@ -114,22 +111,8 @@ def main(cfg_file=cfg_file):
     # this import must stay here, after the appending of resources path to path
     from devclient.gui import Gui
 
-    if not o.core_port:
-        port = random.randint(2000, 10000)
-
-        p = startProcess(['python',
-                        join(config['devclient']['path'], 'core.py'),
-                        '--config=%s' % cfg_file,
-                        '--port=%d' % port])
-
-        # FIX! To prevent connectionRefused from SocketToGui
-        import time
-        time.sleep(.5)
-    else:
-        port = o.core_port
-
     try:
-        gui = Gui(port)
+        gui = Gui(cfg_file)
         cwd = dirname(argv[0]) if dirname(argv[0]) else None
         cmd = ['python', '-u', 'server_test.py']
         if 'delay' in test_options:

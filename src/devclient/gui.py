@@ -35,7 +35,7 @@ from PyQt4.QtCore import QEvent, Qt, QLocale, QVariant
 from PyQt4.QtCore import SIGNAL, PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt4.QtGui import QApplication, QIcon, QLineEdit
 from PyQt4.QtGui import QMessageBox, QShortcut, QKeySequence
-from PyQt4.QtNetwork import QHostAddress, QTcpSocket
+from PyQt4.QtNetwork import QHostAddress, QTcpSocket, QTcpServer
 
 import storage
 import messages
@@ -46,6 +46,7 @@ from alias import Alias
 from history import History
 from viewer import getViewer
 from servers import getServer
+from utils import terminateProcess, startProcess
 from gui_src.gui import Ui_dev_client
 from constants import PUBLIC_VERSION, PROJECT_NAME
 
@@ -57,26 +58,40 @@ class SocketToCore(object):
     Provide a socket interface used to exchange message with `Core`.
     """
 
-    def __init__(self, widget, port=7890, timeout=.2):
+    def __init__(self, widget, cfg_file, timeout=.2):
         """
         Create the `SocketToCore` instance.
 
         :Parameters:
           widget : QWidget
             the parent widget, used to display messages
-          port : int
-            the port used to establish a connection with `Core`
+          cfg_file : str
+            the path of configuration file
           timeout : int
             the timeout of socket operations (in seconds)
         """
 
         self._w = widget
         self._timeout = timeout * 1000
-        self._s = QTcpSocket()
-        self._s.connectToHost(QHostAddress(QHostAddress.LocalHost), port)
-        if not self._s.waitForConnected(self._timeout):
-            self._commError()
+        self._server = QTcpServer()
+        self._startCore(cfg_file)
         self._setupSignal()
+
+    def _startCore(self, cfg_file):
+        self._server.listen()
+        port = self._server.serverPort()
+
+        p = startProcess(['python',
+                        join(config['devclient']['path'], 'core.py'),
+                        '--config=%s' % cfg_file,
+                        '--port=%d' % port])
+        self._pid = p.pid
+
+        if not self._server.waitForNewConnection(500)[0]:
+            logger.error('SocketToCore: ' + self._server.errorString())
+            self._w.displayWarning(PROJECT_NAME, self._w._text['FatalError'])
+            raise exception.IPCError()
+        self._s = self._server.nextPendingConnection()
 
     def _setupSignal(self):
         self._w.connect(self._s, SIGNAL("readyRead()"),
@@ -162,10 +177,10 @@ class SocketToCore(object):
         self._s.flush()  # prevent buffering
 
     def disconnect(self):
-        self._s.disconnectFromHost()
+        self._s.close()
 
     def __del__(self):
-        self.disconnect()
+        terminateProcess(self._pid)
 
 
 class GameLogger(object):
@@ -236,7 +251,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 .. _Qt-designer: http://doc.trolltech.com/4.3/designer-manual.html
     """
 
-    def __init__(self, port):
+    def __init__(self, cfg_file):
 
         if QApplication.instance():
             self.app = QApplication.instance()
@@ -250,7 +265,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.setupLogger()
         self._translateText()
 
-        self.s_core = SocketToCore(self, port)
+        self.s_core = SocketToCore(self, cfg_file)
         """the interface with `Core`, an instance of `SocketToCore`"""
 
         self.viewer = None

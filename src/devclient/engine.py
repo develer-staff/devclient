@@ -22,11 +22,7 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import os
-import ctypes
-import random
-import signal
 import os.path
-import subprocess
 from time import strftime
 from traceback import print_exc
 from os.path import dirname, join, abspath, normpath
@@ -38,39 +34,6 @@ from conf import loadConfiguration, config
 
 cfg_file = normpath(dirname(abspath(__file__)) + "/../../etc/devclient.cfg")
 
-def terminateProcess(pid):
-    """
-    Kill a process.
-
-    :Parameters:
-      pid : int
-        the id of the process to kill
-    """
-
-    if platform == 'win32':
-        handle = ctypes.windll.kernel32.OpenProcess(1, False, pid)
-        ctypes.windll.kernel32.TerminateProcess(handle, -1)
-        ctypes.windll.kernel32.CloseHandle(handle)
-    else:
-        os.kill(pid, signal.SIGKILL)
-
-
-def startProcess(cmd):
-    """
-    Launch a subprocess, hiding the console on win32.
-
-    :Parameters:
-      cmd : tuple
-        the name and parameters of the process to launch.
-    """
-
-    if platform == 'win32':  # Hide console on win32 platform
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    else:
-        startupinfo = None
-
-    return subprocess.Popen(cmd, startupinfo=startupinfo)
 
 def save_exception():
     """
@@ -133,27 +96,14 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
 
     # this import must stay here, after the appending of resources path to path
     from gui import Gui
-    port = random.randint(2000, 10000)
-
-    p = startProcess(['python',
-                      join(config['devclient']['path'], 'core.py'),
-                      '--config=%s' % cfg_file,
-                      '--port=%d' % port])
-
-    # FIX! To prevent connectionRefused from SocketToGui
-    import time
-    time.sleep(.5)
-
     try:
-        gui = Gui(port)
+        gui = Gui(cfg_file)
         if not update:
             gui.displayWarning(PROJECT_NAME, gui._text['UpdateFail'])
         gui.mainLoop()
     except exception.IPCError:
         save_exception()
-        terminateProcess(p.pid)
     except Exception, e:
         print 'Fatal Exception:', e
         save_exception()
-        terminateProcess(p.pid)
 

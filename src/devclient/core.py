@@ -260,10 +260,8 @@ class SocketToGui(object):
     def __init__(self, port=7890, timeout=.2):
         self._timeout = timeout
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._s.bind(('localhost', port))
+        self._s.connect(('localhost', port))
         self._s.settimeout(self._timeout)
-        self._s.listen(1)
 
     def fileno(self):
         """
@@ -272,17 +270,6 @@ class SocketToGui(object):
 
         return self._s.fileno()
 
-    def accept(self):
-        """
-        Accept a connection.
-
-        :return: the socket object usable to send and receive data.
-        """
-
-        self._conn = self._s.accept()[0]
-        self._conn.settimeout(self._timeout)
-        return self._conn
-
     def read(self):
         """
         Read a message.
@@ -290,7 +277,7 @@ class SocketToGui(object):
         :return: a tuple of the form (<message type>, <message>)
         """
 
-        size = self._conn.recv(struct.calcsize("L"))
+        size = self._s.recv(struct.calcsize("L"))
         try:
             size = struct.unpack('>l', size)[0]
         except struct.error:
@@ -302,7 +289,7 @@ class SocketToGui(object):
         data = []
         try:
             while size > 0:
-                data.append(self._conn.recv(min(4096, size)))
+                data.append(self._s.recv(min(4096, size)))
                 size -= len(data[-1])
 
             return cPickle.loads(''.join(data))
@@ -323,11 +310,10 @@ class SocketToGui(object):
         """
 
         buf = cPickle.dumps((cmd, message))
-        self._conn.send(struct.pack('>l', len(buf)))
-        self._conn.sendall(buf)
+        self._s.send(struct.pack('>l', len(buf)))
+        self._s.sendall(buf)
 
     def __del__(self):
-        self._conn.close()
         self._s.close()
 
 
@@ -448,9 +434,6 @@ class Core(object):
             for s in r:
                 if s == self.s_server:
                     self._readDataFromServer(sock_watched)
-                # connection request from Gui
-                elif s == self.s_gui:
-                    sock_watched.append(self.s_gui.accept())
                 elif not self._readDataFromGui(sock_watched):
                     return
 
