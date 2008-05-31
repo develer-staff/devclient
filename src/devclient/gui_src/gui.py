@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sat May 31 11:44:14 2008
+# Created: Sat May 31 21:17:41 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -163,6 +163,7 @@ class Ui_dev_client(object):
         self.toggle_splitter.setMinimumSize(QtCore.QSize(23,23))
         self.toggle_splitter.setMaximumSize(QtCore.QSize(25,25))
         self.toggle_splitter.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.toggle_splitter.setIcon(QtGui.QIcon(":/images/split-window.png"))
         self.toggle_splitter.setObjectName("toggle_splitter")
         self.hboxlayout.addWidget(self.toggle_splitter)
         self.gridlayout.addLayout(self.hboxlayout,2,0,1,1)

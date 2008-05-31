@@ -367,6 +367,9 @@
         <property name="text" >
          <string/>
         </property>
+        <property name="icon" >
+         <iconset resource="../../../resources/gui.qrc" >:/images/split-window.png</iconset>
+        </property>
        </widget>
       </item>
      </layout>
