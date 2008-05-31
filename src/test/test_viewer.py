@@ -26,6 +26,8 @@ import shutil
 import os.path
 import unittest
 
+from PyQt4.QtGui import QApplication, QTextEdit, QProgressBar, QFrame, QSplitter
+
 # FIX
 sys.path.append('..')
 sys.path.append('../configobj')
@@ -36,65 +38,6 @@ from devclient.conf import config
 from devclient.messages import Model
 
 
-class TextDocMock(object):
-    def setMaximumBlockCount(self, num):
-        pass
-
-
-class TextCursorMock(object):
-    def __init__(self, text_mock):
-        self.text_mock = text_mock
-
-    def movePosition(self, where):
-        pass
-
-    def insertBlock(self):
-        pass
-
-    def insertHtml(self, html):
-        self.text_mock._html += html
-
-    def beginEditBlock(self):
-        pass
-
-    def endEditBlock(self):
-        pass
-
-
-class TextMock(object):
-
-    def __init__(self):
-        self._html = ''
-        self._style = ''
-
-    def setTextCursor(self, cursor):
-        pass
-
-    def textCursor(self):
-        return TextCursorMock(self)
-
-    def document(self):
-        return TextDocMock()
-
-    def styleSheet(self):
-        return self._style
-
-    def setStyleSheet(self, style):
-        self._style = style
-
-    def clear(self):
-        pass
-
-
-class BarMock(object):
-
-    def __init__(self):
-        self._value = None
-
-    def setValue(self, value):
-        self._value = value
-
-
 class FrameMock(object):
     def setVisible(self, display):
         pass
@@ -102,26 +45,35 @@ class FrameMock(object):
 
 class RightWidget(object):
     def __init__(self):
-        self.bar_health = BarMock()
-        self.bar_mana = BarMock()
-        self.bar_movement = BarMock()
+        self.bar_health = QProgressBar()
+        self.bar_mana = QProgressBar()
+        self.bar_movement = QProgressBar()
         self.box_status = FrameMock()
 
 
 class WidgetMock(object):
 
     def __init__(self):
-        self.text_output = TextMock()
+        self.text_output = QTextEdit()
         self.rightwidget = RightWidget()
+        self.text_output_noscroll = QTextEdit()
+        self.text_output_noscroll.setVisible(False)
+        self.output_splitter = QSplitter()
 
     def update(self):
         pass
 
+    def connect(self, widget, signal, callback):
+        pass
 
-class TestTextViewer(unittest.TestCase):
+
+class ViewerTest(unittest.TestCase):
 
     def __init__(self, methodName='runTest'):
-        super(TestTextViewer, self).__init__(methodName)
+        super(ViewerTest, self).__init__(methodName)
+        if not QApplication.instance():
+            self.app = QApplication([])
+
         self.test_dir = '../../data/storage/test_dir'
 
     def setUp(self):
@@ -138,13 +90,17 @@ class TestTextViewer(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
 
+
+class TestTextViewer(ViewerTest):
+
     def testTextProcess1(self):
         """Test processing of a model of a single string"""
 
         text = 'hello world'
         self.m.main_html = text
         self.viewer.process(self.m)
-        self.assert_(text == self.widget.text_output._html)
+        self.assert_(text == self.widget.text_output.toPlainText())
+        self.assert_(text == self.widget.text_output_noscroll.toPlainText())
 
     def testTextProcess2(self):
         """Test processing of a model of two string"""
@@ -152,7 +108,9 @@ class TestTextViewer(unittest.TestCase):
         elem = ['hello', 'world']
         self.m.main_html = ''.join(elem)
         self.viewer.process(self.m)
-        self.assert_(''.join(elem) == self.widget.text_output._html)
+        w = self.widget
+        self.assert_(''.join(elem) == w.text_output.toPlainText())
+        self.assert_(''.join(elem) == w.text_output_noscroll.toPlainText())
 
     def testTextProcess3(self):
         """Test the sequence of two call at process"""
@@ -166,23 +124,33 @@ class TestTextViewer(unittest.TestCase):
         self.viewer.process(self.m)
 
         text = ''.join(elem) + ''.join(elem2)
-        self.assert_(text == self.widget.text_output._html)
+        self.assert_(text == self.widget.text_output.toPlainText())
+        self.assert_(text == self.widget.text_output.toPlainText())
 
-    def testTextProcess4(self):
+    def testResetWidgets1(self):
         """Verify background and text color without a previus style"""
 
         self.viewer._resetWidgets()
-        self.assert_('QTextEdit {color:#AAAAAA;background-color:#000000}' ==
-                     self.widget.text_output.styleSheet())
+        s = 'QTextEdit {color:#AAAAAA;background-color:#000000}'
+        self.assert_(s == self.widget.text_output.styleSheet())
+        self.assert_(s == self.widget.text_output_noscroll.styleSheet())
 
-    def testTextProcess5(self):
+    def testResetWidgets2(self):
         """Verify background and text color with a previus style"""
 
         viewer = TextViewer(self.widget)
         self.widget.text_output.setStyleSheet('QTextEdit {color:#FFFF00}')
         viewer._resetWidgets()
-        self.assert_('QTextEdit {color:#AAAAAA;background-color:#000000}' ==
-                     self.widget.text_output.styleSheet())
+        s = 'QTextEdit {color:#AAAAAA;background-color:#000000}'
+        self.assert_(s == self.widget.text_output.styleSheet())
+        self.assert_(s == self.widget.text_output_noscroll.styleSheet())
+
+    def testResetWidgets3(self):
+        self.widget.text_output.setHtml('Hello!')
+        self.widget.text_output_noscroll.setHtml('Hello!')
+        self.viewer._resetWidgets()
+        self.assert_(self.widget.text_output.toPlainText() == '')
+        self.assert_(self.widget.text_output_noscroll.toPlainText() == '')
 
 
 class TestStatusViewer(unittest.TestCase):
@@ -198,9 +166,9 @@ class TestStatusViewer(unittest.TestCase):
                              'Mv': ('108', '108')}
         self.viewer.process(self.model)
 
-        self.assert_(self.widget.rightwidget.bar_health._value == 100 and
-                     self.widget.rightwidget.bar_mana._value == 100 and
-                     self.widget.rightwidget.bar_movement._value == 100)
+        self.assert_(self.widget.rightwidget.bar_health.value() == 100 and
+                     self.widget.rightwidget.bar_mana.value() == 100 and
+                     self.widget.rightwidget.bar_movement.value() == 100)
 
     def testPromptProcess2(self):
         self.model.prompt = {'Hp': ('0', '22'),
@@ -208,9 +176,9 @@ class TestStatusViewer(unittest.TestCase):
                              'Mv': ('0', '108')}
         self.viewer.process(self.model)
 
-        self.assert_(self.widget.rightwidget.bar_health._value == 0 and
-                     self.widget.rightwidget.bar_mana._value == 0 and
-                     self.widget.rightwidget.bar_movement._value == 0)
+        self.assert_(self.widget.rightwidget.bar_health.value() == 0 and
+                     self.widget.rightwidget.bar_mana.value() == 0 and
+                     self.widget.rightwidget.bar_movement.value() == 0)
 
     def testPromptProcess3(self):
         self.model.prompt = {'Hp': ('10', '100'),
@@ -218,9 +186,9 @@ class TestStatusViewer(unittest.TestCase):
                              'Mv': ('20', '40')}
         self.viewer.process(self.model)
 
-        self.assert_(self.widget.rightwidget.bar_health._value == 10 and
-                     self.widget.rightwidget.bar_mana._value == 20 and
-                     self.widget.rightwidget.bar_movement._value == 50)
+        self.assert_(self.widget.rightwidget.bar_health.value() == 10 and
+                     self.widget.rightwidget.bar_mana.value() == 20 and
+                     self.widget.rightwidget.bar_movement.value() == 50)
 
     def testPromptProcess4(self):
         self.model.prompt = {'Hp': ('-10', '100'),
@@ -228,9 +196,9 @@ class TestStatusViewer(unittest.TestCase):
                              'Mv': ('10', '40')}
         self.viewer.process(self.model)
 
-        self.assert_(self.widget.rightwidget.bar_health._value == 0 and
-                     self.widget.rightwidget.bar_mana._value == 100 and
-                     self.widget.rightwidget.bar_movement._value == 25)
+        self.assert_(self.widget.rightwidget.bar_health.value() == 0 and
+                     self.widget.rightwidget.bar_mana.value() == 100 and
+                     self.widget.rightwidget.bar_movement.value() == 25)
 
 
 if __name__ == '__main__':

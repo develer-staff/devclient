@@ -318,6 +318,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
         self.text_input.lineEdit().installEventFilter(self)
+        self.text_output_noscroll.installEventFilter(self)
+        self.text_output_noscroll.setVisible(False)
 
         screen = QtGui.QDesktopWidget().screenGeometry()
         size = self.geometry()
@@ -344,6 +346,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         clicked = SIGNAL("clicked()")
         self.connect(self.button_connect, clicked, self._connect)
         self.connect(self.button_option, clicked, self._showOption)
+        self.connect(self.toggle_splitter, clicked, self._toggleSplitter)
 
         self.connect(self.list_conn,
                      SIGNAL("currentIndexChanged(int)"),
@@ -356,6 +359,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         QShortcut(QKeySequence(Qt.Key_Return), self, self._sendText)
 
         QShortcut(QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
+
+    def _toggleSplitter(self):
+        if self.viewer:
+            self.viewer.toggleSplitter()
 
     def _checkModifier(self, event, mod):
         """
@@ -398,7 +405,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                not self._checkModifier(event, Qt.ShiftModifier) and \
                not self._checkModifier(event, Qt.AltModifier) and \
                event.key() == Qt.Key_C:
-                self.text_output.copy()
+                self.viewer.copySelectedText()
                 return True
 
         return False

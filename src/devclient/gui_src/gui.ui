@@ -24,7 +24,7 @@
      <number>5</number>
     </property>
     <property name="bottomMargin" >
-     <number>5</number>
+     <number>3</number>
     </property>
     <property name="horizontalSpacing" >
      <number>5</number>
@@ -211,34 +211,80 @@
      </widget>
     </item>
     <item row="1" column="0" >
-     <widget class="QTextEdit" name="text_output" >
-      <property name="sizePolicy" >
-       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
-        <horstretch>1</horstretch>
-        <verstretch>1</verstretch>
-       </sizepolicy>
+     <widget class="QSplitter" name="output_splitter" >
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
       </property>
-      <property name="minimumSize" >
-       <size>
-        <width>690</width>
-        <height>0</height>
-       </size>
+      <property name="handleWidth" >
+       <number>3</number>
       </property>
-      <property name="focusPolicy" >
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="autoFillBackground" >
-       <bool>true</bool>
-      </property>
-      <property name="styleSheet" >
-       <string>QTextEdit { background-color: #000000; font: 13px "Courier"; color: #FFFFFF;}</string>
-      </property>
-      <property name="undoRedoEnabled" >
+      <property name="childrenCollapsible" >
        <bool>false</bool>
       </property>
-      <property name="readOnly" >
-       <bool>true</bool>
-      </property>
+      <widget class="QTextEdit" name="text_output" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+         <horstretch>1</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>690</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy" >
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="autoFillBackground" >
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet" >
+        <string>QTextEdit { background-color: #000000; font: 13px "Courier"; color: #FFFFFF;}</string>
+       </property>
+       <property name="undoRedoEnabled" >
+        <bool>false</bool>
+       </property>
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QTextEdit" name="text_output_noscroll" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>690</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy" >
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="autoFillBackground" >
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet" >
+        <string>QTextEdit { background-color: #000000; font: 13px "Courier"; color: #FFFFFF;}</string>
+       </property>
+       <property name="verticalScrollBarPolicy" >
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy" >
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="undoRedoEnabled" >
+        <bool>false</bool>
+       </property>
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
     </item>
     <item rowspan="2" row="1" column="1" >
@@ -261,28 +307,69 @@
      </widget>
     </item>
     <item row="2" column="0" >
-     <widget class="QComboBox" name="text_input" >
-      <property name="sizePolicy" >
-       <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-        <horstretch>1</horstretch>
-        <verstretch>1</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize" >
-       <size>
-        <width>690</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="editable" >
-       <bool>true</bool>
+     <layout class="QHBoxLayout" >
+      <property name="spacing" >
+       <number>3</number>
       </property>
       <item>
-       <property name="text" >
-        <string/>
-       </property>
+       <widget class="QComboBox" name="text_input" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+          <horstretch>1</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>660</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>16777215</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text" >
+          <string/>
+         </property>
+        </item>
+       </widget>
       </item>
-     </widget>
+      <item>
+       <widget class="QPushButton" name="toggle_splitter" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>23</width>
+          <height>23</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="focusPolicy" >
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

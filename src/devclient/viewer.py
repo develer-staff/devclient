@@ -26,6 +26,7 @@ import storage
 import logging
 
 from sip import delete
+from PyQt4.QtCore import SIGNAL
 from PyQt4.QtGui import QWidget, QTextCursor
 
 logger = logging.getLogger('viewer')
@@ -95,11 +96,38 @@ class TextViewer(object):
         self.w = widget
         doc = self.w.text_output.document()
         doc.setMaximumBlockCount(self.MAX_ROWS / self._ROW_BLOCK)
+        self.w.text_output_noscroll.document().setMaximumBlockCount(40)
+        self.w.connect(self.w.output_splitter, SIGNAL("splitterMoved(int, int)"),
+                       self._moveSplitter)
         self._cur_rows = 0
 
+    def toggleSplitter(self):
+        no_scroll = self.w.text_output_noscroll
+        no_scroll.setVisible(not no_scroll.isVisible())
+
+    def _moveSplitter(self, pos, index):
+        cursor = self.w.text_output_noscroll.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        self.w.text_output_noscroll.setTextCursor(cursor)
+
     def _resetWidgets(self):
+        self._textEditColors(self.w.text_output_noscroll)
         self._textEditColors(self.w.text_output)
+        self.w.text_output_noscroll.clear()
         self.w.text_output.clear()
+
+    def copySelectedText(self):
+        no_scroll = self.w.text_output_noscroll
+        if no_scroll.textCursor().hasSelection() and no_scroll.isVisible():
+           no_scroll.copy()
+           cursor = no_scroll.textCursor()
+           cursor.clearSelection()
+           no_scroll.setTextCursor(cursor)
+        else:
+            self.w.text_output.copy()
+            cursor = self.w.text_output.textCursor()
+            cursor.clearSelection()
+            self.w.text_output.setTextCursor(cursor)
 
     def appendHtml(self, html):
         new_html = html.split('<br>')
@@ -119,7 +147,19 @@ class TextViewer(object):
             new_block = False
 
         cursor.endEditBlock()
-        self.w.text_output.setTextCursor(cursor)
+        if not self.w.text_output_noscroll.isVisible():
+            self.w.text_output.setTextCursor(cursor)
+
+        new_html = html.split('<br>')
+        cursor = self.w.text_output_noscroll.textCursor()
+        cursor.beginEditBlock()
+        cursor.movePosition(QTextCursor.End)
+        for i, row in enumerate(new_html):
+            if i:
+                cursor.insertBlock()
+            cursor.insertHtml(row)
+        cursor.endEditBlock()
+        self.w.text_output_noscroll.setTextCursor(cursor)
 
     def _textEditColors(self, text_edit):
 

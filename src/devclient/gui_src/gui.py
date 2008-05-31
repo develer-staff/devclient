@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui.ui'
 #
-# Created: Sun Apr  6 13:38:56 2008
+# Created: Sat May 31 11:44:14 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,7 +18,7 @@ class Ui_dev_client(object):
         self.centralwidget.setObjectName("centralwidget")
 
         self.gridlayout = QtGui.QGridLayout(self.centralwidget)
-        self.gridlayout.setMargin(5)
+        self.gridlayout.setContentsMargins(5,5,5,3)
         self.gridlayout.setHorizontalSpacing(5)
         self.gridlayout.setVerticalSpacing(3)
         self.gridlayout.setObjectName("gridlayout")
@@ -86,7 +86,13 @@ class Ui_dev_client(object):
         self.button_option.setObjectName("button_option")
         self.gridlayout.addWidget(self.toppanel,0,0,1,2)
 
-        self.text_output = QtGui.QTextEdit(self.centralwidget)
+        self.output_splitter = QtGui.QSplitter(self.centralwidget)
+        self.output_splitter.setOrientation(QtCore.Qt.Vertical)
+        self.output_splitter.setHandleWidth(3)
+        self.output_splitter.setChildrenCollapsible(False)
+        self.output_splitter.setObjectName("output_splitter")
+
+        self.text_output = QtGui.QTextEdit(self.output_splitter)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(1)
@@ -99,7 +105,23 @@ class Ui_dev_client(object):
         self.text_output.setUndoRedoEnabled(False)
         self.text_output.setReadOnly(True)
         self.text_output.setObjectName("text_output")
-        self.gridlayout.addWidget(self.text_output,1,0,1,1)
+
+        self.text_output_noscroll = QtGui.QTextEdit(self.output_splitter)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.text_output_noscroll.sizePolicy().hasHeightForWidth())
+        self.text_output_noscroll.setSizePolicy(sizePolicy)
+        self.text_output_noscroll.setMinimumSize(QtCore.QSize(690,0))
+        self.text_output_noscroll.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.text_output_noscroll.setAutoFillBackground(True)
+        self.text_output_noscroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.text_output_noscroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.text_output_noscroll.setUndoRedoEnabled(False)
+        self.text_output_noscroll.setReadOnly(True)
+        self.text_output_noscroll.setObjectName("text_output_noscroll")
+        self.gridlayout.addWidget(self.output_splitter,1,0,1,1)
 
         self.rightpanel = QtGui.QFrame(self.centralwidget)
 
@@ -113,6 +135,10 @@ class Ui_dev_client(object):
         self.rightpanel.setObjectName("rightpanel")
         self.gridlayout.addWidget(self.rightpanel,1,1,2,1)
 
+        self.hboxlayout = QtGui.QHBoxLayout()
+        self.hboxlayout.setSpacing(3)
+        self.hboxlayout.setObjectName("hboxlayout")
+
         self.text_input = QtGui.QComboBox(self.centralwidget)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Fixed)
@@ -120,11 +146,26 @@ class Ui_dev_client(object):
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.text_input.sizePolicy().hasHeightForWidth())
         self.text_input.setSizePolicy(sizePolicy)
-        self.text_input.setMinimumSize(QtCore.QSize(690,0))
+        self.text_input.setMinimumSize(QtCore.QSize(660,0))
+        self.text_input.setMaximumSize(QtCore.QSize(16777215,25))
         self.text_input.setEditable(True)
         self.text_input.setObjectName("text_input")
         self.text_input.addItem("")
-        self.gridlayout.addWidget(self.text_input,2,0,1,1)
+        self.hboxlayout.addWidget(self.text_input)
+
+        self.toggle_splitter = QtGui.QPushButton(self.centralwidget)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toggle_splitter.sizePolicy().hasHeightForWidth())
+        self.toggle_splitter.setSizePolicy(sizePolicy)
+        self.toggle_splitter.setMinimumSize(QtCore.QSize(23,23))
+        self.toggle_splitter.setMaximumSize(QtCore.QSize(25,25))
+        self.toggle_splitter.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.toggle_splitter.setObjectName("toggle_splitter")
+        self.hboxlayout.addWidget(self.toggle_splitter)
+        self.gridlayout.addLayout(self.hboxlayout,2,0,1,1)
         dev_client.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(dev_client)
@@ -139,5 +180,6 @@ class Ui_dev_client(object):
         self.button_option.setText(QtGui.QApplication.translate("dev_client", "Option", None, QtGui.QApplication.UnicodeUTF8))
         self.button_option.setShortcut(QtGui.QApplication.translate("dev_client", "Alt+O", None, QtGui.QApplication.UnicodeUTF8))
         self.text_output.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
+        self.text_output_noscroll.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
 
 import gui_rc
