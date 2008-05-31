@@ -233,7 +233,7 @@ class AccountManager(object):
         self._w.text_input.lineEdit().setEchoMode(echo_mode)
 
         if not self.user and self._save_account \
-           and self.cmd_counter < self._cmd_pwd:
+           and self.cmd_counter <= self._cmd_pwd:
             self._commands.append(text)
             if self.cmd_counter == self._cmd_pwd:
                 storage.saveAccount(self._commands, self._id_conn,
