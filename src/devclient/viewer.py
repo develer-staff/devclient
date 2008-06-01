@@ -101,10 +101,6 @@ class TextViewer(object):
                        self._moveSplitter)
         self._cur_rows = 0
 
-    def toggleSplitter(self):
-        no_scroll = self.w.text_output_noscroll
-        no_scroll.setVisible(not no_scroll.isVisible())
-
     def _moveSplitter(self, pos, index):
         cursor = self.w.text_output_noscroll.textCursor()
         cursor.movePosition(QTextCursor.End)

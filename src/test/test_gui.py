@@ -21,17 +21,23 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+import os
 import sys
 import time
+import shutil
 import socket
 import unittest
+
+from PyQt4.QtGui import QComboBox, QApplication, QLineEdit
 
 sys.path.append('..')
 sys.path.append('../configobj')
 sys.path.append('../../resources')
 
 import communication
-from devclient.gui import SocketToCore
+import devclient.storage as storage
+from devclient.conf import config
+from devclient.gui import SocketToCore, AccountManager
 
 
 class GuiMock(object):
@@ -40,11 +46,11 @@ class GuiMock(object):
         self._warning = None
         self._text = {}
         self._text['FatalError'] = ''
+        self.text_input = QComboBox()
+        self.text_input.setEditable(True)
+        self.list_account = QComboBox()
 
     def connect(self, widget, signal, callback):
-        pass
-
-    def _readDataFromCore(self):
         pass
 
     def displayWarning(self, title, message):
@@ -71,6 +77,74 @@ class TestSocketToCore(unittest.TestCase, communication.TestSocket):
         s_core = SocketToCore(GuiMock(), '')
         return s_core, s_core._client
 
+
+class ServerFake:
+    cmd_password = 2
+
+
+class TestAccountManager(unittest.TestCase):
+
+    def __init__(self, methodName='runTest'):
+        super(TestAccountManager, self).__init__(methodName)
+        if not QApplication.instance():
+            self.app = QApplication([])
+
+        self.test_dir = '../../data/storage/test_dir'
+
+    def setUp(self):
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+        os.mkdir(self.test_dir)
+        config['storage'] = {'path': os.path.abspath(self.test_dir)}
+        storage.loadStorage()
+
+    def tearDown(self):
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+
+    def emptyAccounts(self):
+        conn = (0, 'name', 'host', 111)
+        storage.setOption('save_account', 1)
+        storage.addConnection(list(conn))
+        account = AccountManager(GuiMock(), ServerFake, 1)
+        self.assert_(storage.accounts(1) == [])
+
+    def testEchoMode(self):
+        conn = (0, 'name', 'host', 111)
+        storage.addConnection(list(conn))
+        mock = GuiMock()
+        account = AccountManager(mock, ServerFake, 1)
+        self.assert_(mock.text_input.lineEdit().echoMode() == QLineEdit.Normal)
+        account.register("john")
+        self.assert_(mock.text_input.lineEdit().echoMode() == QLineEdit.Password)
+        account.register("johnpwd")
+        self.assert_(mock.text_input.lineEdit().echoMode() == QLineEdit.Normal)
+
+    def testNoSaveAccount(self):
+        conn = (0, 'name', 'host', 111)
+        storage.addConnection(list(conn))
+        account = AccountManager(GuiMock(), ServerFake, 1)
+        account.register("john")
+        account.register("johnpwd")
+        self.assert_(storage.accounts(1) == [])
+
+    def testSaveAccount(self):
+        conn = (0, 'name', 'host', 111)
+        storage.setOption('save_account', 1)
+        storage.addConnection(list(conn))
+        account = AccountManager(GuiMock(), ServerFake, 1)
+        account.register("john")
+        account.register("johnpwd")
+        self.assert_(storage.accounts(1) == ["john"])
+
+    def testSaveAccount2(self):
+        conn = (0, 'name', 'host', 111)
+        storage.setOption('save_account', 1)
+        storage.addConnection(list(conn))
+        account = AccountManager(GuiMock(), ServerFake, 1)
+        account.register("john")
+        account.register("johnpwd")
+        self.assert_(storage.accountDetail(1, "john") == ["john", "johnpwd"])
 
 if __name__ == '__main__':
     unittest.main()

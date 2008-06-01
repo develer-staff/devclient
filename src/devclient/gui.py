@@ -31,11 +31,11 @@ from time import strftime
 from os.path import join, exists
 
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QEvent, Qt, QLocale, QVariant
+from PyQt4.QtCore import QEvent, Qt, QLocale, QVariant, QObject
 from PyQt4.QtCore import SIGNAL, PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt4.QtGui import QApplication, QIcon, QLineEdit
 from PyQt4.QtGui import QMessageBox, QShortcut, QKeySequence
-from PyQt4.QtNetwork import QHostAddress, QTcpSocket, QTcpServer
+from PyQt4.QtNetwork import QHostAddress, QTcpSocket, QTcpServer, QAbstractSocket
 
 import storage
 import messages
@@ -53,7 +53,7 @@ from constants import PUBLIC_VERSION, PROJECT_NAME
 logger = logging.getLogger('gui')
 
 
-class SocketToCore(object):
+class SocketToCore(QObject):
     """
     Provide a socket interface used to exchange message with `Core`.
     """
@@ -71,6 +71,7 @@ class SocketToCore(object):
             the timeout of socket operations (in seconds)
         """
 
+        QObject.__init__(self)
         self._w = widget
         self._timeout = timeout * 1000
         self._server = QTcpServer()
@@ -94,15 +95,16 @@ class SocketToCore(object):
         self._s = self._server.nextPendingConnection()
 
     def _setupSignal(self):
-        self._w.connect(self._s, SIGNAL("readyRead()"),
-                        self._w._readDataFromCore)
-        self._w.connect(self._s, SIGNAL("error(QAbstractSocket::SocketError)"),
-                        self._commError)
+        self.connect(self._s, SIGNAL("readyRead()"), SIGNAL("readyRead()"))
+        self.connect(self._s, SIGNAL("error(QAbstractSocket::SocketError)"),
+                     self._commError)
 
-    def _commError(self, error=None):
-        logger.error('SocketToCore: ' + self._s.errorString())
-        self._w.displayWarning(PROJECT_NAME, self._w._text['FatalError'])
-        raise exception.IPCError()
+    def _commError(self, error):
+        # Timeout error is managed by _readData
+        if self._s.error() != QAbstractSocket.SocketTimeoutError:
+            logger.error('SocketToCore: ' + self._s.errorString())
+            self._w.displayWarning(PROJECT_NAME, self._w._text['FatalError'])
+            raise exception.IPCError()
 
     def _readData(self, size):
         """
@@ -215,7 +217,7 @@ class AccountManager(object):
     def __init__(self, widget, server, id_conn):
         self._w = widget
         self.user = unicode(widget.list_account.currentText())
-        storage.setOption('save_account', self.user, id_conn)
+        storage.setOption('default_account', self.user, id_conn)
         self._save_account = storage.option('save_account')
         self._cmd_pwd = server.cmd_password
         self._id_conn = id_conn
@@ -242,6 +244,169 @@ class AccountManager(object):
         return False
 
 
+class ConnectionManager(QObject):
+    def __init__(self, widget, cfg_file):
+
+        QObject.__init__(self)
+        self.conn_name = None
+        """the name of server connected or None"""
+
+        self._w = widget
+
+        self._s_core = SocketToCore(widget, cfg_file)
+        """the interface with `Core`, an instance of `SocketToCore`"""
+
+        self._viewer = None
+        """The instance of `Viewer` used to show data arrived from `Core`"""
+
+        self._history = History()
+
+        self._game_logger = None
+
+        self._account = None
+
+        self._preferences = storage.preferences()
+        self.connect(self._s_core, SIGNAL("readyRead()"),
+                     self._readDataFromCore)
+
+    def _checkModifier(self, event, mod):
+        """
+        Check keyboard's modifier.
+        """
+
+        return int((event.modifiers() & mod) == mod)
+
+    def _getKeySeq(self, event):
+        """
+        Given a keyboard event, return a tuple of its components.
+
+        :Parameters:
+          event : QKeyEvent
+            the keyboard event
+
+        :return: a tuple of the form (shift, alt, ctrl, keycode)
+        """
+
+        s = self._checkModifier(event, Qt.ShiftModifier)
+        a = self._checkModifier(event, Qt.AltModifier)
+        c = self._checkModifier(event, Qt.ControlModifier)
+        return (s, a, c, event.key())
+
+    def eventFilter(self, event):
+        if event.type() == QEvent.KeyPress and self.conn_name and \
+           event.key() not in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Meta,
+                               Qt.Key_Alt):
+
+            key_seq = self._getKeySeq(event)
+            for m in self._macros:
+                if m[1:] == key_seq:
+                    self._s_core.write(messages.MSG, m[0])
+                    self._appendEcho(m[0])
+                    return True
+
+            # Ctrl-C is used to copy selected text of text_output to clipboard
+            if self._checkModifier(event, Qt.ControlModifier) and \
+               not self._checkModifier(event, Qt.ShiftModifier) and \
+               not self._checkModifier(event, Qt.AltModifier) and \
+               event.key() == Qt.Key_C:
+                self._viewer.copySelectedText()
+                return True
+
+        return False
+
+    def startConnection(self, id_conn):
+        conn = [el for el in storage.connections() if el[0] == id_conn][0]
+
+        # AccountManager is built here to get the custom prompt from the user
+        self._account = AccountManager(self._w, getServer(*conn[2:4]), id_conn)
+        msg = conn[1:4] + storage.prompt(conn[0], self._account.user)
+        self._s_core.write(messages.CONNECT, msg)
+
+    def reloadPreferences(self):
+        self._preferences = storage.preferences()
+        self._game_logger = GameLogger(self.conn_name, self._preferences)
+
+    def reloadConnData(self, conn_name):
+        if self.conn_name and self.conn_name == conn_name:
+            self._macros = storage.macros(conn_name)
+            self._alias = Alias(conn_name)
+
+            c = storage.connection(conn_name)
+            prompt = [p for p in storage.prompt(c[0], self._account.user) if p]
+            self._s_core.write(messages.CUSTOM_PROMPT, prompt)
+
+    def _connEstablished(self, conn_name):
+        self.conn_name = conn_name
+        conn = storage.connection(conn_name)
+        server = getServer(*conn[2:4])
+        self._history.clear()
+        self._alias = Alias(conn_name)
+        custom_prompt = [p for p in storage.prompt(conn[0], self._account.user)
+                         if p]
+        self._viewer = getViewer(self._w, server, custom_prompt)
+        self._macros = storage.macros(conn_name)
+        self._game_logger = GameLogger(conn_name, self._preferences)
+        storage.setOption('default_connection', conn[0])
+
+        if self._account.user:
+            commands = storage.accountDetail(conn[0], self._account.user)
+
+            for cmd in commands:
+                self._account.cmd_counter += 1
+                self._s_core.write(messages.MSG, cmd)
+
+    def disconnect(self):
+        self.conn_name = None
+        self._s_core.write(messages.END_APP, "")
+        self._s_core.disconnect()
+
+    def _appendEcho(self, text):
+        if not self._preferences[0]:
+            text = '<br>'
+        else:
+            text = '<span style="color:%s">%s</span><br>' % \
+                (self._preferences[1], text)
+
+        self._viewer.appendHtml(text)
+
+    def sendText(self, text):
+        self._s_core.write(messages.MSG, self._alias.check(text))
+        self._appendEcho(text)
+        self._history.add(text)
+
+        return self._account.register(text)
+
+    def history(self):
+        return self._history.get()
+
+    def historyPrev(self):
+        return self._history.getPrev()
+
+    def historyNext(self):
+        return self._history.getNext()
+
+    def _readDataFromCore(self):
+        while self._s_core.availableData():
+            cmd, msg = self._s_core.read()
+            if cmd == messages.MODEL:
+                self._game_logger.write(msg)
+                self._viewer.process(msg)
+                self._w.update()
+            elif cmd == messages.CONN_REFUSED:
+                self._w.displayWarning(self._w._text['Connect'],
+                                       self._w._text['ConnError'])
+            elif cmd == messages.CONN_ESTABLISHED:
+                self._connEstablished(msg[0])
+            elif cmd == messages.CONN_LOST:
+                self._w.displayWarning(self._w._text['Connect'],
+                                       self._w._text['ConnLost'])
+                self.conn_name = None
+            elif cmd == messages.CONN_CLOSED:
+                self.conn_name = None
+            elif cmd == messages.UNKNOWN:
+                logger.warning('SocketToCore: Unknown message')
+
+
 class Gui(QtGui.QMainWindow, Ui_dev_client):
     """
     The Gui class written with `Qt`_, that inherits the real gui interface
@@ -261,25 +426,15 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.app.setStyle(QtGui.QStyleFactory.create("Cleanlooks"))
         self._installTranslator()
         QtGui.QMainWindow.__init__(self)
-        self.setupUi(self)
         self.setupLogger()
         self._translateText()
-
-        self.s_core = SocketToCore(self, cfg_file)
-        """the interface with `Core`, an instance of `SocketToCore`"""
-
-        self.viewer = None
-        """The instance of `Viewer` used to show data arrived from `Core`"""
-
-        self.history = History()
-
-        self.connected = None
-        """the name of server connected or None"""
+        self.setupUi(self)
+        self._conn_manager = ConnectionManager(self, cfg_file)
+        self._setEventFilter()
 
         logger.debug('PyQt version: %s, Qt version: %s' %
             (PYQT_VERSION_STR, QT_VERSION_STR))
 
-        self.preferences = storage.preferences()
         self._loadConnections()
         self._setupSignal()
 
@@ -310,15 +465,16 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 selected = i + 1
         self.list_account.setCurrentIndex(selected)
 
-    def setupUi(self, w):
-        Ui_dev_client.setupUi(self, w)
-
-        self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
-        self.text_input.setCompleter(None)
+    def _setEventFilter(self):
         self.text_input.installEventFilter(self)
         self.text_output.installEventFilter(self)
         self.text_input.lineEdit().installEventFilter(self)
         self.text_output_noscroll.installEventFilter(self)
+
+    def setupUi(self, w):
+        Ui_dev_client.setupUi(self, w)
+        self.setWindowTitle(PROJECT_NAME + ' ' + PUBLIC_VERSION)
+        self.text_input.setCompleter(None)
         self.text_output_noscroll.setVisible(False)
 
         screen = QtGui.QDesktopWidget().screenGeometry()
@@ -361,62 +517,19 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         QShortcut(QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
 
     def _toggleSplitter(self):
-        if self.viewer:
-            self.viewer.toggleSplitter()
-
-    def _checkModifier(self, event, mod):
-        """
-        Check keyboard's modifier.
-        """
-
-        return int((event.modifiers() & mod) == mod)
-
-    def _getKeySeq(self, event):
-        """
-        Given a keyboard event, return a tuple of its components.
-
-        :Parameters:
-          event : QKeyEvent
-            the keyboard event
-
-        :return: a tuple of the form (shift, alt, ctrl, keycode)
-        """
-
-        s = self._checkModifier(event, Qt.ShiftModifier)
-        a = self._checkModifier(event, Qt.AltModifier)
-        c = self._checkModifier(event, Qt.ControlModifier)
-        return (s, a, c, event.key())
+        no_scroll = self.text_output_noscroll
+        no_scroll.setVisible(not no_scroll.isVisible())
 
     def eventFilter(self, target, event):
-
-        if event.type() == QEvent.KeyPress and self.connected and \
-           event.key() not in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Meta,
-                               Qt.Key_Alt):
-
-            key_seq = self._getKeySeq(event)
-            for m in self.macros:
-                if m[1:] == key_seq:
-                    self.s_core.write(messages.MSG, m[0])
-                    self._appendEcho(m[0])
-                    return True
-
-            # Ctrl-C is used to copy selected text of text_output to clipboard
-            if self._checkModifier(event, Qt.ControlModifier) and \
-               not self._checkModifier(event, Qt.ShiftModifier) and \
-               not self._checkModifier(event, Qt.AltModifier) and \
-               event.key() == Qt.Key_C:
-                self.viewer.copySelectedText()
-                return True
-
-        return False
+        return self._conn_manager.eventFilter(event)
 
     def _onKeyUp(self):
         self.text_input.setCurrentIndex(0)
-        self.text_input.setItemText(0, self.history.getPrev())
+        self.text_input.setItemText(0, self._conn_manager.historyPrev())
 
     def _onKeyDown(self):
         self.text_input.setCurrentIndex(0)
-        self.text_input.setItemText(0, self.history.getNext())
+        self.text_input.setItemText(0, self._conn_manager.historyNext())
 
     def _installTranslator(self):
         """
@@ -436,14 +549,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         execfile(join(config['devclient']['path'], 'gui.msg') , self._text)
 
     def closeEvent(self, event):
-        if self.connected:
+        if self._conn_manager.conn_name:
             if not self._displayQuestion(PROJECT_NAME,
                                          self._text['CloseConfirm']):
                 event.ignore()
                 return
 
-        self.s_core.write(messages.END_APP, "")
-        self.s_core.disconnect()
+        self._conn_manager.disconnect()
         event.accept()
 
     def _showOption(self):
@@ -451,12 +563,12 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.connect(opt, SIGNAL("reloadConnData(QString)"),
                      self._reloadConnData)
         self.connect(opt, SIGNAL("reloadPreferences()"),
-                     self._reloadPreferences)
+                     self._conn_manager.reloadPreferences)
         opt.show()
 
     def _connect(self):
         connections = storage.connections()
-        if self.connected:
+        if self._conn_manager.conn_name:
             if not self._displayQuestion(self._text['Connect'],
                                          self._text['CloseConn']):
                 return
@@ -466,17 +578,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             return
 
         data = self.list_conn.itemData(self.list_conn.currentIndex())
-        id_conn = data.toInt()[0]
-        conn = [el for el in connections if el[0] == id_conn][0]
-
-        # AccountManager is built here to get the custom prompt from the user
-        self.account = AccountManager(self, getServer(*conn[2:4]), id_conn)
-        msg = conn[1:4] + storage.prompt(id_conn, self.account.user)
-        self.s_core.write(messages.CONNECT, msg)
-
-    def _reloadPreferences(self):
-        self.preferences = storage.preferences()
-        self.game_logger = GameLogger(self.connected, self.preferences)
+        self._conn_manager.startConnection(data.toInt()[0])
 
     def _reloadConnData(self, conn):
         """
@@ -493,91 +595,30 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self._loadConnections()
             self.list_conn.blockSignals(False)
 
-        if self.connected and self.connected == conn:
-            self.macros = storage.macros(self.connected)
-            self.alias = Alias(self.connected)
-
-            id_conn = storage.getIdConnection(self.connected)
-            prompt = [p for p in storage.prompt(id_conn, self.account.user) if p]
-            self.s_core.write(messages.CUSTOM_PROMPT, prompt)
-
-    def _startConnection(self, host, port):
-        id_conn = storage.getIdConnection(self.connected)
-        server = getServer(host, port)
-        self.history.clear()
-        self.alias = Alias(self.connected)
-        custom_prompt = [p for p in storage.prompt(id_conn, self.account.user)
-                         if p]
-        self.viewer = getViewer(self, server, custom_prompt)
-        self.macros = storage.macros(self.connected)
-        self.game_logger = GameLogger(self.connected, self.preferences)
-        storage.setOption('default_connection', id_conn)
-
-        if self.account.user:
-            commands = storage.accountDetail(id_conn, self.account.user)
-
-            for cmd in commands:
-                self.account.cmd_counter += 1
-                self.s_core.write(messages.MSG, cmd)
-
-    def _appendEcho(self, text):
-        if not self.preferences[0]:
-            text = '<br>'
-        else:
-            text = '<span style="color:%s">%s</span><br>' % \
-                (self.preferences[1], text)
-
-        self.viewer.appendHtml(text)
+        self._conn_manager.reloadConnData(unicode(conn))
 
     def _sendText(self):
-        if not self.connected:
+        if not self._conn_manager.conn_name:
             self.displayWarning(PROJECT_NAME, self._text['NotConnected'])
             return
 
         text = unicode(self.text_input.currentText())
-        if self.account.register(text):
-            id_conn = storage.getIdConnection(self.connected)
-            self._loadAccounts(id_conn)
-
-        self.s_core.write(messages.MSG, self.alias.check(text))
-        self._appendEcho(text)
-        self.history.add(text)
+        if self._conn_manager.sendText(text):
+            conn = storage.connection(self._conn_manager.conn_name)
+            self._loadAccounts(conn[0])
         self._manageLineInput(text)
 
     def _manageLineInput(self, text):
-        hist = self.history.get()
+        hist = self._conn_manager.history()
         hist.reverse()
         self.text_input.clear()
         self.text_input.addItem('')
         self.text_input.addItems(hist)
         self.text_input.setCurrentIndex(0)
-        if not self.preferences[2]:
+        if not storage.preferences()[2]:
             text = ''
         self.text_input.setItemText(0, text)
         self.text_input.lineEdit().selectAll()
-
-    def _readDataFromCore(self):
-
-        while self.s_core.availableData():
-            cmd, msg = self.s_core.read()
-            if cmd == messages.MODEL:
-                self.game_logger.write(msg)
-                self.viewer.process(msg)
-                self.update()
-            elif cmd == messages.CONN_REFUSED:
-                self.displayWarning(self._text['Connect'],
-                                    self._text['ConnError'])
-            elif cmd == messages.CONN_ESTABLISHED:
-                self.connected = msg[0]
-                self._startConnection(*msg[1:])
-            elif cmd == messages.CONN_LOST:
-                self.displayWarning(self._text['Connect'],
-                                    self._text['ConnLost'])
-                self.connected = None
-            elif cmd == messages.CONN_CLOSED:
-                self.connected = None
-            elif cmd == messages.UNKNOWN:
-                logger.warning('SocketToCore: Unknown message')
 
     def _displayQuestion(self, title, message):
         b = QMessageBox.question(self, title, message,

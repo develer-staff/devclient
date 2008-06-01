@@ -247,10 +247,10 @@ def connectionHasChild(conn_name):
     c = _config[conn_name]
     return c.get('aliases') or c.get('macros') or c.get('accounts')
 
-def getIdConnection(conn_name, cursor=None):
+def connection(conn_name):
     for k, c in _config.iteritems():
         if k == conn_name:
-            return c['id']
+            return (c['id'], c['name'], c['host'], c['port'])
     else:
         raise exception.ConnectionNotFound
 
