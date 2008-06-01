@@ -722,7 +722,8 @@ class GuiOption(QDialog, Ui_option):
         return b == QMessageBox.Yes
 
     def _setupSignal(self):
-        self.connect(self.list_option, SIGNAL("itemSelectionChanged()"),
+        self.connect(self.list_option,
+                     SIGNAL("currentItemChanged(QListWidgetItem*, QListWidgetItem*)"),
                      self._changeForm)
 
     def keyPressEvent(self, keyEvent):
@@ -730,7 +731,7 @@ class GuiOption(QDialog, Ui_option):
         if curr_page == "macro_page" and self.macro:
             self.macro.keyPressEvent(keyEvent)
 
-    def _changeForm(self):
+    def _changeForm(self, current, previous):
         self.page_container.setCurrentIndex(self.list_option.currentRow())
         curr_page = str(self.page_container.currentWidget().objectName())
 
