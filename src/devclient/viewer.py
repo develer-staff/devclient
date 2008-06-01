@@ -97,14 +97,7 @@ class TextViewer(object):
         doc = self.w.text_output.document()
         doc.setMaximumBlockCount(self.MAX_ROWS / self._ROW_BLOCK)
         self.w.text_output_noscroll.document().setMaximumBlockCount(40)
-        self.w.connect(self.w.output_splitter, SIGNAL("splitterMoved(int, int)"),
-                       self._moveSplitter)
         self._cur_rows = 0
-
-    def _moveSplitter(self, pos, index):
-        cursor = self.w.text_output_noscroll.textCursor()
-        cursor.movePosition(QTextCursor.End)
-        self.w.text_output_noscroll.setTextCursor(cursor)
 
     def _resetWidgets(self):
         self._textEditColors(self.w.text_output_noscroll)

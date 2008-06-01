@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import QEvent, Qt, QLocale, QVariant, QObject
 from PyQt4.QtCore import SIGNAL, PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt4.QtGui import QApplication, QIcon, QLineEdit
-from PyQt4.QtGui import QMessageBox, QShortcut, QKeySequence
+from PyQt4.QtGui import QMessageBox, QShortcut, QKeySequence, QTextCursor
 from PyQt4.QtNetwork import QHostAddress, QTcpSocket, QTcpServer, QAbstractSocket
 
 import storage
@@ -508,6 +508,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                      SIGNAL("currentIndexChanged(int)"),
                      self._loadAccountsFromIdx)
 
+        self.connect(self.output_splitter, SIGNAL("splitterMoved(int, int)"),
+                     self._moveSplitter)
+
         QShortcut(QKeySequence(Qt.Key_Up), self, self._onKeyUp)
         QShortcut(QKeySequence(Qt.Key_Down), self, self._onKeyDown)
 
@@ -516,9 +519,17 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         QShortcut(QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
 
+    def _moveSplitter(self, pos, index):
+        cursor = self.text_output_noscroll.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        self.text_output_noscroll.setTextCursor(cursor)
+
     def _toggleSplitter(self):
         no_scroll = self.text_output_noscroll
         no_scroll.setVisible(not no_scroll.isVisible())
+        cursor = self.text_output.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        self.text_output.setTextCursor(cursor)
 
     def eventFilter(self, target, event):
         return self._conn_manager.eventFilter(event)
