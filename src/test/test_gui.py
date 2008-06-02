@@ -146,6 +146,17 @@ class TestAccountManager(unittest.TestCase):
         account.register("johnpwd")
         self.assert_(storage.accountDetail(1, "john") == ["john", "johnpwd"])
 
+    def testDefaultAccount(self):
+        conn = (0, 'name', 'host', 111)
+        storage.setOption('save_account', 1)
+        storage.addConnection(list(conn))
+        self.assert_(storage.option('default_account', 1) == '')
+        mock = GuiMock()
+        mock.list_account.addItem('john')
+        account = AccountManager(mock, ServerFake, 1)
+        self.assert_(storage.option('default_account', 1) == 'john')
+
+
 if __name__ == '__main__':
     unittest.main()
 
