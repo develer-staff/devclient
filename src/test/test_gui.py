@@ -71,7 +71,7 @@ def fakeDel(self):
     pass
 
 
-class TestSocketToCore:#(unittest.TestCase, communication.TestSocket):
+class TestSocketToCore(unittest.TestCase, communication.TestSocket):
     def startCommunication(self):
         SocketToCore._startCore = fakeStartCore
         SocketToCore.__del__ = fakeDel
@@ -83,7 +83,7 @@ class ServerFake:
     cmd_password = 2
 
 
-class TestAccountManager:#(unittest.TestCase):
+class TestAccountManager(unittest.TestCase):
 
     def __init__(self, methodName='runTest'):
         super(TestAccountManager, self).__init__(methodName)
