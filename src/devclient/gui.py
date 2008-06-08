@@ -265,6 +265,10 @@ class ConnectionManager(QObject):
 
         self._account = None
 
+        self._macros = None
+
+        self._alias = None
+
         self._preferences = storage.preferences()
         self.connect(self._s_core, SIGNAL("readyRead()"),
                      self._readDataFromCore)
@@ -370,7 +374,15 @@ class ConnectionManager(QObject):
         self._viewer.appendHtml(text)
 
     def sendText(self, text):
-        self._s_core.write(messages.MSG, self._alias.check(text))
+
+        to_send = self._alias.check(text)
+        separator = storage.option('cmd_separator')
+        if separator:
+            for t in to_send.split(separator):
+                self._s_core.write(messages.MSG, t)
+        else:
+            self._s_core.write(messages.MSG, to_send)
+
         self._appendEcho(text)
         self._history.add(text)
 

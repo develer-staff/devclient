@@ -52,7 +52,8 @@ general_spec = {'echo_text': 'integer(0, 1, default=1)',
                 'save_account': 'integer(0, 1, default=0)',
                 'default_connection': 'integer(default=0)',
                 'bg_color': 'string(min=7, max=7, default=#000000)',
-                'fg_color': 'string(min=7, max=7, default=#AAAAAA)'
+                'fg_color': 'string(min=7, max=7, default=#AAAAAA)',
+                'cmd_separator' : 'string(max=1, default=";")'
                }
 
 _config = {}

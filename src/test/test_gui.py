@@ -28,6 +28,7 @@ import shutil
 import socket
 import unittest
 
+from PyQt4.QtCore import QObject
 from PyQt4.QtGui import QComboBox, QApplication, QLineEdit
 
 sys.path.append('..')
@@ -37,7 +38,7 @@ sys.path.append('../../resources')
 import communication
 import devclient.storage as storage
 from devclient.conf import config
-from devclient.gui import SocketToCore, AccountManager
+from devclient.gui import SocketToCore, AccountManager, ConnectionManager
 
 
 class GuiMock(object):
@@ -70,7 +71,7 @@ def fakeDel(self):
     pass
 
 
-class TestSocketToCore(unittest.TestCase, communication.TestSocket):
+class TestSocketToCore:#(unittest.TestCase, communication.TestSocket):
     def startCommunication(self):
         SocketToCore._startCore = fakeStartCore
         SocketToCore.__del__ = fakeDel
@@ -82,7 +83,7 @@ class ServerFake:
     cmd_password = 2
 
 
-class TestAccountManager(unittest.TestCase):
+class TestAccountManager:#(unittest.TestCase):
 
     def __init__(self, methodName='runTest'):
         super(TestAccountManager, self).__init__(methodName)
@@ -155,6 +156,64 @@ class TestAccountManager(unittest.TestCase):
         mock.list_account.addItem('john')
         account = AccountManager(mock, ServerFake, 1)
         self.assert_(storage.option('default_account', 1) == 'john')
+
+
+class SocketToCoreMock(QObject):
+    def __init__(self, widget, cfg_file):
+        QObject.__init__(self)
+        self._messages = []
+
+    def write(self, cmd, message):
+        self._messages.append(message)
+
+
+def fakeAppendEcho(self, text):
+    if not hasattr(self, '_echo'):
+        self._echo = []
+    self._echo.append(text)
+
+
+class TestConnectionManager(unittest.TestCase):
+    def __init__(self, methodName='runTest'):
+        super(TestConnectionManager, self).__init__(methodName)
+        sys.modules['devclient.gui'].SocketToCore = SocketToCoreMock
+        if not QApplication.instance():
+            self.app = QApplication([])
+        self.test_dir = '../../data/storage/test_dir'
+
+    def setUp(self):
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+        os.mkdir(self.test_dir)
+        config['storage'] = {'path': os.path.abspath(self.test_dir)}
+        storage.loadStorage()
+
+    def tearDown(self):
+        if os.path.exists(self.test_dir):
+            shutil.rmtree(self.test_dir)
+
+    def buildConnManager(self):
+        conn = (0, 'name', 'host', 111)
+        storage.addConnection(list(conn))
+        ConnectionManager._appendEcho = fakeAppendEcho
+        c = ConnectionManager(GuiMock(), '')
+        c._account = AccountManager(GuiMock(), ServerFake, 1)
+        c.conn_name = 'name'
+        c.reloadConnData('name')
+        c._s_core._messages = []
+        return c
+
+    def testSendText(self):
+        c = self.buildConnManager()
+        c.sendText('who')
+        self.assert_(c._s_core._messages == ['who'])
+        self.assert_(c._echo == ['who'])
+
+    def testSendText2(self):
+        c = self.buildConnManager()
+        c.sendText('up;down')
+        self.assert_(c._s_core._messages == ['up', 'down'])
+        self.assert_(c._echo == ['up;down'])
 
 
 if __name__ == '__main__':
