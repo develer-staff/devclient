@@ -579,7 +579,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                 return
 
         self._conn_manager.disconnect()
-        event.accept()
 
     def _showOption(self):
         opt = gui_option.GuiOption(self)
