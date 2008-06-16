@@ -133,7 +133,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui.ui" line="234"/>
+        <location filename="../../src/devclient/gui_src/gui.ui" line="273"/>
         <source>QTextEdit { background-color: #000000; font: 13px &quot;Courier&quot;; color: #FFFFFF;}</source>
         <translation></translation>
     </message>
@@ -181,7 +181,7 @@ p, li { white-space: pre-wrap; }
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="590"/>
+        <location filename="../../src/devclient/gui_option.py" line="609"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
@@ -191,22 +191,22 @@ p, li { white-space: pre-wrap; }
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="593"/>
+        <location filename="../../src/devclient/gui_option.py" line="612"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="594"/>
+        <location filename="../../src/devclient/gui_option.py" line="613"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="595"/>
+        <location filename="../../src/devclient/gui_option.py" line="614"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="592"/>
+        <location filename="../../src/devclient/gui_option.py" line="611"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>
@@ -283,7 +283,7 @@ p, li { white-space: pre-wrap; }
         <translation>Salva log</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="493"/>
+        <location filename="../../src/devclient/gui_option.py" line="512"/>
         <source>Accounts</source>
         <translation>Account</translation>
     </message>
@@ -360,13 +360,13 @@ p, li { white-space: pre-wrap; }
         <translation>Cambia Prompt</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="496"/>
+        <location filename="../../src/devclient/gui_option.py" line="515"/>
         <source>Bad format on prompt</source>
         <comment>accounts</comment>
         <translation>Formato del prompt errato</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="598"/>
+        <location filename="../../src/devclient/gui_option.py" line="617"/>
         <source>Alias label must be unique</source>
         <translation>L&apos;etichetta dell&apos;alias deve essere unica</translation>
     </message>
@@ -374,6 +374,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../../src/devclient/gui_option.py" line="65"/>
         <source>Are you sure to delete the connection?</source>
         <translation>Vuoi davvero eliminare la connessione?</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.py" line="230"/>
+        <source>Key sequence must be different from all the shortcut keys</source>
+        <translation>La sequenza dei tasti deve essere diversa dalle scorciatoie</translation>
     </message>
 </context>
 </TS>

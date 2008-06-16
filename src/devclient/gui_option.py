@@ -224,6 +224,9 @@ class FormMacro(object):
         self._text['unique_keys'] = QApplication.translate("option",
             "Key sequence must be unique")
 
+        self._text['shortcut_keys'] = QApplication.translate("option",
+            "Key sequence must be different from all the shortcut keys")
+
     def disableSignal(self, disable):
         self.w.list_macro.blockSignals(disable)
         self.w.list_conn_macro.blockSignals(disable)
@@ -301,6 +304,22 @@ class FormMacro(object):
             self.w._displayWarning(self._text['macro'],
                                    self._text['unique_keys'])
             return False
+
+        # FIX: the shortcuts should be read (and write) from storage
+        # Format: shift, alt, ctrl, keycode
+        shortcuts = [(0, 1, 0, Qt.Key_C),
+                     (0, 1, 0, Qt.Key_O),
+                     (0, 1, 0, Qt.Key_Q),
+                     (0, 0, 0, Qt.Key_Enter),
+                     (0, 0, 0, Qt.Key_Return),
+                     (0, 0, 0, Qt.Key_Up),
+                     (0, 0, 0, Qt.Key_Down)]
+
+        if [el for el in shortcuts if el == self.key_seq]:
+            self.w._displayWarning(self._text['macro'],
+                                   self._text['shortcut_keys'])
+            return False
+
         return True
 
     def save(self):
