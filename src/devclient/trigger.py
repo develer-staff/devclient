@@ -28,7 +28,7 @@ import storage
 
 
 class Trigger(object):
-    _SPECIAL_CHARS = {'\\*': '(.*?)', '\\%d': '(\d+)', '\\%w': '(\w+)'}
+    _SPECIAL_CHARS = {'\\*': '.*?', '\\?': '.?', '\\%d': '(\d+)', '\\%w': '(\w+)'}
 
     def __init__(self, conn_name):
         self._list = storage.triggers(conn_name)

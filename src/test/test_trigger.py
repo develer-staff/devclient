@@ -68,11 +68,12 @@ class TestTrigger(unittest.TestCase):
         self.assert_(Trigger(self.conn_name).checkActions(text) == [])
 
     def testCheckAction3(self):
-        triggers = [('* (White Aura) %w', 0, 'look %2')]
+        triggers = [('* (White Aura) %w', 0, 'look %1')]
         storage.saveTriggers(self.conn_name, triggers)
         text = "(Translucent) (White Aura) Ravi, granter of deeds, sits " + \
                "calmly waiting for the next adventurer."
         self.assert_(Trigger(self.conn_name).checkActions(text) == ['look Ravi'])
+
 
 if __name__ == '__main__':
     unittest.main()
