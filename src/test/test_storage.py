@@ -329,6 +329,32 @@ class TestStorage(TestBase):
         self.assert_(storage.option('default_account', 1) == 10)
         self.assert_(storage.option('default_account', 2) == 20)
 
+    def testEmptyTriggers(self):
+        self.assertRaises(exception.ConnectionNotFound,
+                          storage.triggers,
+                          'conn_name')
+
+    def testEmptyTriggers2(self):
+        storage.addConnection([0, 'name', 'host', 111])
+        self.assert_(storage.triggers('name') == [])
+
+    def testSaveTriggers(self):
+        conn_name = 'conn'
+        triggers = [('* dwarf *', 0, 'bow dwarf')]
+
+        self.assertRaises(exception.ConnectionNotFound,
+                          storage.saveTriggers,
+                          conn_name, triggers)
+
+    def testSaveTriggers2(self):
+        conn_name = 'conn'
+        conn = [0, conn_name, 'host', 111]
+        storage.addConnection(conn)
+
+        triggers = [('* dwarf *', 0, 'bow dwarf')]
+        storage.saveTriggers(conn_name, triggers)
+        self.assert_(storage.triggers(conn_name) == triggers)
+
 
 class TestStorage2(TestBase):
 

@@ -43,6 +43,7 @@ import exception
 import gui_option
 from conf import config
 from alias import Alias
+from trigger import Trigger
 from history import History
 from viewer import getViewer
 from servers import getServer
@@ -262,11 +263,9 @@ class ConnectionManager(QObject):
         self._history = History()
 
         self._game_logger = None
-
         self._account = None
-
         self._macros = None
-
+        self._trigger = None
         self._alias = None
 
         self._preferences = storage.preferences()
@@ -333,6 +332,7 @@ class ConnectionManager(QObject):
     def reloadConnData(self, conn_name):
         if self.conn_name and self.conn_name == conn_name:
             self._macros = storage.macros(conn_name)
+            self._trigger = Trigger(conn_name)
             self._alias = Alias(conn_name)
 
             c = storage.connection(conn_name)
@@ -345,6 +345,7 @@ class ConnectionManager(QObject):
         server = getServer(*conn[2:4])
         self._history.clear()
         self._alias = Alias(conn_name)
+        self._trigger = Trigger(conn_name)
         custom_prompt = [p for p in storage.prompt(conn[0], self._account.user)
                          if p]
         self._viewer = getViewer(self._w, server, custom_prompt)
@@ -374,19 +375,19 @@ class ConnectionManager(QObject):
         self._viewer.appendHtml(text)
 
     def sendText(self, text):
-
-        to_send = self._alias.check(text)
-        separator = storage.option('cmd_separator')
-        if separator:
-            for t in to_send.split(separator):
-                self._s_core.write(messages.MSG, t)
-        else:
-            self._s_core.write(messages.MSG, to_send)
-
+        self._sendText(text)
         self._appendEcho(text)
         self._history.add(text)
-
         return self._account.register(text)
+
+    def _sendText(self, text):
+        to_send = self._alias.check(text)
+        separator = storage.option('cmd_separator')
+        if separator and separator in to_send:
+            for t in to_send.split(separator):
+                self._sendText(t)
+        else:
+            self._s_core.write(messages.MSG, to_send)
 
     def history(self):
         return self._history.get()
@@ -401,6 +402,9 @@ class ConnectionManager(QObject):
         while self._s_core.availableData():
             cmd, msg = self._s_core.read()
             if cmd == messages.MODEL:
+                actions = self._trigger.checkActions(msg.main_text)
+                for a in actions:
+                    self._sendText(a)
                 self._game_logger.write(msg)
                 self._viewer.process(msg)
                 self._w.update()

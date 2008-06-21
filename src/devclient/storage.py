@@ -42,7 +42,8 @@ server_spec = {'id': 'integer',
                                         'alt': 'integer(0, 1)',
                                         'ctrl': 'integer(0, 1)',
                                         'keycode': 'integer'}},
-               'default_account': "string(default='')"
+               'default_account': "string(default='')",
+               'triggers': { '__many__': {'ignore_case': 'integer(0, 1)'}}
               }
 
 general_spec = {'echo_text': 'integer(0, 1, default=1)',
@@ -114,6 +115,43 @@ def preferences():
 def savePreferences(pref):
     c = _config['general']
     c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'] = pref
+    c.write()
+
+def triggers(conn_name):
+    """
+    Load the list of trigger for a connection.
+
+    :Parameters:
+        conn_name : str
+        the name of connection.
+
+    :return: a list of tuples (pattern, ignore_case, command)
+    """
+
+    if conn_name not in _config:
+        raise exception.ConnectionNotFound
+
+    c = _config[conn_name]
+    triggers = []
+    if 'triggers' in c:
+        for t in c['triggers'].itervalues():
+            triggers.append((t['pattern'], t['ignore_case'], t['command']))
+
+    return triggers
+
+def saveTriggers(conn_name, triggers):
+    if conn_name not in _config:
+        raise exception.ConnectionNotFound
+
+    c = _config[conn_name]
+    c['triggers'] = {}
+    i = 1
+    for trigger in triggers:
+        t = {}
+        t['pattern'], t['ignore_case'], t['command'] = trigger
+        c['triggers'][str(i)] = t
+        i += 1
+
     c.write()
 
 def aliases(conn_name):

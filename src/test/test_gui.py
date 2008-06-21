@@ -192,14 +192,16 @@ class TestConnectionManager(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
 
-    def buildConnManager(self):
+    def buildConnManager(self, aliases = []):
         conn = (0, 'name', 'host', 111)
         storage.addConnection(list(conn))
+        if aliases:
+            storage.saveAliases(conn[1], aliases)
         ConnectionManager._appendEcho = fakeAppendEcho
         c = ConnectionManager(GuiMock(), '')
         c._account = AccountManager(GuiMock(), ServerFake, 1)
-        c.conn_name = 'name'
-        c.reloadConnData('name')
+        c.conn_name = conn[1]
+        c.reloadConnData(conn[1])
         c._s_core._messages = []
         return c
 
@@ -215,6 +217,30 @@ class TestConnectionManager(unittest.TestCase):
         self.assert_(c._s_core._messages == ['up', 'down'])
         self.assert_(c._echo == ['up;down'])
 
+    def testSendTextWithAlias(self):
+        c = self.buildConnManager([('hello', 'hello my friend!')])
+        c.sendText('hello')
+        self.assert_(c._s_core._messages == ['hello my friend!'])
+        self.assert_(c._echo == ['hello'])
+
+    def testSendTextWithAlias2(self):
+        c = self.buildConnManager([('hello', 'hello my friend!')])
+        c.sendText('look;hello')
+        self.assert_(c._s_core._messages == ['look', 'hello my friend!'])
+        self.assert_(c._echo == ['look;hello'])
+
+    def testSendTextWithAlias3(self):
+        c = self.buildConnManager([('walk', 's;e;e;s;e')])
+        c.sendText('walk')
+        self.assert_(c._s_core._messages == ['s', 'e', 'e', 's', 'e'])
+        self.assert_(c._echo == ['walk'])
+
+    def testSendTextWithAlias4(self):
+        c = self.buildConnManager([('goodbye', 'hello;s;s'),
+                                   ('hello', 'say Hello!')])
+        c.sendText('goodbye;quit')
+        self.assert_(c._s_core._messages == ['say Hello!', 's', 's', 'quit'])
+        self.assert_(c._echo == ['goodbye;quit'])
 
 if __name__ == '__main__':
     unittest.main()
