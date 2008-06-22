@@ -9,5 +9,6 @@
      <file>images/button-cancel.png</file>
      <file>images/button-color.png</file>
      <file>images/prompt.png</file>
+     <file>images/triggers.png</file>
  </qresource>
  </RCC>
