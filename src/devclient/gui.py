@@ -376,8 +376,10 @@ class ConnectionManager(QObject):
 
     def sendText(self, text):
         self._sendText(text)
-        self._appendEcho(text)
-        self._history.add(text)
+
+        if self._w.text_input.lineEdit().echoMode() == QLineEdit.Normal:
+            self._appendEcho(text)
+            self._history.add(text)
         return self._account.register(text)
 
     def _sendText(self, text):
