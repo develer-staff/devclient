@@ -163,7 +163,7 @@ class FormConnection(object):
         Erase a connection.
         """
 
-        if not self.w.list_conn.currentIndex():
+        if self.w.list_conn.currentIndex() <= 0:
             return
 
         if storage.connectionHasChild(unicode(self.w.list_conn.currentText())) \
@@ -348,7 +348,7 @@ class FormMacro(object):
     def delete(self):
 
         list_idx = self.w.list_macro.currentIndex()
-        if not list_idx:
+        if list_idx <= 0:
             return
 
         del self.macros[list_idx - 1]
@@ -669,7 +669,6 @@ class FormAliases(object):
                                    self._text['unique_label'])
             return False
 
-
         return True
 
     def _saveAlias(self):
@@ -697,13 +696,146 @@ class FormAliases(object):
     def _deleteAlias(self):
 
         list_idx = self.w.list_alias.currentIndex()
-        if not list_idx:
+        if list_idx <= 0:
             return
 
         del self.aliases[list_idx - 1]
         self.w.list_alias.removeItem(list_idx)
         conn_name = self.w.list_conn_alias.currentText()
         storage.saveAliases(unicode(conn_name), self.aliases)
+        self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
+
+
+class FormTriggers(object):
+    """
+    Manage the triggers part of gui option.
+    """
+
+    def __init__(self, widget):
+        self.w = widget
+        self._translateText()
+        self.loadForm()
+        self._setupSignal()
+
+    def _setupSignal(self):
+        clicked = SIGNAL("clicked()")
+        self.w.connect(self.w.save_trigger, clicked, self._saveTrigger)
+        self.w.connect(self.w.delete_trigger, clicked, self._deleteTrigger)
+        self.w.connect(self.w.list_conn_trigger,
+                      SIGNAL("currentIndexChanged(QString)"),
+                      self._loadTriggers)
+        self.w.connect(self.w.list_trigger,
+                      SIGNAL("currentIndexChanged(int)"),
+                      self._loadTrigger)
+
+    def disableSignal(self, disable):
+        self.w.list_trigger.blockSignals(disable)
+        self.w.list_conn_trigger.blockSignals(disable)
+
+    def _translateText(self):
+        self._text = {}
+        self._text['req_fields'] = QApplication.translate("option",
+            "The following fields are required")
+        self._text['new_trigger'] = QApplication.translate("option",
+            "Create New", "trigger")
+        self._text['trigger'] = QApplication.translate("option", "Trigger")
+        self._text['pattern'] = QApplication.translate("option", "Pattern")
+        self._text['command'] = QApplication.translate("option", "Command")
+        self._text['unique_pattern'] = QApplication.translate("option",
+            "Trigger pattern must be unique")
+
+    def loadForm(self):
+        self.w.list_conn_trigger.clear()
+        self.w.list_conn_trigger.addItems([c[1] for c in storage.connections()])
+
+        if self.w.list_conn_trigger.count():
+            self._loadTriggers(unicode(self.w.list_conn_trigger.currentText()))
+
+        for o in (self.w.list_trigger, self.w.pattern_trigger,
+                  self.w.command_trigger, self.w.case_trigger):
+            o.setEnabled(bool(self.w.list_conn_trigger.count()))
+
+    def _loadTriggers(self, conn):
+        self.disableSignal(True)
+        self.w.list_trigger.clear()
+        self.w.list_trigger.addItem(self._text['new_trigger'])
+        self.triggers = storage.triggers(unicode(conn))
+        self.w.list_trigger.addItems([el[0] for el in self.triggers])
+        self.disableSignal(False)
+        self._loadTrigger(0)
+
+    def _loadTrigger(self, idx):
+        if not idx:
+            patt, case, comm = '', 0, ''
+        else:
+            patt, case, comm = self.triggers[idx - 1]
+
+        self.w.pattern_trigger.setText(patt)
+        self.w.command_trigger.setText(comm)
+        self.w.case_trigger.setCheckState((Qt.Unchecked, Qt.Checked)[case])
+
+    def _checkTriggerFields(self):
+        """
+        Check validity of trigger fields.
+        """
+
+        msg = []
+
+        trigger_fields = {self._text['pattern']: self.w.pattern_trigger,
+                          self._text['command']: self.w.command_trigger}
+
+        for text, field in trigger_fields.iteritems():
+            if not field.text():
+                msg.append(unicode(text))
+
+        if msg:
+            self.w._displayWarning(self._text['trigger'],
+                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
+            return False
+
+
+        if [el[0] for el in self.triggers if
+            el[0].upper() == unicode(self.w.pattern_trigger.text()).upper() and
+            not self.w.list_trigger.currentIndex()]:
+            self.w._displayWarning(self._text['trigger'],
+                                   self._text['unique_pattern'])
+            return False
+
+        return True
+
+    def _saveTrigger(self):
+
+        if not self._checkTriggerFields():
+            return
+
+        trigger = (unicode(self.w.pattern_trigger.text()),
+                   int(self.w.case_trigger.checkState() == Qt.Checked),
+                   unicode(self.w.command_trigger.text()))
+
+        list_idx = self.w.list_trigger.currentIndex()
+        if not list_idx:
+            self.triggers.append(trigger)
+            self.w.list_trigger.addItem(trigger[0])
+        else:
+            self.triggers[list_idx - 1] = trigger
+            self.w.list_trigger.setItemText(list_idx, trigger[0])
+
+        conn_name = self.w.list_conn_trigger.currentText()
+        storage.saveTriggers(unicode(conn_name), self.triggers)
+        self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
+        self.w.list_trigger.setCurrentIndex(0)
+        self._loadTrigger(0)
+
+    def _deleteTrigger(self):
+
+        list_idx = self.w.list_trigger.currentIndex()
+        if list_idx <= 0:
+            return
+
+        del self.triggers[list_idx - 1]
+        self.w.list_trigger.removeItem(list_idx)
+        conn_name = self.w.list_conn_trigger.currentText()
+        storage.saveTriggers(unicode(conn_name), self.triggers)
         self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
 
 
@@ -732,6 +864,9 @@ class GuiOption(QDialog, Ui_option):
         self.alias = FormAliases(self)
         """the FormAliases instance, used to manage form of aliases."""
 
+        self.trigger = FormTriggers(self)
+        """the FormTriggers instance, used to manage form of triggers."""
+
     def _displayWarning(self, title, message):
         QMessageBox.warning(self, title, message)
 
@@ -756,7 +891,8 @@ class GuiOption(QDialog, Ui_option):
 
         objs = {'alias_page': self.alias,
                 'macro_page': self.macro,
-                'account_page': self.accounts}
+                'account_page': self.accounts,
+                'trigger_page': self.trigger}
 
         form = objs.get(curr_page)
         if form:
