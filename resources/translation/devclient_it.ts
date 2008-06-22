@@ -161,17 +161,17 @@ p, li { white-space: pre-wrap; }
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1463"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1469"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="164"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="167"/>
         <source>Create New</source>
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1236"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1242"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
@@ -232,7 +232,7 @@ p, li { white-space: pre-wrap; }
         <translation>Comando</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1127"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1133"/>
         <source>Register</source>
         <translation>Registra</translation>
     </message>
@@ -248,7 +248,7 @@ p, li { white-space: pre-wrap; }
         <translation>La sequenza dei tasti deve essere univoca</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1079"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1085"/>
         <source>#e0e0e0</source>
         <translation></translation>
     </message>
@@ -258,27 +258,27 @@ p, li { white-space: pre-wrap; }
         <translation>Preferenze</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1346"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1352"/>
         <source>Keep text entered</source>
         <translation>Tieni testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1262"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1268"/>
         <source>Text inserted</source>
         <translation>Testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1289"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1295"/>
         <source>Echo text</source>
         <translation>Echo testo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1379"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1385"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1403"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1409"/>
         <source>Save log</source>
         <translation>Salva log</translation>
     </message>
@@ -298,17 +298,17 @@ p, li { white-space: pre-wrap; }
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1308"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1314"/>
         <source>Color</source>
         <translation>Colore</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="584"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="590"/>
         <source>Account</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="383"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="389"/>
         <source>Save accounts</source>
         <translation>Salva account</translation>
     </message>
@@ -318,7 +318,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="396"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="402"/>
         <source>&lt;table&gt;
 &lt;tr&gt;&lt;td colspan=3&gt;&lt;b&gt;Prompt format:&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;%h&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Current hit points&lt;/td&gt;&lt;/tr&gt;
@@ -340,22 +340,22 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;table&gt;&lt;tr&gt;&lt;td colspan=3&gt;&lt;b&gt;Formato prompt:&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%h&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti vita attuali&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%H&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti vita massimi&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%m&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti mana attuali&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%M&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti mana massimi&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%v&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti movimento attuali&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;%V&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Punti movimento massimi&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;*&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Indica un carattere qualsiasi&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&amp;nbsp;&lt;/td&gt;&lt;td&gt;ripetuto zero o più volte&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=3&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;table&gt;&lt;tr&gt;&lt;td colspan=3&gt;&lt;b&gt;Esempio:&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=3&gt;Pf:%h/%H Mn:%m/%M Mv:%v/%v *&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=3&gt;è un formato valido per:&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=3&gt;Pf:30/30 Mn:117/117 Mv:108/108 Br:100&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="416"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="422"/>
         <source>Prompt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="449"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="455"/>
         <source>Normal</source>
         <translation>Normale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="471"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="477"/>
         <source>Fight</source>
         <translation>Combattimento</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="640"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="646"/>
         <source>Change Prompt</source>
         <translation>Cambia Prompt</translation>
     </message>
@@ -379,6 +379,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../../src/devclient/gui_option.py" line="230"/>
         <source>Key sequence must be different from all the shortcut keys</source>
         <translation>La sequenza dei tasti deve essere diversa dalle scorciatoie</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1512"/>
+        <source>Close</source>
+        <translation>Chiudi</translation>
     </message>
 </context>
 </TS>

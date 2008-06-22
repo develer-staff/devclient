@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Tue Apr 29 23:07:45 2008
+# Created: Sun Jun 22 16:15:26 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,15 +13,15 @@ class Ui_option(object):
     def setupUi(self, option):
         option.setObjectName("option")
         option.setWindowModality(QtCore.Qt.ApplicationModal)
-        option.resize(QtCore.QSize(QtCore.QRect(0,0,415,290).size()).expandedTo(option.minimumSizeHint()))
+        option.resize(QtCore.QSize(QtCore.QRect(0,0,415,335).size()).expandedTo(option.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(option.sizePolicy().hasHeightForWidth())
         option.setSizePolicy(sizePolicy)
-        option.setMinimumSize(QtCore.QSize(415,290))
-        option.setMaximumSize(QtCore.QSize(415,290))
+        option.setMinimumSize(QtCore.QSize(415,335))
+        option.setMaximumSize(QtCore.QSize(415,335))
 
         self.list_option = QtGui.QListWidget(option)
         self.list_option.setGeometry(QtCore.QRect(5,5,90,280))
@@ -49,6 +49,7 @@ class Ui_option(object):
         self.layoutWidget.setObjectName("layoutWidget")
 
         self.vboxlayout = QtGui.QVBoxLayout(self.layoutWidget)
+        self.vboxlayout.setSpacing(5)
         self.vboxlayout.setObjectName("vboxlayout")
 
         self.gridlayout = QtGui.QGridLayout()
@@ -114,6 +115,7 @@ class Ui_option(object):
 
         self.hboxlayout = QtGui.QHBoxLayout()
         self.hboxlayout.setSpacing(5)
+        self.hboxlayout.setContentsMargins(-1,-1,0,-1)
         self.hboxlayout.setObjectName("hboxlayout")
 
         spacerItem4 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
@@ -579,7 +581,7 @@ class Ui_option(object):
         self.groupBox_2.setObjectName("groupBox_2")
 
         self.layoutWidget4 = QtGui.QWidget(self.groupBox_2)
-        self.layoutWidget4.setGeometry(QtCore.QRect(0,19,306,156))
+        self.layoutWidget4.setGeometry(QtCore.QRect(0,19,311,156))
         self.layoutWidget4.setObjectName("layoutWidget4")
 
         self.gridlayout8 = QtGui.QGridLayout(self.layoutWidget4)
@@ -611,9 +613,21 @@ class Ui_option(object):
         self.gridlayout8.addLayout(self.hboxlayout4,3,0,1,2)
         self.page_container.addWidget(self.pref_page)
 
+        self.line_option = QtGui.QFrame(option)
+        self.line_option.setGeometry(QtCore.QRect(5,290,400,10))
+        self.line_option.setFrameShape(QtGui.QFrame.HLine)
+        self.line_option.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_option.setObjectName("line_option")
+
+        self.close_option = QtGui.QPushButton(option)
+        self.close_option.setGeometry(QtCore.QRect(323,300,80,27))
+        self.close_option.setMinimumSize(QtCore.QSize(80,27))
+        self.close_option.setObjectName("close_option")
+
         self.retranslateUi(option)
         self.list_option.setCurrentRow(0)
         self.page_container.setCurrentIndex(0)
+        QtCore.QObject.connect(self.close_option,QtCore.SIGNAL("clicked()"),option.accept)
         QtCore.QMetaObject.connectSlotsByName(option)
         option.setTabOrder(self.list_option,self.list_conn)
         option.setTabOrder(self.list_conn,self.name_conn)
@@ -722,6 +736,7 @@ class Ui_option(object):
         self.groupBox_2.setTitle(QtGui.QApplication.translate("option", "General", None, QtGui.QApplication.UnicodeUTF8))
         self.save_log.setText(QtGui.QApplication.translate("option", "Save log", None, QtGui.QApplication.UnicodeUTF8))
         self.save_preferences.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.close_option.setText(QtGui.QApplication.translate("option", "Close", None, QtGui.QApplication.UnicodeUTF8))
 
 import gui_rc
 import gui_option_rc

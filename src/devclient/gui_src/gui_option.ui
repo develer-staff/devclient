@@ -9,7 +9,7 @@
     <x>0</x>
     <y>0</y>
     <width>415</width>
-    <height>290</height>
+    <height>335</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -21,13 +21,13 @@
   <property name="minimumSize" >
    <size>
     <width>415</width>
-    <height>290</height>
+    <height>335</height>
    </size>
   </property>
   <property name="maximumSize" >
    <size>
     <width>415</width>
-    <height>290</height>
+    <height>335</height>
    </size>
   </property>
   <property name="windowTitle" >
@@ -142,6 +142,9 @@
       </rect>
      </property>
      <layout class="QVBoxLayout" >
+      <property name="spacing" >
+       <number>5</number>
+      </property>
       <item>
        <layout class="QGridLayout" >
         <item row="0" column="0" colspan="2" >
@@ -303,6 +306,9 @@
        <layout class="QHBoxLayout" >
         <property name="spacing" >
          <number>5</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
         </property>
         <item>
          <spacer>
@@ -1386,7 +1392,7 @@
        <rect>
         <x>0</x>
         <y>19</y>
-        <width>306</width>
+        <width>311</width>
         <height>156</height>
        </rect>
       </property>
@@ -1474,6 +1480,38 @@
     </widget>
    </widget>
   </widget>
+  <widget class="Line" name="line_option" >
+   <property name="geometry" >
+    <rect>
+     <x>5</x>
+     <y>290</y>
+     <width>400</width>
+     <height>10</height>
+    </rect>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="close_option" >
+   <property name="geometry" >
+    <rect>
+     <x>323</x>
+     <y>300</y>
+     <width>80</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="minimumSize" >
+    <size>
+     <width>80</width>
+     <height>27</height>
+    </size>
+   </property>
+   <property name="text" >
+    <string>Close</string>
+   </property>
+  </widget>
  </widget>
  <tabstops>
   <tabstop>list_option</tabstop>
@@ -1510,7 +1548,24 @@
   <include location="../../../resources/gui.qrc" />
   <include location="../../../resources/gui_option.qrc" />
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>close_option</sender>
+   <signal>clicked()</signal>
+   <receiver>option</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>373</x>
+     <y>314</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>84</x>
+     <y>320</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <designerdata>
   <property name="gridDeltaX" >
    <number>5</number>
