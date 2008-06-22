@@ -49,7 +49,7 @@ cfg_file = normpath(join(dirname(abspath(argv[0])), _DEF_CONFIG_FILE))
 
 class StartConnection(object):
     def __init__(self, gui):
-        self.f = gui._startConnection
+        self.f = gui._conn_manager.startConnection
 
     def __call__(self,*a,**k):
         self.time = time()
@@ -68,7 +68,7 @@ class EndConnection(object):
         return self.f(*a,**k)
 
 def startAction(gui):
-    callback.s = gui._startConnection = StartConnection(gui)
+    callback.s = gui._conn_manager.startConnection = StartConnection(gui)
     callback.e = gui.displayWarning = EndConnection(gui)
     QTest.mouseClick(gui.button_connect, Qt.LeftButton)
 
