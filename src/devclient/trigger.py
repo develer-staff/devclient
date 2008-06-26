@@ -31,19 +31,26 @@ class Trigger(object):
     _SPECIAL_CHARS = {'\\*': '.*?', '\\?': '.?', '\\%d': '(\d+)', '\\%w': '(\w+)'}
 
     def __init__(self, conn_name):
-        self._list = storage.triggers(conn_name)
+        self._triggers = self.getCompiledTriggers(conn_name)
 
-    def checkActions(self, main_text):
+    def getCompiledTriggers(self, conn_name):
+        trg = storage.triggers(conn_name)
+        out = []
 
-        actions = []
-        text = main_text.split('\n')
-        for pattern, ignore_case, command in self._list:
+        for pattern, ignore_case, command in trg:
             p = escape(pattern)
             for old, new in self._SPECIAL_CHARS.iteritems():
                 p = p.replace(old, new)
 
             reg = compile(p, re.I if ignore_case else 0)
+            out.append((reg, command))
 
+        return out
+
+    def checkActions(self, main_text):
+        actions = []
+        text = main_text.split('\n')
+        for reg, command in self._triggers:
             for row in text:
                 m = reg.match(row)
                 if m:
