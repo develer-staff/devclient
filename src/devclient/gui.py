@@ -404,10 +404,11 @@ class ConnectionManager(QObject):
         while self._s_core.availableData():
             cmd, msg = self._s_core.read()
             if cmd == messages.MODEL:
-                actions = self._trigger.checkActions(msg.main_text)
+                actions = self._trigger.getActions(msg.main_text)
                 for a in actions:
                     self._sendText(a)
                 self._game_logger.write(msg)
+                self._trigger.highlights(msg)
                 self._viewer.process(msg)
                 self._w.update()
             elif cmd == messages.CONN_REFUSED:

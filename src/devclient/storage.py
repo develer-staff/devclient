@@ -34,6 +34,10 @@ import conf
 import exception
 
 logger = logging.getLogger('storage')
+
+if not logger.handlers:
+    logger.addHandler(logging.StreamHandler())
+
 _STORAGE_EXT = 'save'
 
 server_spec = {'id': 'integer',
@@ -43,7 +47,10 @@ server_spec = {'id': 'integer',
                                         'ctrl': 'integer(0, 1)',
                                         'keycode': 'integer'}},
                'default_account': "string(default='')",
-               'triggers': { '__many__': {'ignore_case': 'integer(0, 1)'}}
+               'triggers': { '__many__': {'ignore_case': 'integer(0, 1)'}},
+               'highlights': { '__many__': {'ignore_case': 'integer(0, 1)',
+                                            'bg_color': 'string(min=7, max=7)',
+                                            'fg_color': 'string(min=7, max=7)'}}
               }
 
 general_spec = {'echo_text': 'integer(0, 1, default=1)',
@@ -115,6 +122,44 @@ def preferences():
 def savePreferences(pref):
     c = _config['general']
     c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'] = pref
+    c.write()
+
+def highlights(conn_name):
+    """
+    Load the list of highlight for a connection.
+
+    :Parameters:
+        conn_name : str
+        the name of connection.
+
+    :return: a list of tuples (pattern, ignore_case, bg_color, fg_color)
+    """
+
+    if conn_name not in _config:
+        raise exception.ConnectionNotFound
+
+    c = _config[conn_name]
+    highlights = []
+    if 'highlights' in c:
+        for h in c['highlights'].itervalues():
+            highlights.append((h['pattern'], h['ignore_case'], h['bg_color'],
+                               h['fg_color']))
+
+    return highlights
+
+def saveHighlights(conn_name, highlights):
+    if conn_name not in _config:
+        raise exception.ConnectionNotFound
+
+    c = _config[conn_name]
+    c['highlights'] = {}
+    i = 1
+    for highlight in highlights:
+        h = {}
+        h['pattern'], h['ignore_case'], h['bg_color'], h['fg_color'] = highlight
+        c['highlights'][str(i)] = h
+        i += 1
+
     c.write()
 
 def triggers(conn_name):

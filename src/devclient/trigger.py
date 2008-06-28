@@ -31,9 +31,24 @@ class Trigger(object):
     _SPECIAL_CHARS = {'\\*': '.*?', '\\?': '.?', '\\%d': '(\d+)', '\\%w': '(\w+)'}
 
     def __init__(self, conn_name):
-        self._triggers = self.getCompiledTriggers(conn_name)
+        self._triggers = self._getCompiledTriggers(conn_name)
+        self._highlights = self._getCompiledHighlights(conn_name)
 
-    def getCompiledTriggers(self, conn_name):
+    def _getCompiledHighlights(self, conn_name):
+        h = storage.highlights(conn_name)
+        out = []
+
+        for pattern, ignore_case, bg_color, fg_color in h:
+            p = escape(pattern)
+            for old, new in self._SPECIAL_CHARS.iteritems():
+                p = p.replace(old, new)
+
+            reg = compile(p, re.I if ignore_case else 0)
+            out.append((reg, bg_color, fg_color))
+
+        return out
+
+    def _getCompiledTriggers(self, conn_name):
         trg = storage.triggers(conn_name)
         out = []
 
@@ -47,7 +62,11 @@ class Trigger(object):
 
         return out
 
-    def checkActions(self, main_text):
+    def getActions(self, main_text):
+        """
+        Return the list of action that match with the list of trigger pattern.
+        """
+
         actions = []
         text = main_text.split('\n')
         for reg, command in self._triggers:
@@ -59,3 +78,67 @@ class Trigger(object):
                     actions.append(command)
 
         return actions
+
+    def highlights(self, model):
+        """
+        Replace main html of the model according with list of hightlight pattern.
+        """
+
+        _html_entities = ('&nbsp;', '&lt;', '&gt;', '&amp;', '&quot;', '<br>')
+
+        def getHtmlIndex(html, start, end):
+            reg = re.compile('(<span.*?>|</span>|%s)' %
+                             '|'.join(_html_entities))
+            m = reg.search(html)
+            while m:
+                s, e = m.span()
+                if m.group(0) in _html_entities:
+                    l = len(m.group(0)) - 1
+                else:
+                    l = e - s
+
+                if s < start:
+                    start += l
+                if s < end:
+                    end += l
+                    m = reg.search(html, e)
+                else:
+                    break
+
+            return (start, end)
+
+        def replaceStyle(html, bg, fg):
+            """
+            Replace the style of an html-string with another based upon bg and
+            fg colors.
+            """
+
+            new_html = '<span style="background-color:%s;color:%s">' % (bg, fg)
+            new_html += compile('(<span.*?>|</span>)').sub('', html) + '</span>'
+
+            span_open = compile('<span.*?>').findall(html)
+            span_close = compile('</span>').findall(html)
+
+            if len(span_open) > len(span_close):
+                new_html += span_open[-1]
+            elif len(span_open) < len(span_close):
+                new_html += '</span>'
+            elif html.find('</span') < html.find('<span'):
+                new_html += '</span>' + span_open[-1]
+            return new_html
+
+        text = model.main_text.split('\n')
+        html = model.main_html.split('<br>')
+
+        for reg, bg, fg in self._highlights:
+            for i, row in enumerate(text):
+                m = reg.match(row)
+                if m:
+                    html_row = html[i]
+                    start, end = getHtmlIndex(html_row, *m.span())
+
+                    html[i] = html_row[:start] + \
+                        replaceStyle(html_row[start:end], bg, fg) + \
+                        html_row[end:]
+
+        model.main_html = '<br>'.join(html)

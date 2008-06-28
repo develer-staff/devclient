@@ -355,6 +355,24 @@ class TestStorage(TestBase):
         storage.saveTriggers(conn_name, triggers)
         self.assert_(storage.triggers(conn_name) == triggers)
 
+    def testSaveHighlights(self):
+        conn_name = 'conn'
+        conn = [0, conn_name, 'host', 111]
+
+        highlights = [('* (White Aura) %w', 0, '#FF0000', '#000000')]
+        self.assertRaises(exception.ConnectionNotFound,
+                          storage.saveHighlights,
+                          conn_name, highlights)
+
+    def testSaveHighlights1(self):
+        conn_name = 'conn'
+        conn = [0, conn_name, 'host', 111]
+        storage.addConnection(conn)
+
+        highlights = [('* (White Aura) %w', 0, '#FF0000', '#000000')]
+        storage.saveHighlights(conn_name, highlights)
+        self.assert_(storage.highlights(conn_name) == highlights)
+
 
 class TestStorage2(TestBase):
 
