@@ -124,6 +124,22 @@ def savePreferences(pref):
     c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'] = pref
     c.write()
 
+def _saveMany(conn_name, label, fields_name, fields):
+    if conn_name not in _config:
+        raise exception.ConnectionNotFound
+
+    c = _config[conn_name]
+    c[label] = {}
+    i = 1
+    for f in fields:
+        d = {}
+        for j in xrange(len(fields_name)):
+            d[fields_name[j]] = f[j]
+        c[label][str(i)] = d
+        i += 1
+
+    c.write()
+
 def highlights(conn_name):
     """
     Load the list of highlight for a connection.
@@ -148,19 +164,8 @@ def highlights(conn_name):
     return highlights
 
 def saveHighlights(conn_name, highlights):
-    if conn_name not in _config:
-        raise exception.ConnectionNotFound
-
-    c = _config[conn_name]
-    c['highlights'] = {}
-    i = 1
-    for highlight in highlights:
-        h = {}
-        h['pattern'], h['ignore_case'], h['bg_color'], h['fg_color'] = highlight
-        c['highlights'][str(i)] = h
-        i += 1
-
-    c.write()
+    names = ('pattern', 'ignore_case','bg_color', 'fg_color')
+    _saveMany(conn_name, 'highlights', names, highlights)
 
 def triggers(conn_name):
     """
@@ -185,19 +190,8 @@ def triggers(conn_name):
     return triggers
 
 def saveTriggers(conn_name, triggers):
-    if conn_name not in _config:
-        raise exception.ConnectionNotFound
-
-    c = _config[conn_name]
-    c['triggers'] = {}
-    i = 1
-    for trigger in triggers:
-        t = {}
-        t['pattern'], t['ignore_case'], t['command'] = trigger
-        c['triggers'][str(i)] = t
-        i += 1
-
-    c.write()
+    names = ('pattern', 'ignore_case','command')
+    _saveMany(conn_name, 'triggers', names, triggers)
 
 def aliases(conn_name):
     """
@@ -250,19 +244,8 @@ def macros(conn_name):
     return macros
 
 def saveMacros(conn_name, macros):
-    if conn_name not in _config:
-        raise exception.ConnectionNotFound
-
-    c = _config[conn_name]
-    c['macros'] = {}
-    i = 1
-    for macro in macros:
-        m = {}
-        m['command'], m['shift'], m['alt'], m['ctrl'], m['keycode'] = macro
-        c['macros'][str(i)] = m
-        i += 1
-
-    c.write()
+    names = ('command', 'shift', 'alt', 'ctrl', 'keycode')
+    _saveMany(conn_name, 'macros', names, macros)
 
 def connections():
     """
