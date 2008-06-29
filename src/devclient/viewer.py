@@ -216,6 +216,7 @@ class StatusViewer(TextViewer):
     def _resetWidgets(self):
         self.v._resetWidgets()
 
+
 class MapViewer(TextViewer):
     """
     Build the visualization of a map from model.
@@ -279,15 +280,14 @@ class GraphMapViewer(TextViewer):
 
     def eventFilter(self, target, event):
         graph_map = self.w.rightwidget.graph_map
-        if target == graph_map and event.type() == QEvent.Paint:
-            if self._icon_map:
-                painter = QPainter(graph_map)
-                for y, row in enumerate(self._icon_map):
-                    for x, icon in enumerate(row):
-                        if icon:
-                            icon_name = ":/icons_map/wild" + icon
-                            painter.drawPixmap(self._getRect(x,y),
-                                               QPixmap(icon_name))
+        if target == graph_map and event.type() == QEvent.Paint and \
+           self._icon_map:
+            painter = QPainter(graph_map)
+            for y, row in enumerate(self._icon_map):
+                for x, icon in enumerate(row):
+                    if icon:
+                        painter.drawPixmap(self._getRect(x, y),
+                                           QPixmap(":/icons_map/wild" + icon))
 
             return True
         return False
