@@ -298,7 +298,7 @@ class GraphMapViewer(TextViewer):
         self._icon_map = []
         rows = [r for r in html.split('<br>')
                 if re.compile('(<span.*?>|</span>)').sub('', r)]
-        style = ''
+        color = ''
         for r in rows:
             icon_rows = []
             while r:
@@ -306,16 +306,16 @@ class GraphMapViewer(TextViewer):
                     r = r[7:]
                 elif r.startswith('<span'):
                     pos = r.find('>') + 1
-                    style = re.compile('style="(.*)">').search(r[:pos]).group(1)
+                    color = re.compile('color:(\#\w{6})').search(r[:pos]).group(1)
                     r = r[pos:]
                 else:
                     for h in _html_entities:
                         if r[:len(h)] == h:
-                            icon_rows.append(self._char2icon.get((style, h)))
+                            icon_rows.append(self._char2icon.get((color, h)))
                             r = r[len(h):]
                             break
                     else:
-                        icon_rows.append(self._char2icon.get((style, r[0])))
+                        icon_rows.append(self._char2icon.get((color, r[0])))
                         r = r[1:]
 
             self._icon_map.append(icon_rows)
