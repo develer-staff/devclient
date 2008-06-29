@@ -21,8 +21,8 @@
 from generics import *
 
 class DdE(DikuServer):
-    right_widget = 'gui_map'
-    wild_chars = '\^\.xX@\*\s&-\?'
+    right_widget = 'gui_map_graph'
+    wild_chars = '\^\.xoX@\*\s&-\?'
     wild_end_text = '\n[Uscite:'
     wild_prec_char = '123456789'
     room_map = '|\-#?@'
@@ -30,6 +30,24 @@ class DdE(DikuServer):
     port = 5000
     host2 = 'dde.homelinux.com'
     port2 = 4000
+    char2icon = {('color:#00aa00', '*') : "7",
+                 ('color:#ffffff;background-color:#000000', '@') : "1",
+                 ('color:#4444ff;background-color:#000000', '@') : "2",
+                 ('color:#aa0000', '@') : "3",
+                 ('color:#aa00aa', '@') : "4",
+                 ('color:#aaaaaa', '^') : "11",
+                 ('color:#aaaa00', '^') : "9",
+                 ('color:#ffffff', '^') : "12",
+                 ('color:#ffffff;background-color:#000000', '.') : "0",
+                 ('color:#00aa00', '.') : "5",
+                 ('color:#aaaa00', '.') : "6",
+                 ('color:#4444ff;background-color:#000000', '.') : "13",
+                 ('color:#ffff44;background-color:#000000', '.') : "17",
+                 ('color:#00aaaa', '.') : "14",
+                 ('color:#aaaaaa', 'o') : "21",
+                 ('color:#aaaa00', '-') : "10",
+                 ('color:#00aa00', '&amp;') : "8",
+                }
 
 
 class ADdE(DdE):

@@ -26,8 +26,10 @@ import storage
 import logging
 
 from sip import delete
-from PyQt4.QtCore import SIGNAL
-from PyQt4.QtGui import QWidget, QTextCursor
+from PyQt4.QtCore import SIGNAL, QObject, QEvent, QRect
+from PyQt4.QtGui import QWidget, QTextCursor, QPainter, QPixmap
+
+import icons_map_rc
 
 logger = logging.getLogger('viewer')
 
@@ -71,7 +73,9 @@ def getViewer(widget, server, custom_prompt=False):
         if hasattr(server, 'prompt_reg') or custom_prompt:
             viewer = StatusViewer(viewer)
 
-        if hasattr(server, 'wild_chars'):
+        if hasattr(server, 'char2icon'):
+            viewer = GraphMapViewer(viewer, server.char2icon)
+        elif hasattr(server, 'wild_chars'):
             viewer = MapViewer(viewer)
 
     if hasattr(server, 'gui_width'):
@@ -81,7 +85,7 @@ def getViewer(widget, server, custom_prompt=False):
     return viewer
 
 
-class TextViewer(object):
+class TextViewer(QObject):
     """
     Build the html visualization from model.
     """
@@ -93,6 +97,7 @@ class TextViewer(object):
     """The max number of rows per block"""
 
     def __init__(self, widget):
+        QObject.__init__(self)
         self.w = widget
         doc = self.w.text_output.document()
         doc.setMaximumBlockCount(self.MAX_ROWS / self._ROW_BLOCK)
@@ -257,3 +262,70 @@ class MapViewer(TextViewer):
     def _resetWidgets(self):
         self.v._resetWidgets()
         self._textEditColors(self.w.rightwidget.text_map)
+
+
+class GraphMapViewer(TextViewer):
+    def __init__(self, v, char2icon):
+        super(GraphMapViewer, self).__init__(v.w)
+        self.v = v
+        self.w.rightwidget.graph_map.installEventFilter(self)
+        self._char2icon = char2icon
+        self._icon_map = []
+
+    def _getRect(self, x, y):
+        offset_x, offset_y = 5, 5
+        dim_x, dim_y = 16, 16
+        return QRect(x * dim_x + offset_x, y * dim_y + offset_y, dim_x, dim_y)
+
+    def eventFilter(self, target, event):
+        graph_map = self.w.rightwidget.graph_map
+        if target == graph_map and event.type() == QEvent.Paint:
+            if self._icon_map:
+                painter = QPainter(graph_map)
+                for y, row in enumerate(self._icon_map):
+                    for x, icon in enumerate(row):
+                        if icon:
+                            icon_name = ":/icons_map/wild" + icon
+                            painter.drawPixmap(self._getRect(x,y),
+                                               QPixmap(icon_name))
+
+            return True
+        return False
+
+    def _htmlToIcons(self, html):
+        _html_entities = ('&nbsp;', '&lt;', '&gt;', '&amp;', '&quot;', '<br>')
+
+        self._icon_map = []
+        rows = [r for r in html.split('<br>')
+                if re.compile('(<span.*?>|</span>)').sub('', r)]
+        style = ''
+        for r in rows:
+            icon_rows = []
+            while r:
+                if r.startswith('</span>'):
+                    r = r[7:]
+                elif r.startswith('<span'):
+                    pos = r.find('>') + 1
+                    style = re.compile('style="(.*)">').search(r[:pos]).group(1)
+                    r = r[pos:]
+                else:
+                    for h in _html_entities:
+                        if r[:len(h)] == h:
+                            icon_rows.append(self._char2icon.get((style, h)))
+                            r = r[len(h):]
+                            break
+                    else:
+                        icon_rows.append(self._char2icon.get((style, r[0])))
+                        r = r[1:]
+
+            self._icon_map.append(icon_rows)
+
+    def process(self, model):
+        self.v.process(model)
+        if model.map_text:
+            self._htmlToIcons(model.map_html)
+        elif model.map_text is None:
+            self._icon_map = []
+
+    def _resetWidgets(self):
+        self.v._resetWidgets()

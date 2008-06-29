@@ -1,0 +1,30 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource prefix="/icons_map">
+     <file alias="wild0">wild/wild_00.bmp</file>
+     <file alias="wild1">wild/wild_01.bmp</file>
+     <file alias="wild2">wild/wild_02.bmp</file>
+     <file alias="wild3">wild/wild_03.bmp</file>
+     <file alias="wild4">wild/wild_04.bmp</file>
+     <file alias="wild5">wild/wild_05.bmp</file>
+     <file alias="wild6">wild/wild_06.bmp</file>
+     <file alias="wild7">wild/wild_07.bmp</file>
+     <file alias="wild8">wild/wild_08.bmp</file>
+     <file alias="wild9">wild/wild_09.bmp</file>
+     <file alias="wild10">wild/wild_10.bmp</file>
+     <file alias="wild11">wild/wild_11.bmp</file>
+     <file alias="wild12">wild/wild_12.bmp</file>
+     <file alias="wild13">wild/wild_13.bmp</file>
+     <file alias="wild14">wild/wild_14.bmp</file>
+     <file alias="wild15">wild/wild_15.bmp</file>
+     <file alias="wild16">wild/wild_16.bmp</file>
+     <file alias="wild17">wild/wild_17.bmp</file>
+     <file alias="wild18">wild/wild_18.bmp</file>
+     <file alias="wild19">wild/wild_19.bmp</file>
+     <file alias="wild20">wild/wild_20.bmp</file>
+     <file alias="wild21">wild/wild_21.bmp</file>
+     <file alias="wild22">wild/wild_22.bmp</file>
+     <file alias="wild23">wild/wild_23.bmp</file>
+     <file alias="wild24">wild/wild_24.bmp</file>
+     <file alias="wild25">wild/wild_25.bmp</file>
+ </qresource>
+ </RCC>
