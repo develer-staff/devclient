@@ -30,6 +30,7 @@ class DdE(DikuServer):
     port = 5000
     host2 = 'dde.homelinux.com'
     port2 = 4000
+    empty_icon_color = '#868686'
     char2icon = {('#00aa00', '*') : "7",
                  ('#ffffff', '@') : "1",
                  ('#4444ff', '@') : "2",

@@ -27,7 +27,7 @@ import logging
 
 from sip import delete
 from PyQt4.QtCore import SIGNAL, QObject, QEvent, QRect
-from PyQt4.QtGui import QWidget, QTextCursor, QPainter, QPixmap
+from PyQt4.QtGui import QWidget, QTextCursor, QPainter, QPixmap, QColor
 
 import icons_map_rc
 
@@ -74,7 +74,7 @@ def getViewer(widget, server, custom_prompt=False):
             viewer = StatusViewer(viewer)
 
         if hasattr(server, 'char2icon'):
-            viewer = GraphMapViewer(viewer, server.char2icon)
+            viewer = GraphMapViewer(viewer, server)
         elif hasattr(server, 'wild_chars'):
             viewer = MapViewer(viewer)
 
@@ -266,11 +266,12 @@ class MapViewer(TextViewer):
 
 
 class GraphMapViewer(TextViewer):
-    def __init__(self, v, char2icon):
+    def __init__(self, v, server):
         super(GraphMapViewer, self).__init__(v.w)
         self.v = v
         self.w.rightwidget.graph_map.installEventFilter(self)
-        self._char2icon = char2icon
+        self._empty_icon_color = server.empty_icon_color
+        self._char2icon = server.char2icon
         self._icon_map = []
 
     def _getRect(self, x, y):
@@ -288,6 +289,10 @@ class GraphMapViewer(TextViewer):
                     if icon:
                         painter.drawPixmap(self._getRect(x, y),
                                            QPixmap(":/icons_map/wild" + icon))
+                    else:
+                        r = self._getRect(x, y)
+                        painter.drawRect(r)
+                        painter.fillRect(r, QColor(self._empty_icon_color))
 
             return True
         return False
