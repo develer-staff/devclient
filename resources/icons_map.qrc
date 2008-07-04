@@ -26,5 +26,7 @@
      <file alias="wild23">wild/wild_23.bmp</file>
      <file alias="wild24">wild/wild_24.bmp</file>
      <file alias="wild25">wild/wild_25.bmp</file>
+     <file alias="wild26">wild/character.png</file>
+     <file alias="wild27">wild/enemy.png</file>
  </qresource>
  </RCC>
