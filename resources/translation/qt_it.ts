@@ -784,7 +784,7 @@ to
     <message>
         <location filename="../src/gui/dialogs/qcolordialog.cpp" line="1206"/>
         <source>&amp;Val:</source>
-        <translation>&amp;Limunisotà:</translation>
+        <translation>&amp;Luminosità:</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qcolordialog.cpp" line="1207"/>
