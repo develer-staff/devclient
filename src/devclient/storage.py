@@ -47,10 +47,10 @@ server_spec = {'id': 'integer',
                                         'ctrl': 'integer(0, 1)',
                                         'keycode': 'integer'}},
                'default_account': "string(default='')",
-               'triggers': { '__many__': {'ignore_case': 'integer(0, 1)'}},
-               'highlights': { '__many__': {'ignore_case': 'integer(0, 1)',
-                                            'bg_color': 'string(min=7, max=7)',
-                                            'fg_color': 'string(min=7, max=7)'}}
+               'triggers': { '__many__': {'ignore_case': 'integer(0, 1)',
+                                          'command': "string(default='')",
+                                          'bg_color': "string(default='')",
+                                          'fg_color': "string(default='')"}}
               }
 
 general_spec = {'echo_text': 'integer(0, 1, default=1)',
@@ -140,33 +140,6 @@ def _saveMany(conn_name, label, fields_name, fields):
 
     c.write()
 
-def highlights(conn_name):
-    """
-    Load the list of highlight for a connection.
-
-    :Parameters:
-        conn_name : str
-        the name of connection.
-
-    :return: a list of tuples (pattern, ignore_case, bg_color, fg_color)
-    """
-
-    if conn_name not in _config:
-        raise exception.ConnectionNotFound
-
-    c = _config[conn_name]
-    highlights = []
-    if 'highlights' in c:
-        for h in c['highlights'].itervalues():
-            highlights.append((h['pattern'], h['ignore_case'], h['bg_color'],
-                               h['fg_color']))
-
-    return highlights
-
-def saveHighlights(conn_name, highlights):
-    names = ('pattern', 'ignore_case','bg_color', 'fg_color')
-    _saveMany(conn_name, 'highlights', names, highlights)
-
 def triggers(conn_name):
     """
     Load the list of trigger for a connection.
@@ -175,7 +148,7 @@ def triggers(conn_name):
         conn_name : str
         the name of connection.
 
-    :return: a list of tuples (pattern, ignore_case, command)
+    :return: a list of tuples (pattern, ignore_case, command, bg_color, fg_color)
     """
 
     if conn_name not in _config:
@@ -185,12 +158,13 @@ def triggers(conn_name):
     triggers = []
     if 'triggers' in c:
         for t in c['triggers'].itervalues():
-            triggers.append((t['pattern'], t['ignore_case'], t['command']))
+            triggers.append((t['pattern'], t['ignore_case'], t['command'],
+                             t['bg_color'], t['fg_color']))
 
     return triggers
 
 def saveTriggers(conn_name, triggers):
-    names = ('pattern', 'ignore_case','command')
+    names = ('pattern', 'ignore_case','command', 'bg_color', 'fg_color')
     _saveMany(conn_name, 'triggers', names, triggers)
 
 def aliases(conn_name):

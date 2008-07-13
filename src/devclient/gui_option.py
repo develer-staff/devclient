@@ -21,6 +21,8 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
+from re import compile
+
 from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL, Qt, QVariant
 from PyQt4.QtGui import QApplication, QDialog, QColorDialog, QMessageBox
@@ -722,15 +724,79 @@ class FormTriggers(object):
         self.w.connect(self.w.save_trigger, clicked, self._saveTrigger)
         self.w.connect(self.w.delete_trigger, clicked, self._deleteTrigger)
         self.w.connect(self.w.list_conn_trigger,
-                      SIGNAL("currentIndexChanged(QString)"),
-                      self._loadTriggers)
+                      SIGNAL("currentIndexChanged(QString)"), self._loadTriggers)
         self.w.connect(self.w.list_trigger,
-                      SIGNAL("currentIndexChanged(int)"),
-                      self._loadTrigger)
+                      SIGNAL("currentIndexChanged(int)"), self._loadTrigger)
+        self.w.connect(self.w.radio_command_trigger,
+                       SIGNAL("toggled(bool)"), self._toggleChoice)
+        self.w.connect(self.w.text_color_trigger_button, clicked,
+                       self._getTextColor)
+        self.w.connect(self.w.bg_color_trigger_button, clicked,
+                       self._getBgColor)
+
+    def _setLabelColor(self, label, color):
+        if not color:
+            return self._clearLabelColor(label)
+
+        style = unicode(label.styleSheet())
+        reg = compile('QLabel\s*{background-color\s*:\s*(#\w{6})}')
+        m = reg.search(style)
+        if m:
+            l, r = m.span(1)
+            style = style[:l] + color + style[r:]
+        else:
+            style += "QLabel{background-color:%s;}" % color
+
+        label.setStyleSheet(style)
+
+    def _clearLabelColor(self, label):
+        style = unicode(label.styleSheet())
+        reg = compile('QLabel\s*{(background-color\s*:\s*#\w{6}\s*;)}')
+        m = reg.search(style)
+        if m:
+            l, r = m.span(1)
+            style = style[:l] + style[r:]
+        label.setStyleSheet(style)
+
+    def _getTextColor(self):
+        c = QColorDialog.getColor()
+        self._text_color = unicode(c.name()) if c.isValid() else ''
+        self._setLabelColor(self.w.text_color_trigger, self._text_color)
+
+    def _getBgColor(self):
+        c = QColorDialog.getColor()
+        self._bg_color = unicode(c.name()) if c.isValid() else ''
+        self._setLabelColor(self.w.bg_color_trigger, self._bg_color)
 
     def disableSignal(self, disable):
         self.w.list_trigger.blockSignals(disable)
         self.w.list_conn_trigger.blockSignals(disable)
+
+    def _toggleChoice(self):
+        """
+        Toggle the choice between action and highlight trigger
+        """
+
+        t_items = [self.w.command_trigger]
+        h_items = [self.w.text_color_trigger_button,
+                   self.w.text_color_trigger,
+                   self.w.bg_color_trigger_button,
+                   self.w.bg_color_trigger]
+
+        radio_enabled = self.w.radio_command_trigger.isChecked()
+
+        for i in t_items:
+            i.setEnabled(radio_enabled)
+
+        for i in h_items:
+            i.setEnabled(not radio_enabled)
+
+        if radio_enabled:
+            self._text_color, self._bg_color = '', ''
+            self._clearLabelColor(self.w.text_color_trigger)
+            self._clearLabelColor(self.w.bg_color_trigger)
+        else:
+            self.w.command_trigger.setText('')
 
     def _translateText(self):
         self._text = {}
@@ -743,6 +809,8 @@ class FormTriggers(object):
         self._text['command'] = QApplication.translate("option", "Command")
         self._text['unique_pattern'] = QApplication.translate("option",
             "Trigger pattern must be unique")
+        self._text['req_colors'] = QApplication.translate("option",
+            "At least one between text and background color is required")
 
     def loadForm(self):
         self.w.list_conn_trigger.clear()
@@ -755,6 +823,8 @@ class FormTriggers(object):
                   self.w.command_trigger, self.w.case_trigger):
             o.setEnabled(bool(self.w.list_conn_trigger.count()))
 
+        self._text_color, self._bg_color = '', ''
+
     def _loadTriggers(self, conn):
         self.disableSignal(True)
         self.w.list_trigger.clear()
@@ -766,13 +836,22 @@ class FormTriggers(object):
 
     def _loadTrigger(self, idx):
         if not idx:
-            patt, case, comm = '', 0, ''
+            patt, case, comm, bg, fg = '', 0, '', '', ''
         else:
-            patt, case, comm = self.triggers[idx - 1]
+            patt, case, comm, bg, fg = self.triggers[idx - 1]
 
         self.w.pattern_trigger.setText(patt)
         self.w.command_trigger.setText(comm)
         self.w.case_trigger.setCheckState((Qt.Unchecked, Qt.Checked)[case])
+
+        self._text_color = fg
+        self._bg_color = bg
+        self._setLabelColor(self.w.text_color_trigger, self._text_color)
+        self._setLabelColor(self.w.bg_color_trigger, self._bg_color)
+        if bool(bg or fg):
+            self.w.radio_color_trigger.setChecked(True)
+        else:
+            self.w.radio_command_trigger.setChecked(True)
 
     def _checkTriggerFields(self):
         """
@@ -781,8 +860,15 @@ class FormTriggers(object):
 
         msg = []
 
-        trigger_fields = {self._text['pattern']: self.w.pattern_trigger,
-                          self._text['command']: self.w.command_trigger}
+        trigger_fields = {self._text['pattern']: self.w.pattern_trigger}
+
+        if self.w.radio_command_trigger.isChecked():
+            trigger_fields[self._text['command']] = self.w.command_trigger
+        else:
+            if not self._text_color and not self._bg_color:
+                self.w._displayWarning(self._text['trigger'],
+                                       self._text['req_colors']);
+                return False
 
         for text, field in trigger_fields.iteritems():
             if not field.text():
@@ -792,7 +878,6 @@ class FormTriggers(object):
             self.w._displayWarning(self._text['trigger'],
                 "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
             return False
-
 
         if [el[0] for el in self.triggers if
             el[0].upper() == unicode(self.w.pattern_trigger.text()).upper() and
@@ -810,7 +895,9 @@ class FormTriggers(object):
 
         trigger = (unicode(self.w.pattern_trigger.text()),
                    int(self.w.case_trigger.checkState() == Qt.Checked),
-                   unicode(self.w.command_trigger.text()))
+                   unicode(self.w.command_trigger.text()),
+                   self._bg_color,
+                   self._text_color)
 
         list_idx = self.w.list_trigger.currentIndex()
         if not list_idx:

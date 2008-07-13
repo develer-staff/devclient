@@ -1272,10 +1272,10 @@
     <widget class="QWidget" name="" >
      <property name="geometry" >
       <rect>
-       <x>7</x>
-       <y>5</y>
-       <width>306</width>
-       <height>251</height>
+       <x>5</x>
+       <y>9</y>
+       <width>311</width>
+       <height>316</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" >
@@ -1326,14 +1326,20 @@
         </property>
         <property name="sizeHint" >
          <size>
-          <width>301</width>
-          <height>21</height>
+          <width>304</width>
+          <height>16</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
        <layout class="QGridLayout" >
+        <property name="horizontalSpacing" >
+         <number>0</number>
+        </property>
+        <property name="verticalSpacing" >
+         <number>5</number>
+        </property>
         <item row="0" column="0" >
          <widget class="QLabel" name="label_trigger" >
           <property name="minimumSize" >
@@ -1412,28 +1418,176 @@
           </property>
          </spacer>
         </item>
-        <item row="3" column="0" >
-         <widget class="QLabel" name="label_command_trigger" >
-          <property name="minimumSize" >
-           <size>
-            <width>80</width>
-            <height>0</height>
-           </size>
-          </property>
+       </layout>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QGridLayout" >
+        <item row="0" column="0" >
+         <widget class="QRadioButton" name="radio_command_trigger" >
           <property name="text" >
            <string>Command</string>
           </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
-        <item row="3" column="1" colspan="2" >
+        <item row="0" column="1" colspan="2" >
          <widget class="QLineEdit" name="command_trigger" >
           <property name="minimumSize" >
            <size>
-            <width>200</width>
+            <width>180</width>
             <height>0</height>
            </size>
           </property>
          </widget>
+        </item>
+        <item row="1" column="0" colspan="2" >
+         <widget class="QRadioButton" name="radio_color_trigger" >
+          <property name="text" >
+           <string>Change color to</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>146</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="0" colspan="3" >
+         <layout class="QHBoxLayout" >
+          <property name="spacing" >
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="text_color_trigger_button" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>0</width>
+              <height>26</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string>Text</string>
+            </property>
+            <property name="icon" >
+             <iconset resource="../../../resources/gui_option.qrc" >:/images/button-color.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="text_color_trigger" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="styleSheet" >
+             <string>QLabel { border: 1px solid gray; border-radius: 3px; }</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="bg_color_trigger_button" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>0</width>
+              <height>26</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string>Background</string>
+            </property>
+            <property name="icon" >
+             <iconset resource="../../../resources/gui_option.qrc" >:/images/button-color.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="bg_color_trigger" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="styleSheet" >
+             <string>QLabel { border: 1px solid gray; border-radius: 3px; }</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="text" >
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -1442,13 +1596,10 @@
         <property name="orientation" >
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
         <property name="sizeHint" >
          <size>
-          <width>276</width>
-          <height>20</height>
+          <width>20</width>
+          <height>40</height>
          </size>
         </property>
        </spacer>

@@ -59,26 +59,20 @@ class TestTrigger(unittest.TestCase):
             shutil.rmtree(self.test_dir)
 
     def testGetActions1(self):
-        triggers = [('* dwarf', 0, 'bow dwarf')]
+        triggers = [('dwarf', 0, 'bow dwarf', '', '')]
         storage.saveTriggers(self.conn_name, triggers)
         text = "A dwarf with a long red beard mindlessly bumps into people."
         self.assert_(Trigger(self.conn_name).getActions(text) == ['bow dwarf'])
 
     def testGetActions2(self):
-        triggers = [('dwarf', 0, 'bow dwarf')]
-        storage.saveTriggers(self.conn_name, triggers)
-        text = "A dwarf with a long red beard mindlessly bumps into people."
-        self.assert_(Trigger(self.conn_name).getActions(text) == [])
-
-    def testGetActions3(self):
-        triggers = [('* (White Aura) %w', 0, 'look %1')]
+        triggers = [('* (White Aura) %w', 0, 'look %1', '', '')]
         storage.saveTriggers(self.conn_name, triggers)
         text = "(Translucent) (White Aura) Ravi, granter of deeds, sits " + \
                "calmly waiting for the next adventurer."
         self.assert_(Trigger(self.conn_name).getActions(text) == ['look Ravi'])
 
     def checkHighlights(self, html, highlights):
-        storage.saveHighlights(self.conn_name, highlights)
+        storage.saveTriggers(self.conn_name, highlights)
         model = Model()
         model.main_html = html
         text = re.compile('(<span.*?>|</span>)').sub('', html)
@@ -87,7 +81,7 @@ class TestTrigger(unittest.TestCase):
         return model
 
     def testHighlights1(self):
-        highlights = [('* (White Aura) %w', 0, '#FF0000', '#000000')]
+        highlights = [('* (White Aura) %w', 0, '', '#FF0000', '#000000')]
         html = "(Translucent) (White Aura) Ravi, granter of deeds"
         model = self.checkHighlights(html, highlights)
 
@@ -96,7 +90,7 @@ class TestTrigger(unittest.TestCase):
                      'deeds' == model.main_html)
 
     def testHighlights2(self):
-        highlights = [('* (White Aura) %w', 0, '#FF0000', '#000000')]
+        highlights = [('* (White Aura) %w', 0, '', '#FF0000', '#000000')]
         html = '<span style="color:#C0C0C0">(Translucent) (White</span> ' + \
                'Aura) Ravi, granter of deeds'
         model = self.checkHighlights(html, highlights)
@@ -106,7 +100,7 @@ class TestTrigger(unittest.TestCase):
                      'deeds' == model.main_html)
 
     def testHighlights3(self):
-        highlights = [('* (White Aura) %w', 0, '#FF0000', '#000000')]
+        highlights = [('* (White Aura) %w', 0, '', '#FF0000', '#000000')]
         html = '<span style="color:#C0C0C0">(Translucent) (White Aura) ' + \
                'Ravi, granter</span> of deeds'
         model = self.checkHighlights(html, highlights)
@@ -116,7 +110,7 @@ class TestTrigger(unittest.TestCase):
                      'color:#C0C0C0">, granter</span> of deeds' == model.main_html)
 
     def testHighlights4(self):
-        highlights = [('* (White Aura) %w', 0, '#FF0000', '#000000')]
+        highlights = [('* (White Aura) %w', 0, '', '#FF0000', '#000000')]
         html = "(Translucent) <br> (White Aura) Ravi, granter of deeds"
         model = self.checkHighlights(html, highlights)
 
@@ -125,7 +119,7 @@ class TestTrigger(unittest.TestCase):
                      'granter of deeds' == model.main_html)
 
     def testHighlights5(self):
-        highlights = [('* (White Aura) %w', 0, '#FF0000', '#000000')]
+        highlights = [('* (White Aura) %w', 0, '', '#FF0000', '#000000')]
         html = '<span style="color:#C0C0C0">(Translucent) <br> (White' + \
                '</span> Aura) Ravi, granter of deeds'
         model = self.checkHighlights(html, highlights)
@@ -136,7 +130,7 @@ class TestTrigger(unittest.TestCase):
                      model.main_html)
 
     def testHighlights6(self):
-        highlights = [('* (White Aura) %w', 0, '#FF0000', '#000000')]
+        highlights = [('* (White Aura) %w', 0, '', '#FF0000', '#000000')]
         html = '<span style="color:#C0C0C0">(Translucent) <br> (White' + \
                ' Aura) Ravi, granter</span> of deeds'
         model = self.checkHighlights(html, highlights)
@@ -147,7 +141,7 @@ class TestTrigger(unittest.TestCase):
                      model.main_html)
 
     def testHighlights7(self):
-        highlights = [('* (White Aura) %w', 0, '#FF0000', '#000000')]
+        highlights = [('* (White Aura) %w', 0, '', '#FF0000', '#000000')]
         html = '<span style="color:#C0C0C0">(Translucent) <br></span> (White' + \
                ' Aura) <span style="color:#FFFFFF">Ravi, granter</span> of deeds'
         model = self.checkHighlights(html, highlights)

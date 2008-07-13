@@ -31,36 +31,20 @@ class Trigger(object):
     _SPECIAL_CHARS = {'\\*': '.*?', '\\?': '.?', '\\%d': '(\d+)', '\\%w': '(\w+)'}
 
     def __init__(self, conn_name):
-        self._triggers = self._getCompiledTriggers(conn_name)
-        self._highlights = self._getCompiledHighlights(conn_name)
-
-    def _getCompiledHighlights(self, conn_name):
-        h = storage.highlights(conn_name)
-        out = []
-
-        for pattern, ignore_case, bg_color, fg_color in h:
-            p = escape(pattern)
-            for old, new in self._SPECIAL_CHARS.iteritems():
-                p = p.replace(old, new)
-
-            reg = compile(p, re.I if ignore_case else 0)
-            out.append((reg, bg_color, fg_color))
-
-        return out
-
-    def _getCompiledTriggers(self, conn_name):
         trg = storage.triggers(conn_name)
-        out = []
+        self._triggers = []
+        self._highlights = []
 
-        for pattern, ignore_case, command in trg:
+        for pattern, ignore_case, command, bg_color, fg_color in trg:
             p = escape(pattern)
             for old, new in self._SPECIAL_CHARS.iteritems():
                 p = p.replace(old, new)
 
             reg = compile(p, re.I if ignore_case else 0)
-            out.append((reg, command))
-
-        return out
+            if command:
+                self._triggers.append((reg, command))
+            else:
+                self._highlights.append((reg, bg_color, fg_color))
 
     def getActions(self, main_text):
         """
@@ -71,7 +55,7 @@ class Trigger(object):
         text = main_text.split('\n')
         for reg, command in self._triggers:
             for row in text:
-                m = reg.match(row)
+                m = reg.search(row)
                 if m:
                     for i, var in enumerate(m.groups()):
                         command = command.replace('%%%d' % (i + 1), var)
@@ -113,7 +97,14 @@ class Trigger(object):
             fg colors.
             """
 
-            new_html = '<span style="background-color:%s;color:%s">' % (bg, fg)
+            colors = []
+            if bg:
+                colors.append(('background-color', bg))
+            if fg:
+                colors.append(('color', fg))
+
+            new_html = '<span style="%s">' % \
+                ';'.join([k + ':' + v for k, v in colors])
             new_html += compile('(<span.*?>|</span>)').sub('', html) + '</span>'
 
             span_open = compile('<span.*?>').findall(html)
@@ -132,7 +123,7 @@ class Trigger(object):
 
         for reg, bg, fg in self._highlights:
             for i, row in enumerate(text):
-                m = reg.match(row)
+                m = reg.search(row)
                 if m:
                     html_row = html[i]
                     start, end = getHtmlIndex(html_row, *m.span())
