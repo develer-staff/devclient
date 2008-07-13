@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Sat Jul 12 18:45:20 2008
+# Created: Sun Jul 13 18:34:37 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -38,7 +38,7 @@ class Ui_option(object):
         self.list_option.setObjectName("list_option")
 
         self.page_container = QtGui.QStackedWidget(option)
-        self.page_container.setGeometry(QtCore.QRect(95,0,316,325))
+        self.page_container.setGeometry(QtCore.QRect(95,0,316,326))
         self.page_container.setObjectName("page_container")
 
         self.conn_page = QtGui.QWidget()
@@ -535,22 +535,22 @@ class Ui_option(object):
         self.trigger_page = QtGui.QWidget()
         self.trigger_page.setObjectName("trigger_page")
 
-        self.widget = QtGui.QWidget(self.trigger_page)
-        self.widget.setGeometry(QtCore.QRect(5,9,311,316))
-        self.widget.setObjectName("widget")
+        self.layoutWidget3 = QtGui.QWidget(self.trigger_page)
+        self.layoutWidget3.setGeometry(QtCore.QRect(5,9,311,316))
+        self.layoutWidget3.setObjectName("layoutWidget3")
 
-        self.vboxlayout1 = QtGui.QVBoxLayout(self.widget)
+        self.vboxlayout1 = QtGui.QVBoxLayout(self.layoutWidget3)
         self.vboxlayout1.setObjectName("vboxlayout1")
 
         self.gridlayout7 = QtGui.QGridLayout()
         self.gridlayout7.setObjectName("gridlayout7")
 
-        self.label_conn_trigger = QtGui.QLabel(self.widget)
+        self.label_conn_trigger = QtGui.QLabel(self.layoutWidget3)
         self.label_conn_trigger.setMinimumSize(QtCore.QSize(115,0))
         self.label_conn_trigger.setObjectName("label_conn_trigger")
         self.gridlayout7.addWidget(self.label_conn_trigger,0,0,1,1)
 
-        self.list_conn_trigger = QtGui.QComboBox(self.widget)
+        self.list_conn_trigger = QtGui.QComboBox(self.layoutWidget3)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -560,7 +560,7 @@ class Ui_option(object):
         self.list_conn_trigger.setObjectName("list_conn_trigger")
         self.gridlayout7.addWidget(self.list_conn_trigger,0,1,1,1)
 
-        self.line_4 = QtGui.QFrame(self.widget)
+        self.line_4 = QtGui.QFrame(self.layoutWidget3)
         self.line_4.setMinimumSize(QtCore.QSize(115,0))
         self.line_4.setFrameShape(QtGui.QFrame.HLine)
         self.line_4.setFrameShadow(QtGui.QFrame.Sunken)
@@ -576,12 +576,12 @@ class Ui_option(object):
         self.gridlayout8.setVerticalSpacing(5)
         self.gridlayout8.setObjectName("gridlayout8")
 
-        self.label_trigger = QtGui.QLabel(self.widget)
+        self.label_trigger = QtGui.QLabel(self.layoutWidget3)
         self.label_trigger.setMinimumSize(QtCore.QSize(80,0))
         self.label_trigger.setObjectName("label_trigger")
         self.gridlayout8.addWidget(self.label_trigger,0,0,1,1)
 
-        self.list_trigger = QtGui.QComboBox(self.widget)
+        self.list_trigger = QtGui.QComboBox(self.layoutWidget3)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -592,17 +592,17 @@ class Ui_option(object):
         self.list_trigger.setObjectName("list_trigger")
         self.gridlayout8.addWidget(self.list_trigger,0,1,1,2)
 
-        self.label_pattern_trigger = QtGui.QLabel(self.widget)
+        self.label_pattern_trigger = QtGui.QLabel(self.layoutWidget3)
         self.label_pattern_trigger.setMinimumSize(QtCore.QSize(80,0))
         self.label_pattern_trigger.setObjectName("label_pattern_trigger")
         self.gridlayout8.addWidget(self.label_pattern_trigger,1,0,1,1)
 
-        self.pattern_trigger = QtGui.QLineEdit(self.widget)
+        self.pattern_trigger = QtGui.QLineEdit(self.layoutWidget3)
         self.pattern_trigger.setMinimumSize(QtCore.QSize(115,0))
         self.pattern_trigger.setObjectName("pattern_trigger")
         self.gridlayout8.addWidget(self.pattern_trigger,1,1,1,2)
 
-        self.case_trigger = QtGui.QCheckBox(self.widget)
+        self.case_trigger = QtGui.QCheckBox(self.layoutWidget3)
         self.case_trigger.setMinimumSize(QtCore.QSize(115,0))
         self.case_trigger.setObjectName("case_trigger")
         self.gridlayout8.addWidget(self.case_trigger,2,0,1,2)
@@ -617,17 +617,17 @@ class Ui_option(object):
         self.gridlayout9 = QtGui.QGridLayout()
         self.gridlayout9.setObjectName("gridlayout9")
 
-        self.radio_command_trigger = QtGui.QRadioButton(self.widget)
+        self.radio_command_trigger = QtGui.QRadioButton(self.layoutWidget3)
         self.radio_command_trigger.setChecked(True)
         self.radio_command_trigger.setObjectName("radio_command_trigger")
         self.gridlayout9.addWidget(self.radio_command_trigger,0,0,1,1)
 
-        self.command_trigger = QtGui.QLineEdit(self.widget)
+        self.command_trigger = QtGui.QLineEdit(self.layoutWidget3)
         self.command_trigger.setMinimumSize(QtCore.QSize(180,0))
         self.command_trigger.setObjectName("command_trigger")
         self.gridlayout9.addWidget(self.command_trigger,0,1,1,2)
 
-        self.radio_color_trigger = QtGui.QRadioButton(self.widget)
+        self.radio_color_trigger = QtGui.QRadioButton(self.layoutWidget3)
         self.radio_color_trigger.setObjectName("radio_color_trigger")
         self.gridlayout9.addWidget(self.radio_color_trigger,1,0,1,2)
 
@@ -638,14 +638,14 @@ class Ui_option(object):
         self.hboxlayout4.setSpacing(2)
         self.hboxlayout4.setObjectName("hboxlayout4")
 
-        self.text_color_trigger_button = QtGui.QPushButton(self.widget)
+        self.text_color_trigger_button = QtGui.QPushButton(self.layoutWidget3)
         self.text_color_trigger_button.setEnabled(False)
         self.text_color_trigger_button.setMinimumSize(QtCore.QSize(0,26))
         self.text_color_trigger_button.setIcon(QtGui.QIcon(":/images/button-color.png"))
         self.text_color_trigger_button.setObjectName("text_color_trigger_button")
         self.hboxlayout4.addWidget(self.text_color_trigger_button)
 
-        self.text_color_trigger = QtGui.QLabel(self.widget)
+        self.text_color_trigger = QtGui.QLabel(self.layoutWidget3)
         self.text_color_trigger.setEnabled(False)
         self.text_color_trigger.setMinimumSize(QtCore.QSize(24,24))
         self.text_color_trigger.setMaximumSize(QtCore.QSize(24,24))
@@ -656,14 +656,14 @@ class Ui_option(object):
         spacerItem21 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.hboxlayout4.addItem(spacerItem21)
 
-        self.bg_color_trigger_button = QtGui.QPushButton(self.widget)
+        self.bg_color_trigger_button = QtGui.QPushButton(self.layoutWidget3)
         self.bg_color_trigger_button.setEnabled(False)
         self.bg_color_trigger_button.setMinimumSize(QtCore.QSize(0,26))
         self.bg_color_trigger_button.setIcon(QtGui.QIcon(":/images/button-color.png"))
         self.bg_color_trigger_button.setObjectName("bg_color_trigger_button")
         self.hboxlayout4.addWidget(self.bg_color_trigger_button)
 
-        self.bg_color_trigger = QtGui.QLabel(self.widget)
+        self.bg_color_trigger = QtGui.QLabel(self.layoutWidget3)
         self.bg_color_trigger.setEnabled(False)
         self.bg_color_trigger.setMinimumSize(QtCore.QSize(24,24))
         self.bg_color_trigger.setMaximumSize(QtCore.QSize(24,24))
@@ -683,14 +683,14 @@ class Ui_option(object):
         spacerItem23 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.hboxlayout5.addItem(spacerItem23)
 
-        self.save_trigger = QtGui.QPushButton(self.widget)
+        self.save_trigger = QtGui.QPushButton(self.layoutWidget3)
         self.save_trigger.setMinimumSize(QtCore.QSize(0,28))
         self.save_trigger.setMaximumSize(QtCore.QSize(16777215,28))
         self.save_trigger.setIcon(QtGui.QIcon(":/images/button-save.png"))
         self.save_trigger.setObjectName("save_trigger")
         self.hboxlayout5.addWidget(self.save_trigger)
 
-        self.delete_trigger = QtGui.QPushButton(self.widget)
+        self.delete_trigger = QtGui.QPushButton(self.layoutWidget3)
         self.delete_trigger.setMinimumSize(QtCore.QSize(0,28))
         self.delete_trigger.setMaximumSize(QtCore.QSize(16777215,28))
         self.delete_trigger.setIcon(QtGui.QIcon(":/images/button-cancel.png"))
@@ -703,81 +703,93 @@ class Ui_option(object):
         self.pref_page.setObjectName("pref_page")
 
         self.groupBox = QtGui.QGroupBox(self.pref_page)
-        self.groupBox.setGeometry(QtCore.QRect(5,10,306,96))
+        self.groupBox.setGeometry(QtCore.QRect(5,10,301,101))
         self.groupBox.setObjectName("groupBox")
 
-        self.layoutWidget3 = QtGui.QWidget(self.groupBox)
-        self.layoutWidget3.setGeometry(QtCore.QRect(2,10,301,81))
-        self.layoutWidget3.setObjectName("layoutWidget3")
+        self.widget = QtGui.QWidget(self.groupBox)
+        self.widget.setGeometry(QtCore.QRect(8,19,291,76))
+        self.widget.setObjectName("widget")
 
-        self.gridlayout10 = QtGui.QGridLayout(self.layoutWidget3)
-        self.gridlayout10.setContentsMargins(5,-1,5,-1)
-        self.gridlayout10.setHorizontalSpacing(5)
+        self.gridlayout10 = QtGui.QGridLayout(self.widget)
+        self.gridlayout10.setHorizontalSpacing(2)
+        self.gridlayout10.setVerticalSpacing(5)
         self.gridlayout10.setObjectName("gridlayout10")
 
-        self.echo_text = QtGui.QCheckBox(self.layoutWidget3)
-        self.echo_text.setMinimumSize(QtCore.QSize(90,0))
-        self.echo_text.setObjectName("echo_text")
-        self.gridlayout10.addWidget(self.echo_text,0,0,1,1)
-
-        self.echo_color_button = QtGui.QPushButton(self.layoutWidget3)
-        self.echo_color_button.setMinimumSize(QtCore.QSize(80,26))
-        self.echo_color_button.setMaximumSize(QtCore.QSize(80,26))
+        self.echo_color_button = QtGui.QPushButton(self.widget)
+        self.echo_color_button.setMinimumSize(QtCore.QSize(0,26))
         self.echo_color_button.setIcon(QtGui.QIcon(":/images/button-color.png"))
         self.echo_color_button.setObjectName("echo_color_button")
-        self.gridlayout10.addWidget(self.echo_color_button,0,1,1,1)
+        self.gridlayout10.addWidget(self.echo_color_button,0,0,1,1)
 
-        self.echo_color = QtGui.QLineEdit(self.layoutWidget3)
+        self.echo_color = QtGui.QLabel(self.widget)
         self.echo_color.setEnabled(False)
-        self.echo_color.setMinimumSize(QtCore.QSize(80,0))
-        self.echo_color.setMaximumSize(QtCore.QSize(80,16777215))
+        self.echo_color.setMinimumSize(QtCore.QSize(24,24))
+        self.echo_color.setMaximumSize(QtCore.QSize(24,24))
+        self.echo_color.setFrameShape(QtGui.QFrame.StyledPanel)
         self.echo_color.setObjectName("echo_color")
-        self.gridlayout10.addWidget(self.echo_color,0,2,1,1)
+        self.gridlayout10.addWidget(self.echo_color,0,1,1,1)
 
-        self.keep_text = QtGui.QCheckBox(self.layoutWidget3)
-        self.keep_text.setMinimumSize(QtCore.QSize(195,0))
+        spacerItem24 = QtGui.QSpacerItem(16,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout10.addItem(spacerItem24,0,2,1,1)
+
+        self.keep_text = QtGui.QCheckBox(self.widget)
         self.keep_text.setObjectName("keep_text")
-        self.gridlayout10.addWidget(self.keep_text,1,0,1,2)
+        self.gridlayout10.addWidget(self.keep_text,0,3,1,1)
 
-        spacerItem24 = QtGui.QSpacerItem(76,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout10.addItem(spacerItem24,1,2,1,1)
+        self.label_cmd_separator = QtGui.QLabel(self.widget)
+        self.label_cmd_separator.setObjectName("label_cmd_separator")
+        self.gridlayout10.addWidget(self.label_cmd_separator,1,0,1,1)
+
+        self.cmd_separator = QtGui.QLineEdit(self.widget)
+        self.cmd_separator.setMaximumSize(QtCore.QSize(25,16777215))
+
+        font = QtGui.QFont()
+        font.setWeight(75)
+        font.setBold(True)
+        self.cmd_separator.setFont(font)
+        self.cmd_separator.setMaxLength(1)
+        self.cmd_separator.setAlignment(QtCore.Qt.AlignCenter)
+        self.cmd_separator.setObjectName("cmd_separator")
+        self.gridlayout10.addWidget(self.cmd_separator,1,1,1,1)
+
+        spacerItem25 = QtGui.QSpacerItem(141,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout10.addItem(spacerItem25,1,2,1,2)
 
         self.groupBox_2 = QtGui.QGroupBox(self.pref_page)
-        self.groupBox_2.setGeometry(QtCore.QRect(5,109,306,176))
+        self.groupBox_2.setGeometry(QtCore.QRect(5,114,301,76))
         self.groupBox_2.setObjectName("groupBox_2")
 
-        self.layoutWidget4 = QtGui.QWidget(self.groupBox_2)
-        self.layoutWidget4.setGeometry(QtCore.QRect(0,19,304,156))
-        self.layoutWidget4.setObjectName("layoutWidget4")
+        self.widget1 = QtGui.QWidget(self.groupBox_2)
+        self.widget1.setGeometry(QtCore.QRect(5,20,291,36))
+        self.widget1.setObjectName("widget1")
 
-        self.gridlayout11 = QtGui.QGridLayout(self.layoutWidget4)
-        self.gridlayout11.setContentsMargins(5,-1,5,-1)
+        self.gridlayout11 = QtGui.QGridLayout(self.widget1)
         self.gridlayout11.setObjectName("gridlayout11")
 
-        self.save_log = QtGui.QCheckBox(self.layoutWidget4)
+        self.save_log = QtGui.QCheckBox(self.widget1)
         self.save_log.setMinimumSize(QtCore.QSize(100,0))
         self.save_log.setObjectName("save_log")
         self.gridlayout11.addWidget(self.save_log,0,0,1,1)
 
-        spacerItem25 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout11.addItem(spacerItem25,0,1,1,1)
+        spacerItem26 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout11.addItem(spacerItem26,0,1,1,1)
 
-        spacerItem26 = QtGui.QSpacerItem(294,56,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
-        self.gridlayout11.addItem(spacerItem26,1,0,2,2)
+        self.layoutWidget_4 = QtGui.QWidget(self.pref_page)
+        self.layoutWidget_4.setGeometry(QtCore.QRect(5,210,311,46))
+        self.layoutWidget_4.setObjectName("layoutWidget_4")
 
-        self.hboxlayout6 = QtGui.QHBoxLayout()
+        self.hboxlayout6 = QtGui.QHBoxLayout(self.layoutWidget_4)
         self.hboxlayout6.setObjectName("hboxlayout6")
 
         spacerItem27 = QtGui.QSpacerItem(209,26,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.hboxlayout6.addItem(spacerItem27)
 
-        self.save_preferences = QtGui.QPushButton(self.layoutWidget4)
+        self.save_preferences = QtGui.QPushButton(self.layoutWidget_4)
         self.save_preferences.setMinimumSize(QtCore.QSize(0,28))
         self.save_preferences.setMaximumSize(QtCore.QSize(16777215,28))
         self.save_preferences.setIcon(QtGui.QIcon(":/images/button-save.png"))
         self.save_preferences.setObjectName("save_preferences")
         self.hboxlayout6.addWidget(self.save_preferences)
-        self.gridlayout11.addLayout(self.hboxlayout6,3,0,1,2)
         self.page_container.addWidget(self.pref_page)
 
         self.line_option = QtGui.QFrame(option)
@@ -818,12 +830,9 @@ class Ui_option(object):
         option.setTabOrder(self.keys_macro,self.command_macro)
         option.setTabOrder(self.command_macro,self.save_macro)
         option.setTabOrder(self.save_macro,self.delete_macro)
-        option.setTabOrder(self.delete_macro,self.echo_text)
-        option.setTabOrder(self.echo_text,self.echo_color_button)
-        option.setTabOrder(self.echo_color_button,self.echo_color)
-        option.setTabOrder(self.echo_color,self.keep_text)
+        option.setTabOrder(self.delete_macro,self.echo_color_button)
+        option.setTabOrder(self.echo_color_button,self.keep_text)
         option.setTabOrder(self.keep_text,self.save_log)
-        option.setTabOrder(self.save_log,self.save_preferences)
 
     def retranslateUi(self, option):
         option.setWindowTitle(QtGui.QApplication.translate("option", "Option", None, QtGui.QApplication.UnicodeUTF8))
@@ -913,9 +922,10 @@ class Ui_option(object):
         self.save_trigger.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.delete_trigger.setText(QtGui.QApplication.translate("option", "Delete", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("option", "Text inserted", None, QtGui.QApplication.UnicodeUTF8))
-        self.echo_text.setText(QtGui.QApplication.translate("option", "Echo text", None, QtGui.QApplication.UnicodeUTF8))
-        self.echo_color_button.setText(QtGui.QApplication.translate("option", "Color", None, QtGui.QApplication.UnicodeUTF8))
+        self.echo_color_button.setText(QtGui.QApplication.translate("option", "Echo Color", None, QtGui.QApplication.UnicodeUTF8))
+        self.echo_color.setStyleSheet(QtGui.QApplication.translate("option", "QLabel { border: 1px solid gray; border-radius: 3px; }", None, QtGui.QApplication.UnicodeUTF8))
         self.keep_text.setText(QtGui.QApplication.translate("option", "Keep text entered", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_cmd_separator.setText(QtGui.QApplication.translate("option", "Command separator", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("option", "General", None, QtGui.QApplication.UnicodeUTF8))
         self.save_log.setText(QtGui.QApplication.translate("option", "Save log", None, QtGui.QApplication.UnicodeUTF8))
         self.save_preferences.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))

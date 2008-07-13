@@ -53,8 +53,7 @@ server_spec = {'id': 'integer',
                                           'fg_color': "string(default='')"}}
               }
 
-general_spec = {'echo_text': 'integer(0, 1, default=1)',
-                'echo_color': 'string(min=7, max=7, default=#00AA00)',
+general_spec = {'echo_color': "string(max=7, default='')",
                 'keep_text': 'integer(0, 1, default=0)',
                 'save_log': 'integer(0, 1, default=0)',
                 'save_account': 'integer(0, 1, default=0)',
@@ -113,15 +112,15 @@ def preferences():
     """
     Return the list of preferences.
 
-    :return: a tuple (echo_text, echo_color, keep_text, save_log)
+    :return: a tuple (echo_color, keep_text, save_log, cmd_separator)
     """
 
     c = _config['general']
-    return (c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'])
+    return (c['echo_color'], c['keep_text'], c['save_log'], c['cmd_separator'])
 
 def savePreferences(pref):
     c = _config['general']
-    c['echo_text'], c['echo_color'], c['keep_text'], c['save_log'] = pref
+    c['echo_color'], c['keep_text'], c['save_log'], c['cmd_separator'] = pref
     c.write()
 
 def _saveMany(conn_name, label, fields_name, fields):

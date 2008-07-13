@@ -475,10 +475,10 @@ class TestFormMacro(GuiOptionTest):
 class GuiOptionPrefMock(object):
 
     def __init__(self):
-        self.echo_text = QCheckBox()
-        self.echo_color = QLineEdit()
+        self.echo_color = QLabel()
         self.save_preferences = QPushButton()
         self.echo_color_button = QPushButton()
+        self.cmd_separator = QLineEdit()
         self.keep_text = QCheckBox()
         self.save_log = QCheckBox()
 
@@ -493,46 +493,40 @@ class TestFormPreferences(GuiOptionTest):
 
     def testLoadEmpty(self):
         form = FormPreferences(GuiOptionPrefMock())
-        self.assert_(form.w.echo_text.checkState() == Qt.Checked)
-        self.assert_(form.w.echo_color.text() == '#00AA00')
+        self.assert_(form._echo_color == '')
         self.assert_(form.w.keep_text.checkState() == Qt.Unchecked)
         self.assert_(form.w.save_log.checkState() == Qt.Unchecked)
+        self.assert_(form.w.cmd_separator.text() == ';')
 
     def testSavePreferences(self):
         form = FormPreferences(GuiOptionPrefMock())
-        form.w.echo_text.setCheckState(Qt.Unchecked)
+        form.w.keep_text.setCheckState(Qt.Checked)
+        form._echo_color = '#00AA00'
         form.save()
-        self.assert_(storage.preferences() == (0, '#00AA00', 0, 0))
+        self.assert_(storage.preferences() == ('#00AA00', 1, 0, ';'))
 
     def testSavePreferences2(self):
         form = FormPreferences(GuiOptionPrefMock())
-        form.w.keep_text.setCheckState(Qt.Checked)
-        form.w.echo_color.setText('#CC0000')
-        form.save()
-        self.assert_(storage.preferences() == (1, '#CC0000', 1, 0))
-
-    def testSavePreferences3(self):
-        form = FormPreferences(GuiOptionPrefMock())
-        form.w.echo_text.setCheckState(Qt.Checked)
         form.w.keep_text.setCheckState(Qt.Unchecked)
-        form.w.echo_color.setText('#CC0000')
+        form._echo_color ='#CC0000'
         form.w.save_log.setCheckState(Qt.Checked)
+        form.w.cmd_separator.setText(':')
         form.save()
-        self.assert_(storage.preferences() == (1, '#CC0000', 0, 1))
+        self.assert_(storage.preferences() == ('#CC0000', 0, 1, ':'))
 
     def testSavePreferences4(self):
         form = FormPreferences(GuiOptionPrefMock())
-        form.w.echo_text.setCheckState(Qt.Checked)
-        form.w.keep_text.setCheckState(Qt.Unchecked)
-        form.w.echo_color.setText('#CC0000')
-        form.w.save_log.setCheckState(Qt.Unchecked)
-        form.save()
-        form.w.echo_text.setCheckState(Qt.Unchecked)
         form.w.keep_text.setCheckState(Qt.Checked)
-        form.w.echo_color.setText('#000000')
-        form.w.save_log.setCheckState(Qt.Checked)
+        form.w.save_log.setCheckState(Qt.Unchecked)
+        form.w.cmd_separator.setText(',')
+        form._echo_color ='#CC0000'
         form.save()
-        self.assert_(storage.preferences() == (0, '#000000', 1, 1))
+        form.w.keep_text.setCheckState(Qt.Unchecked)
+        form.w.save_log.setCheckState(Qt.Checked)
+        form.w.cmd_separator.setText('#')
+        form._echo_color ='#000000'
+        form.save()
+        self.assert_(storage.preferences() == ('#000000', 0, 1, '#'))
 
 
 class GuiOptionAccMock(object):

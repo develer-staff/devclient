@@ -191,7 +191,7 @@ class GameLogger(object):
     encoding = "ISO-8859-1"
 
     def __init__(self, server_name, preferences):
-        if not preferences or not preferences[3] or not server_name:
+        if not preferences or not preferences[2] or not server_name:
             return
 
         dir_name = join(config['logger']['path'], server_name)
@@ -370,7 +370,7 @@ class ConnectionManager(QObject):
             text = '<br>'
         else:
             text = '<span style="color:%s">%s</span><br>' % \
-                (self._preferences[1], text)
+                (self._preferences[0], text)
 
         self._viewer.appendHtml(text)
 
@@ -384,7 +384,7 @@ class ConnectionManager(QObject):
 
     def _sendText(self, text):
         to_send = self._alias.check(text)
-        separator = storage.option('cmd_separator')
+        separator = self._preferences[3]
         if separator and separator in to_send:
             for t in to_send.split(separator):
                 self._sendText(t)
@@ -644,7 +644,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.addItem('')
         self.text_input.addItems(hist)
         self.text_input.setCurrentIndex(0)
-        if not storage.preferences()[2]:
+        if not storage.preferences()[1]:
             text = ''
         self.text_input.setItemText(0, text)
         self.text_input.lineEdit().selectAll()

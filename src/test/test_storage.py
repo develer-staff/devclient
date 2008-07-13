@@ -248,10 +248,10 @@ class TestStorage(TestBase):
         self.assert_(storage.macros(conn_name) == macros)
 
     def testEmptyPreferences(self):
-        self.assert_(storage.preferences() == (1, '#00AA00', 0, 0))
+        self.assert_(storage.preferences() == ('', 0, 0, ';'))
 
     def testSavePreferences(self):
-        preferences = (0, '#FF0000', 0, 1)
+        preferences = ('#FF0000', 0, 1, '#')
         storage.savePreferences(preferences)
         self.assert_(storage.preferences() == preferences)
 

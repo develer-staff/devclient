@@ -31,6 +31,40 @@ import storage
 from gui_src.gui_option import Ui_option
 
 
+def _setLabelColor(label, color):
+    """
+    Set the background color of a label, or unset if color is empty.
+    """
+
+    if not color:
+        return _clearLabelColor(label)
+
+    style = unicode(label.styleSheet())
+    reg = compile('QLabel\s*{background-color\s*:\s*(#\w{6})}')
+    m = reg.search(style)
+    if m:
+        l, r = m.span(1)
+        style = style[:l] + color + style[r:]
+    else:
+        style += "QLabel{background-color:%s;}" % color
+
+    label.setStyleSheet(style)
+
+
+def _clearLabelColor(label):
+    """
+    Unset the background color of a label.
+    """
+
+    style = unicode(label.styleSheet())
+    reg = compile('QLabel\s*{(background-color\s*:\s*#\w{6}\s*;)}')
+    m = reg.search(style)
+    if m:
+        l, r = m.span(1)
+        style = style[:l] + style[r:]
+    label.setStyleSheet(style)
+
+
 class FormConnection(object):
     """
     Manage the connection part of gui option.
@@ -449,25 +483,26 @@ class FormPreferences(object):
         self.w.connect(self.w.save_preferences, clicked, self.save)
 
     def _getEchoColor(self):
-        color = QColorDialog.getColor().name()
-        self.w.echo_color.setText(unicode(color).upper())
+        c = QColorDialog.getColor()
+        self._echo_color = unicode(c.name()) if c.isValid() else ''
+        _setLabelColor(self.w.echo_color, self._echo_color)
 
     def _loadForm(self):
         preferences = storage.preferences()
         if preferences:
-            echo_text = (Qt.Unchecked, Qt.Checked)[preferences[0]]
-            self.w.echo_text.setCheckState(echo_text)
-            self.w.echo_color.setText(preferences[1])
-            keep_text = (Qt.Unchecked, Qt.Checked)[preferences[2]]
+            self._echo_color = preferences[0]
+            _setLabelColor(self.w.echo_color, self._echo_color)
+            keep_text = (Qt.Unchecked, Qt.Checked)[preferences[1]]
             self.w.keep_text.setCheckState(keep_text)
-            save_log = (Qt.Unchecked, Qt.Checked)[preferences[3]]
+            save_log = (Qt.Unchecked, Qt.Checked)[preferences[2]]
             self.w.save_log.setCheckState(save_log)
+            self.w.cmd_separator.setText(preferences[3])
 
     def save(self):
-        preferences = (int(self.w.echo_text.checkState() == Qt.Checked),
-                       unicode(self.w.echo_color.text()),
+        preferences = (self._echo_color,
                        int(self.w.keep_text.checkState() == Qt.Checked),
-                       int(self.w.save_log.checkState() == Qt.Checked))
+                       int(self.w.save_log.checkState() == Qt.Checked),
+                       unicode(self.w.cmd_separator.text()))
 
         storage.savePreferences(preferences)
         self.w.emit(SIGNAL('reloadPreferences()'))
@@ -734,39 +769,15 @@ class FormTriggers(object):
         self.w.connect(self.w.bg_color_trigger_button, clicked,
                        self._getBgColor)
 
-    def _setLabelColor(self, label, color):
-        if not color:
-            return self._clearLabelColor(label)
-
-        style = unicode(label.styleSheet())
-        reg = compile('QLabel\s*{background-color\s*:\s*(#\w{6})}')
-        m = reg.search(style)
-        if m:
-            l, r = m.span(1)
-            style = style[:l] + color + style[r:]
-        else:
-            style += "QLabel{background-color:%s;}" % color
-
-        label.setStyleSheet(style)
-
-    def _clearLabelColor(self, label):
-        style = unicode(label.styleSheet())
-        reg = compile('QLabel\s*{(background-color\s*:\s*#\w{6}\s*;)}')
-        m = reg.search(style)
-        if m:
-            l, r = m.span(1)
-            style = style[:l] + style[r:]
-        label.setStyleSheet(style)
-
     def _getTextColor(self):
         c = QColorDialog.getColor()
         self._text_color = unicode(c.name()) if c.isValid() else ''
-        self._setLabelColor(self.w.text_color_trigger, self._text_color)
+        _setLabelColor(self.w.text_color_trigger, self._text_color)
 
     def _getBgColor(self):
         c = QColorDialog.getColor()
         self._bg_color = unicode(c.name()) if c.isValid() else ''
-        self._setLabelColor(self.w.bg_color_trigger, self._bg_color)
+        _setLabelColor(self.w.bg_color_trigger, self._bg_color)
 
     def disableSignal(self, disable):
         self.w.list_trigger.blockSignals(disable)
@@ -793,8 +804,8 @@ class FormTriggers(object):
 
         if radio_enabled:
             self._text_color, self._bg_color = '', ''
-            self._clearLabelColor(self.w.text_color_trigger)
-            self._clearLabelColor(self.w.bg_color_trigger)
+            _clearLabelColor(self.w.text_color_trigger)
+            _clearLabelColor(self.w.bg_color_trigger)
         else:
             self.w.command_trigger.setText('')
 
@@ -846,8 +857,8 @@ class FormTriggers(object):
 
         self._text_color = fg
         self._bg_color = bg
-        self._setLabelColor(self.w.text_color_trigger, self._text_color)
-        self._setLabelColor(self.w.bg_color_trigger, self._bg_color)
+        _setLabelColor(self.w.text_color_trigger, self._text_color)
+        _setLabelColor(self.w.bg_color_trigger, self._bg_color)
         if bool(bg or fg):
             self.w.radio_color_trigger.setChecked(True)
         else:
