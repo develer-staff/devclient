@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Sun Jul 13 18:34:37 2008
+# Created: Tue Jul 15 20:59:19 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -703,15 +703,15 @@ class Ui_option(object):
         self.pref_page.setObjectName("pref_page")
 
         self.groupBox = QtGui.QGroupBox(self.pref_page)
-        self.groupBox.setGeometry(QtCore.QRect(5,10,301,101))
+        self.groupBox.setGeometry(QtCore.QRect(5,10,301,121))
         self.groupBox.setObjectName("groupBox")
 
         self.widget = QtGui.QWidget(self.groupBox)
-        self.widget.setGeometry(QtCore.QRect(8,19,291,76))
+        self.widget.setGeometry(QtCore.QRect(8,12,191,106))
         self.widget.setObjectName("widget")
 
         self.gridlayout10 = QtGui.QGridLayout(self.widget)
-        self.gridlayout10.setHorizontalSpacing(2)
+        self.gridlayout10.setHorizontalSpacing(3)
         self.gridlayout10.setVerticalSpacing(5)
         self.gridlayout10.setObjectName("gridlayout10")
 
@@ -721,24 +721,20 @@ class Ui_option(object):
         self.echo_color_button.setObjectName("echo_color_button")
         self.gridlayout10.addWidget(self.echo_color_button,0,0,1,1)
 
+        spacerItem24 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout10.addItem(spacerItem24,0,1,1,1)
+
         self.echo_color = QtGui.QLabel(self.widget)
         self.echo_color.setEnabled(False)
         self.echo_color.setMinimumSize(QtCore.QSize(24,24))
         self.echo_color.setMaximumSize(QtCore.QSize(24,24))
         self.echo_color.setFrameShape(QtGui.QFrame.StyledPanel)
         self.echo_color.setObjectName("echo_color")
-        self.gridlayout10.addWidget(self.echo_color,0,1,1,1)
-
-        spacerItem24 = QtGui.QSpacerItem(16,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout10.addItem(spacerItem24,0,2,1,1)
-
-        self.keep_text = QtGui.QCheckBox(self.widget)
-        self.keep_text.setObjectName("keep_text")
-        self.gridlayout10.addWidget(self.keep_text,0,3,1,1)
+        self.gridlayout10.addWidget(self.echo_color,0,2,1,1)
 
         self.label_cmd_separator = QtGui.QLabel(self.widget)
         self.label_cmd_separator.setObjectName("label_cmd_separator")
-        self.gridlayout10.addWidget(self.label_cmd_separator,1,0,1,1)
+        self.gridlayout10.addWidget(self.label_cmd_separator,1,0,1,2)
 
         self.cmd_separator = QtGui.QLineEdit(self.widget)
         self.cmd_separator.setMaximumSize(QtCore.QSize(25,16777215))
@@ -750,39 +746,40 @@ class Ui_option(object):
         self.cmd_separator.setMaxLength(1)
         self.cmd_separator.setAlignment(QtCore.Qt.AlignCenter)
         self.cmd_separator.setObjectName("cmd_separator")
-        self.gridlayout10.addWidget(self.cmd_separator,1,1,1,1)
+        self.gridlayout10.addWidget(self.cmd_separator,1,2,1,1)
 
-        spacerItem25 = QtGui.QSpacerItem(141,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout10.addItem(spacerItem25,1,2,1,2)
+        self.keep_text = QtGui.QCheckBox(self.widget)
+        self.keep_text.setObjectName("keep_text")
+        self.gridlayout10.addWidget(self.keep_text,2,0,1,2)
 
         self.groupBox_2 = QtGui.QGroupBox(self.pref_page)
-        self.groupBox_2.setGeometry(QtCore.QRect(5,114,301,76))
+        self.groupBox_2.setGeometry(QtCore.QRect(5,135,301,86))
         self.groupBox_2.setObjectName("groupBox_2")
 
-        self.widget1 = QtGui.QWidget(self.groupBox_2)
-        self.widget1.setGeometry(QtCore.QRect(5,20,291,36))
-        self.widget1.setObjectName("widget1")
+        self.layoutWidget4 = QtGui.QWidget(self.groupBox_2)
+        self.layoutWidget4.setGeometry(QtCore.QRect(5,20,291,36))
+        self.layoutWidget4.setObjectName("layoutWidget4")
 
-        self.gridlayout11 = QtGui.QGridLayout(self.widget1)
+        self.gridlayout11 = QtGui.QGridLayout(self.layoutWidget4)
         self.gridlayout11.setObjectName("gridlayout11")
 
-        self.save_log = QtGui.QCheckBox(self.widget1)
+        self.save_log = QtGui.QCheckBox(self.layoutWidget4)
         self.save_log.setMinimumSize(QtCore.QSize(100,0))
         self.save_log.setObjectName("save_log")
         self.gridlayout11.addWidget(self.save_log,0,0,1,1)
 
-        spacerItem26 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout11.addItem(spacerItem26,0,1,1,1)
+        spacerItem25 = QtGui.QSpacerItem(156,22,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout11.addItem(spacerItem25,0,1,1,1)
 
         self.layoutWidget_4 = QtGui.QWidget(self.pref_page)
-        self.layoutWidget_4.setGeometry(QtCore.QRect(5,210,311,46))
+        self.layoutWidget_4.setGeometry(QtCore.QRect(5,230,311,46))
         self.layoutWidget_4.setObjectName("layoutWidget_4")
 
         self.hboxlayout6 = QtGui.QHBoxLayout(self.layoutWidget_4)
         self.hboxlayout6.setObjectName("hboxlayout6")
 
-        spacerItem27 = QtGui.QSpacerItem(209,26,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.hboxlayout6.addItem(spacerItem27)
+        spacerItem26 = QtGui.QSpacerItem(209,26,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.hboxlayout6.addItem(spacerItem26)
 
         self.save_preferences = QtGui.QPushButton(self.layoutWidget_4)
         self.save_preferences.setMinimumSize(QtCore.QSize(0,28))
@@ -831,8 +828,7 @@ class Ui_option(object):
         option.setTabOrder(self.command_macro,self.save_macro)
         option.setTabOrder(self.save_macro,self.delete_macro)
         option.setTabOrder(self.delete_macro,self.echo_color_button)
-        option.setTabOrder(self.echo_color_button,self.keep_text)
-        option.setTabOrder(self.keep_text,self.save_log)
+        option.setTabOrder(self.echo_color_button,self.save_log)
 
     def retranslateUi(self, option):
         option.setWindowTitle(QtGui.QApplication.translate("option", "Option", None, QtGui.QApplication.UnicodeUTF8))
@@ -924,8 +920,8 @@ class Ui_option(object):
         self.groupBox.setTitle(QtGui.QApplication.translate("option", "Text inserted", None, QtGui.QApplication.UnicodeUTF8))
         self.echo_color_button.setText(QtGui.QApplication.translate("option", "Echo Color", None, QtGui.QApplication.UnicodeUTF8))
         self.echo_color.setStyleSheet(QtGui.QApplication.translate("option", "QLabel { border: 1px solid gray; border-radius: 3px; }", None, QtGui.QApplication.UnicodeUTF8))
-        self.keep_text.setText(QtGui.QApplication.translate("option", "Keep text entered", None, QtGui.QApplication.UnicodeUTF8))
         self.label_cmd_separator.setText(QtGui.QApplication.translate("option", "Command separator", None, QtGui.QApplication.UnicodeUTF8))
+        self.keep_text.setText(QtGui.QApplication.translate("option", "Keep text entered", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("option", "General", None, QtGui.QApplication.UnicodeUTF8))
         self.save_log.setText(QtGui.QApplication.translate("option", "Save log", None, QtGui.QApplication.UnicodeUTF8))
         self.save_preferences.setText(QtGui.QApplication.translate("option", "Save", None, QtGui.QApplication.UnicodeUTF8))
