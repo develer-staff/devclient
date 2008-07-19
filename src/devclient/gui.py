@@ -89,7 +89,8 @@ class SocketToCore(QObject):
                         '--port=%d' % port])
         self._pid = p.pid
 
-        if not self._server.waitForNewConnection(500)[0]:
+        # waiting for connection from core...
+        if not self._server.waitForNewConnection(2000)[0]:
             logger.error('SocketToCore: ' + self._server.errorString())
             self._w.displayWarning(PROJECT_NAME, self._w._text['FatalError'])
             raise exception.IPCError()
