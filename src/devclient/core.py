@@ -87,7 +87,8 @@ class SocketToServer(object):
         self._rawbuf = ''
         self._buffer = ''
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # connect timeout
+        # timeout on connect is longer than normal to avoid fake connection
+        # refused.
         self._s.settimeout(self._timeout * 3)
 
         try:
