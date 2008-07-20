@@ -87,7 +87,8 @@ class SocketToServer(object):
         self._rawbuf = ''
         self._buffer = ''
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._s.settimeout(self._timeout)
+        # connect timeout
+        self._s.settimeout(self._timeout * 3)
 
         try:
             self._s.connect((host, port))
@@ -95,6 +96,7 @@ class SocketToServer(object):
             raise exception.ConnectionRefused()
 
         self._msg('Connection established with %s:%d', host, port)
+        self._s.settimeout(self._timeout)
         self.connected = 1
 
     def fileno(self):
