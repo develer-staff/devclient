@@ -122,7 +122,7 @@ class SocketToServer(object):
         exception of the MCCP sequence.
         """
 
-        # the subnegoziation sequence, which is used to indicate the start of
+        # the subnegoziation sequence, which is used to mark the start of
         # compresses stream
         MCCP_SUB = (SB + MCCP + WILL + SE, SB + MCCP2 + IAC + SE)
 
@@ -207,18 +207,15 @@ class SocketToServer(object):
         return data.replace(theNULL, '')
 
     def _process(self):
-        data = ''
+        data = []
         self._processRawBuf()
         buf = self._getData()
-        while 1:
-            if not buf:
-                break
-
-            data += buf
+        while buf:
+            data.append(buf)
             buf = self._getData()
 
         # self._buffer is empty unless it ends with an incomplete IAC sequence.
-        return data
+        return ''.join(data)
 
     def read(self):
         """
