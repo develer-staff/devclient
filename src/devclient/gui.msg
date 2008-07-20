@@ -4,7 +4,7 @@ Connect = QApplication.translate("dev_client", "Connect")
 
 NoConn = QApplication.translate("dev_client", "There aren't connections defined")
 
-ConnError= QApplication.translate("dev_client", "Unable to establish connection")
+ConnError = QApplication.translate("dev_client", "Unable to establish connection")
 
 CloseConfirm = QApplication.translate("dev_client", "Really quit?")
 

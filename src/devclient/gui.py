@@ -616,7 +616,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         :Parameters:
           conn : str
-            the name of connection
+            the name of connection or a empty string if all connection must be
+            reloaded.
         """
 
         if not conn:
