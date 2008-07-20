@@ -150,17 +150,17 @@ p, li { white-space: pre-wrap; }
         <translation>Connessioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="87"/>
+        <location filename="../../src/devclient/gui_option.msg" line="7"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="90"/>
+        <location filename="../../src/devclient/gui_option.msg" line="9"/>
         <source>Port</source>
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1910"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1897"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
@@ -175,58 +175,58 @@ p, li { white-space: pre-wrap; }
         <translation>Elimina</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="92"/>
+        <location filename="../../src/devclient/gui_option.msg" line="10"/>
         <source>Connection</source>
         <translation>Connessione</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="816"/>
+        <location filename="../../src/devclient/gui_option.msg" line="4"/>
         <source>The following fields are required</source>
         <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="98"/>
+        <location filename="../../src/devclient/gui_option.msg" line="11"/>
         <source>Connection name must be unique</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="649"/>
+        <location filename="../../src/devclient/gui_option.msg" line="24"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="650"/>
+        <location filename="../../src/devclient/gui_option.msg" line="25"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="651"/>
+        <location filename="../../src/devclient/gui_option.msg" line="26"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="648"/>
+        <location filename="../../src/devclient/gui_option.msg" line="23"/>
         <source>Create New</source>
         <comment>alias</comment>
         <translation>Crea nuovo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="88"/>
+        <location filename="../../src/devclient/gui_option.msg" line="8"/>
         <source>Host</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="254"/>
+        <location filename="../../src/devclient/gui_option.msg" line="15"/>
         <source>Macro</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="258"/>
+        <location filename="../../src/devclient/gui_option.msg" line="16"/>
         <source>Keys</source>
         <translation>Tasti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="821"/>
+        <location filename="../../src/devclient/gui_option.msg" line="6"/>
         <source>Command</source>
         <translation>Comando</translation>
     </message>
@@ -236,13 +236,13 @@ p, li { white-space: pre-wrap; }
         <translation>Registra</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="252"/>
+        <location filename="../../src/devclient/gui_option.msg" line="14"/>
         <source>Create New</source>
         <comment>macro</comment>
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="263"/>
+        <location filename="../../src/devclient/gui_option.msg" line="17"/>
         <source>Key sequence must be unique</source>
         <translation>La sequenza dei tasti deve essere univoca</translation>
     </message>
@@ -257,7 +257,7 @@ p, li { white-space: pre-wrap; }
         <translation>Preferenze</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1769"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1798"/>
         <source>Keep text entered</source>
         <translation>Tieni testo inserito</translation>
     </message>
@@ -267,17 +267,17 @@ p, li { white-space: pre-wrap; }
         <translation>Testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1831"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1818"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1852"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1839"/>
         <source>Save log</source>
         <translation>Salva log</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="549"/>
+        <location filename="../../src/devclient/gui_option.msg" line="20"/>
         <source>Accounts</source>
         <translation>Account</translation>
     </message>
@@ -349,28 +349,17 @@ p, li { white-space: pre-wrap; }
         <translation>Cambia Prompt</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="552"/>
-        <source>Bad format on prompt</source>
-        <comment>accounts</comment>
-        <translation>Formato del prompt errato</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_option.py" line="654"/>
-        <source>Alias label must be unique</source>
-        <translation>L&apos;etichetta dell&apos;alias deve essere unica</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_option.py" line="101"/>
+        <location filename="../../src/devclient/gui_option.msg" line="13"/>
         <source>Are you sure to delete the connection?</source>
         <translation>Vuoi davvero eliminare la connessione?</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="266"/>
+        <location filename="../../src/devclient/gui_option.msg" line="19"/>
         <source>Key sequence must be different from all the shortcut keys</source>
         <translation>La sequenza dei tasti deve essere diversa dalle scorciatoie</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1950"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1937"/>
         <source>Close</source>
         <translation>Chiudi</translation>
     </message>
@@ -380,12 +369,12 @@ p, li { white-space: pre-wrap; }
         <translation>Trigger</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="819"/>
+        <location filename="../../src/devclient/gui_option.msg" line="30"/>
         <source>Trigger</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="820"/>
+        <location filename="../../src/devclient/gui_option.msg" line="31"/>
         <source>Pattern</source>
         <translation></translation>
     </message>
@@ -395,15 +384,10 @@ p, li { white-space: pre-wrap; }
         <translation>Ignora case</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="818"/>
+        <location filename="../../src/devclient/gui_option.msg" line="29"/>
         <source>Create New</source>
         <comment>trigger</comment>
         <translation>Crea nuovo</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_option.py" line="823"/>
-        <source>Trigger pattern must be unique</source>
-        <translation>Il pattern deve essere univoco</translation>
     </message>
     <message>
         <location filename="../../src/devclient/gui_src/gui_option.ui" line="1461"/>
@@ -416,7 +400,7 @@ p, li { white-space: pre-wrap; }
         <translation>Testo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1743"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1756"/>
         <source>QLabel { border: 1px solid gray; border-radius: 3px; }</source>
         <translation></translation>
     </message>
@@ -426,7 +410,7 @@ p, li { white-space: pre-wrap; }
         <translation>Sfondo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_option.py" line="826"/>
+        <location filename="../../src/devclient/gui_option.msg" line="32"/>
         <source>At least one between text and background color is required</source>
         <translation>E&apos; necessario specificare almeno uno fra il colore del testo e dello sfondo</translation>
     </message>
@@ -436,9 +420,24 @@ p, li { white-space: pre-wrap; }
         <translation>Colore echo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1776"/>
+        <location filename="../../src/devclient/gui_src/gui_option.ui" line="1769"/>
         <source>Command separator</source>
         <translation>Separatore comandi</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.msg" line="22"/>
+        <source>Bad format on prompt</source>
+        <translation>Formato del prompt errato</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.msg" line="28"/>
+        <source>The label must be unique</source>
+        <translation>L&apos;etichetta deve essere unica</translation>
+    </message>
+    <message>
+        <location filename="../../src/devclient/gui_option.msg" line="32"/>
+        <source>The pattern must be unique</source>
+        <translation>Il pattern deve essere univoco</translation>
     </message>
 </context>
 </TS>

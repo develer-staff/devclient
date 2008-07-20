@@ -1,7 +1,7 @@
 TRANSLATIONS = devclient_it.ts
 
 SOURCES = ../../src/devclient/gui.msg \
-          ../../src/devclient/gui_option.py
+          ../../src/devclient/gui_option.msg
 
 FORMS = ../../src/devclient/gui_src/gui.ui \
         ../../src/devclient/gui_src/gui_option.ui \

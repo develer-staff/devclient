@@ -22,12 +22,14 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 from re import compile
+from os.path import join
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL, Qt, QVariant
 from PyQt4.QtGui import QApplication, QDialog, QColorDialog, QMessageBox
 
 import storage
+from conf import config
 from gui_src.gui_option import Ui_option
 
 
@@ -77,26 +79,8 @@ class FormConnection(object):
         self.connections = storage.connections()
         for el in self.connections:
             self.w.list_conn.addItem(el[1], QVariant(el[0]))
-
-        self._translateText()
         self._setupSignal()
-
-    def _translateText(self):
-        self._text = {}
-        self._text['name'] = QApplication.translate("option", "Name")
-        self._text['host'] = QApplication.translate("option", "Host")
-        self._text['port'] = QApplication.translate("option", "Port")
-
-        self._text['connection'] = QApplication.translate("option", "Connection")
-
-        self._text['req_fields'] = QApplication.translate("option",
-            "The following fields are required")
-
-        self._text['unique_name'] = QApplication.translate("option",
-            "Connection name must be unique")
-
-        self._text['confirm_delete'] = QApplication.translate("option",
-            "Are you sure to delete the connection?")
+        self._text = self.w._text
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
@@ -134,17 +118,17 @@ class FormConnection(object):
 
         msg = []
 
-        conn_fields = {self._text['name']: self.w.name_conn,
-                       self._text['host']: self.w.host_conn,
-                       self._text['port']: self.w.port_conn}
+        conn_fields = {self._text['Name']: self.w.name_conn,
+                       self._text['Host']: self.w.host_conn,
+                       self._text['Port']: self.w.port_conn}
 
         for text, field in conn_fields.iteritems():
             if not field.text():
                 msg.append(unicode(text))
 
         if msg:
-            self.w._displayWarning(self._text['connection'],
-                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
+            self.w._displayWarning(self._text['Connection'],
+                "%s:\n%s" % (self._text['ReqFields'], '\n'.join(msg)))
             return False
 
         if not self.w.list_conn.currentIndex():
@@ -155,8 +139,8 @@ class FormConnection(object):
 
         if [el[0] for el in self.connections if
             el[1] == self.w.name_conn.text() and el[0] != id_conn]:
-            self.w._displayWarning(self._text['connection'],
-                                   self._text['unique_name'])
+            self.w._displayWarning(self._text['Connection'],
+                                   self._text['UniqueName'])
             return False
 
         return True
@@ -203,8 +187,8 @@ class FormConnection(object):
             return
 
         if storage.connectionHasChild(unicode(self.w.list_conn.currentText())) \
-           and not self.w._displayQuestion(self._text['connection'],
-                                           self._text['confirm_delete']):
+           and not self.w._displayQuestion(self._text['Connection'],
+                                           self._text['ConfirmDelete']):
             return
 
         index = self.w.list_conn.currentIndex() - 1
@@ -221,7 +205,7 @@ class FormMacro(object):
 
     def __init__(self, widget):
         self.w = widget
-        self._translateText()
+        self._text = self.w._text
 
         self._key_descr = {}
         for k, v in Qt.__dict__.iteritems():
@@ -242,26 +226,6 @@ class FormMacro(object):
 
         conn_name = unicode(connections[0][1]) if connections else None
         self.loadMacros(conn_name, True)
-
-    def _translateText(self):
-        self._text = {}
-
-        self._text['new_macro'] = QApplication.translate("option", "Create New",
-            "macro")
-
-        self._text['macro'] = QApplication.translate("option", "Macro")
-
-        self._text['req_fields'] = QApplication.translate("option",
-            "The following fields are required")
-
-        self._text['keys'] = QApplication.translate("option", "Keys")
-        self._text['command'] = QApplication.translate("option", "Command")
-
-        self._text['unique_keys'] = QApplication.translate("option",
-            "Key sequence must be unique")
-
-        self._text['shortcut_keys'] = QApplication.translate("option",
-            "Key sequence must be different from all the shortcut keys")
 
     def disableSignal(self, disable):
         self.w.list_macro.blockSignals(disable)
@@ -295,7 +259,7 @@ class FormMacro(object):
 
         self.macros = storage.macros(unicode(conn)) if conn else []
         self.w.list_macro.clear()
-        self.w.list_macro.addItem(self._text['new_macro'])
+        self.w.list_macro.addItem(self._text['NewMacro'])
         self.w.list_macro.addItems([self.getKeyDescr(*m[1:]) for m in
                                     self.macros])
         if not signal:
@@ -322,23 +286,23 @@ class FormMacro(object):
 
         msg = []
 
-        conn_fields = {self._text['keys']: self.w.keys_macro,
-                       self._text['command']: self.w.command_macro}
+        conn_fields = {self._text['Keys']: self.w.keys_macro,
+                       self._text['Command']: self.w.command_macro}
 
         for text, field in conn_fields.iteritems():
             if not field.text():
                 msg.append(unicode(text))
 
         if msg:
-            self.w._displayWarning(self._text['macro'],
-                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
+            self.w._displayWarning(self._text['Macro'],
+                "%s:\n%s" % (self._text['ReqFields'], '\n'.join(msg)))
             return False
 
         cur_idx = self.w.list_macro.currentIndex()
         if [el for idx, el in enumerate(self.macros) if el[1:] == self.key_seq
             and (not cur_idx or idx != cur_idx - 1)]:
-            self.w._displayWarning(self._text['macro'],
-                                   self._text['unique_keys'])
+            self.w._displayWarning(self._text['Macro'],
+                                   self._text['UniqueKeys'])
             return False
 
         # FIX: the shortcuts should be read (and write) from storage
@@ -352,8 +316,8 @@ class FormMacro(object):
                      (0, 0, 0, Qt.Key_Down)]
 
         if [el for el in shortcuts if el == self.key_seq]:
-            self.w._displayWarning(self._text['macro'],
-                                   self._text['shortcut_keys'])
+            self.w._displayWarning(self._text['Macro'],
+                                   self._text['ShortcutKeys'])
             return False
 
         return True
@@ -516,7 +480,7 @@ class FormAccounts(object):
     def __init__(self, widget):
         self.w = widget
         self.loadForm()
-        self._translateText()
+        self._text = self.w._text
         self._setupSignal()
 
     def loadForm(self):
@@ -540,14 +504,6 @@ class FormAccounts(object):
         self.w.connect(self.w.change_prompt, clicked, self._togglePrompt)
         self.w.connect(self.w.save_prompt, clicked, self._savePrompt)
         self.w.connect(self.w.list_account, change_idx, self._loadAccount)
-
-    def _translateText(self):
-        self._text = {}
-
-        self._text['accounts'] = QApplication.translate("option", "Accounts")
-
-        self._text['bad_format'] = QApplication.translate("option",
-            "Bad format on prompt", "accounts")
 
     def _togglePrompt(self):
         self.w.box_prompt.setVisible(not self.w.box_prompt.isVisible())
@@ -602,8 +558,8 @@ class FormAccounts(object):
             if text:
                 for c in 'hHmMvV':
                     if text.count('%' + c) != 1:
-                        self.w._displayWarning(self._text['accounts'],
-                                               self._text['bad_format'])
+                        self.w._displayWarning(self._text['Accounts'],
+                                               self._text['BadPrompt'])
                         field.setFocus()
                         return
 
@@ -620,7 +576,7 @@ class FormAliases(object):
 
     def __init__(self, widget):
         self.w = widget
-        self._translateText()
+        self._text = self.w._text
         self.loadForm()
         self._setupSignal()
 
@@ -639,18 +595,6 @@ class FormAliases(object):
         self.w.list_alias.blockSignals(disable)
         self.w.list_conn_alias.blockSignals(disable)
 
-    def _translateText(self):
-        self._text = {}
-        self._text['req_fields'] = QApplication.translate("option",
-            "The following fields are required")
-        self._text['new_alias'] = QApplication.translate("option",
-            "Create New", "alias")
-        self._text['alias'] = QApplication.translate("option", "Alias")
-        self._text['label'] = QApplication.translate("option", "Label")
-        self._text['body'] = QApplication.translate("option", "Body")
-        self._text['unique_label'] = QApplication.translate("option",
-            "Alias label must be unique")
-
     def loadForm(self):
         self.w.list_conn_alias.clear()
         self.w.list_conn_alias.addItems([c[1] for c in storage.connections()])
@@ -664,7 +608,7 @@ class FormAliases(object):
     def _loadAliases(self, conn):
         self.disableSignal(True)
         self.w.list_alias.clear()
-        self.w.list_alias.addItem(self._text['new_alias'])
+        self.w.list_alias.addItem(self._text['NewAlias'])
         self.aliases = storage.aliases(unicode(conn))
         self.w.list_alias.addItems([l for l, b in self.aliases])
         self.disableSignal(False)
@@ -686,24 +630,24 @@ class FormAliases(object):
 
         msg = []
 
-        alias_fields = {self._text['label']: self.w.label_alias,
-                        self._text['body']: self.w.body_alias}
+        alias_fields = {self._text['Label']: self.w.label_alias,
+                        self._text['Body']: self.w.body_alias}
 
         for text, field in alias_fields.iteritems():
             if not field.text():
                 msg.append(unicode(text))
 
         if msg:
-            self.w._displayWarning(self._text['alias'],
-                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
+            self.w._displayWarning(self._text['Alias'],
+                "%s:\n%s" % (self._text['ReqFields'], '\n'.join(msg)))
             return False
 
 
         if [el[0] for el in self.aliases if
             el[0] == self.w.label_alias.text() and
             not self.w.list_alias.currentIndex()]:
-            self.w._displayWarning(self._text['alias'],
-                                   self._text['unique_label'])
+            self.w._displayWarning(self._text['Alias'],
+                                   self._text['UniqueLabel'])
             return False
 
         return True
@@ -750,7 +694,7 @@ class FormTriggers(object):
 
     def __init__(self, widget):
         self.w = widget
-        self._translateText()
+        self._text = self.w._text
         self.loadForm()
         self._setupSignal()
 
@@ -809,20 +753,6 @@ class FormTriggers(object):
         else:
             self.w.command_trigger.setText('')
 
-    def _translateText(self):
-        self._text = {}
-        self._text['req_fields'] = QApplication.translate("option",
-            "The following fields are required")
-        self._text['new_trigger'] = QApplication.translate("option",
-            "Create New", "trigger")
-        self._text['trigger'] = QApplication.translate("option", "Trigger")
-        self._text['pattern'] = QApplication.translate("option", "Pattern")
-        self._text['command'] = QApplication.translate("option", "Command")
-        self._text['unique_pattern'] = QApplication.translate("option",
-            "Trigger pattern must be unique")
-        self._text['req_colors'] = QApplication.translate("option",
-            "At least one between text and background color is required")
-
     def loadForm(self):
         self.w.list_conn_trigger.clear()
         self.w.list_conn_trigger.addItems([c[1] for c in storage.connections()])
@@ -839,7 +769,7 @@ class FormTriggers(object):
     def _loadTriggers(self, conn):
         self.disableSignal(True)
         self.w.list_trigger.clear()
-        self.w.list_trigger.addItem(self._text['new_trigger'])
+        self.w.list_trigger.addItem(self._text['NewTrigger'])
         self.triggers = storage.triggers(unicode(conn))
         self.w.list_trigger.addItems([el[0] for el in self.triggers])
         self.disableSignal(False)
@@ -871,14 +801,14 @@ class FormTriggers(object):
 
         msg = []
 
-        trigger_fields = {self._text['pattern']: self.w.pattern_trigger}
+        trigger_fields = {self._text['Pattern']: self.w.pattern_trigger}
 
         if self.w.radio_command_trigger.isChecked():
-            trigger_fields[self._text['command']] = self.w.command_trigger
+            trigger_fields[self._text['Command']] = self.w.command_trigger
         else:
             if not self._text_color and not self._bg_color:
-                self.w._displayWarning(self._text['trigger'],
-                                       self._text['req_colors']);
+                self.w._displayWarning(self._text['Trigger'],
+                                       self._text['ReqColors']);
                 return False
 
         for text, field in trigger_fields.iteritems():
@@ -886,15 +816,15 @@ class FormTriggers(object):
                 msg.append(unicode(text))
 
         if msg:
-            self.w._displayWarning(self._text['trigger'],
-                "%s:\n%s" % (self._text['req_fields'], '\n'.join(msg)))
+            self.w._displayWarning(self._text['Trigger'],
+                "%s:\n%s" % (self._text['ReqFields'], '\n'.join(msg)))
             return False
 
         if [el[0] for el in self.triggers if
             el[0].upper() == unicode(self.w.pattern_trigger.text()).upper() and
             not self.w.list_trigger.currentIndex()]:
-            self.w._displayWarning(self._text['trigger'],
-                                   self._text['unique_pattern'])
+            self.w._displayWarning(self._text['Trigger'],
+                                   self._text['UniquePattern'])
             return False
 
         return True
@@ -944,6 +874,7 @@ class GuiOption(QDialog, Ui_option):
 
     def __init__(self, parent):
         QDialog.__init__(self, parent)
+        self._translateText()
         self.setupUi(self)
         self._setupSignal()
 
@@ -964,6 +895,11 @@ class GuiOption(QDialog, Ui_option):
 
         self.trigger = FormTriggers(self)
         """the FormTriggers instance, used to manage form of triggers."""
+
+    def _translateText(self):
+        self._text = {}
+        execfile(join(config['devclient']['path'], 'gui_option.msg'),
+                 self._text)
 
     def _displayWarning(self, title, message):
         QMessageBox.warning(self, title, message)

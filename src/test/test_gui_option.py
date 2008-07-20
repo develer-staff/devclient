@@ -50,12 +50,13 @@ class GuiOptionTest(unittest.TestCase):
             self.app = QApplication([])
 
         self.test_dir = '../../data/storage/test_dir'
+        config['storage'] = {'path': os.path.abspath(self.test_dir)}
+        config['devclient'] = {'path': os.path.abspath('../devclient')}
 
     def setUp(self):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.mkdir(self.test_dir)
-        config['storage'] = {'path': os.path.abspath(self.test_dir)}
         devclient.storage.loadStorage()
 
     def tearDown(self):
@@ -66,18 +67,16 @@ class GuiOptionTest(unittest.TestCase):
 class GuiOptionMock(object):
 
     def __init__(self):
-        self.name_conn = QLineEdit()
-        self.host_conn = QLineEdit()
-        self.port_conn = QLineEdit()
-        self.list_conn = QComboBox()
-        self.save_conn = QPushButton()
-        self.delete_conn = QPushButton()
-        self.connect_conn = QPushButton()
-        self.list_conn.addItem("Create New")
         self._warning = None
         self._question = None
+        self._text = {}
+        execfile(os.path.join(config['devclient']['path'], 'gui_option.msg'),
+                 self._text)
 
     def connect(self, widget, signal, callback):
+        pass
+
+    def disconnect(self, widget, signal, callback):
         pass
 
     def _displayWarning(self, title, message):
@@ -86,8 +85,22 @@ class GuiOptionMock(object):
     def _displayQuestion(self, title, message):
         self._question = (title, message)
 
-    def emit(self, signal, args):
+    def emit(self, signal, args=None):
         pass
+
+
+class GuiOptionConnMock(GuiOptionMock):
+
+    def __init__(self):
+        GuiOptionMock.__init__(self)
+        self.name_conn = QLineEdit()
+        self.host_conn = QLineEdit()
+        self.port_conn = QLineEdit()
+        self.list_conn = QComboBox()
+        self.save_conn = QPushButton()
+        self.delete_conn = QPushButton()
+        self.connect_conn = QPushButton()
+        self.list_conn.addItem("Create New")
 
 
 class TestFormConnection(GuiOptionTest):
@@ -101,7 +114,7 @@ class TestFormConnection(GuiOptionTest):
         return True
 
     def _buildForm(self, name, host, port):
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
         form_conn.w.name_conn.setText(name)
         form_conn.w.host_conn.setText(host)
         form_conn.w.port_conn.setText(str(port))
@@ -116,7 +129,7 @@ class TestFormConnection(GuiOptionTest):
         return False
 
     def testEmpty(self):
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
         self.assert_(len(form_conn.connections) == 0)
 
     def testLoad(self):
@@ -126,7 +139,7 @@ class TestFormConnection(GuiOptionTest):
         conn = [id_conn, name, host, port]
 
         storage.addConnection(conn)
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
 
         form_conn.load(name)
         self.assert_(self._formCompare(form_conn, conn))
@@ -139,19 +152,19 @@ class TestFormConnection(GuiOptionTest):
 
         storage.addConnection(conn)
         storage.addConnection([0, 'test', 'test', 4000])
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
 
         form_conn.load(name)
         self.assert_(self._formCompare(form_conn, conn))
 
     def testLoad3(self):
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
 
         form_conn.load('fake')
         self.assert_(self._formCompare(form_conn, [0, '', '', '']))
 
     def testLoad4(self):
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
 
         form_conn.load('')
         self.assert_(self._formCompare(form_conn, [0, '', '', '']))
@@ -160,7 +173,7 @@ class TestFormConnection(GuiOptionTest):
         """Verify error with empty fields."""
 
         storage.addConnection([0, 'name', 'host', 4000])
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
         self.assert_(not form_conn._checkFields())
         self.assert_(form_conn.w._warning)
 
@@ -199,7 +212,7 @@ class TestFormConnection(GuiOptionTest):
         """Verify no error on right update"""
 
         storage.addConnection([0, 'name', 'host', 4000])
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
         form_conn.load('name')
         form_conn.w.list_conn.setCurrentIndex(1)
         self.assert_(form_conn._checkFields())
@@ -290,7 +303,7 @@ class TestFormConnection(GuiOptionTest):
         """Delete 'create new' item."""
 
         storage.addConnection([0, 'name', 'host', 4000])
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 1)
 
@@ -298,7 +311,7 @@ class TestFormConnection(GuiOptionTest):
         """Delete a connection."""
 
         storage.addConnection([0, 'name', 'host', 4000])
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
         form_conn.w.list_conn.setCurrentIndex(1)
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 0)
@@ -309,7 +322,7 @@ class TestFormConnection(GuiOptionTest):
         storage.addConnection([0, 'name', 'host', 4000])
         conn = [0, 'name2', 'host2', 3000]
         storage.addConnection(conn)
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
         form_conn.w.list_conn.setCurrentIndex(1)
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 1)
@@ -321,16 +334,17 @@ class TestFormConnection(GuiOptionTest):
 
         storage.addConnection([0, 'name', 'host', 4000])
         storage.saveAliases('name', [('label', 'body')])
-        form_conn = FormConnection(GuiOptionMock())
+        form_conn = FormConnection(GuiOptionConnMock())
         form_conn.w.list_conn.setCurrentIndex(1)
         form_conn.delete()
         self.assert_(len(form_conn.connections) == 1)
         self.assert_(form_conn.w._question)
 
 
-class GuiOptionMacroMock(object):
+class GuiOptionMacroMock(GuiOptionMock):
 
     def __init__(self):
+        GuiOptionMock.__init__(self)
         self.register_macro = QPushButton()
         self.save_macro = QPushButton()
         self.delete_macro = QPushButton()
@@ -338,19 +352,6 @@ class GuiOptionMacroMock(object):
         self.list_conn_macro = QComboBox()
         self.command_macro = QLineEdit()
         self.keys_macro = QLineEdit()
-        self._warning = None
-
-    def connect(self, widget, signal, callback):
-        pass
-
-    def disconnect(self, widget, signal, callback):
-        pass
-
-    def _displayWarning(self, title, message):
-        self._warning = (title, message)
-
-    def emit(self, signal, args):
-        pass
 
 
 class TestFormMacro(GuiOptionTest):
@@ -472,21 +473,16 @@ class TestFormMacro(GuiOptionTest):
         self.assert_(len(form_macro.macros) == 2)
 
 
-class GuiOptionPrefMock(object):
+class GuiOptionPrefMock(GuiOptionMock):
 
     def __init__(self):
+        GuiOptionMock.__init__(self)
         self.echo_color = QLabel()
         self.save_preferences = QPushButton()
         self.echo_color_button = QPushButton()
         self.cmd_separator = QLineEdit()
         self.keep_text = QCheckBox()
         self.save_log = QCheckBox()
-
-    def connect(self, widget, signal, callback):
-        pass
-
-    def emit(self, signal, args=None):
-        pass
 
 
 class TestFormPreferences(GuiOptionTest):
@@ -529,9 +525,10 @@ class TestFormPreferences(GuiOptionTest):
         self.assert_(storage.preferences() == ('#000000', 0, 1, '#'))
 
 
-class GuiOptionAccMock(object):
+class GuiOptionAccMock(GuiOptionMock):
 
     def __init__(self):
+        GuiOptionMock.__init__(self)
         self.save_account = QCheckBox()
         self.delete_account = QPushButton()
         self.list_account = QComboBox()
@@ -541,18 +538,8 @@ class GuiOptionAccMock(object):
         self.normal_prompt = QLineEdit()
         self.fight_prompt = QLineEdit()
         self.box_prompt = QGroupBox()
-        self._warning = None
         self.delete_account.setEnabled(False)
         self.change_prompt.setEnabled(False)
-
-    def _displayWarning(self, title, message):
-        self._warning = (title, message)
-
-    def connect(self, widget, signal, callback):
-        pass
-
-    def emit(self, signal, args):
-        pass
 
 
 class TestFormAccounts(GuiOptionTest):
@@ -666,25 +653,16 @@ class TestFormAccounts(GuiOptionTest):
         self.assert_(form.w._warning)
 
 
-class GuiOptionAliasMock(object):
+class GuiOptionAliasMock(GuiOptionMock):
 
     def __init__(self):
+        GuiOptionMock.__init__(self)
         self.list_alias = QComboBox()
         self.list_conn_alias = QComboBox()
         self.label_alias = QLineEdit()
         self.body_alias = QLineEdit()
-        self._warning = None
         self.delete_alias = QPushButton()
         self.save_alias = QPushButton()
-
-    def _displayWarning(self, title, message):
-        self._warning = (title, message)
-
-    def connect(self, widget, signal, callback):
-        pass
-
-    def emit(self, signal, args):
-        pass
 
 
 class TestFormAliases(GuiOptionTest):
@@ -837,16 +815,16 @@ class TestFormAliases(GuiOptionTest):
         self.assert_(storage.aliases('name') == [('label', 'body2')])
 
 
-class GuiOptionTriggerMock(object):
+class GuiOptionTriggerMock(GuiOptionMock):
 
     def __init__(self):
+        GuiOptionMock.__init__(self)
         self.w = QWidget()
         self.list_trigger = QComboBox()
         self.list_conn_trigger = QComboBox()
         self.pattern_trigger = QLineEdit()
         self.command_trigger = QLineEdit()
         self.case_trigger = QCheckBox()
-        self._warning = None
         self.delete_trigger = QPushButton()
         self.save_trigger = QPushButton()
         self.radio_command_trigger = QRadioButton(self.w)
@@ -856,15 +834,6 @@ class GuiOptionTriggerMock(object):
         self.bg_color_trigger_button = QPushButton()
         self.text_color_trigger = QLabel()
         self.bg_color_trigger = QLabel()
-
-    def _displayWarning(self, title, message):
-        self._warning = (title, message)
-
-    def connect(self, widget, signal, callback):
-        pass
-
-    def emit(self, signal, args):
-        pass
 
 
 class TestFormTriggers(GuiOptionTest):
