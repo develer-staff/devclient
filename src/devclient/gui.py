@@ -589,7 +589,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self._conn_manager.disconnect()
 
     def _showOption(self):
-        opt = gui_option.GuiOption(self)
+        opt = gui_option.GuiOption(self, unicode(self.list_conn.currentText()))
         self.connect(opt, SIGNAL("reloadConnData(QString)"),
                      self._reloadConnData)
         self.connect(opt, SIGNAL("reloadPreferences()"),

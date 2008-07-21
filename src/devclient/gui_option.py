@@ -921,13 +921,13 @@ class GuiOption(QDialog, Ui_option):
     The Gui dialog for setup option.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, conn_name):
         QDialog.__init__(self, parent)
         self._translateText()
         self.setupUi(self)
         self._setupSignal()
 
-        self._lazy_conn = ''
+        self._lazy_conn = conn_name
         """the connection to load as the current conn in a Form* instance."""
 
         self.conn = FormConnection(self)
