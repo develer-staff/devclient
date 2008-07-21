@@ -70,13 +70,14 @@ class GuiOptionMock(object):
         self._warning = None
         self._question = None
         self._text = {}
+        self._lazy_conn = ''
         execfile(os.path.join(config['devclient']['path'], 'gui_option.msg'),
                  self._text)
 
-    def connect(self, widget, signal, callback):
+    def connect(self, *args):
         pass
 
-    def disconnect(self, widget, signal, callback):
+    def disconnect(self, *args):
         pass
 
     def _displayWarning(self, title, message):
@@ -85,7 +86,7 @@ class GuiOptionMock(object):
     def _displayQuestion(self, title, message):
         self._question = (title, message)
 
-    def emit(self, signal, args=None):
+    def emit(self, *args):
         pass
 
 

@@ -67,6 +67,19 @@ def _clearLabelColor(label):
     label.setStyleSheet(style)
 
 
+def _changeItemSelected(combobox, name):
+    """
+    Change the selected item of a combobox.
+    """
+
+    if combobox.count():
+        selected = 0
+        for i in xrange(combobox.count()):
+            if name == unicode(combobox.itemText(i)):
+                selected = i
+        combobox.setCurrentIndex(selected)
+
+
 class FormConnection(object):
     """
     Manage the connection part of gui option.
@@ -220,11 +233,20 @@ class FormMacro(object):
         connections = storage.connections()
         self.w.list_conn_macro.clear()
         self.w.list_conn_macro.addItems([c[1] for c in connections])
+
         for o in (self.w.list_macro, self.w.command_macro,
                   self.w.register_macro):
             o.setEnabled(bool(self.w.list_conn_macro.count()))
 
-        conn_name = unicode(connections[0][1]) if connections else None
+        if self.w.list_conn_macro.count():
+            if self.w._lazy_conn:
+                _changeItemSelected(self.w.list_conn_macro, self.w._lazy_conn)
+                conn_name = self.w._lazy_conn
+            else:
+                conn_name = unicode(self.w.list_conn_macro.currentText())
+        else:
+            conn_name = None
+
         self.loadMacros(conn_name, True)
 
     def disableSignal(self, disable):
@@ -242,6 +264,9 @@ class FormMacro(object):
         self.w.connect(self.w.list_macro,
                        SIGNAL("currentIndexChanged(int)"),
                        self.load)
+        self.w.connect(self.w.list_conn_macro,
+                      SIGNAL("currentIndexChanged(QString)"),
+                      self.w, SIGNAL("currentConnChanged(QString)"))
 
     def loadMacros(self, conn, signal=False):
         """
@@ -486,10 +511,16 @@ class FormAccounts(object):
     def loadForm(self):
         connections = storage.connections()
         self.w.list_conn_account.clear()
-        for el in connections:
+
+        selected = 0
+        for i, el in enumerate(connections):
             self.w.list_conn_account.addItem(el[1], QVariant(el[0]))
+            if el[1] == self.w._lazy_conn:
+                selected = i
+
+            self.w.list_conn_account.setCurrentIndex(selected)
         if connections:
-            self._loadAccounts(0)
+            self._loadAccounts(selected)
         val = storage.option('save_account')
         self.w.save_account.setCheckState(Qt.Checked if val else Qt.Unchecked)
         self.w.box_prompt.setVisible(False)
@@ -504,6 +535,9 @@ class FormAccounts(object):
         self.w.connect(self.w.change_prompt, clicked, self._togglePrompt)
         self.w.connect(self.w.save_prompt, clicked, self._savePrompt)
         self.w.connect(self.w.list_account, change_idx, self._loadAccount)
+        self.w.connect(self.w.list_conn_account,
+                      SIGNAL("currentIndexChanged(QString)"),
+                      self.w, SIGNAL("currentConnChanged(QString)"))
 
     def _togglePrompt(self):
         self.w.box_prompt.setVisible(not self.w.box_prompt.isVisible())
@@ -590,6 +624,9 @@ class FormAliases(object):
         self.w.connect(self.w.list_alias,
                       SIGNAL("currentIndexChanged(int)"),
                       self._loadAlias)
+        self.w.connect(self.w.list_conn_alias,
+                      SIGNAL("currentIndexChanged(QString)"),
+                      self.w, SIGNAL("currentConnChanged(QString)"))
 
     def disableSignal(self, disable):
         self.w.list_alias.blockSignals(disable)
@@ -600,7 +637,12 @@ class FormAliases(object):
         self.w.list_conn_alias.addItems([c[1] for c in storage.connections()])
 
         if self.w.list_conn_alias.count():
-            self._loadAliases(unicode(self.w.list_conn_alias.currentText()))
+            if self.w._lazy_conn:
+                _changeItemSelected(self.w.list_conn_alias, self.w._lazy_conn)
+                conn_name = self.w._lazy_conn
+            else:
+                conn_name = unicode(self.w.list_conn_alias.currentText())
+            self._loadAliases(conn_name)
 
         for o in (self.w.list_alias, self.w.label_alias, self.w.body_alias):
             o.setEnabled(bool(self.w.list_conn_alias.count()))
@@ -712,6 +754,9 @@ class FormTriggers(object):
                        self._getTextColor)
         self.w.connect(self.w.bg_color_trigger_button, clicked,
                        self._getBgColor)
+        self.w.connect(self.w.list_conn_trigger,
+                      SIGNAL("currentIndexChanged(QString)"),
+                      self.w, SIGNAL("currentConnChanged(QString)"))
 
     def _getTextColor(self):
         c = QColorDialog.getColor()
@@ -758,7 +803,13 @@ class FormTriggers(object):
         self.w.list_conn_trigger.addItems([c[1] for c in storage.connections()])
 
         if self.w.list_conn_trigger.count():
-            self._loadTriggers(unicode(self.w.list_conn_trigger.currentText()))
+            if self.w._lazy_conn:
+                _changeItemSelected(self.w.list_conn_trigger, self.w._lazy_conn)
+                conn_name = self.w._lazy_conn
+            else:
+                conn_name = unicode(self.w.list_conn_trigger.currentText())
+
+            self._loadTriggers(conn_name)
 
         for o in (self.w.list_trigger, self.w.pattern_trigger,
                   self.w.command_trigger, self.w.case_trigger):
@@ -896,6 +947,9 @@ class GuiOption(QDialog, Ui_option):
         self.trigger = FormTriggers(self)
         """the FormTriggers instance, used to manage form of triggers."""
 
+        self._lazy_conn = ''
+        """the connection to load as the current conn in a Form* instance."""
+
     def _translateText(self):
         self._text = {}
         execfile(join(config['devclient']['path'], 'gui_option.msg'),
@@ -913,6 +967,11 @@ class GuiOption(QDialog, Ui_option):
         self.connect(self.list_option,
                      SIGNAL("currentItemChanged(QListWidgetItem*, QListWidgetItem*)"),
                      self._changeForm)
+        self.connect(self, SIGNAL("currentConnChanged(QString)"),
+                     self._lazyLoad)
+
+    def _lazyLoad(self, conn):
+        self._lazy_conn = unicode(conn)
 
     def keyPressEvent(self, keyEvent):
         curr_page = self.page_container.currentWidget().objectName()
