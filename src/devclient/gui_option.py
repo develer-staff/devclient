@@ -73,11 +73,12 @@ def _changeItemSelected(combobox, name):
     """
 
     if combobox.count():
-        selected = 0
         for i in xrange(combobox.count()):
             if name == unicode(combobox.itemText(i)):
-                selected = i
-        combobox.setCurrentIndex(selected)
+                combobox.setCurrentIndex(i)
+                return True
+
+    return False
 
 
 class FormConnection(object):
@@ -239,8 +240,7 @@ class FormMacro(object):
             o.setEnabled(bool(self.w.list_conn_macro.count()))
 
         if self.w.list_conn_macro.count():
-            if self.w._lazy_conn:
-                _changeItemSelected(self.w.list_conn_macro, self.w._lazy_conn)
+            if _changeItemSelected(self.w.list_conn_macro, self.w._lazy_conn):
                 conn_name = self.w._lazy_conn
             else:
                 conn_name = unicode(self.w.list_conn_macro.currentText())
@@ -637,8 +637,7 @@ class FormAliases(object):
         self.w.list_conn_alias.addItems([c[1] for c in storage.connections()])
 
         if self.w.list_conn_alias.count():
-            if self.w._lazy_conn:
-                _changeItemSelected(self.w.list_conn_alias, self.w._lazy_conn)
+            if _changeItemSelected(self.w.list_conn_alias, self.w._lazy_conn):
                 conn_name = self.w._lazy_conn
             else:
                 conn_name = unicode(self.w.list_conn_alias.currentText())
@@ -803,8 +802,7 @@ class FormTriggers(object):
         self.w.list_conn_trigger.addItems([c[1] for c in storage.connections()])
 
         if self.w.list_conn_trigger.count():
-            if self.w._lazy_conn:
-                _changeItemSelected(self.w.list_conn_trigger, self.w._lazy_conn)
+            if _changeItemSelected(self.w.list_conn_trigger, self.w._lazy_conn):
                 conn_name = self.w._lazy_conn
             else:
                 conn_name = unicode(self.w.list_conn_trigger.currentText())
@@ -929,6 +927,9 @@ class GuiOption(QDialog, Ui_option):
         self.setupUi(self)
         self._setupSignal()
 
+        self._lazy_conn = ''
+        """the connection to load as the current conn in a Form* instance."""
+
         self.conn = FormConnection(self)
         """the `FormConnection` instance, used to manage form of connections."""
 
@@ -946,9 +947,6 @@ class GuiOption(QDialog, Ui_option):
 
         self.trigger = FormTriggers(self)
         """the FormTriggers instance, used to manage form of triggers."""
-
-        self._lazy_conn = ''
-        """the connection to load as the current conn in a Form* instance."""
 
     def _translateText(self):
         self._text = {}
