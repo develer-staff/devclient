@@ -1690,7 +1690,7 @@
      <property name="title" >
       <string>Text inserted</string>
      </property>
-     <widget class="QWidget" name="" >
+     <widget class="QWidget" name="layoutWidget" >
       <property name="geometry" >
        <rect>
         <x>8</x>
@@ -1714,6 +1714,12 @@
            <height>26</height>
           </size>
          </property>
+         <property name="maximumSize" >
+          <size>
+           <width>16777215</width>
+           <height>28</height>
+          </size>
+         </property>
          <property name="text" >
           <string>Echo Color</string>
          </property>
@@ -1729,7 +1735,7 @@
          </property>
          <property name="sizeHint" >
           <size>
-           <width>40</width>
+           <width>20</width>
            <height>20</height>
           </size>
          </property>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Tue Jul 15 20:59:19 2008
+# Created: Sat Jul 26 18:21:08 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -706,25 +706,26 @@ class Ui_option(object):
         self.groupBox.setGeometry(QtCore.QRect(5,10,301,121))
         self.groupBox.setObjectName("groupBox")
 
-        self.widget = QtGui.QWidget(self.groupBox)
-        self.widget.setGeometry(QtCore.QRect(8,12,191,106))
-        self.widget.setObjectName("widget")
+        self.layoutWidget4 = QtGui.QWidget(self.groupBox)
+        self.layoutWidget4.setGeometry(QtCore.QRect(8,12,191,106))
+        self.layoutWidget4.setObjectName("layoutWidget4")
 
-        self.gridlayout10 = QtGui.QGridLayout(self.widget)
+        self.gridlayout10 = QtGui.QGridLayout(self.layoutWidget4)
         self.gridlayout10.setHorizontalSpacing(3)
         self.gridlayout10.setVerticalSpacing(5)
         self.gridlayout10.setObjectName("gridlayout10")
 
-        self.echo_color_button = QtGui.QPushButton(self.widget)
+        self.echo_color_button = QtGui.QPushButton(self.layoutWidget4)
         self.echo_color_button.setMinimumSize(QtCore.QSize(0,26))
+        self.echo_color_button.setMaximumSize(QtCore.QSize(16777215,28))
         self.echo_color_button.setIcon(QtGui.QIcon(":/images/button-color.png"))
         self.echo_color_button.setObjectName("echo_color_button")
         self.gridlayout10.addWidget(self.echo_color_button,0,0,1,1)
 
-        spacerItem24 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        spacerItem24 = QtGui.QSpacerItem(20,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
         self.gridlayout10.addItem(spacerItem24,0,1,1,1)
 
-        self.echo_color = QtGui.QLabel(self.widget)
+        self.echo_color = QtGui.QLabel(self.layoutWidget4)
         self.echo_color.setEnabled(False)
         self.echo_color.setMinimumSize(QtCore.QSize(24,24))
         self.echo_color.setMaximumSize(QtCore.QSize(24,24))
@@ -732,11 +733,11 @@ class Ui_option(object):
         self.echo_color.setObjectName("echo_color")
         self.gridlayout10.addWidget(self.echo_color,0,2,1,1)
 
-        self.label_cmd_separator = QtGui.QLabel(self.widget)
+        self.label_cmd_separator = QtGui.QLabel(self.layoutWidget4)
         self.label_cmd_separator.setObjectName("label_cmd_separator")
         self.gridlayout10.addWidget(self.label_cmd_separator,1,0,1,2)
 
-        self.cmd_separator = QtGui.QLineEdit(self.widget)
+        self.cmd_separator = QtGui.QLineEdit(self.layoutWidget4)
         self.cmd_separator.setMaximumSize(QtCore.QSize(25,16777215))
 
         font = QtGui.QFont()
@@ -748,7 +749,7 @@ class Ui_option(object):
         self.cmd_separator.setObjectName("cmd_separator")
         self.gridlayout10.addWidget(self.cmd_separator,1,2,1,1)
 
-        self.keep_text = QtGui.QCheckBox(self.widget)
+        self.keep_text = QtGui.QCheckBox(self.layoutWidget4)
         self.keep_text.setObjectName("keep_text")
         self.gridlayout10.addWidget(self.keep_text,2,0,1,2)
 
@@ -756,14 +757,14 @@ class Ui_option(object):
         self.groupBox_2.setGeometry(QtCore.QRect(5,135,301,86))
         self.groupBox_2.setObjectName("groupBox_2")
 
-        self.layoutWidget4 = QtGui.QWidget(self.groupBox_2)
-        self.layoutWidget4.setGeometry(QtCore.QRect(5,20,291,36))
-        self.layoutWidget4.setObjectName("layoutWidget4")
+        self.layoutWidget5 = QtGui.QWidget(self.groupBox_2)
+        self.layoutWidget5.setGeometry(QtCore.QRect(5,20,291,36))
+        self.layoutWidget5.setObjectName("layoutWidget5")
 
-        self.gridlayout11 = QtGui.QGridLayout(self.layoutWidget4)
+        self.gridlayout11 = QtGui.QGridLayout(self.layoutWidget5)
         self.gridlayout11.setObjectName("gridlayout11")
 
-        self.save_log = QtGui.QCheckBox(self.layoutWidget4)
+        self.save_log = QtGui.QCheckBox(self.layoutWidget5)
         self.save_log.setMinimumSize(QtCore.QSize(100,0))
         self.save_log.setObjectName("save_log")
         self.gridlayout11.addWidget(self.save_log,0,0,1,1)
