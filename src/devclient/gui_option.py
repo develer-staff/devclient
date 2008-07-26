@@ -42,7 +42,7 @@ def _setLabelColor(label, color):
         return _clearLabelColor(label)
 
     style = unicode(label.styleSheet())
-    reg = compile('QLabel\s*{background-color\s*:\s*(#\w{6})}')
+    reg = compile('QLabel\s*{\s*background-color\s*:\s*(#\w{6}).*}')
     m = reg.search(style)
     if m:
         l, r = m.span(1)
@@ -59,10 +59,10 @@ def _clearLabelColor(label):
     """
 
     style = unicode(label.styleSheet())
-    reg = compile('QLabel\s*{(background-color\s*:\s*#\w{6}\s*;)}')
+    reg = compile('QLabel\s*{\s*(background-color\s*:\s*#\w{6}\s*;?)(.*)}')
     m = reg.search(style)
     if m:
-        l, r = m.span(1)
+        l, r = m.span(1 if m.group(2).strip() else 0)
         style = style[:l] + style[r:]
     label.setStyleSheet(style)
 
