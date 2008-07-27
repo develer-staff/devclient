@@ -86,10 +86,10 @@ class TextViewer(object):
     Build the html visualization from model.
     """
 
-    MAX_ROWS = 500
+    MAX_ROWS = 1000
     """The max number of rows displayed in textEdit field"""
 
-    _ROW_BLOCK = 10
+    _ROW_BLOCK = 20
     """The max number of rows per block"""
 
     def __init__(self, widget):
@@ -139,6 +139,9 @@ class TextViewer(object):
             new_block = False
 
         cursor.endEditBlock()
+
+        # move the cursor of text_output at the end of the scrollarea if
+        # text_output_noscroll is hidden.
         if not self.w.text_output_noscroll.isVisible():
             self.w.text_output.setTextCursor(cursor)
 
