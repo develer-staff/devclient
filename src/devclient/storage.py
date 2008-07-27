@@ -144,7 +144,7 @@ def triggers(conn_name):
     Load the list of trigger for a connection.
 
     :Parameters:
-        conn_name : str
+      conn_name : str
         the name of connection.
 
     :return: a list of tuples (pattern, ignore_case, command, bg_color, fg_color)
@@ -171,7 +171,7 @@ def aliases(conn_name):
     Load the list of alias for a connection.
 
     :Parameters:
-        conn_name : str
+      conn_name : str
         the name of connection.
 
     :return: a list of tuples (label, body)
@@ -198,7 +198,7 @@ def macros(conn_name):
     Load the list of macro for a connection.
 
     :Parameters:
-        conn_name : str
+      conn_name : str
         the name of connection.
 
     :return: a list of tuples (command, shift, alt, ctrl, keycode)
@@ -240,7 +240,7 @@ def addConnection(conn):
     Add a new connection at list of connections.
 
     :Parameters:
-        conn : list
+      conn : list
         the params of connection to add. The id param should be return
         valued.
     """
@@ -299,10 +299,10 @@ def option(name, id_conn=0):
     Return the value of an option.
 
     :Parameters:
-        name : str
+      name : str
         the name of the option.
 
-        id_conn : int
+      id_conn : int
         the id of connection.
     """
 
@@ -334,7 +334,7 @@ def accounts(id_conn):
     Return the list of (username of) account for a connection.
 
     :Parameters:
-        id_conn : int
+      id_conn : int
         the id of connection.
     """
 
@@ -350,10 +350,10 @@ def accountDetail(id_conn, username):
     Return the list of command defined for an account.
 
     :Parameters:
-        id_conn : int
+      id_conn : int
         the id of connection.
 
-        username : str
+      username : str
         the username of account.
     """
 
@@ -385,10 +385,10 @@ def deleteAccount(id_conn, username):
     Erase an account.
 
     :Parameters:
-        id_conn : int
+      id_conn : int
         the id of connection.
 
-        username : str
+      username : str
         the username of account.
     """
 
