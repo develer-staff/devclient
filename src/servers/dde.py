@@ -53,7 +53,10 @@ class DdE(DikuServer):
                 }
 
 
-class ADdE(DdE):
+class ADdE(DikuServer):
+    right_widget = 'gui_map_graph'
+    empty_icon_color = '#868686'
+    ext_info = 1
     host = 'algor.homelinux.com'
     port = 5556
     host2 = None

@@ -57,6 +57,7 @@ SE  = chr(240)
 
 MCCP2 = chr(86)
 MCCP = chr(85)
+EXT_INFO = chr(95)
 
 
 class SocketToServer(object):
@@ -84,6 +85,7 @@ class SocketToServer(object):
         self._stats = [0, 0]
         self._mccp_ver = None
         self._compress = 0
+        self.ext_info = 0
         self._rawbuf = ''
         self._buffer = ''
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -141,6 +143,10 @@ class SocketToServer(object):
                     self._s.sendall(IAC + DO + opt)
                     self._msg('ENABLE MCCP v1')
                     self._mccp_ver = 1
+                elif cmd == WILL and opt == EXT_INFO:
+                    self._msg('ENABLE EXTENDED INFO')
+                    self._s.sendall(IAC + DO + opt)
+                    self.ext_info = 1
                 else:
                     self._s.sendall(IAC + DONT + opt)
                 self._buffer = self._buffer[3:]
@@ -413,6 +419,7 @@ class Core(object):
             self.s_server.disconnect()
         else:
             if data:
+                self.parser.setVars({'extended_info': self.s_server.ext_info})
                 self.s_gui.write(messages.MODEL, self.parser.buildModel(data))
 
     def mainLoop(self):

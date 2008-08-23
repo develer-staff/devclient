@@ -703,5 +703,68 @@ class TestWildMapParser(unittest.TestCase):
         m = self.parser.buildModel(text)
         self.assert_(m.map_text is None and m.map_html is None)
 
+
+class TestExtInfoParser(unittest.TestCase):
+
+    def setUp(self):
+        self.parser = Parser(Server)
+        self.parser._ext_info = 1
+        self._start_seq = chr(27) + '[1x'
+        self._end_seq = chr(27) + '[2x'
+
+    def testParseText(self):
+        txt = 'hello'
+        model = self.parser.buildModel(txt)
+        self.assert_(txt == model.main_text)
+        self.assert_(not model.map_text)
+
+    def testParseWild1(self):
+        txt = 'hello ' + self._start_seq + 'wild' + self._end_seq + 'world'
+        model = self.parser.buildModel(txt)
+        self.assert_('hello world' == model.main_text)
+        self.assert_('wild' == model.map_text)
+
+    def testParseWild2(self):
+        model = self.parser.buildModel('hello ' + self._start_seq + 'wild')
+        self.assert_('hello ' == model.main_text)
+        self.assert_(not model.map_text)
+        model = self.parser.buildModel(self._end_seq + 'world')
+        self.assert_('world' == model.main_text)
+        self.assert_('wild' == model.map_text)
+
+    def testParseWild3(self):
+        model = self.parser.buildModel('hello ' + self._start_seq + 'wi')
+        self.assert_('hello ' == model.main_text)
+        self.assert_(not model.map_text)
+        model = self.parser.buildModel('ld' + self._end_seq + 'world')
+        self.assert_('world' == model.main_text)
+        self.assert_('wild' == model.map_text)
+
+    def testParseWild4(self):
+        # FIX THIS!
+        model = self.parser.buildModel('hello ' + self._start_seq[0])
+        self.assert_('hello ' == model.main_text)
+        self.assert_(not model.map_text)
+        txt = self._start_seq[1:] + 'wild' + self._end_seq + 'world'
+        model = self.parser.buildModel(txt)
+        self.assert_('world' == model.main_text)
+        self.assert_('wild' == model.map_text)
+
+    def testParseWild5(self):
+        txt = 'hello ' + self._start_seq + 'wild' + self._end_seq[:1]
+        model = self.parser.buildModel(txt)
+        self.assert_('hello ' == model.main_text)
+        self.assert_(not model.map_text)
+        model = self.parser.buildModel(self._end_seq[1:] + 'world')
+        self.assert_('world' == model.main_text)
+        self.assert_('wild' == model.map_text)
+
+    def testParseWild6(self):
+        txt = 'hello ' + self._start_seq + 'wild1' + self._end_seq + 'world' + \
+            self._start_seq + 'wild2' + self._end_seq
+        model = self.parser.buildModel(txt)
+        self.assert_('hello world' == model.main_text)
+        self.assert_('wild2' == model.map_text)
+
 if __name__ == '__main__':
     unittest.main()

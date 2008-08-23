@@ -27,6 +27,8 @@ from re import compile, escape
 import exception
 from messages import Model
 
+ESCAPE = chr(27)
+
 
 def getParser(server, prompt):
     """
@@ -67,13 +69,51 @@ class Parser(object):
         """
 
         self._incomplete_seq = None
+        self._incomplete_map = ''
         self._style = None
         self._bg_code = None
         self._fg_code = None
         self._server = server
+        self._ext_info = 0
 
     def setVars(self, d):
-        pass
+        if 'extended_info' in d:
+            self._ext_info = d['extended_info']
+
+    def _extractInfo(self, data, model):
+        # TODO: add the managing of truncated start sequences.
+        EXT_INFO_TOKEN = 'x'
+        start_seq = ESCAPE + '[1' + EXT_INFO_TOKEN
+        end_seq = ESCAPE + '[2' + EXT_INFO_TOKEN
+
+        find_again = True # TODO: refactor!
+        while find_again:
+            find_again = False
+            if not self._incomplete_map:
+                start_pos = data.find(start_seq)
+
+            if self._incomplete_map:
+                data = self._incomplete_map + data
+                end_pos = data.find(end_seq)
+                if end_pos != -1:
+                    model.map_text = data[:end_pos]
+                    data = data[end_pos + len(end_seq):]
+                    self._incomplete_map = ''
+                    find_again = True
+                else:
+                    self._incomplete_map, data = data, ''
+            elif start_pos != -1:
+                end_pos = data.find(end_seq)
+                if end_pos != -1:
+                    model.map_text = data[start_pos + len(start_seq):end_pos]
+                    data = data[:start_pos] + data[end_pos + len(end_seq):]
+                    self._incomplete_map = ''
+                    find_again = True
+                else:
+                    self._incomplete_map = data[start_pos + len(start_seq):]
+                    data = data[:start_pos]
+
+        return data
 
     def buildModel(self, data):
         """
@@ -82,6 +122,8 @@ class Parser(object):
 
         model = Model()
         data = data.replace('\r', '')
+        if self._ext_info:
+            data = self._extractInfo(data, model)
         html_data, text_data = self._replaceAnsiColor(data, model)
 
         model.main_text = text_data
@@ -175,7 +217,6 @@ class Parser(object):
         :return: a pair of (html_data, text_data)
         """
 
-        START_TOKEN = chr(27)
         COLOR_TOKEN = 'm'
         ANSI_CODE_UNSUPPORTED = ['H', 'f', 'A', 'B', 'C', 'D', 'R', 's', 'u',
                                  'J', 'K', 'h', 'l', 'p']
@@ -187,7 +228,7 @@ class Parser(object):
             self._incomplete_seq = None
 
         style = self._style
-        parts = data.split(START_TOKEN)
+        parts = data.split(ESCAPE)
         html_part = self._replaceTextChars(parts[0])
         html_res = ['<span style="%s">%s</span>' % (style, html_part) if style
                     else html_part]
@@ -196,7 +237,7 @@ class Parser(object):
             return ''.join(html_res), parts[0]
 
         text_res = [parts[0]]
-        reg = compile('\[(.*?)([%s])' % ''.join(ANSI_CODE), re.I)
+        reg = compile('\[([0-9;=]*?)([%s])' % ''.join(ANSI_CODE), re.I)
 
         for i, s in enumerate(parts[1:]):
             m = reg.match(s)
@@ -220,10 +261,10 @@ class Parser(object):
                 # i == len() - 2 is the last element of list because the loop
                 # starts at second element
                 if i == len(parts) - 2:
-                    self._incomplete_seq = START_TOKEN + s
+                    self._incomplete_seq = ESCAPE + s
                 else:
                     html_res.append(self._replaceTextChars(s))
-                    text_res.append(s)
+                    text_res.append(ESCAPE + s)
 
         self._style = style
 
