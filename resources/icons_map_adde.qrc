@@ -1,5 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
- <qresource prefix="/icons_map">
+ <qresource prefix="/icons_map_adde">
      <file alias="wild58">wild/wild_00.bmp</file>
      <file alias="wild49">wild/wild_01.bmp</file>
      <file alias="wild50">wild/wild_02.bmp</file>

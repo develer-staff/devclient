@@ -294,7 +294,8 @@ class MapViewer(TextViewer):
                 for x, icon in enumerate(row):
                     if icon:
                         painter.drawPixmap(self._getRect(x, y),
-                                           QPixmap(":/icons_map/wild%d" % icon))
+                                           QPixmap(":/%s/wild%d" %
+                                                   (self._icons_set, icon)))
                     else:
                         r = self._getRect(x, y)
                         painter.drawRect(r)
@@ -368,7 +369,7 @@ class ExtInfoViewer(MapViewer):
         for row in rows:
             icon_rows = []
             for c in row:
-                if QPixmap(":/icons_map/wild%d" % ord(c)).isNull():
+                if QPixmap(":/%s/wild%d" % (self._icons_set, ord(c))).isNull():
                     icon_rows.append(None)
                 else:
                     icon_rows.append(ord(c))
@@ -382,4 +383,4 @@ class ExtInfoViewer(MapViewer):
         for c in self._chars:
             x, y, icon = int(c[1]), int(c[2]), int(c[0]) #int(c[0]), int(c[1]), int(c[2]) ## Waiting for ADdE fix..
             painter.drawPixmap(self._getRect(x, y),
-                               QPixmap(":/icons_map/wild%d" % icon))
+                               QPixmap(":/%s/wild%d" % (self._icons_set, icon)))
