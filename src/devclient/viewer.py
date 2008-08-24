@@ -29,7 +29,6 @@ from sip import delete
 from PyQt4.QtCore import SIGNAL, QObject, QEvent, QRect
 from PyQt4.QtGui import QWidget, QTextCursor, QPainter, QPixmap, QColor
 
-import icons_map_rc
 
 logger = logging.getLogger('viewer')
 
@@ -68,15 +67,20 @@ def _setRightPanel(widget, widget_name):
 
 def getViewer(widget, server, custom_prompt=False):
 
+    if hasattr(server, 'icons_set'):
+        __import__(server.icons_set + '_rc', globals(), locals())
+
     viewer = TextViewer(widget)
     if _setRightPanel(widget, server.right_widget):
         if hasattr(server, 'prompt_reg') or custom_prompt:
             viewer = StatusViewer(viewer)
 
-        if hasattr(server, 'char2icon'):
+        if hasattr(server, 'ext_info') and server.ext_info:
+            viewer = ExtInfoViewer(viewer, server)
+        elif hasattr(server, 'char2icon'):
             viewer = GraphMapViewer(viewer, server)
         elif hasattr(server, 'wild_chars'):
-            viewer = MapViewer(viewer)
+            viewer = TextMapViewer(viewer)
 
     if hasattr(server, 'gui_width'):
         widget.resize(server.gui_width, widget.height())
@@ -217,9 +221,9 @@ class StatusViewer(TextViewer):
         self.v._resetWidgets()
 
 
-class MapViewer(TextViewer):
+class TextMapViewer(TextViewer):
     """
-    Build the visualization of a map from model.
+    Build the visualization of a textual map from model.
 
     This class is a subclass of `TextViewer` that take an instance of it
     as argument on __init__ (see `decorator pattern`_)
@@ -228,7 +232,7 @@ class MapViewer(TextViewer):
     """
 
     def __init__(self, v):
-        super(MapViewer, self).__init__(v.w)
+        super(TextMapViewer, self).__init__(v.w)
         self.v = v
 
     def _centerMap(self, model, width, height):
@@ -265,13 +269,15 @@ class MapViewer(TextViewer):
         self._textEditColors(self.w.rightwidget.text_map)
 
 
-class GraphMapViewer(TextViewer):
-    def __init__(self, v, server):
-        super(GraphMapViewer, self).__init__(v.w)
-        self.v = v
+class MapViewer(TextViewer):
+    """
+    The abstract class to draw a graphical map regardless of the model structure.
+    """
+
+    def __init__(self, viewer):
+        super(MapViewer, self).__init__(viewer.w)
+        self.v = viewer
         self.w.rightwidget.graph_map.installEventFilter(self)
-        self._empty_icon_color = server.empty_icon_color
-        self._char2icon = server.char2icon
         self._icon_map = []
 
     def _getRect(self, x, y):
@@ -288,16 +294,39 @@ class GraphMapViewer(TextViewer):
                 for x, icon in enumerate(row):
                     if icon:
                         painter.drawPixmap(self._getRect(x, y),
-                                           QPixmap(":/icons_map/wild" + icon))
+                                           QPixmap(":/%s/wild%d" %
+                                                   (self._icons_set, icon)))
                     else:
                         r = self._getRect(x, y)
                         painter.drawRect(r)
                         painter.fillRect(r, QColor(self._empty_icon_color))
-
+            self._onPaintEvent(painter)
             return True
         return False
 
-    def _htmlToIcons(self, html):
+    def process(self, model):
+        self.v.process(model)
+        if model.map_text:
+            self._parseModel(model)
+        elif model.map_text is None:
+            self._icon_map = []
+
+    def _resetWidgets(self):
+        self.v._resetWidgets()
+
+    def _onPaintEvent(self, painter):
+        pass
+
+
+class GraphMapViewer(MapViewer):
+    def __init__(self, viewer, server):
+        super(GraphMapViewer, self).__init__(viewer)
+        self._empty_icon_color = server.empty_icon_color
+        self._char2icon = server.char2icon
+        self._icons_set = server.icons_set
+
+    def _parseModel(self, model):
+        html = model.map_html
         _html_entities = ('&nbsp;', '&lt;', '&gt;', '&amp;', '&quot;', '<br>')
 
         self._icon_map = []
@@ -325,12 +354,33 @@ class GraphMapViewer(TextViewer):
 
             self._icon_map.append(icon_rows)
 
-    def process(self, model):
-        self.v.process(model)
-        if model.map_text:
-            self._htmlToIcons(model.map_html)
-        elif model.map_text is None:
-            self._icon_map = []
 
-    def _resetWidgets(self):
-        self.v._resetWidgets()
+class ExtInfoViewer(MapViewer):
+    def __init__(self, viewer, server):
+        super(ExtInfoViewer, self).__init__(viewer)
+        self._empty_icon_color = server.empty_icon_color
+        self._icons_set = server.icons_set
+        self._chars = []
+
+    def _parseModel(self, model):
+        self._icon_map = []
+        data = model.map_text.split('~')
+        rows = data[:data.index('')]
+        for row in rows:
+            icon_rows = []
+            for c in row:
+                if QPixmap(":/%s/wild%d" % (self._icons_set, ord(c))).isNull():
+                    icon_rows.append(None)
+                else:
+                    icon_rows.append(ord(c))
+            self._icon_map.append(icon_rows)
+
+        if model.map_text:
+            data = model.map_text.split('~')
+            self._chars = [c for c in data[data.index('') + 1:] if c]
+
+    def _onPaintEvent(self, painter):
+        for c in self._chars:
+            x, y, icon = int(c[1]), int(c[2]), int(c[0]) #int(c[0]), int(c[1]), int(c[2]) ## Waiting for ADdE fix..
+            painter.drawPixmap(self._getRect(x, y),
+                               QPixmap(":/%s/wild%d" % (self._icons_set, icon)))

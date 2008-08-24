@@ -31,31 +31,33 @@ class DdE(DikuServer):
     host2 = 'dde.homelinux.com'
     port2 = 4000
     empty_icon_color = '#868686'
-    char2icon = {('#00aa00', '*') : "7",
-                 ('#ffffff', '@') : "1",
-                 ('#4444ff', '@') : "2",
-                 ('#aa0000', '@') : "3",
-                 ('#aa00aa', '@') : "4",
-                 ('#aaaaaa', '^') : "11",
-                 ('#aaaa00', '^') : "9",
-                 ('#ffffff', '^') : "12",
-                 ('#ffffff', '.') : "0",
-                 ('#00aa00', '.') : "5",
-                 ('#aaaa00', '.') : "6",
-                 ('#4444ff', '.') : "13",
-                 ('#ffff44', '.') : "17",
-                 ('#00aaaa', '.') : "14",
-                 ('#aaaaaa', 'o') : "21",
-                 ('#aaaa00', '-') : "10",
-                 ('#00aa00', '&amp;') : "8",
-                 ('#ffffff', 'X') : "26",
-                 ('#ff4444', 'x') : "27",
+    char2icon = {('#00aa00', '*') : 7,
+                 ('#ffffff', '@') : 1,
+                 ('#4444ff', '@') : 2,
+                 ('#aa0000', '@') : 3,
+                 ('#aa00aa', '@') : 4,
+                 ('#aaaaaa', '^') : 11,
+                 ('#aaaa00', '^') : 9,
+                 ('#ffffff', '^') : 12,
+                 ('#ffffff', '.') : 0,
+                 ('#00aa00', '.') : 5,
+                 ('#aaaa00', '.') : 6,
+                 ('#4444ff', '.') : 13,
+                 ('#ffff44', '.') : 17,
+                 ('#00aaaa', '.') : 14,
+                 ('#aaaaaa', 'o') : 21,
+                 ('#aaaa00', '-') : 10,
+                 ('#00aa00', '&amp;') : 8,
+                 ('#ffffff', 'X') : 26,
+                 ('#ff4444', 'x') : 27,
                 }
+    icons_set = 'icons_map_dde'
 
 
 class ADdE(DikuServer):
     right_widget = 'gui_map_graph'
     empty_icon_color = '#868686'
+    icons_set = 'icons_map_adde'
     ext_info = 1
     host = 'algor.homelinux.com'
     port = 5556
