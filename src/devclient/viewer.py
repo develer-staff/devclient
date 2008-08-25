@@ -381,6 +381,6 @@ class ExtInfoViewer(MapViewer):
 
     def _onPaintEvent(self, painter):
         for c in self._chars:
-            x, y, icon = int(c[1]), int(c[2]), int(c[0]) #int(c[0]), int(c[1]), int(c[2]) ## Waiting for ADdE fix..
+            x, y, icon = int(c[0]), int(c[1]), int(c[2])
             painter.drawPixmap(self._getRect(x, y),
                                QPixmap(":/%s/wild%d" % (self._icons_set, icon)))

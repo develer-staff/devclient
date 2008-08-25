@@ -83,7 +83,7 @@ class Parser(object):
     def _extractInfo(self, data, model):
         # TODO: add the managing of truncated start sequences.
         EXT_INFO_TOKEN = 'x'
-        start_seq = ESCAPE + '[1' + ' '#EXT_INFO_TOKEN ## Waiting for ADdE fix..
+        start_seq = ESCAPE + '[1' + EXT_INFO_TOKEN
         end_seq = ESCAPE + '[2' + EXT_INFO_TOKEN
 
         find_again = True # TODO: refactor!
