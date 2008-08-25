@@ -741,7 +741,6 @@ class TestExtInfoParser(unittest.TestCase):
         self.assert_('wild' == model.map_text)
 
     def testParseWild4(self):
-        # FIX THIS!
         model = self.parser.buildModel('hello ' + self._start_seq[0])
         self.assert_('hello ' == model.main_text)
         self.assert_(not model.map_text)

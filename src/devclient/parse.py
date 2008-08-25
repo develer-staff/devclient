@@ -30,6 +30,23 @@ from messages import Model
 ESCAPE = chr(27)
 
 
+def _endswith(text, end):
+    """
+    Check if text finishes with 'end' string or a part of it and return the
+    matched string.
+    """
+
+    if not text:
+        return ''
+
+    t = text[-len(end):]
+    while t:
+        if end.startswith(t):
+            return t
+        t = t[1:]
+    return ''
+
+
 def getParser(server, prompt):
     """
     Build and return the appropriate `Parser` instance for the server.
@@ -70,6 +87,7 @@ class Parser(object):
 
         self._incomplete_seq = None
         self._incomplete_map = ''
+        self._info_start_seq = ''
         self._style = None
         self._bg_code = None
         self._fg_code = None
@@ -81,10 +99,13 @@ class Parser(object):
             self._ext_info = d['extended_info']
 
     def _extractInfo(self, data, model):
-        # TODO: add the managing of truncated start sequences.
         EXT_INFO_TOKEN = 'x'
         start_seq = ESCAPE + '[1' + EXT_INFO_TOKEN
         end_seq = ESCAPE + '[2' + EXT_INFO_TOKEN
+
+        if self._info_start_seq:
+            data = self._info_start_seq + data
+            self._info_start_seq = ''
 
         find_again = True # TODO: refactor!
         while find_again:
@@ -112,6 +133,10 @@ class Parser(object):
                 else:
                     self._incomplete_map = data[start_pos + len(start_seq):]
                     data = data[:start_pos]
+            else:
+                self._info_start_seq = _endswith(data, start_seq)
+                if self._info_start_seq:
+                    data = data[:-len(self._info_start_seq)]
 
         return data
 
@@ -403,19 +428,6 @@ class WildMapParser(Parser):
 
     def _parseWild(self, model):
 
-        def endswith(text, end):
-            """Check if text finishes with 'end' string or a part of it"""
-
-            if not text:
-                return True
-
-            t = text[-len(end):]
-            while t:
-                if end.startswith(t):
-                    return True
-                t = t[1:]
-            return False
-
         def precChar(c):
             """Check if the char is a char that might be come before wild"""
             if hasattr(self._p._server, 'wild_prec_char'):
@@ -434,7 +446,7 @@ class WildMapParser(Parser):
                 patt = '(.*?)(\s[%s]{8,})' % wild_chars
                 m = compile(patt, re.S).match(text)
                 if m and m.group(2).strip() and precChar(m.group(1)[-1:]) and \
-                   endswith(text, wild_end):
+                   (not text or _endswith(text, wild_end)):
                     _text, _map = m.group(1), text[len(m.group(1)):]
 
             if _map:
