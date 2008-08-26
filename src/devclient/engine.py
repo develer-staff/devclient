@@ -25,8 +25,8 @@ import os
 import os.path
 from time import strftime
 from traceback import print_exc
+from sys import path, argv, exc_info
 from os.path import dirname, join, abspath, normpath
-from sys import path, argv, platform, exc_info
 
 import exception
 from constants import PROJECT_NAME

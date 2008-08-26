@@ -26,7 +26,6 @@ import storage
 import logging
 
 from sip import delete
-from PyQt4.QtCore import SIGNAL
 from PyQt4.QtGui import QWidget, QTextCursor
 
 logger = logging.getLogger('viewer')

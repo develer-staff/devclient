@@ -33,9 +33,9 @@ from os.path import join, exists
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import QEvent, Qt, QLocale, QVariant, QObject
 from PyQt4.QtCore import SIGNAL, PYQT_VERSION_STR, QT_VERSION_STR
-from PyQt4.QtGui import QApplication, QIcon, QLineEdit
-from PyQt4.QtGui import QMessageBox, QShortcut, QKeySequence, QTextCursor
-from PyQt4.QtNetwork import QHostAddress, QTcpSocket, QTcpServer, QAbstractSocket
+from PyQt4.QtGui import QApplication, QLineEdit, QMessageBox
+from PyQt4.QtGui import QShortcut, QKeySequence, QTextCursor
+from PyQt4.QtNetwork import QTcpServer, QAbstractSocket
 
 import storage
 import messages

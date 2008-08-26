@@ -26,7 +26,7 @@ from os.path import join
 
 from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL, Qt, QVariant
-from PyQt4.QtGui import QApplication, QDialog, QColorDialog, QMessageBox
+from PyQt4.QtGui import QDialog, QColorDialog, QMessageBox
 
 import storage
 from conf import config

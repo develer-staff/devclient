@@ -24,8 +24,8 @@ __docformat__ = 'restructuredtext'
 import logging
 from glob import glob
 from os import unlink, chmod
+from os.path import join, basename
 from base64 import b64decode, b64encode
-from os.path import dirname, join, basename, exists
 
 from validate import Validator
 from configobj import ConfigObj

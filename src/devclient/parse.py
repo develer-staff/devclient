@@ -24,7 +24,6 @@ __docformat__ = 'restructuredtext'
 import re
 from re import compile, escape
 
-import exception
 from messages import Model
 
 
