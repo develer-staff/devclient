@@ -21,8 +21,6 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-
-import random
 import subprocess
 from time import time
 from shutil import copy
@@ -40,7 +38,7 @@ path.append(join(dirname(abspath(argv[0])), '../../configobj'))
 
 import devclient.storage as storage
 import devclient.exception as exception
-from devclient.utils import terminateProcess, startProcess
+from devclient.utils import terminateProcess
 from devclient.conf import loadConfiguration, config
 
 _DEF_CONFIG_FILE = "../../../etc/devclient.cfg"
@@ -131,11 +129,11 @@ def main(cfg_file=cfg_file):
         gui.mainLoop()
     except exception.IPCError:
         if not o.core_port:
-            terminateProcess(p.pid)
+            terminateProcess(gui.p.pid)
     except Exception, e:
         print 'Fatal Exception:', e
         if not o.core_port:
-            terminateProcess(p.pid)
+            terminateProcess(gui.p.pid)
     finally:
         storage.deleteConnection(conn)
         storage.setOption('default_connection', default_conn)

@@ -26,13 +26,12 @@ import shutil
 import os.path
 import unittest
 
-from PyQt4.QtGui import QApplication, QTextEdit, QProgressBar, QFrame, QSplitter
+from PyQt4.QtGui import QApplication, QTextEdit, QProgressBar, QSplitter
 
 # FIX
 sys.path.append('..')
 sys.path.append('../configobj')
 
-import devclient.storage
 from devclient.viewer import *
 from devclient.conf import config
 from devclient.messages import Model

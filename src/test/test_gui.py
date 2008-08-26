@@ -23,7 +23,6 @@ __docformat__ = 'restructuredtext'
 
 import os
 import sys
-import time
 import shutil
 import socket
 import unittest

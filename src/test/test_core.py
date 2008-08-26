@@ -21,7 +21,6 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import os
 import sys
 import zlib
 import time

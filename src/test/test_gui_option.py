@@ -27,7 +27,6 @@ import shutil
 import os.path
 import unittest
 
-from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QApplication, QLineEdit, QGroupBox, QLabel, QWidget
 from PyQt4.QtGui import QPushButton, QComboBox, QCheckBox, QRadioButton
