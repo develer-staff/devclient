@@ -18,25 +18,12 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-"""
-This module is the client startup.
-"""
-
-__version__ = "$Revision$"[11:-2]
+__version__ = "$Revision:$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import sys
-from subprocess import call
-from os.path import dirname, join
 
-if __name__ == '__main__':
-    script_dir = join(dirname(sys.argv[0]), 'update')
-    if hasattr(sys, 'frozen') and sys.frozen:
-        retcode = call([join(script_dir, 'startupdater')])
-    else:
-        retcode = call(['python', join(script_dir, 'startupdater.py')])
+# This is a dummy module, needed by installer to leaves out the real python code
+# from the package. So the updater can update the python code without touching
+# the package (that is platform-dependent, so it require more work to modify)
 
-    # This import must stay after updating of client
-    import devclient.engine
-    devclient.engine.main(update=not retcode)
-
+import core

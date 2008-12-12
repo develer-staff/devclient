@@ -447,12 +447,13 @@ def main():
     parser.add_option('-p', '--port', type='int', default=7890,
                       help='the port listen for connection (default %default)')
     o, args = parser.parse_args()
-
+    if len(sys.argv) < 2:
+        parser.error("No arguments supplied")
     os.chdir(join(os.getcwd(), dirname(o.config)))
     conf.loadConfiguration(os.path.basename(o.config))
     sys.path.append(conf.config['servers']['path'])
     core = Core(o.port)
     core.mainLoop()
 
-if __name__ == '__main__':
-    main()
+
+main()
