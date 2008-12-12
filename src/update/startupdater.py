@@ -17,7 +17,7 @@
 #
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 
@@ -26,3 +26,4 @@ __docformat__ = 'restructuredtext'
 # the package (that is platform-dependent, so it require more work to modify)
 
 import updater
+
