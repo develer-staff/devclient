@@ -83,10 +83,12 @@ class SocketToCore(QObject):
         self._server.listen()
         port = self._server.serverPort()
 
-        p = startProcess(['python',
-                        join(config['devclient']['path'], 'core.py'),
-                        '--config=%s' % cfg_file,
-                        '--port=%d' % port])
+        if hasattr(sys, 'frozen') and sys.frozen:
+            pname = [join(config['devclient']['path'], 'core')]
+        else:
+            pname = ['python', join(config['devclient']['path'], 'core.py')]
+
+        p = startProcess(pname + ['--config=%s' % cfg_file, '--port=%d' % port])
         self._pid = p.pid
 
         # waiting for connection from core...

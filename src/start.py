@@ -30,7 +30,11 @@ from subprocess import call
 from os.path import dirname, join
 
 if __name__ == '__main__':
-    retcode = call(['python', join(dirname(sys.argv[0]), 'update/updater.py')])
+    script_dir = join(dirname(sys.argv[0]), 'update')
+    if hasattr(sys, 'frozen') and sys.frozen:
+        retcode = call([join(script_dir, 'updater')])
+    else:
+        retcode = call(['python', join(script_dir, 'updater.py')])
 
     # This import must stay after updating of client
     import devclient.engine
