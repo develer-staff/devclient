@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -84,7 +84,8 @@ class SocketToCore(QObject):
         port = self._server.serverPort()
 
         if hasattr(sys, 'frozen') and sys.frozen:
-            pname = [join(config['devclient']['path'], 'startcore')]
+            pname = [join(config['devclient']['path'], 'startcore' +
+                          '.exe' if sys.platform == 'win32' else '')]
         else:
             pname = ['python', join(config['devclient']['path'], 'startcore.py')]
 
