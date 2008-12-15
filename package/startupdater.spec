@@ -22,7 +22,7 @@
 import encodings
 encs = set(os.path.splitext(n)[0]
     for n in os.listdir(os.path.dirname(encodings.__file__)))
-encs -= set(['__init__', 'aliases', 'utf_8'])
+encs -= set(['__init__', 'aliases', 'utf_8', 'latin_1', 'cp850'])
 
 a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'),
               os.path.join(HOMEPATH,'support/useUnicode.py'),
@@ -35,7 +35,7 @@ exe = EXE(pyz,
           a.scripts,
           a.binaries,
           a.zipfiles,
-          name=os.path.join('dist', 'startupdater'),
+          name=os.path.join('dist', 'startupdater.exe' if sys.platform == 'win32' else 'startupdater'),
           debug=False,
           strip=False,
           upx=False,
