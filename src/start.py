@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     script_dir = join(dirname(sys.argv[0]), 'update')
     if hasattr(sys, 'frozen') and sys.frozen:
         retcode = call([join(script_dir, 'startupdater' +
-                             '.exe' if sys.platform == 'win32' else '')])
+                             ('.exe' if sys.platform == 'win32' else ''))])
     else:
         retcode = call(['python', join(script_dir, 'startupdater.py')])
 
