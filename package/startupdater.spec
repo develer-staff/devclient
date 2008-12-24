@@ -38,5 +38,5 @@ exe = EXE(pyz,
           name=os.path.join('dist', 'startupdater.exe' if sys.platform == 'win32' else 'startupdater'),
           debug=False,
           strip=False,
-          upx=False,
+          upx=True,
           console=1)

@@ -38,5 +38,5 @@ exe = EXE(pyz,
           name=os.path.join('dist', 'start.exe' if sys.platform == 'win32' else 'start'),
           debug=False,
           strip=False,
-          upx=False,
+          upx=True,
           console=1)

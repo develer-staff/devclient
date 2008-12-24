@@ -38,5 +38,5 @@ exe = EXE(pyz,
           name=os.path.join('dist', 'startcore.exe' if sys.platform == 'win32' else 'startcore'),
           debug=False,
           strip=False,
-          upx=False,
+          upx=True,
           console=1)
