@@ -22,7 +22,7 @@
 import encodings
 encs = set(os.path.splitext(n)[0]
     for n in os.listdir(os.path.dirname(encodings.__file__)))
-encs -= set(['__init__', 'aliases', 'utf_8', 'latin_1', 'cp850'])
+encs -= set(['__init__', 'aliases', 'utf_8', 'latin_1', 'cp850', 'idna', 'ascii'])
 
 a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'),
               os.path.join(HOMEPATH,'support/useUnicode.py'),
