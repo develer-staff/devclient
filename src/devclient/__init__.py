@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -73,10 +73,10 @@ It is composed by two processes:
 All `messages` exchanged from `gui` and `core` are sent by non-blocking socket.
 
 The data to/from server is sent/received in asyncronous mode, so when the user
-type a message via `gui` the module send the message to `core`, that forward it
-to server. On the other hand, when the server send a message to the client,
+type a message through `gui` the module send the message to `core`, that forward it
+to the server. On the other hand, when the server send a message to the client,
 the `core` receive the message and transform it (with module `parse`) into a
-`model` of data, that is sent to `gui`. The `gui` use the module `viewer` to
+`model` of data, that is sent to `gui`. Then the `gui` use the module `viewer` to
 display data.
 """
 
