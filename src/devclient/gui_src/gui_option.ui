@@ -425,7 +425,7 @@
 &lt;table>
 &lt;tr>&lt;td colspan=3>&lt;b>Example:&lt;/b>&lt;/td>&lt;/tr>
 &lt;tr>&lt;td colspan=3>[  %h/%Hhp %m/%Mmn %v/%Vmv *] >&lt;/td>&lt;/tr>
-&lt;tr>&lt;td colspan=3>is a valid rapresentation for:&lt;/td>&lt;/tr>
+&lt;tr>&lt;td colspan=3>is a valid representation for:&lt;/td>&lt;/tr>
 &lt;tr>&lt;td colspan=3>[  111/111hp 100/100mn 500/500mv 1000tnl] >&lt;/td>&lt;/tr>
 &lt;/table></string>
      </property>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui_option.ui'
 #
-# Created: Sat Jul 26 18:21:08 2008
+# Created: Tue Mar  3 22:54:29 2009
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -882,7 +882,7 @@ class Ui_option(object):
         "<table>\n"
         "<tr><td colspan=3><b>Example:</b></td></tr>\n"
         "<tr><td colspan=3>[  %h/%Hhp %m/%Mmn %v/%Vmv *] ></td></tr>\n"
-        "<tr><td colspan=3>is a valid rapresentation for:</td></tr>\n"
+        "<tr><td colspan=3>is a valid representation for:</td></tr>\n"
         "<tr><td colspan=3>[  111/111hp 100/100mn 500/500mv 1000tnl] ></td></tr>\n"
         "</table>", None, QtGui.QApplication.UnicodeUTF8))
         self.box_prompt.setTitle(QtGui.QApplication.translate("option", "Prompt", None, QtGui.QApplication.UnicodeUTF8))
