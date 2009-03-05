@@ -26,7 +26,7 @@ encs -= set(['__init__', 'aliases', 'utf_8', 'latin_1', 'cp850', 'idna', 'ascii'
 
 a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'),
               os.path.join(HOMEPATH,'support/useUnicode.py'),
-              '../src/update/startupdater.py'],
+              '../update/startupdater.py'],
              pathex=['.'],
              excludes=map('encodings.'.__add__, encs))
 

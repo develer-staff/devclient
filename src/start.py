@@ -30,7 +30,7 @@ from subprocess import call
 from os.path import dirname, join
 
 if __name__ == '__main__':
-    script_dir = join(dirname(sys.argv[0]), 'update')
+    script_dir = join(dirname(sys.argv[0]), '../update')
     if hasattr(sys, 'frozen') and sys.frozen:
         retcode = call([join(script_dir, 'startupdater' +
                              ('.exe' if sys.platform == 'win32' else ''))])

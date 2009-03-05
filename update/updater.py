@@ -44,11 +44,16 @@ _SELF_MODULE = basename(sys.argv[0])
 _SELF_DIR = abspath(dirname(sys.argv[0]))
 """directory of the module itself"""
 
-sys.path.append(join(_SELF_DIR, '..'))
-from devclient import __version__ as local_version
+sys.path.append(join(_SELF_DIR, '../src'))
+try:
+    from devclient import __version__ as local_version
+except ImportError:
+    # force the download of the last version
+    local_version = '0.0.00'
+
 """the public version of client"""
 
-_ROOT_DIR = abspath(join(_SELF_DIR, '../..'))
+_ROOT_DIR = abspath(join(_SELF_DIR, '..'))
 """the root directory of client"""
 
 _TMP_DIR = abspath(join(_SELF_DIR, 'temp'))
