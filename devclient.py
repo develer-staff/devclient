@@ -26,18 +26,22 @@ __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import sys
+from os import chdir
 from subprocess import call
-from os.path import dirname, join
+from os.path import dirname, join, abspath
+
 
 if __name__ == '__main__':
-    script_dir = join(dirname(sys.argv[0]), '../update')
+    curr_dir = abspath(dirname(sys.argv[0]))
+    script_dir = join(curr_dir, 'update')
     if hasattr(sys, 'frozen') and sys.frozen:
         retcode = call([join(script_dir, 'startupdater' +
                              ('.exe' if sys.platform == 'win32' else ''))])
     else:
         retcode = call(['python', join(script_dir, 'startupdater.py')])
 
+    sys.path.append(join(curr_dir, 'src/devclient'))
     # This import must stay after updating of client
-    import devclient.engine
-    devclient.engine.main(update=not retcode)
+    import engine
+    engine.main(update=not retcode)
 
