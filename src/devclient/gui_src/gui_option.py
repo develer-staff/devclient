@@ -319,7 +319,7 @@ class Ui_option(object):
 
         self.keys_macro = QLineEdit()
         self.keys_macro.setEnabled(False)
-        self.keys_macro.setProperty("highlight_color",QVariant(QApplication.translate("option", "#e0e0e0")))
+        self.keys_macro.setProperty("highlight_color",QVariant("#C8C8C8"))
         page_layout.addWidget(self.keys_macro, 5, 2)
 
         self.label_command_macro = QLabel()
@@ -449,9 +449,9 @@ class Ui_option(object):
         self.radio_command_trigger.setText(QApplication.translate("option", "Command"))
         self.radio_color_trigger.setText(QApplication.translate("option", "Change color to"))
         self.text_color_trigger_button.setText(QApplication.translate("option", "Text"))
-        self.text_color_trigger.setStyleSheet(QApplication.translate("option", "QLabel { border: 1px solid gray; border-radius: 3px; }"))
+        self.text_color_trigger.setProperty("label_color", QVariant(True))
         self.bg_color_trigger_button.setText(QApplication.translate("option", "Background"))
-        self.bg_color_trigger.setStyleSheet(QApplication.translate("option", "QLabel { border: 1px solid gray; border-radius: 3px; }"))
+        self.bg_color_trigger.setProperty("label_color", QVariant(True))
         self.save_trigger.setText(QApplication.translate("option", "Save"))
         self.delete_trigger.setText(QApplication.translate("option", "Delete"))
 
@@ -476,7 +476,7 @@ class Ui_option(object):
         text_layout.addWidget(self.echo_color_button, 0, 0)
 
         self.echo_color = self.createSquareLabel()
-        self.echo_color.setStyleSheet(QApplication.translate("option", "QLabel { border: 1px solid gray; border-radius: 3px; }"))
+        self.echo_color.setProperty('label_color', QVariant(True))
         text_layout.addWidget(self.echo_color, 0, 3)
 
         horiz_spacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -550,11 +550,10 @@ class Ui_option(object):
         list_option.setTextElideMode(Qt.ElideNone)
         list_option.setMovement(QListView.Static)
         list_option.setFlow(QListView.TopToBottom)
-        list_option.setProperty("isWrapping",QVariant(False))
+        list_option.setProperty("isWrapping", QVariant(False))
         list_option.setSpacing(3)
         list_option.setViewMode(QListView.IconMode)
         list_option.setUniformItemSizes(True)
-        list_option.setStyleSheet("QListWidget { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E0E0E0, stop: 1 #FFFFFF); color: #00AAFF;selection-background-color: #C8C8C8;selection-color:#000000;font: bold 10px \"Verdana\";  }")
 
         items = []
         items.append(("Connections", ":/images/connections.png"))
@@ -577,7 +576,7 @@ class Ui_option(object):
     def setupUi(self, option):
         option.setFixedSize(415, 385)
         option.setWindowTitle(QApplication.translate("option", "Option"))
-
+        option.setStyleSheet("QLabel[label_color=\"true\"] { border: 1px solid gray; border-radius: 3px; } QListWidget { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E0E0E0, stop: 1 #FFFFFF); color: #00AAFF;selection-background-color: #C8C8C8;selection-color:#000000;font: bold 10px \"Verdana\";  }")
         main_layout = QGridLayout(option)
         main_layout.setSpacing(5)
         main_layout.setContentsMargins(10, 10, 10, 10)
