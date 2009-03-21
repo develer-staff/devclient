@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
-# Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
+# Copyright (C) 2009 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -556,12 +556,12 @@ class Ui_option(object):
         list_option.setUniformItemSizes(True)
 
         items = []
-        items.append(("Connections", ":/images/connections.png"))
-        items.append(("Accounts", ":/images/accounts.png"))
-        items.append(("Aliases", ":/images/aliases.png"))
-        items.append(("Macros", ":/images/macros.png"))
-        items.append(("Triggers", ":/images/triggers.png"))
-        items.append(("Preferences", ":/images/preferences.png"))
+        items.append((QApplication.translate("option", "Connections"), ":/images/connections.png"))
+        items.append((QApplication.translate("option", "Accounts"), ":/images/accounts.png"))
+        items.append((QApplication.translate("option", "Aliases"), ":/images/aliases.png"))
+        items.append((QApplication.translate("option", "Macros"), ":/images/macros.png"))
+        items.append((QApplication.translate("option", "Triggers"), ":/images/triggers.png"))
+        items.append((QApplication.translate("option", "Preferences"), ":/images/preferences.png"))
 
         max_length_label = ""
         for label, icon_name in items:
