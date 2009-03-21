@@ -84,7 +84,7 @@ def newVersion(client_version):
     """
 
     try:
-        online_str = downloadFile(client_version).strip()
+        online_str = getData(client_version).strip()
         online_version = map(int, online_str.split('.'))
     except UpdaterError:
         print 'Unknown online version, download new version'
@@ -94,15 +94,15 @@ def newVersion(client_version):
     print 'online version:', online_str, 'local version:', local_version
     return online_version > version
 
-def downloadFile(url, timeout=2):
+def getData(url, timeout=2):
     """
-    Download a file from url and return its data.
+    Get data from an url.
 
     :Parameters:
       url : str
-        the url of file to download
+        the url to download
       timeout : int
-        timeout to wait before raising an error
+        second to wait before raising an error
     """
 
     setdefaulttimeout(timeout)
@@ -117,36 +117,37 @@ def downloadFile(url, timeout=2):
 
     return u.read()
 
-def downloadClient(client_url, timeout=2):
+def downloadFile(url, timeout=2):
     """
-    Download the client from an url and save it in the filesystem.
+    Download a file from an url and save in the filesystem.
 
     :Parameters:
-      client_url : str
+      url : str
         the url of file to download
       timeout : int
         timeout to wait before raising error
     """
 
-    data = downloadFile(client_url, timeout)
-    filename = basename(client_url)
+    data = getData(url, timeout)
+    filename = basename(url)
     fd = open(filename, 'wb+')
     fd.write(data)
     fd.close()
 
-def uncompressClient(filename):
+def uncompressFile(filename):
     """
-    Extracting the client
+    Extracting the file's data
 
     :Parameters:
       filename : str
-        the name of the client
+        the name of the file
     """
 
     try:
         tar = tarfile.open(filename)
         name = normpath(tar.getnames()[0])
-        base_dir = name[:name.find(sep)]
+        sep_pos = name.find(sep)
+        base_dir = name[:sep_pos] if sep_pos != -1 else name
         tar.extractall()
         tar.close()
     except tarfile.ReadError:
@@ -197,6 +198,11 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             copyfile(source, dest)
             copymode(source, dest)
 
+def update(url, ignore_list):
+    downloadFile(url)
+    base_dir = uncompressFile(basename(url))
+    replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
+
 def updateClient():
     cp = SafeConfigParser()
     cp.read(_CONFIG_FILE)
@@ -216,9 +222,7 @@ def updateClient():
     chdir(_TMP_DIR)
     try:
         if newVersion(config['client']['version']):
-            downloadClient(config['client']['url'])
-            base_dir = uncompressClient(basename(config['client']['url']))
-            replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
+            update(config['client']['url'], ignore_list)
     except UpdaterError, e:
         print 'ERROR:', e
     else:
