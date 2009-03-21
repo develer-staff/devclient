@@ -1,186 +1,135 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'gui.ui'
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
 #
-# Created: Sat May 31 21:17:41 2008
-#      by: PyQt4 UI code generator 4.3.3
+# Copyright (C) 2009 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
 #
-# WARNING! All changes made in this file will be lost!
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Gianni Valdambrini gvaldambrini@develer.com
 
-from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import Qt, QRect, QSize
+from PyQt4.QtGui import QApplication, QWidget, QGridLayout, QFrame, QIcon
+from PyQt4.QtGui import QHBoxLayout, QSpacerItem, QSizePolicy, QLabel
+from PyQt4.QtGui import QComboBox, QPushButton, QTextEdit, QSplitter
+from PyQt4.QtGui import QVBoxLayout
+
+import gui_rc
+
 
 class Ui_dev_client(object):
     def setupUi(self, dev_client):
-        dev_client.setObjectName("dev_client")
-        dev_client.resize(QtCore.QSize(QtCore.QRect(0,0,935,660).size()).expandedTo(dev_client.minimumSizeHint()))
+        dev_client.resize(935, 660)
+        dev_client.setWindowTitle(QApplication.translate("dev_client", "DevClient"))
+        dev_client.setStyleSheet("QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}")
 
-        self.centralwidget = QtGui.QWidget(dev_client)
-        self.centralwidget.setObjectName("centralwidget")
+        self.centralwidget = QWidget(dev_client)
+        dev_client.setCentralWidget(self.centralwidget)
 
-        self.gridlayout = QtGui.QGridLayout(self.centralwidget)
-        self.gridlayout.setContentsMargins(5,5,5,3)
-        self.gridlayout.setHorizontalSpacing(5)
-        self.gridlayout.setVerticalSpacing(3)
-        self.gridlayout.setObjectName("gridlayout")
+        main_layout = QGridLayout(self.centralwidget)
+        main_layout.setContentsMargins(5, 5, 5, 3)
+        main_layout.setSpacing(3)
+        main_layout.setColumnStretch(0, 1)
+        main_layout.setRowStretch(1, 1)
 
-        self.toppanel = QtGui.QFrame(self.centralwidget)
+        top_layout = QHBoxLayout()
+        top_layout.setContentsMargins(0, 0, 0, 0)
+        top_layout.setSpacing(5)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.toppanel.sizePolicy().hasHeightForWidth())
-        self.toppanel.setSizePolicy(sizePolicy)
-        self.toppanel.setMinimumSize(QtCore.QSize(925,30))
-        self.toppanel.setMaximumSize(QtCore.QSize(16777215,30))
-        self.toppanel.setFrameShape(QtGui.QFrame.NoFrame)
-        self.toppanel.setFrameShadow(QtGui.QFrame.Raised)
-        self.toppanel.setObjectName("toppanel")
+        top_label_conn = QLabel()
+        top_label_conn.setText(QApplication.translate("dev_client", "Connection"))
+        top_layout.addWidget(top_label_conn)
 
-        self.list_conn = QtGui.QComboBox(self.toppanel)
-        self.list_conn.setGeometry(QtCore.QRect(90,2,145,26))
-        self.list_conn.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.list_conn.setObjectName("list_conn")
+        self.list_conn = QComboBox()
+        self.list_conn.setFixedSize(145, 26)
+        self.list_conn.setFocusPolicy(Qt.NoFocus)
+        top_layout.addWidget(self.list_conn)
 
-        self.list_account = QtGui.QComboBox(self.toppanel)
-        self.list_account.setGeometry(QtCore.QRect(330,2,145,26))
-        self.list_account.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.list_account.setObjectName("list_account")
+        self.list_account = QComboBox()
+        self.list_account.setFixedSize(145, 26)
+        self.list_account.setFocusPolicy(Qt.NoFocus)
+        top_layout.addWidget(self.list_account)
 
-        self.top_label_conn = QtGui.QLabel(self.toppanel)
-        self.top_label_conn.setGeometry(QtCore.QRect(0,0,90,30))
-        self.top_label_conn.setMinimumSize(QtCore.QSize(0,0))
-        self.top_label_conn.setObjectName("top_label_conn")
+        top_layout.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        top_label_account = QLabel()
+        top_label_account.setText(QApplication.translate("dev_client", "Account"))
+        top_layout.addWidget(top_label_account)
 
-        self.top_label_account = QtGui.QLabel(self.toppanel)
-        self.top_label_account.setGeometry(QtCore.QRect(245,0,80,30))
-        self.top_label_account.setObjectName("top_label_account")
+        self.button_connect = QPushButton()
+        self.button_connect.setFixedSize(105, 26)
+        self.button_connect.setFocusPolicy(Qt.NoFocus)
+        self.button_connect.setIcon(QIcon(":/images/connect.png"))
+        self.button_connect.setIconSize(QSize(16, 16))
+        self.button_connect.setText(QApplication.translate("dev_client", "Connect"))
+        self.button_connect.setShortcut("Alt+C")
+        top_layout.addWidget(self.button_connect)
 
-        self.button_connect = QtGui.QPushButton(self.toppanel)
-        self.button_connect.setGeometry(QtCore.QRect(480,2,105,26))
+        self.button_option = QPushButton()
+        self.button_option.setFixedSize(105, 26)
+        self.button_option.setFocusPolicy(Qt.NoFocus)
+        self.button_option.setIcon(QIcon(":/images/option.png"))
+        self.button_option.setIconSize(QSize(16, 16))
+        self.button_option.setText(QApplication.translate("dev_client", "Option"))
+        self.button_option.setShortcut("Alt+O")
+        top_layout.addWidget(self.button_option)
+        main_layout.addLayout(top_layout, 0, 0)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.button_connect.sizePolicy().hasHeightForWidth())
-        self.button_connect.setSizePolicy(sizePolicy)
-        self.button_connect.setMinimumSize(QtCore.QSize(105,26))
-        self.button_connect.setMaximumSize(QtCore.QSize(105,26))
-        self.button_connect.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.button_connect.setIcon(QtGui.QIcon(":/images/connect.png"))
-        self.button_connect.setIconSize(QtCore.QSize(16,16))
-        self.button_connect.setObjectName("button_connect")
+        right_layout = QVBoxLayout()
+        right_layout.setContentsMargins(0, 0, 0, 0)
+        right_layout.addItem(QSpacerItem(40, 29, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
-        self.button_option = QtGui.QPushButton(self.toppanel)
-        self.button_option.setGeometry(QtCore.QRect(590,2,105,26))
+        self.rightpanel = QFrame()
+        self.rightpanel.setMinimumSize(225, 615)
+        self.rightpanel.setFrameShape(QFrame.NoFrame)
+        right_layout.addWidget(self.rightpanel)
+        main_layout.addLayout(right_layout, 0, 1, 3, 1)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.button_option.sizePolicy().hasHeightForWidth())
-        self.button_option.setSizePolicy(sizePolicy)
-        self.button_option.setMinimumSize(QtCore.QSize(105,26))
-        self.button_option.setMaximumSize(QtCore.QSize(105,26))
-        self.button_option.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.button_option.setIcon(QtGui.QIcon(":/images/option.png"))
-        self.button_option.setIconSize(QtCore.QSize(16,16))
-        self.button_option.setObjectName("button_option")
-        self.gridlayout.addWidget(self.toppanel,0,0,1,2)
-
-        self.output_splitter = QtGui.QSplitter(self.centralwidget)
-        self.output_splitter.setOrientation(QtCore.Qt.Vertical)
+        self.output_splitter = QSplitter(self.centralwidget)
+        self.output_splitter.setOrientation(Qt.Vertical)
         self.output_splitter.setHandleWidth(3)
         self.output_splitter.setChildrenCollapsible(False)
-        self.output_splitter.setObjectName("output_splitter")
 
-        self.text_output = QtGui.QTextEdit(self.output_splitter)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(1)
-        sizePolicy.setVerticalStretch(1)
-        sizePolicy.setHeightForWidth(self.text_output.sizePolicy().hasHeightForWidth())
-        self.text_output.setSizePolicy(sizePolicy)
-        self.text_output.setMinimumSize(QtCore.QSize(690,0))
-        self.text_output.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.text_output = QTextEdit(self.output_splitter)
+        self.text_output.setMinimumWidth(690)
+        self.text_output.setFocusPolicy(Qt.NoFocus)
         self.text_output.setAutoFillBackground(True)
         self.text_output.setUndoRedoEnabled(False)
         self.text_output.setReadOnly(True)
-        self.text_output.setObjectName("text_output")
 
-        self.text_output_noscroll = QtGui.QTextEdit(self.output_splitter)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.text_output_noscroll.sizePolicy().hasHeightForWidth())
-        self.text_output_noscroll.setSizePolicy(sizePolicy)
-        self.text_output_noscroll.setMinimumSize(QtCore.QSize(690,0))
-        self.text_output_noscroll.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.text_output_noscroll = QTextEdit(self.output_splitter)
+        self.text_output_noscroll.setMinimumWidth(690)
+        self.text_output_noscroll.setFocusPolicy(Qt.NoFocus)
         self.text_output_noscroll.setAutoFillBackground(True)
-        self.text_output_noscroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.text_output_noscroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.text_output_noscroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.text_output_noscroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.text_output_noscroll.setUndoRedoEnabled(False)
         self.text_output_noscroll.setReadOnly(True)
-        self.text_output_noscroll.setObjectName("text_output_noscroll")
-        self.gridlayout.addWidget(self.output_splitter,1,0,1,1)
+        main_layout.addWidget(self.output_splitter, 1, 0)
 
-        self.rightpanel = QtGui.QFrame(self.centralwidget)
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setContentsMargins(0, 0, 0, 0)
+        bottom_layout.setSpacing(5)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.rightpanel.sizePolicy().hasHeightForWidth())
-        self.rightpanel.setSizePolicy(sizePolicy)
-        self.rightpanel.setMinimumSize(QtCore.QSize(225,615))
-        self.rightpanel.setFrameShape(QtGui.QFrame.NoFrame)
-        self.rightpanel.setObjectName("rightpanel")
-        self.gridlayout.addWidget(self.rightpanel,1,1,2,1)
-
-        self.hboxlayout = QtGui.QHBoxLayout()
-        self.hboxlayout.setSpacing(3)
-        self.hboxlayout.setObjectName("hboxlayout")
-
-        self.text_input = QtGui.QComboBox(self.centralwidget)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(1)
-        sizePolicy.setVerticalStretch(1)
-        sizePolicy.setHeightForWidth(self.text_input.sizePolicy().hasHeightForWidth())
-        self.text_input.setSizePolicy(sizePolicy)
-        self.text_input.setMinimumSize(QtCore.QSize(660,0))
-        self.text_input.setMaximumSize(QtCore.QSize(16777215,25))
+        self.text_input = QComboBox()
+        self.text_input.setMinimumWidth(660)
+        self.text_input.setFixedHeight(25)
         self.text_input.setEditable(True)
-        self.text_input.setObjectName("text_input")
         self.text_input.addItem("")
-        self.hboxlayout.addWidget(self.text_input)
+        bottom_layout.addWidget(self.text_input)
 
-        self.toggle_splitter = QtGui.QPushButton(self.centralwidget)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.toggle_splitter.sizePolicy().hasHeightForWidth())
-        self.toggle_splitter.setSizePolicy(sizePolicy)
-        self.toggle_splitter.setMinimumSize(QtCore.QSize(23,23))
-        self.toggle_splitter.setMaximumSize(QtCore.QSize(25,25))
-        self.toggle_splitter.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.toggle_splitter.setIcon(QtGui.QIcon(":/images/split-window.png"))
-        self.toggle_splitter.setObjectName("toggle_splitter")
-        self.hboxlayout.addWidget(self.toggle_splitter)
-        self.gridlayout.addLayout(self.hboxlayout,2,0,1,1)
-        dev_client.setCentralWidget(self.centralwidget)
-
-        self.retranslateUi(dev_client)
-        QtCore.QMetaObject.connectSlotsByName(dev_client)
-
-    def retranslateUi(self, dev_client):
-        dev_client.setWindowTitle(QtGui.QApplication.translate("dev_client", "DevClient", None, QtGui.QApplication.UnicodeUTF8))
-        self.top_label_conn.setText(QtGui.QApplication.translate("dev_client", "Connection", None, QtGui.QApplication.UnicodeUTF8))
-        self.top_label_account.setText(QtGui.QApplication.translate("dev_client", "Account", None, QtGui.QApplication.UnicodeUTF8))
-        self.button_connect.setText(QtGui.QApplication.translate("dev_client", "Connect", None, QtGui.QApplication.UnicodeUTF8))
-        self.button_connect.setShortcut(QtGui.QApplication.translate("dev_client", "Alt+C", None, QtGui.QApplication.UnicodeUTF8))
-        self.button_option.setText(QtGui.QApplication.translate("dev_client", "Option", None, QtGui.QApplication.UnicodeUTF8))
-        self.button_option.setShortcut(QtGui.QApplication.translate("dev_client", "Alt+O", None, QtGui.QApplication.UnicodeUTF8))
-        self.text_output.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
-        self.text_output_noscroll.setStyleSheet(QtGui.QApplication.translate("dev_client", "QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
-
-import gui_rc
+        self.toggle_splitter = QPushButton()
+        self.toggle_splitter.setFixedSize(25, 25)
+        self.toggle_splitter.setFocusPolicy(Qt.NoFocus)
+        self.toggle_splitter.setIcon(QIcon(":/images/split-window.png"))
+        bottom_layout.addWidget(self.toggle_splitter)
+        main_layout.addLayout(bottom_layout, 2, 0)
