@@ -2,8 +2,6 @@
  <qresource>
      <file>images/connect.png</file>
      <file>images/option.png</file>
-     <file>images/button-yes.png</file>
-     <file>images/button-no.png</file>
      <file>images/split-window.png</file>
  </qresource>
  </RCC>
