@@ -44,14 +44,8 @@ _SELF_MODULE = basename(sys.argv[0])
 _SELF_DIR = abspath(dirname(sys.argv[0]))
 """directory of the module itself"""
 
-sys.path.append(join(_SELF_DIR, '../src'))
-try:
-    from devclient import __version__ as local_version
-except ImportError:
-    # force the download of the last version
-    local_version = '0.0.00'
-
-"""the public version of client"""
+_LOCAL_VERSION_FILE = abspath(join(_SELF_DIR, 'local.version'))
+"""The file where the updater stores the local version"""
 
 _ROOT_DIR = abspath(join(_SELF_DIR, '..'))
 """the root directory of client"""
@@ -74,25 +68,36 @@ class UpdaterError(Exception):
     def __str__(self):
         return self.msg
 
-def newVersion(client_version):
+def checkVersion(online_version, local_version):
     """
-    Check existance of a new version to download.
+    Check the existance of a new version to download.
 
     :Parameters:
-      client_version : str
-        the url of file that contains the version of client downloadable.
+      online_version : str
+        the online version available
+      local_version : str
+        the local version
+    """
+
+    print 'online version:', online_version, 'local version:', local_version
+    online = map(int, online_version.split('.'))
+    local = map(int, local_version.split('.'))
+    return online > local
+
+def getOnlineVersion(url):
+    """
+    Return the online version given an url, or the empty string if errors
+    occurred.
+
+    :Parameters:
+      url : str
+        the url of the file that contains the version.
     """
 
     try:
-        online_str = getData(client_version).strip()
-        online_version = map(int, online_str.split('.'))
+        return getData(url).strip()
     except UpdaterError:
-        print 'Unknown online version, download new version'
-        return True
-
-    version = map(int, local_version.split('.'))
-    print 'online version:', online_str, 'local version:', local_version
-    return online_version > version
+        return ''
 
 def getData(url, timeout=2):
     """
@@ -160,9 +165,9 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
 
     :Parameters:
         root_dir : str
-          the root directory of the client installed
+          the root directory of the tree
         base_dir : str
-          the base directory of the new version of client
+          the base directory of the new version
         ignore_list : list
           the list of files to be skipped
     """
@@ -198,10 +203,78 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             copyfile(source, dest)
             copymode(source, dest)
 
-def update(url, ignore_list):
-    downloadFile(url)
-    base_dir = uncompressFile(basename(url))
-    replaceOldVersion(_ROOT_DIR, base_dir, ignore_list)
+def update(url, root_dir, ignore_list, timeout=2):
+    """
+    Update a source tree, starting from an archive url and the root dir of the
+    tree.
+
+    :Parameters:
+        url : str
+          the url where download the new tree archive
+        root_dir : str
+          the root directory of the tree
+        ignore_list : list
+          the list of files to be skipped
+        timeout : int
+          the timeout (in second) of the newtwork operation. None means no
+          timeout.
+    """
+
+    retvalue = False
+    if not exists(_TMP_DIR):
+        makedirs(_TMP_DIR)
+
+    try:
+        chdir(_TMP_DIR)
+        downloadFile(url, timeout)
+        base_dir = uncompressFile(basename(url))
+        replaceOldVersion(root_dir, base_dir, ignore_list)
+    except UpdaterError, e:
+        print 'ERROR:', e
+    else:
+        retvalue = True
+    finally:
+        chdir(root_dir)  # change directory is required to remove the temp dir
+        rmtree(_TMP_DIR)
+    return retvalue
+
+def getLocalVersion():
+    """
+    Read and return the local version (as a dictionary).
+    """
+
+    cp = SafeConfigParser()
+    cp.read(_LOCAL_VERSION_FILE)
+    # if no local version is found, force the download of the new version
+    versions = {'client' : '0.0.00', 'binaries' : '0.0.00'}
+    if cp.has_section('versions'):
+        versions.update(dict(cp.items('versions')))
+    return versions
+
+def saveVersion(version):
+    """
+    Update the file that contains the local version. Return False if errors
+    occurred.
+
+    :Parameters:
+        version : dict
+          the dictionary containing the version to save into the file.
+    """
+
+    cp = SafeConfigParser()
+    cp.read(_LOCAL_VERSION_FILE)
+
+    if not cp.has_section('versions'):
+        cp.add_section('versions')
+    for key, value in version.iteritems():
+        cp.set('versions', key, value)
+
+    try:
+        cp.write(open(_LOCAL_VERSION_FILE, 'w'))
+    except IOError:
+        return False
+
+    return True
 
 def updateClient():
     cp = SafeConfigParser()
@@ -214,25 +287,44 @@ def updateClient():
         print 'Update disabled!'
         return 0
 
-    retcode = 1
     ignore_list = map(normpath, config['files']['ignore'].split(','))
-    if not exists(_TMP_DIR):
-        makedirs(_TMP_DIR)
 
-    chdir(_TMP_DIR)
-    try:
-        if newVersion(config['client']['version']):
-            update(config['client']['url'], ignore_list)
-    except UpdaterError, e:
-        print 'ERROR:', e
-    else:
-        retcode = 0
+    local_version = getLocalVersion()
+    updated = False
+    retcode = 0
+
+    client_ver = getOnlineVersion(config['client']['version'])
+    if not client_ver:
+        print 'Unknown online version of client, download it'
+
+    if not client_ver or checkVersion(client_ver, local_version['client']):
+        if not update(config['client']['url'], _ROOT_DIR, ignore_list):
+            print 'Fatal error while updating', config['client']['url']
+            retcode = 1
+        else:
+            updated = True
+
+    if hasattr(sys, 'frozen') and sys.frozen:
+        bin_ver = getOnlineVersion(config['binaries']['version'])
+        if not bin_ver:
+            print 'Unknown online version of the binaries, download them'
+
+        if not bin_ver or checkVersion(bin_ver, local_version['binaries']):
+            if not update(config['binaries']['url'], _ROOT_DIR, ignore_list, None):
+                print 'Fatal error while updating', config['binaries']['url']
+                retcode = 1
+            else:
+                updated = True
+
+    if updated:
+        if client_ver:
+            local_version['client'] = client_ver
+        if hasattr(sys, 'frozen') and sys.frozen and bin_ver:
+            local_version['binaries'] = bin_ver
+        saveVersion(local_version)
+
+    if not retcode:
         print 'Update successfully complete!'
-    finally:
-        chdir(_ROOT_DIR)  # change directory is required to remove the temp dir
-        rmtree(_TMP_DIR)
-
     return retcode
-
 
 sys.exit(updateClient())
