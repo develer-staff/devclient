@@ -540,7 +540,7 @@ class Ui_option(object):
     def createListOption(self):
         def addItem(label, icon_name):
             item = QListWidgetItem(list_option)
-            item.setText(QApplication.translate("option", label))
+            item.setText(label)
             item.setTextAlignment(Qt.AlignHCenter)
             item.setIcon(QIcon(icon_name))
 
