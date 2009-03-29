@@ -39,4 +39,5 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=1)
+          console=1,
+          append_pkg=False)
