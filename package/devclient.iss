@@ -7,11 +7,11 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{2AFF7E77-E12D-42F7-880D-A52E2372B3E8}
 AppName=DevClient
-AppVerName=DevClient 0.8
+AppVerName=DevClient
 AppPublisher=Develer s.r.l.
-AppPublisherURL=http://www.develer.com
-AppSupportURL=http://www.develer.com
-AppUpdatesURL=http://www.develer.com
+AppPublisherURL=http://devclient.develer.com
+AppSupportURL=http://devclient.develer.com
+AppUpdatesURL=http://devclient.develer.com
 DefaultDirName={pf}\devclient
 DefaultGroupName=DevClient
 AllowNoIcons=yes
@@ -28,14 +28,19 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\*"; Excludes: "\src\test*,\resources\images*,\package*,\data\storage\*,\src\update\test*,*.ts,*.pyc,*.svn*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: "..\devclient.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\src\devclient\startcore.exe"; DestDir: "{app}\src\devclient"; Flags: ignoreversion
+Source: "..\update\startupdater.exe"; DestDir: "{app}\update"; Flags: ignoreversion
+Source: "..\update\startupdater.pkg"; DestDir: "{app}\update"; Flags: ignoreversion
+Source: "..\update\updater.py"; DestDir: "{app}\update"; Flags: ignoreversion
+Source: "..\update\updater.cfg"; DestDir: "{app}\update"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\DevClient"; Filename: "{app}\src\start.exe"
-Name: "{commondesktop}\DevClient"; Filename: "{app}\src\start.exe"; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\DevClient"; Filename: "{app}\src\start.exe"; Tasks: quicklaunchicon
+Name: "{group}\DevClient"; Filename: "{app}\devclient.exe"
+Name: "{commondesktop}\DevClient"; Filename: "{app}\devclient.exe"; Tasks: desktopicon
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\DevClient"; Filename: "{app}\devclient.exe"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\src\start.exe"; Description: "{cm:LaunchProgram,DevClient}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\update\startupdater.exe"; Description: "Update DevClient";
+Filename: "{app}\devclient.exe"; Description: "{cm:LaunchProgram,DevClient}"; Flags: nowait postinstall skipifsilent
 
