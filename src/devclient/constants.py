@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -21,7 +21,7 @@
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-PUBLIC_VERSION = '0.7.02'
+PUBLIC_VERSION = '0.7.99'
 """Public version of client."""
 
 PROJECT_NAME = 'DevClient'
