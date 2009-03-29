@@ -30,10 +30,10 @@ from os.path import normpath, splitext, isfile, isdir
 _SELF_DIR = dirname(sys.argv[0])
 """directory of the module itself"""
 
-_ROOT_DIR = abspath(join(getcwd(), _SELF_DIR, '../..'))
+_ROOT_DIR = abspath(join(getcwd(), _SELF_DIR, '..'))
 """the root directory of project"""
 
-sys.path.append(join(getcwd(), _SELF_DIR, '..'))
+sys.path.append(join( _ROOT_DIR, 'src'))
 from devclient import __version__
 """the public version of client"""
 
