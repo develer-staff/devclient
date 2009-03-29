@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -246,7 +246,7 @@ def getLocalVersion():
     cp = SafeConfigParser()
     cp.read(_LOCAL_VERSION_FILE)
     # if no local version is found, force the download of the new version
-    versions = {'client' : '0.0.00', 'binaries' : '0.0.00'}
+    versions = {'client' : '0.0.00', 'packages' : '0.0.00'}
     if cp.has_section('versions'):
         versions.update(dict(cp.items('versions')))
     return versions
@@ -305,13 +305,13 @@ def updateClient():
             updated = True
 
     if hasattr(sys, 'frozen') and sys.frozen:
-        bin_ver = getOnlineVersion(config['binaries']['version'])
-        if not bin_ver:
-            print 'Unknown online version of the binaries, download them'
+        pack_ver = getOnlineVersion(config['packages']['version'])
+        if not pack_ver:
+            print 'Unknown online version of the packages, download them'
 
-        if not bin_ver or checkVersion(bin_ver, local_version['binaries']):
-            if not update(config['binaries']['url'], _ROOT_DIR, ignore_list, None):
-                print 'Fatal error while updating', config['binaries']['url']
+        if not pack_ver or checkVersion(pack_ver, local_version['packages']):
+            if not update(config['packages']['url'], _ROOT_DIR, ignore_list, None):
+                print 'Fatal error while updating', config['packages']['url']
                 retcode = 1
             else:
                 updated = True
@@ -319,8 +319,8 @@ def updateClient():
     if updated:
         if client_ver:
             local_version['client'] = client_ver
-        if hasattr(sys, 'frozen') and sys.frozen and bin_ver:
-            local_version['binaries'] = bin_ver
+        if hasattr(sys, 'frozen') and sys.frozen and pack_ver:
+            local_version['packages'] = pack_ver
         saveVersion(local_version)
 
     if not retcode:
