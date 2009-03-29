@@ -24,8 +24,6 @@ from PyQt4.QtGui import QHBoxLayout, QSpacerItem, QSizePolicy, QLabel
 from PyQt4.QtGui import QComboBox, QPushButton, QTextEdit, QSplitter
 from PyQt4.QtGui import QVBoxLayout
 
-import gui_rc
-
 
 class Ui_dev_client(object):
     def setupUi(self, dev_client):

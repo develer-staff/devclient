@@ -439,7 +439,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 .. _Qt-designer: http://doc.trolltech.com/4.3/designer-manual.html
     """
 
-    def __init__(self, cfg_file):
+    def __init__(self, cfg_file, resources_path):
 
         if QApplication.instance():
             self.app = QApplication.instance()
@@ -449,6 +449,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.app.setStyle(QtGui.QStyleFactory.create("Cleanlooks"))
         self._installTranslator()
         QtGui.QMainWindow.__init__(self)
+        resources = ('gui.rcc', 'gui_option.rcc')
+        for res in resources:
+            QtCore.QResource.registerResource(join(resources_path, res))
+
         self.setupLogger()
         self._translateText()
         self.setupUi(self)

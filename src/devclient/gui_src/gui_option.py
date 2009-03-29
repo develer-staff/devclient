@@ -27,9 +27,6 @@ from PyQt4.QtGui import QListWidget, QSizePolicy, QListView
 from PyQt4.QtCore import Qt, QVariant
 from PyQt4 import QtCore, QtGui
 
-import gui_option_rc
-import gui_rc
-
 
 class Ui_option(object):
 

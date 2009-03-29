@@ -87,17 +87,16 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
     loadConfiguration(cfg_file)
     os.chdir(start_dir)
     path.append(config['servers']['path'])
-    path.append(config['resources']['path'])
     path.append(config['configobj']['path'])
 
     # this import must stay here, after the appending of configobj path to path
     import storage
     storage.loadStorage()
 
-    # this import must stay here, after the appending of resources path to path
+    # this import must stay here, after the appending of configobj path to path
     from gui import Gui
     try:
-        gui = Gui(cfg_file)
+        gui = Gui(cfg_file, config['resources']['path'])
         if not update:
             gui.displayWarning(PROJECT_NAME, gui._text['UpdateFail'])
         gui.mainLoop()
