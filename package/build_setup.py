@@ -25,9 +25,12 @@ from subprocess import call
 from shutil import copyfile
 
 
-packages = ('../src/start.exe',
+packages = ('../devclient.exe',
+            '../devclient.pkg',
             '../src/devclient/startcore.exe',
-            '../src/update/startupdater.exe')
+            '../src/devclient/startcore.pkg',
+            '../update/startupdater.exe',
+            '../update/startupdater.pkg')
 
 def checkPackages():
     for p in packages:
