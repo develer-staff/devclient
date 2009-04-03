@@ -87,7 +87,7 @@ class Ui_dev_client(object):
         right_layout.addItem(QSpacerItem(40, 29, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
         self.rightpanel = QFrame()
-        self.rightpanel.setMinimumSize(225, 615)
+        self.rightpanel.setMinimumWidth(225)
         self.rightpanel.setFrameShape(QFrame.NoFrame)
         right_layout.addWidget(self.rightpanel)
         main_layout.addLayout(right_layout, 0, 1, 3, 1)
