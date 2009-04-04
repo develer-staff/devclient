@@ -31,7 +31,11 @@ class Ui_RightWidget(object):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(10)
 
+        # We hide all the main elements, to allow the proper viewer to enable
+        # (only) the elements that uses.
+
         self.text_map = QTextEdit()
+        self.text_map.setVisible(False)
         self.text_map.setFocusPolicy(Qt.NoFocus)
         self.text_map.setAutoFillBackground(True)
         self.text_map.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -51,6 +55,7 @@ class Ui_RightWidget(object):
         RightWidget.setMinimumWidth(self.text_map.width())
 
         self.box_status = QWidget()
+        self.box_status.setVisible(False)
         main_layout.addWidget(self.box_status)
 
         status_layout = QGridLayout(self.box_status)

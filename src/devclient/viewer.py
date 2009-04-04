@@ -52,7 +52,6 @@ def _setRightPanel(widget, widget_name, map_width, map_height):
             return False
         else:
             widget.rightwidget = RightWidget(widget.rightpanel)
-            widget.rightwidget.box_status.setVisible(False)
             widget.rightwidget.setVisible(True)
 
             # resize the window to display properly the new widget
@@ -231,6 +230,7 @@ class MapViewer(TextViewer):
     def __init__(self, v, map_width, map_height):
         super(MapViewer, self).__init__(v.w)
         self.v = v
+        v.w.rightwidget.text_map.setVisible(True)
         self.map_width = map_width
         self.map_height= map_height
 
