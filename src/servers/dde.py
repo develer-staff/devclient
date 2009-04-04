@@ -21,7 +21,6 @@
 from generics import *
 
 class DdE(DikuServer):
-    right_widget = 'gui_map'
     wild_chars = '\^\.xX@\*\s&-\?'
     wild_end_text = '\n[Uscite:'
     wild_prec_char = '123456789'

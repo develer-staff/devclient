@@ -24,9 +24,13 @@ class Server(object):
     right_widget = 'gui_prompt'
     cmd_password = 2
 
+
 class DikuServer(Server):
     prompt_reg = 'Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>'
     prompt_sep = '/'
+    right_widget = 'gui_map'
+    map_width = 27
+    map_height = 11
 
 
 class AfkServer(Server):

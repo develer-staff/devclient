@@ -21,7 +21,6 @@
 from generics import *
 
 class Clessidra(DikuServer):
-    right_widget = 'gui_map'
     wild_chars = '-_~\^\|\.:xX@\*\s#&\+/\\§'
     wild_end_text = '[Uscite:'
     wild_prec_char = '.'

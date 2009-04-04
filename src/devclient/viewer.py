@@ -30,7 +30,7 @@ from PyQt4.QtGui import QWidget, QTextCursor
 
 logger = logging.getLogger('viewer')
 
-def _setRightPanel(widget, widget_name):
+def _setRightPanel(widget, widget_name, map_width, map_height):
 
     # delete the old widget
     map(delete, widget.rightpanel.children())
@@ -43,6 +43,8 @@ def _setRightPanel(widget, widget_name):
             class RightWidget(QWidget, module.Ui_RightWidget):
                 def __init__(self, parent):
                     QWidget.__init__(self, parent)
+                    self.map_width = map_width
+                    self.map_height = map_height
                     self.setupUi(self)
 
         except ImportError:
@@ -65,12 +67,13 @@ def _setRightPanel(widget, widget_name):
 def getViewer(widget, server, custom_prompt=False):
 
     viewer = TextViewer(widget)
-    if _setRightPanel(widget, server.right_widget):
+    if _setRightPanel(widget, server.right_widget, server.map_width,
+                      server.map_height):
         if hasattr(server, 'prompt_reg') or custom_prompt:
             viewer = StatusViewer(viewer)
 
         if hasattr(server, 'wild_chars'):
-            viewer = MapViewer(viewer)
+            viewer = MapViewer(viewer, server.map_width, server.map_height)
 
     if hasattr(server, 'gui_width'):
         widget.resize(server.gui_width, widget.height())
@@ -225,9 +228,11 @@ class MapViewer(TextViewer):
 .. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
     """
 
-    def __init__(self, v):
+    def __init__(self, v, map_width, map_height):
         super(MapViewer, self).__init__(v.w)
         self.v = v
+        self.map_width = map_width
+        self.map_height= map_height
 
     def _centerMap(self, model, width, height):
         html_list = model.map_html.split('<br>')
@@ -251,8 +256,8 @@ class MapViewer(TextViewer):
         w_map = self.w.rightwidget.text_map
 
         if model.map_text:
-            w = w_map.property('char_width').toInt()[0]
-            h = w_map.property('char_height').toInt()[0]
+            w = self.map_width
+            h = self.map_height
             self._centerMap(model, w, h)
             w_map.document().setHtml(model.map_html)
         elif model.map_text is None:

@@ -27,3 +27,5 @@ class DivineConflict(Server):
     room_end_text = '[Uscite:'
     host = 'divineconflict.mud.it'
     port = 4030
+    map_width = 27
+    map_height = 11
