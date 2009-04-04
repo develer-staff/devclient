@@ -31,8 +31,6 @@ class Ui_RightWidget(object):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(10)
 
-        char_width = 27
-        char_height = 11
         self.text_map = QTextEdit()
         self.text_map.setFocusPolicy(Qt.NoFocus)
         self.text_map.setAutoFillBackground(True)
