@@ -28,20 +28,20 @@
 The text below describe the procedure to build a setup installer for `Windows`
 from scratch.
 
-First of all, you have to install `Microsoft Visual Studio 2003` (you should use
+First of all, you have to install `Microsoft Visual Studio 2003` (you can use
 `MinGW`, but the resulting packages are bigger than with `VS`), after which you
 need to download and build the last source version of `Qt` for `Windows`.
 
-To build `Qt` (with the purpose of reducing the footprint size of the generated
-code), the configure step was executed with the command line:
+To build `Qt` (in order to reduce the footprint size of generated code), the
+configure step was executed with the command line:
 configure.exe -release -static -no-accessibility -no-qt3support -no-opengl
     -platform win32-msvc2003 -no-exceptions -no-accessibility -no-stl -no-libmng
     -no-libtiff -no-openssl -no-dbus -no-phonon -no-phonon-backend -no-webkit
 
-and the build step became the follow:
+and the build step was the follow:
 nmake sub-src
 
-Download the last version of `Sip` and install using:
+Download the last version of `Sip` and install it using:
 python configure.py
 nmake
 nmake install
@@ -51,7 +51,7 @@ python configure.py --consolidate --enable=QtCore --enable=QtGui --enable=QtNetw
 nmake
 nmake install
 
-Now, you should have obtained a file named '_qt.pyd' under
+Now, you should have obtained a file named '_qt.pyd' under:
 <your_python_dir>/Lib/site-packages/PyQt4
 
 You are ready to download and use `PyInstaller` (no installation required) from
