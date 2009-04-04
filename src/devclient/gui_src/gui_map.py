@@ -1,127 +1,99 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'gui_map.ui'
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
 #
-# Created: Sun Apr 13 21:53:38 2008
-#      by: PyQt4 UI code generator 4.3.3
+# Copyright (C) 2009 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
 #
-# WARNING! All changes made in this file will be lost!
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Gianni Valdambrini gvaldambrini@develer.com
 
-from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QVBoxLayout, QGridLayout, QApplication, QLabel
+from PyQt4.QtGui import QProgressBar, QTextEdit, QWidget
+from PyQt4.QtCore import QSize, Qt, QVariant
+
 
 class Ui_RightWidget(object):
     def setupUi(self, RightWidget):
-        RightWidget.setObjectName("RightWidget")
-        RightWidget.resize(QtCore.QSize(QtCore.QRect(0,0,225,615).size()).expandedTo(RightWidget.minimumSizeHint()))
-        RightWidget.setMinimumSize(QtCore.QSize(225,615))
+        RightWidget.setMinimumWidth(225)
+        RightWidget.setMinimumHeight(500)
 
-        self.text_map = QtGui.QTextEdit(RightWidget)
-        self.text_map.setGeometry(QtCore.QRect(0,0,225,231))
+        main_layout = QVBoxLayout(RightWidget)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(10)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.text_map.sizePolicy().hasHeightForWidth())
-        self.text_map.setSizePolicy(sizePolicy)
-        self.text_map.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.text_map = QTextEdit()
+        self.text_map.setFixedSize(225, 230)
+        self.text_map.setFocusPolicy(Qt.NoFocus)
         self.text_map.setAutoFillBackground(True)
-        self.text_map.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.text_map.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.text_map.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.text_map.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.text_map.setUndoRedoEnabled(False)
         self.text_map.setReadOnly(True)
-        self.text_map.setProperty("char_width",QtCore.QVariant(27))
-        self.text_map.setProperty("char_height",QtCore.QVariant(11))
-        self.text_map.setObjectName("text_map")
+        self.text_map.setProperty("char_width", QVariant(27))
+        self.text_map.setProperty("char_height", QVariant(11))
+        self.text_map.setStyleSheet("QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}")
+        main_layout.addWidget(self.text_map)
 
-        self.box_status = QtGui.QFrame(RightWidget)
-        self.box_status.setGeometry(QtCore.QRect(0,235,225,131))
-        self.box_status.setFrameShape(QtGui.QFrame.NoFrame)
-        self.box_status.setObjectName("box_status")
+        self.box_status = QWidget()
+        main_layout.addWidget(self.box_status)
 
-        self.layoutWidget = QtGui.QWidget(self.box_status)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,5,226,121))
-        self.layoutWidget.setObjectName("layoutWidget")
+        status_layout = QGridLayout(self.box_status)
+        status_layout.setContentsMargins(5, 5, 5, 0)
+        status_layout.setHorizontalSpacing(0)
+        status_layout.setVerticalSpacing(15)
 
-        self.gridlayout = QtGui.QGridLayout(self.layoutWidget)
-        self.gridlayout.setContentsMargins(5,-1,2,-1)
-        self.gridlayout.setHorizontalSpacing(0)
-        self.gridlayout.setVerticalSpacing(5)
-        self.gridlayout.setObjectName("gridlayout")
+        label_health = QLabel()
+        label_health.setMinimumWidth(80)
+        label_health.setText(QApplication.translate("RightWidget", "Health"))
+        status_layout.addWidget(label_health, 0, 0)
 
-        self.label_health = QtGui.QLabel(self.layoutWidget)
-
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_health.sizePolicy().hasHeightForWidth())
-        self.label_health.setSizePolicy(sizePolicy)
-        self.label_health.setMinimumSize(QtCore.QSize(80,0))
-        self.label_health.setObjectName("label_health")
-        self.gridlayout.addWidget(self.label_health,0,0,1,1)
-
-        self.bar_health = QtGui.QProgressBar(self.layoutWidget)
-        self.bar_health.setMinimumSize(QtCore.QSize(0,22))
-        self.bar_health.setMaximumSize(QtCore.QSize(16777215,22))
-        self.bar_health.setProperty("value",QtCore.QVariant(100))
+        self.bar_health = QProgressBar()
+        self.bar_health.setFixedHeight(22)
+        self.bar_health.setProperty("value", QVariant(100))
         self.bar_health.setTextVisible(False)
-        self.bar_health.setObjectName("bar_health")
-        self.gridlayout.addWidget(self.bar_health,0,1,1,1)
+        self.bar_health.setStyleSheet("QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
+        "QProgressBar::chunk {background-color:#FF3333;}")
+        status_layout.addWidget(self.bar_health, 0, 1)
 
-        self.label_mana = QtGui.QLabel(self.layoutWidget)
+        label_mana = QLabel()
+        label_mana.setMinimumWidth(80)
+        label_mana.setText(QApplication.translate("RightWidget", "Mana"))
+        status_layout.addWidget(label_mana, 1, 0)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_mana.sizePolicy().hasHeightForWidth())
-        self.label_mana.setSizePolicy(sizePolicy)
-        self.label_mana.setMinimumSize(QtCore.QSize(80,0))
-        self.label_mana.setObjectName("label_mana")
-        self.gridlayout.addWidget(self.label_mana,1,0,1,1)
-
-        self.bar_mana = QtGui.QProgressBar(self.layoutWidget)
-        self.bar_mana.setMinimumSize(QtCore.QSize(0,22))
-        self.bar_mana.setMaximumSize(QtCore.QSize(16777215,22))
-        self.bar_mana.setProperty("value",QtCore.QVariant(100))
+        self.bar_mana = QProgressBar()
+        self.bar_mana.setFixedHeight(22)
+        self.bar_mana.setProperty("value", QVariant(100))
         self.bar_mana.setTextVisible(False)
-        self.bar_mana.setObjectName("bar_mana")
-        self.gridlayout.addWidget(self.bar_mana,1,1,1,1)
+        self.bar_mana.setStyleSheet("QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
+        "QProgressBar::chunk {background-color:#0066FF}")
+        status_layout.addWidget(self.bar_mana, 1, 1)
 
-        self.label_movement = QtGui.QLabel(self.layoutWidget)
+        label_movement = QLabel()
+        label_movement.setMinimumWidth(80)
+        label_movement.setText(QApplication.translate("RightWidget", "Movement"))
+        status_layout.addWidget(label_movement, 2, 0)
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_movement.sizePolicy().hasHeightForWidth())
-        self.label_movement.setSizePolicy(sizePolicy)
-        self.label_movement.setMinimumSize(QtCore.QSize(80,0))
-        self.label_movement.setObjectName("label_movement")
-        self.gridlayout.addWidget(self.label_movement,2,0,1,1)
-
-        self.bar_movement = QtGui.QProgressBar(self.layoutWidget)
-        self.bar_movement.setMinimumSize(QtCore.QSize(0,22))
-        self.bar_movement.setMaximumSize(QtCore.QSize(16777215,22))
-        self.bar_movement.setProperty("value",QtCore.QVariant(100))
+        self.bar_movement = QProgressBar()
+        self.bar_movement.setFixedHeight(22)
+        self.bar_movement.setProperty("value", QVariant(100))
         self.bar_movement.setTextVisible(False)
-        self.bar_movement.setObjectName("bar_movement")
-        self.gridlayout.addWidget(self.bar_movement,2,1,1,1)
+        self.bar_movement.setStyleSheet("QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
+        "QProgressBar::chunk {background-color:#33CC33;}")
+        status_layout.addWidget(self.bar_movement, 2, 1)
 
-        self.retranslateUi(RightWidget)
-        QtCore.QMetaObject.connectSlotsByName(RightWidget)
+        main_layout.addStretch()
 
-    def retranslateUi(self, RightWidget):
-        RightWidget.setWindowTitle(QtGui.QApplication.translate("RightWidget", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.text_map.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}", None, QtGui.QApplication.UnicodeUTF8))
-        self.text_map.setHtml(QtGui.QApplication.translate("RightWidget", "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-        "p, li { white-space: pre-wrap; }\n"
-        "</style></head><body style=\" font-family:\'Courier\'; font-weight:400; font-style:normal;\">\n"
-        "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_health.setText(QtGui.QApplication.translate("RightWidget", "Health", None, QtGui.QApplication.UnicodeUTF8))
-        self.bar_health.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
-        "QProgressBar::chunk {background-color:#FF3333;}", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_mana.setText(QtGui.QApplication.translate("RightWidget", "Mana", None, QtGui.QApplication.UnicodeUTF8))
-        self.bar_mana.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
-        "QProgressBar::chunk {background-color:#0066FF}", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_movement.setText(QtGui.QApplication.translate("RightWidget", "Movement", None, QtGui.QApplication.UnicodeUTF8))
-        self.bar_movement.setStyleSheet(QtGui.QApplication.translate("RightWidget", "QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
-        "QProgressBar::chunk {background-color:#33CC33;}", None, QtGui.QApplication.UnicodeUTF8))
+
+
 
