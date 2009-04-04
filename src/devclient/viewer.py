@@ -43,7 +43,6 @@ def _setRightPanel(widget, widget_name):
             class RightWidget(QWidget, module.Ui_RightWidget):
                 def __init__(self, parent):
                     QWidget.__init__(self, parent)
-                    self.module_name = widget_name
                     self.setupUi(self)
 
         except ImportError:
