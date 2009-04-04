@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         retcode = call(['python', join(script_dir, 'startupdater.py')])
 
     sys.path.append(join(curr_dir, 'src/devclient'))
-    # This import must stay after updating of client
+    # This import must stay after the updating of the client
     import engine
     engine.main(update=not retcode)
 
