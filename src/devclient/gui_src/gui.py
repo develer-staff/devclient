@@ -19,7 +19,7 @@
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
 from PyQt4.QtCore import Qt, QRect, QSize
-from PyQt4.QtGui import QApplication, QWidget, QGridLayout, QFrame, QIcon
+from PyQt4.QtGui import QApplication, QWidget, QGridLayout, QIcon
 from PyQt4.QtGui import QHBoxLayout, QSpacerItem, QSizePolicy, QLabel
 from PyQt4.QtGui import QComboBox, QPushButton, QTextEdit, QSplitter
 from PyQt4.QtGui import QVBoxLayout
@@ -86,9 +86,8 @@ class Ui_dev_client(object):
         right_layout.setContentsMargins(0, 0, 0, 0)
         right_layout.addItem(QSpacerItem(40, 29, QSizePolicy.Minimum, QSizePolicy.Fixed))
 
-        self.rightpanel = QFrame()
+        self.rightpanel = QWidget()
         self.rightpanel.setMinimumWidth(225)
-        self.rightpanel.setFrameShape(QFrame.NoFrame)
         right_layout.addWidget(self.rightpanel)
         main_layout.addLayout(right_layout, 0, 1, 3, 1)
 
