@@ -23,8 +23,8 @@ from PyQt4.QtGui import QApplication, QHBoxLayout, QFrame, QSpacerItem
 from PyQt4.QtGui import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton
 from PyQt4.QtGui import QComboBox, QIcon, QGroupBox, QCheckBox, QVBoxLayout
 from PyQt4.QtGui import QListWidgetItem, QStackedLayout, QRadioButton
-from PyQt4.QtGui import QListWidget, QSizePolicy, QListView
-from PyQt4.QtCore import Qt, QVariant
+from PyQt4.QtGui import QListWidget, QSizePolicy, QListView, QPixmap
+from PyQt4.QtCore import Qt, QVariant, QSize
 from PyQt4 import QtCore, QtGui
 
 
@@ -535,11 +535,14 @@ class Ui_option(object):
         self.createPrefPage()
 
     def createListOption(self):
-        def addItem(label, icon_name):
+        def addItem(label, icon_name, width):
             item = QListWidgetItem(list_option)
             item.setText(label)
             item.setTextAlignment(Qt.AlignHCenter)
-            item.setIcon(QIcon(icon_name))
+            icon_pixmap = QPixmap(":/images/" + icon_name)
+            item.setIcon(QIcon(icon_pixmap))
+            height = icon_pixmap.height() + list_option.fontMetrics().height()
+            item.setSizeHint(QSize(width, height))
 
         list_option = QListWidget()
         list_option.setAutoFillBackground(True)
@@ -550,24 +553,29 @@ class Ui_option(object):
         list_option.setProperty("isWrapping", QVariant(False))
         list_option.setSpacing(3)
         list_option.setViewMode(QListView.IconMode)
-        list_option.setUniformItemSizes(True)
 
         items = []
-        items.append((QApplication.translate("option", "Connections"), ":/images/connections.png"))
-        items.append((QApplication.translate("option", "Accounts"), ":/images/accounts.png"))
-        items.append((QApplication.translate("option", "Aliases"), ":/images/aliases.png"))
-        items.append((QApplication.translate("option", "Macros"), ":/images/macros.png"))
-        items.append((QApplication.translate("option", "Triggers"), ":/images/triggers.png"))
-        items.append((QApplication.translate("option", "Preferences"), ":/images/preferences.png"))
+        items.append((QApplication.translate("option", "Connections"), "connections.png"))
+        items.append((QApplication.translate("option", "Accounts"), "accounts.png"))
+        items.append((QApplication.translate("option", "Aliases"), "aliases.png"))
+        items.append((QApplication.translate("option", "Macros"), "macros.png"))
+        items.append((QApplication.translate("option", "Triggers"), "triggers.png"))
+        items.append((QApplication.translate("option", "Preferences"), "preferences.png"))
 
-        max_length_label = ""
+        max_width = 0
         for label, icon_name in items:
-            addItem(label, icon_name)
-            if len(label) > len(max_length_label):
-                max_length_label = label
+            w = list_option.fontMetrics().boundingRect(label).width()
+            if w > max_width:
+                max_width = w
 
-        w = list_option.fontMetrics().boundingRect(max_length_label).width()
-        list_option.setFixedWidth(w + 20)
+        # An empiric method to align element in the center of the QListWidget
+        max_width += 10
+
+        for label, icon_name in items:
+            addItem(label, icon_name, max_width)
+
+        list_option.setUniformItemSizes(True)
+        list_option.setFixedWidth(max_width + 10)
         return list_option
 
     def setupUi(self, option):
