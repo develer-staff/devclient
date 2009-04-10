@@ -90,17 +90,17 @@ class TransitionWidget(QWidget):
     when the transition is done.
     """
 
-    def __init__(self, parent, prev_pixmap, next_pixmap):
+    def __init__(self, parent):
         QWidget.__init__(self, parent)
-        self._prev_pixmap = prev_pixmap
-        self._next_pixmap = next_pixmap
         self._timeline = QTimeLine(400, self)
         self._blending_factor = 0.0
         self.connect(self._timeline, SIGNAL("valueChanged(qreal)"),
                      self._triggerRepaint)
         self.connect(self._timeline, SIGNAL("finished()"), SIGNAL("finished()"))
 
-    def start(self):
+    def start(self, prev_pixmap, next_pixmap):
+        self._prev_pixmap = prev_pixmap
+        self._next_pixmap = next_pixmap
         self._timeline.start()
 
     def _triggerRepaint(self, value):
@@ -109,6 +109,8 @@ class TransitionWidget(QWidget):
 
     def paintEvent(self, event):
         QWidget.paintEvent(self, event)
+        if self._timeline.state() == QTimeLine.NotRunning:  # nothing to do
+            return
         p = QPainter(self)
         p.setRenderHint(QPainter.SmoothPixmapTransform, True)
         p.drawPixmap(QPoint(0, 0), self._prev_pixmap)
@@ -960,6 +962,11 @@ class GuiOption(QDialog, Ui_option):
         QDialog.__init__(self, parent)
         self._translateText()
         self.setupUi(self)
+        # the transition widget is added at the end of the page_container stack
+        # to keep the real pages indexes in sync with the correspondent items in
+        # the listwidget.
+        self._transition_widget = TransitionWidget(self)
+        self.page_container.addWidget(self._transition_widget)
         self._setupSignal()
 
         self._lazy_conn = conn_name
@@ -1002,6 +1009,8 @@ class GuiOption(QDialog, Ui_option):
                      self._changeForm)
         self.connect(self, SIGNAL("currentConnChanged(QString)"),
                      self._lazyLoad)
+        self.connect(self._transition_widget, SIGNAL("finished()"),
+                     self._endTransition)
 
     def _lazyLoad(self, conn):
         self._lazy_conn = unicode(conn)
@@ -1046,14 +1055,8 @@ class GuiOption(QDialog, Ui_option):
         # We set the transition widget as the current page of the stacked widget
         # in order to do the transition effect. At the end of the effect, we
         # set the next page as the current page.
-        self.__transition_widget = TransitionWidget(self, prev_pixmap, next_pixmap)
-        self.page_container.addWidget(self.__transition_widget)
-        self.page_container.setCurrentWidget(self.__transition_widget)
-        self.__transition_widget.start()
-        self.connect(self.__transition_widget, SIGNAL("finished()"),
-                     self._endTransition)
+        self.page_container.setCurrentWidget(self._transition_widget)
+        self._transition_widget.start(prev_pixmap, next_pixmap)
 
     def _endTransition(self):
         self.page_container.setCurrentIndex(self.list_option.currentRow())
-        self.page_container.removeWidget(self.__transition_widget)
-        del self.__transition_widget
