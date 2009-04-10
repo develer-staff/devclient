@@ -25,8 +25,9 @@ from re import compile
 from os.path import join
 
 from PyQt4 import QtGui
-from PyQt4.QtCore import SIGNAL, Qt, QVariant
+from PyQt4.QtCore import SIGNAL, Qt, QVariant, QTimeLine, QEventLoop, QPoint
 from PyQt4.QtGui import QDialog, QColorDialog, QMessageBox
+from PyQt4.QtGui import QPixmap, QWidget, QPainter
 
 import storage
 from conf import config
@@ -79,6 +80,40 @@ def _changeItemSelected(combobox, name):
                 return True
 
     return False
+
+
+class TransitionWidget(QWidget):
+    """
+    This class implements a transition effect between two pixmaps.
+
+    Starts the transition with the method `start` and emit the signal finished()
+    when the transition is done.
+    """
+
+    def __init__(self, parent, prev_pixmap, next_pixmap):
+        QWidget.__init__(self, parent)
+        self._prev_pixmap = prev_pixmap
+        self._next_pixmap = next_pixmap
+        self._timeline = QTimeLine(400, self)
+        self._blending_factor = 0.0
+        self.connect(self._timeline, SIGNAL("valueChanged(qreal)"),
+                     self._triggerRepaint)
+        self.connect(self._timeline, SIGNAL("finished()"), SIGNAL("finished()"))
+
+    def start(self):
+        self._timeline.start()
+
+    def _triggerRepaint(self, value):
+        self._blending_factor = value
+        self.update()
+
+    def paintEvent(self, event):
+        QWidget.paintEvent(self, event)
+        p = QPainter(self)
+        p.setRenderHint(QPainter.SmoothPixmapTransform, True)
+        p.drawPixmap(QPoint(0, 0), self._prev_pixmap)
+        p.setOpacity(self._blending_factor)
+        p.drawPixmap(QPoint(0, 0), self._next_pixmap)
 
 
 class FormConnection(object):
@@ -977,8 +1012,10 @@ class GuiOption(QDialog, Ui_option):
             self.macro.keyPressEvent(keyEvent)
 
     def _changeForm(self, current, previous):
-        self.page_container.setCurrentIndex(self.list_option.currentRow())
-        curr_page = str(self.page_container.currentWidget().objectName())
+        prev_page = self.page_container.currentWidget()
+        next_page = self.page_container.widget(self.list_option.currentRow())
+
+        curr_page = str(next_page.objectName())
 
         objs = {'alias_page': self.alias,
                 'macro_page': self.macro,
@@ -990,3 +1027,33 @@ class GuiOption(QDialog, Ui_option):
             form.disableSignal(True)
             form.loadForm()
             form.disableSignal(False)
+
+        # The transition effect works with the image of the previous page and
+        # the image of the next page. To do the image of the next_page correct
+        # we have to force the application of the layout before taking the image.
+        next_page.resize(prev_page.size())
+        next_page.layout().activate()
+
+        self._startTransition(QPixmap.grabWidget(prev_page),
+                              QPixmap.grabWidget(next_page))
+
+    def _startTransition(self, prev_pixmap, next_pixmap):
+        # We have to manage the situation when the user change the current
+        # page before the ending of the transition effect.
+        if isinstance(self.page_container.currentWidget(), TransitionWidget):
+            return
+
+        # We set the transition widget as the current page of the stacked widget
+        # in order to do the transition effect. At the end of the effect, we
+        # set the next page as the current page.
+        self.__transition_widget = TransitionWidget(self, prev_pixmap, next_pixmap)
+        self.page_container.addWidget(self.__transition_widget)
+        self.page_container.setCurrentWidget(self.__transition_widget)
+        self.__transition_widget.start()
+        self.connect(self.__transition_widget, SIGNAL("finished()"),
+                     self._endTransition)
+
+    def _endTransition(self):
+        self.page_container.setCurrentIndex(self.list_option.currentRow())
+        self.page_container.removeWidget(self.__transition_widget)
+        del self.__transition_widget
