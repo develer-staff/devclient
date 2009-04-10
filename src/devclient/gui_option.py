@@ -25,7 +25,7 @@ from re import compile
 from os.path import join
 
 from PyQt4 import QtGui
-from PyQt4.QtCore import SIGNAL, Qt, QVariant, QTimeLine, QEventLoop, QPoint
+from PyQt4.QtCore import SIGNAL, Qt, QVariant, QTimeLine, QPoint
 from PyQt4.QtGui import QDialog, QColorDialog, QMessageBox
 from PyQt4.QtGui import QPixmap, QWidget, QPainter
 
