@@ -103,6 +103,9 @@ class TransitionWidget(QWidget):
         self._next_pixmap = next_pixmap
         self._timeline.start()
 
+    def stop(self):
+        self._timeline.stop()
+
     def _triggerRepaint(self, value):
         self._blending_factor = value
         self.update()
@@ -1050,7 +1053,7 @@ class GuiOption(QDialog, Ui_option):
         # We have to manage the situation when the user change the current
         # page before the ending of the transition effect.
         if isinstance(self.page_container.currentWidget(), TransitionWidget):
-            return
+            self._transition_widget.stop()
 
         # We set the transition widget as the current page of the stacked widget
         # in order to do the transition effect. At the end of the effect, we
