@@ -1052,7 +1052,7 @@ class GuiOption(QDialog, Ui_option):
     def _startTransition(self, prev_pixmap, next_pixmap):
         # We have to manage the situation when the user change the current
         # page before the ending of the transition effect.
-        if isinstance(self.page_container.currentWidget(), TransitionWidget):
+        if self.page_container.currentWidget() == self._transition_widget:
             self._transition_widget.stop()
 
         # We set the transition widget as the current page of the stacked widget
