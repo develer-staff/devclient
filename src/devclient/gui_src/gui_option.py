@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2009 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -541,7 +541,7 @@ class Ui_option(object):
             item.setTextAlignment(Qt.AlignHCenter)
             icon_pixmap = QPixmap(":/images/" + icon_name)
             item.setIcon(QIcon(icon_pixmap))
-            height = icon_pixmap.height() + list_option.fontMetrics().height()
+            height = icon_pixmap.height() + list_option.fontMetrics().height() + 3
             item.setSizeHint(QSize(width, height))
 
         list_option = QListWidget()
@@ -569,7 +569,7 @@ class Ui_option(object):
                 max_width = w
 
         # An empiric method to align element in the center of the QListWidget
-        max_width += 10
+        max_width += 15
 
         for label, icon_name in items:
             addItem(label, icon_name, max_width)
