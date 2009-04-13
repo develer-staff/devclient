@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2009 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -535,13 +535,11 @@ class Ui_option(object):
         self.createPrefPage()
 
     def createListOption(self):
-        def addItem(label, icon_name, width):
+        def addItem(label, icon_pixmap, width, height):
             item = QListWidgetItem(list_option)
             item.setText(label)
             item.setTextAlignment(Qt.AlignHCenter)
-            icon_pixmap = QPixmap(":/images/" + icon_name)
             item.setIcon(QIcon(icon_pixmap))
-            height = icon_pixmap.height() + list_option.fontMetrics().height() + 3
             item.setSizeHint(QSize(width, height))
 
         list_option = QListWidget()
@@ -570,16 +568,20 @@ class Ui_option(object):
 
         # An empiric method to align element in the center of the QListWidget
         max_width += 15
+        total_height = 0
 
         for label, icon_name in items:
-            addItem(label, icon_name, max_width)
+            icon_pixmap = QPixmap(":/images/" + icon_name)
+            height = icon_pixmap.height() + list_option.fontMetrics().height() + 3
+            total_height += height + 5
+            addItem(label, icon_pixmap, max_width, height)
 
         list_option.setUniformItemSizes(True)
         list_option.setFixedWidth(max_width + 10)
+        list_option.setMinimumHeight(total_height)
         return list_option
 
     def setupUi(self, option):
-        option.setFixedSize(415, 385)
         option.setWindowTitle(QApplication.translate("option", "Option"))
         option.setStyleSheet("QLabel[label_color=\"true\"] { border: 1px solid gray; border-radius: 3px; } QListWidget { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E0E0E0, stop: 1 #FFFFFF); color: #00AAFF;selection-background-color: #C8C8C8;selection-color:#000000;font: bold 10px \"Verdana\";  }")
         main_layout = QGridLayout(option)
