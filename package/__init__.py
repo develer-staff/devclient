@@ -26,7 +26,7 @@
 .. _Develer: http://www.develer.com/
 
 The text below describe the procedure to build a setup installer for `Windows`
-from scratch.
+from scratch (with Qt 4.5.0, sip 4.7.9 and PyQt 4.4.4).
 
 First of all, you have to install `Microsoft Visual Studio 2003` (you can use
 `MinGW`, but the resulting packages are bigger than with `VS`), after which you
@@ -39,13 +39,14 @@ configure.exe -release -static -no-accessibility -no-qt3support -no-opengl
     -no-libtiff -no-openssl -no-dbus -no-phonon -no-phonon-backend -no-webkit
 
 and the build step was the follow:
-nmake sub-src
+nmake (or nmake sub-src with earlier versions of Qt)
 
 Download the last version of `Sip` and install it using:
 python configure.py
 nmake
 nmake install
 
+Now you have to add your qt binaries directory to the environment variable 'PATH'.
 Then download and install the last version of `PyQt4` with:
 python configure.py --consolidate --enable=QtCore --enable=QtGui --enable=QtNetwork
 nmake
