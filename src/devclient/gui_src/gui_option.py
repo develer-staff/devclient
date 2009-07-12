@@ -136,6 +136,7 @@ class Ui_option(object):
 
         self.save_account = QCheckBox()
         self.save_account.setText(QApplication.translate("option", "Save accounts"))
+        page_layout.addWidget(self.save_account, 0, 0)
 
         self.label_conn_account = QLabel()
         self.label_conn_account.setText(QApplication.translate("option", "Connection"))
