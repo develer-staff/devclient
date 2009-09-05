@@ -203,6 +203,11 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             copyfile(source, dest)
             copymode(source, dest)
 
+        # create all the directories in the archive
+        for d in dirs:
+            if not exists(join(root_dir, root, d)):
+                makedirs(join(root_dir, root, d))
+
 def update(url, root_dir, ignore_list, timeout=2):
     """
     Update a source tree, starting from an archive url and the root dir of the
