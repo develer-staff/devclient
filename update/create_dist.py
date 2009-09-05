@@ -37,7 +37,7 @@ sys.path.append(join( _ROOT_DIR, 'src'))
 from devclient import __version__
 """the public version of client"""
 
-_ADMITTED_EXT = ('py', 'ui', 'cfg', 'qrc', 'pro', 'qm', 'GPL', 'msg')
+_ADMITTED_EXT = ('py', 'ui', 'cfg', 'qrc', 'pro', 'qm', 'GPL', 'msg', 'rcc')
 """the admitted extension"""
 
 _PROJECT_NAME = 'devclient'
