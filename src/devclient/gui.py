@@ -463,6 +463,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             (PYQT_VERSION_STR, QT_VERSION_STR))
 
         self._loadConnections()
+        self._loadShortcuts()
         self._setupSignal()
 
     def _loadConnections(self):
@@ -525,6 +526,17 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
                             datefmt='%d %b %Y %H:%M:%S',
                             stream=sys.stdout)
 
+    def _loadShortcuts(self):
+        def kseq(action):
+            return QKeySequence(storage.shortcut(action))
+
+        QShortcut(kseq('history_prev'), self, self._historyPrev)
+        QShortcut(kseq('history_next'), self, self._historyNext)
+
+        QShortcut(kseq('quit'), self, self.close)
+        self.button_connect.setShortcut(kseq('connect'))
+        self.button_option.setShortcut(kseq('option'))
+
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
         self.connect(self.button_connect, clicked, self._connect)
@@ -538,15 +550,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.connect(self.output_splitter, SIGNAL("splitterMoved(int, int)"),
                      self._moveSplitter)
 
-        QShortcut(QKeySequence(Qt.Key_Up), self, self._onKeyUp)
-        QShortcut(QKeySequence(Qt.Key_Down), self, self._onKeyDown)
-
         QShortcut(QKeySequence(Qt.Key_Enter), self, self._sendText)
         QShortcut(QKeySequence(Qt.Key_Return), self, self._sendText)
-
-        QShortcut(QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
-        self.button_connect.setShortcut(QKeySequence(Qt.ALT + Qt.Key_C))
-        self.button_option.setShortcut(QKeySequence(Qt.ALT + Qt.Key_O))
 
     def _moveSplitter(self, pos, index):
         cursor = self.text_output_noscroll.textCursor()
@@ -563,11 +568,11 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def eventFilter(self, target, event):
         return self._conn_manager.eventFilter(event)
 
-    def _onKeyUp(self):
+    def _historyPrev(self):
         self.text_input.setCurrentIndex(0)
         self.text_input.setItemText(0, self._conn_manager.historyPrev())
 
-    def _onKeyDown(self):
+    def _historyNext(self):
         self.text_input.setCurrentIndex(0)
         self.text_input.setItemText(0, self._conn_manager.historyNext())
 
@@ -671,3 +676,4 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def mainLoop(self):
         self.show()
         sys.exit(self.app.exec_())
+

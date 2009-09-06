@@ -63,6 +63,13 @@ general_spec = {'echo_color': "string(max=7, default='')",
                 'cmd_separator' : 'string(max=1, default=";")'
                }
 
+shortcuts_spec = {'history_prev': 'string(default="Up")',
+                  'history_next': 'string(default="Down")',
+                  'quit': 'string(default="ALT+Q")',
+                  'connect': 'string(default="ALT+C")',
+                  'option': 'string(default="ALT+O")',
+                 }
+
 _config = {'connections': {}}
 """The dict that contain the ConfigObj objs for connections and general pref"""
 
@@ -108,6 +115,19 @@ def loadStorage():
 
     _config['general'] = c
 
+    shortcuts = join(conf.config['storage']['path'], 'shortcuts.' + _STORAGE_EXT)
+    c = _readStorageFile(shortcuts, shortcuts_spec)
+    if not c:
+        # format error: restore defaults
+        c = ConfigObj(options={'indent_type': '  '}, configspec=shortcuts_spec)
+        c.validate(Validator())
+        c.filename = shortcuts
+
+    _config['shortcuts'] = c
+
+def shortcut(action):
+    c = _config['shortcuts']
+    return c[action] if action in c else ''
 
 def preferences():
     """
