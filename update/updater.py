@@ -332,4 +332,5 @@ def updateClient():
         print 'Update successfully complete!'
     return retcode
 
-sys.exit(updateClient())
+def main():
+    sys.exit(updateClient())

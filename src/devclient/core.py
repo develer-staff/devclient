@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -454,6 +454,3 @@ def main():
     sys.path.append(conf.config['servers']['path'])
     core = Core(o.port)
     core.mainLoop()
-
-
-main()

@@ -3,5 +3,5 @@
 
 [versions]
 client = 0.8.00
-packages = 0.7.99
+packages = 0.8.00
 
