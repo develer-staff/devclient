@@ -63,7 +63,7 @@ general_spec = {'echo_color': "string(max=7, default='')",
                 'cmd_separator' : 'string(max=1, default=";")'
                }
 
-_config = {}
+_config = {'connections': {}}
 """The dict that contain the ConfigObj objs for connections and general pref"""
 
 
@@ -83,6 +83,7 @@ def loadStorage():
 
     if _config:
         _config.clear()
+        _config['connections'] = {}
 
     files = glob(join(conf.config['storage']['path'], '*.' + _STORAGE_EXT))
     for f in files:
@@ -93,7 +94,7 @@ def loadStorage():
             c = _readStorageFile(f, server_spec)
             if c:
                 if 'name' in c:
-                    _config[c['name']] = c
+                    _config['connections'][c['name']] = c
                 else:
                     logger.warning(" format error in storage file %s" % f)
 
@@ -124,10 +125,10 @@ def savePreferences(pref):
     c.write()
 
 def _saveMany(conn_name, label, fields_name, fields):
-    if conn_name not in _config:
+    if conn_name not in _config['connections']:
         raise exception.ConnectionNotFound
 
-    c = _config[conn_name]
+    c = _config['connections'][conn_name]
     c[label] = {}
     i = 1
     for f in fields:
@@ -150,10 +151,10 @@ def triggers(conn_name):
     :return: a list of tuples (pattern, ignore_case, command, bg_color, fg_color)
     """
 
-    if conn_name not in _config:
+    if conn_name not in _config['connections']:
         raise exception.ConnectionNotFound
 
-    c = _config[conn_name]
+    c = _config['connections'][conn_name]
     triggers = []
     if 'triggers' in c:
         for t in c['triggers'].itervalues():
@@ -177,17 +178,17 @@ def aliases(conn_name):
     :return: a list of tuples (label, body)
     """
 
-    if conn_name not in _config:
+    if conn_name not in _config['connections']:
         raise exception.ConnectionNotFound
 
-    c = _config[conn_name]
+    c = _config['connections'][conn_name]
     return c['aliases'].items() if 'aliases' in c else []
 
 def saveAliases(conn_name, aliases):
-    if conn_name not in _config:
+    if conn_name not in _config['connections']:
         raise exception.ConnectionNotFound
 
-    c = _config[conn_name]
+    c = _config['connections'][conn_name]
     c['aliases'] = {}
     for alias in aliases:
         c['aliases'][alias[0]] = alias[1]
@@ -204,10 +205,10 @@ def macros(conn_name):
     :return: a list of tuples (command, shift, alt, ctrl, keycode)
     """
 
-    if conn_name not in _config:
+    if conn_name not in _config['connections']:
         raise exception.ConnectionNotFound
 
-    c = _config[conn_name]
+    c = _config['connections'][conn_name]
     macros = []
     if 'macros' in c:
         for m in c['macros'].itervalues():
@@ -228,9 +229,8 @@ def connections():
     """
 
     data = []
-    for k, v in _config.iteritems():
-        if k not in ('general', 'passwords'):
-            data.append((v['id'], v['name'], v['host'], v['port']))
+    for v in _config['connections'].itervalues():
+        data.append((v['id'], v['name'], v['host'], v['port']))
 
     data.sort()
     return data
@@ -246,9 +246,8 @@ def addConnection(conn):
     """
 
     m = 0
-    for k, v in _config.iteritems():
-        if k not in ('general', 'passwords'):
-            m = max(v['id'], m)
+    for v in _config['connections'].itervalues():
+        m = max(v['id'], m)
 
     c = ConfigObj(options={'indent_type': '  '}, configspec=server_spec)
     c.validate(Validator())
@@ -256,39 +255,39 @@ def addConnection(conn):
     c['name'], c['host'], c['port'] = conn[1:]
     c.filename = join(conf.config['storage']['path'],
                       conn[1] + '.' + _STORAGE_EXT)
-    _config[conn[1]] = c
+    _config['connections'][conn[1]] = c
     c.write()
 
 def deleteConnection(conn):
-    unlink(_config[conn[1]].filename)
-    del _config[conn[1]]
+    unlink(_config['connections'][conn[1]].filename)
+    del _config['connections'][conn[1]]
 
 def updateConnection(conn):
     m = 0
-    for k, c in _config.iteritems():
-        if k not in ('general', 'passwords') and c['id'] == conn[0]:
+    for k, c in _config['connections'].iteritems():
+        if c['id'] == conn[0]:
             if c['name'] != conn[1] and 'passwords' in _config and \
                c['name'] in _config['passwords']:
                 _config['passwords'][conn[1]] = _config['passwords'][c['name']]
                 del _config['passwords'][c['name']]
                 _config['passwords'].write()
             unlink(c.filename)
-            del  _config[k]
+            del _config['connections'][k]
             c['name'], c['host'], c['port'] = conn[1:]
             c.filename = join(conf.config['storage']['path'],
                               conn[1] + '.' + _STORAGE_EXT)
-            _config[conn[1]] = c
+            _config['connections'][conn[1]] = c
             c.write()
             return
     else:
         raise exception.ConnectionNotFound
 
 def connectionHasChild(conn_name):
-    c = _config[conn_name]
+    c = _config['connections'][conn_name]
     return c.get('aliases') or c.get('macros') or c.get('accounts')
 
 def connection(conn_name):
-    for k, c in _config.iteritems():
+    for k, c in _config['connections'].iteritems():
         if k == conn_name:
             return (c['id'], c['name'], c['host'], c['port'])
     else:
@@ -307,8 +306,8 @@ def option(name, id_conn=0):
     """
 
     if id_conn:
-        for k, c in _config.iteritems():
-            if k not in ('general', 'passwords') and c['id'] == id_conn:
+        for c in _config['connections'].itervalues():
+            if c['id'] == id_conn:
                 return c[name]
         else:
             raise exception.ConnectionNotFound
@@ -317,8 +316,8 @@ def option(name, id_conn=0):
 
 def setOption(name, value, id_conn=0):
     if id_conn:
-        for k, v in _config.iteritems():
-            if k not in ('general', 'passwords') and v['id'] == id_conn:
+        for v in _config['connections'].itervalues():
+            if v['id'] == id_conn:
                 c = v
                 break
         else:
@@ -339,8 +338,8 @@ def accounts(id_conn):
     """
 
     if id_conn:
-        for k, c in _config.iteritems():
-            if k not in ('general', 'passwords') and c['id'] == id_conn:
+        for c in _config['connections'].itervalues():
+            if c['id'] == id_conn:
                 return c['accounts'].keys() if 'accounts' in c else []
 
     raise exception.ConnectionNotFound
@@ -365,9 +364,8 @@ def accountDetail(id_conn, username):
         return None
 
     if id_conn:
-        for k, c in _config.iteritems():
-            if k not in ('general', 'passwords') and c['id'] == id_conn and \
-                'accounts' in c:
+        for c in _config['connections'].itervalues():
+            if c['id'] == id_conn and 'accounts' in c:
                 accounts = [(l, cmd) for l, cmd in
                             c['accounts'][username].iteritems()
                             if l.startswith('cmd-')]
@@ -400,9 +398,8 @@ def deleteAccount(id_conn, username):
             c['passwords'].write()
 
     if id_conn:
-        for k, c in _config.iteritems():
-            if k not in ('general', 'passwords') and c['id'] == id_conn and \
-               'accounts' in c:
+        for c in _config['connections'].itervalues():
+            if c['id'] == id_conn and 'accounts' in c:
                 _delAccountPwd(c['name'], username)
                 del c['accounts'][username]
                 if not c['accounts']:
@@ -430,8 +427,8 @@ def saveAccount(commands, id_conn, cmd_user):
 
     username = commands[cmd_user - 1]
     if id_conn:
-        for k, c in _config.iteritems():
-            if k not in ('general', 'passwords') and c['id'] == id_conn:
+        for c in _config['connections'].itervalues():
+            if c['id'] == id_conn:
                 if 'accounts' not in c:
                     c['accounts'] = {}
                 if username not in c['accounts']:
@@ -457,8 +454,8 @@ def prompt(id_conn, username):
         return ('', '')
 
     if id_conn:
-        for k, c in _config.iteritems():
-            if k not in ('general', 'passwords') and c['id'] == id_conn:
+        for c in _config['connections'].itervalues():
+            if c['id'] == id_conn:
                 a = c['accounts'][username]
                 n = a['normal_prompt'] if 'normal_prompt' in a else ''
                 f = a['fight_prompt'] if 'fight_prompt' in a else ''
@@ -468,11 +465,12 @@ def prompt(id_conn, username):
 
 def savePrompt(id_conn, username, normal, fight):
     if id_conn:
-        for k, c in _config.iteritems():
-            if k not in ('general', 'passwords') and c['id'] == id_conn:
+        for c in _config['connections'].itervalues():
+            if c['id'] == id_conn:
                 c['accounts'][username]['normal_prompt'] = normal
                 c['accounts'][username]['fight_prompt'] = fight
                 c.write()
                 return
 
     raise exception.ConnectionNotFound
+
