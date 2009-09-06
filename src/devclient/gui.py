@@ -187,7 +187,8 @@ class SocketToCore(QObject):
         self._s.close()
 
     def __del__(self):
-        terminateProcess(self._pid)
+        if hasattr(self, '_pid'):
+            terminateProcess(self._pid)
 
 
 class GameLogger(object):
@@ -273,7 +274,7 @@ class ConnectionManager(QObject):
         self._alias = None
 
         self._preferences = storage.preferences()
-        self.connect(self._s_core, SIGNAL("readyRead()"),
+        self.connect(self._s_core, SIGNAL("readyRead()"), 
                      self._readDataFromCore)
 
     def _checkModifier(self, event, mod):
@@ -441,12 +442,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
     def __init__(self, cfg_file, resources_path):
 
-        if QApplication.instance():
-            self.app = QApplication.instance()
-        else:
-            self.app = QApplication([])
-
-        self.app.setStyle(QtGui.QStyleFactory.create("Cleanlooks"))
         self._installTranslator()
         QtGui.QMainWindow.__init__(self)
         resources = ('gui.rcc', 'gui_option.rcc')
@@ -456,15 +451,21 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.setupLogger()
         self._translateText()
         self.setupUi(self)
-        self._conn_manager = ConnectionManager(self, cfg_file)
-        self._setEventFilter()
+        try:
+            self._conn_manager = ConnectionManager(self, cfg_file)
+            self._setEventFilter()
 
-        logger.debug('PyQt version: %s, Qt version: %s' %
-            (PYQT_VERSION_STR, QT_VERSION_STR))
+            logger.debug('PyQt version: %s, Qt version: %s' %
+                (PYQT_VERSION_STR, QT_VERSION_STR))
 
-        self._loadConnections()
-        self._loadShortcuts()
-        self._setupSignal()
+            self._loadConnections()
+            self._loadShortcuts()
+            self._setupSignal()
+        except Exception, e:
+            # NOTE: I can't explain why the ConnectionManager destructor isn't
+            # called if an exception happened after its creation.
+            del self._conn_manager
+            raise e
 
     def _loadConnections(self):
         connections = storage.connections()
@@ -673,7 +674,4 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def displayWarning(self, title, message):
         QMessageBox.warning(self, title, message)
 
-    def mainLoop(self):
-        self.show()
-        sys.exit(self.app.exec_())
 

@@ -25,12 +25,15 @@ import os
 import os.path
 from time import strftime
 from traceback import print_exc
-from sys import path, argv, exc_info
+from sys import path, argv, exc_info, exit
 from os.path import dirname, join, abspath, normpath
 
 import exception
 from constants import PROJECT_NAME
 from conf import loadConfiguration, config
+
+from PyQt4.QtGui import QApplication, QStyleFactory
+
 
 cfg_file = normpath(dirname(abspath(__file__)) + "/../../etc/devclient.cfg")
 
@@ -96,13 +99,19 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
     # this import must stay here, after the appending of configobj path to path
     from gui import Gui
     try:
+        app = QApplication([])
+        app.setStyle(QStyleFactory.create("Cleanlooks"))
+
         gui = Gui(cfg_file, config['resources']['path'])
         if not update:
             gui.displayWarning(PROJECT_NAME, gui._text['UpdateFail'])
-        gui.mainLoop()
+        gui.show()
+        exit(app.exec_())
+
     except exception.IPCError:
         save_exception()
     except Exception, e:
         print 'Fatal Exception:', e
         save_exception()
+
 
