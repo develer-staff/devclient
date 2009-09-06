@@ -33,7 +33,6 @@ sys.path.append('..')
 sys.path.append('../configobj')
 
 import devclient.storage as storage
-from devclient.conf import config
 from devclient.trigger import Trigger
 from devclient.messages import Model
 
@@ -47,8 +46,7 @@ class TestTrigger(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.mkdir(self.test_dir)
-        config['storage'] = {'path': os.path.abspath(self.test_dir)}
-        storage.loadStorage()
+        storage.init(os.path.abspath(self.test_dir))
 
         self.conn_name = 'conn'
         conn = [0, self.conn_name, 'host', 111]

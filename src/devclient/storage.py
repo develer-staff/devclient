@@ -30,7 +30,6 @@ from base64 import b64decode, b64encode
 from validate import Validator
 from configobj import ConfigObj
 
-import conf
 import exception
 
 logger = logging.getLogger('storage')
@@ -73,8 +72,10 @@ shortcuts_spec = {'history_prev': 'string(default="Up")',
 _config = {'connections': {}}
 """The dict that contain the ConfigObj objs for connections and general pref"""
 
+_storage_path = None
 
-def loadStorage():
+def init(storage_path):
+    global _storage_path
 
     def _readStorageFile(f, spec):
         c = ConfigObj(f, configspec=spec)
@@ -92,7 +93,8 @@ def loadStorage():
         _config.clear()
         _config['connections'] = {}
 
-    files = glob(join(conf.config['storage']['path'], '*.' + _STORAGE_EXT))
+    _storage_path = storage_path 
+    files = glob(join(_storage_path, '*.' + _STORAGE_EXT))
     for f in files:
         if basename(f) == 'passwords.' + _STORAGE_EXT:
             _config['passwords'] = ConfigObj(f, options={'indent_type': '  '})
@@ -105,7 +107,7 @@ def loadStorage():
                 else:
                     logger.warning(" format error in storage file %s" % f)
 
-    general = join(conf.config['storage']['path'], 'general.' + _STORAGE_EXT)
+    general = join(_storage_path, 'general.' + _STORAGE_EXT)
     c = _readStorageFile(general, general_spec)
     if not c:
         # format error: restore defaults
@@ -115,7 +117,7 @@ def loadStorage():
 
     _config['general'] = c
 
-    shortcuts = join(conf.config['storage']['path'], 'shortcuts.' + _STORAGE_EXT)
+    shortcuts = join(_storage_path, 'shortcuts.' + _STORAGE_EXT)
     c = _readStorageFile(shortcuts, shortcuts_spec)
     if not c:
         # format error: restore defaults
@@ -273,8 +275,7 @@ def addConnection(conn):
     c.validate(Validator())
     c['id'] = conn[0] = m + 1
     c['name'], c['host'], c['port'] = conn[1:]
-    c.filename = join(conf.config['storage']['path'],
-                      conn[1] + '.' + _STORAGE_EXT)
+    c.filename = join(_storage_path, conn[1] + '.' + _STORAGE_EXT)
     _config['connections'][conn[1]] = c
     c.write()
 
@@ -294,8 +295,7 @@ def updateConnection(conn):
             unlink(c.filename)
             del _config['connections'][k]
             c['name'], c['host'], c['port'] = conn[1:]
-            c.filename = join(conf.config['storage']['path'],
-                              conn[1] + '.' + _STORAGE_EXT)
+            c.filename = join(_storage_path, conn[1] + '.' + _STORAGE_EXT)
             _config['connections'][conn[1]] = c
             c.write()
             return
@@ -435,7 +435,7 @@ def saveAccount(commands, id_conn, cmd_user):
         c =  _config
         if 'passwords' not in c:
             c['passwords'] = ConfigObj(options={'indent_type': '  '})
-            c['passwords'].filename = join(conf.config['storage']['path'],
+            c['passwords'].filename = join(_storage_path, 
                                            'passwords.' + _STORAGE_EXT)
 
         if conn not in c['passwords']:

@@ -49,14 +49,13 @@ class GuiOptionTest(unittest.TestCase):
             self.app = QApplication([])
 
         self.test_dir = '../../data/storage/test_dir'
-        config['storage'] = {'path': os.path.abspath(self.test_dir)}
         config['devclient'] = {'path': os.path.abspath('../devclient')}
 
     def setUp(self):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.mkdir(self.test_dir)
-        devclient.storage.loadStorage()
+        devclient.storage.init(os.path.abspath(self.test_dir))
 
     def tearDown(self):
         if os.path.exists(self.test_dir):

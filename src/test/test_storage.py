@@ -33,7 +33,6 @@ sys.path.append('../configobj')
 
 import devclient.storage as storage
 import devclient.exception as exception
-from devclient.conf import config
 
 
 class TestBase(unittest.TestCase):
@@ -46,8 +45,7 @@ class TestBase(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.mkdir(self.test_dir)
-        config['storage'] = {'path': os.path.abspath(self.test_dir)}
-        storage.loadStorage()
+        storage.init(os.path.abspath(self.test_dir))
 
     def tearDown(self):
         if os.path.exists(self.test_dir):

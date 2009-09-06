@@ -36,7 +36,6 @@ sys.path.append('../../resources')
 
 import communication
 import devclient.storage as storage
-from devclient.conf import config
 from devclient.gui import SocketToCore, AccountManager, ConnectionManager
 
 
@@ -95,8 +94,7 @@ class TestAccountManager(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.mkdir(self.test_dir)
-        config['storage'] = {'path': os.path.abspath(self.test_dir)}
-        storage.loadStorage()
+        storage.init(os.path.abspath(self.test_dir))
 
     def tearDown(self):
         if os.path.exists(self.test_dir):
@@ -184,8 +182,7 @@ class TestConnectionManager(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.mkdir(self.test_dir)
-        config['storage'] = {'path': os.path.abspath(self.test_dir)}
-        storage.loadStorage()
+        storage.init(os.path.abspath(self.test_dir))
 
     def tearDown(self):
         if os.path.exists(self.test_dir):

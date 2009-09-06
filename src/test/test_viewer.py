@@ -33,7 +33,6 @@ sys.path.append('..')
 sys.path.append('../configobj')
 
 from devclient.viewer import *
-from devclient.conf import config
 from devclient.messages import Model
 
 
@@ -79,8 +78,7 @@ class ViewerTest(unittest.TestCase):
         if os.path.exists(self.test_dir):
             shutil.rmtree(self.test_dir)
         os.mkdir(self.test_dir)
-        config['storage'] = {'path': os.path.abspath(self.test_dir)}
-        storage.loadStorage()
+        storage.init(os.path.abspath(self.test_dir))
         self.widget = WidgetMock()
         self.viewer = TextViewer(self.widget)
         self.m = Model()

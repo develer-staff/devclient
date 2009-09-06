@@ -94,7 +94,7 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
 
     # this import must stay here, after the appending of configobj path to path
     import storage
-    storage.loadStorage()
+    storage.init(config['storage']['path'])
 
     # this import must stay here, after the appending of configobj path to path
     from gui import Gui
