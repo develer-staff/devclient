@@ -39,6 +39,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
+; The updater is run in hidden mode during the installation. In this way, we can
+; exclude devclient.pkg and startcore.pkg from the innosetup package.
 Source: "..\devclient.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\src\devclient\startcore.exe"; DestDir: "{app}\src\devclient"; Flags: ignoreversion
 Source: "..\update\startupdater.exe"; DestDir: "{app}\update"; Flags: ignoreversion
