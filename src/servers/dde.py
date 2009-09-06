@@ -32,6 +32,7 @@ class DdE(DikuServer):
 
 
 class ADdE(DdE):
+    wild_chars = '\^\.xX@\*\s&-\?o'
     host = 'algor.homelinux.com'
     port = 5556
     host2 = None
