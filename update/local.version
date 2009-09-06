@@ -2,6 +2,6 @@
 # To update you have to run the svn up command.
 
 [versions]
-client = 0.7.99
+client = 0.8.00
 packages = 0.7.99
 
