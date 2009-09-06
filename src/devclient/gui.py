@@ -433,10 +433,10 @@ class ConnectionManager(QObject):
 class Gui(QtGui.QMainWindow, Ui_dev_client):
     """
     The Gui class written with `Qt`_, that inherits the real gui interface
-    designed by `Qt-designer`_.
+    designed (originally) by `Qt-designer`_ and rewritten after by hands.
 
-.. _Qt: http://doc.trolltech.com/4.3/index.html
-.. _Qt-designer: http://doc.trolltech.com/4.3/designer-manual.html
+.. _Qt: http://doc.trolltech.com/4.5/index.html
+.. _Qt-designer: http://doc.trolltech.com/4.5/designer-manual.html
     """
 
     def __init__(self, cfg_file, resources_path):
@@ -545,6 +545,8 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         QShortcut(QKeySequence(Qt.Key_Return), self, self._sendText)
 
         QShortcut(QKeySequence(Qt.ALT + Qt.Key_Q), self, self.close)
+        self.button_connect.setShortcut(QKeySequence(Qt.ALT + Qt.Key_C))
+        self.button_option.setShortcut(QKeySequence(Qt.ALT + Qt.Key_O))
 
     def _moveSplitter(self, pos, index):
         cursor = self.text_output_noscroll.textCursor()

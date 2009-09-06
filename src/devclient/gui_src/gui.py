@@ -69,7 +69,6 @@ class Ui_dev_client(object):
         self.button_connect.setIcon(QIcon(":/images/connect.png"))
         self.button_connect.setIconSize(QSize(16, 16))
         self.button_connect.setText(QApplication.translate("dev_client", "Connect"))
-        self.button_connect.setShortcut("Alt+C")
         top_layout.addWidget(self.button_connect)
 
         self.button_option = QPushButton()
@@ -78,7 +77,6 @@ class Ui_dev_client(object):
         self.button_option.setIcon(QIcon(":/images/option.png"))
         self.button_option.setIconSize(QSize(16, 16))
         self.button_option.setText(QApplication.translate("dev_client", "Option"))
-        self.button_option.setShortcut("Alt+O")
         top_layout.addWidget(self.button_option)
         main_layout.addLayout(top_layout, 0, 0)
 
