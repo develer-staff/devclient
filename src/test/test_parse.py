@@ -693,15 +693,25 @@ class TestWildMapParser(unittest.TestCase):
     def testParseRoom2(self):
         m = self.parser.buildModel("Via del giglio.\n")
         self.assert_(m.map_text == '' and m.map_html == '')
+        self.assert_(m.main_text == "Via del giglio.")
 
         text = "\n   La grande via del Giglio termina a Nord con le mura " + \
                "della citta' \nchiuse dalla porta nord. \nA Sud invece la " + \
                "prestigiosa via si inoltra nel cuore della Capitale,\n" + \
                "mentre a Ovest inizia un oscuro vicoletto.\n[Uscite: Nord " + \
-               "Est Sud Ovest]\n\nPf:30/30 Mn:117/117 Mv:7/108> "
+               "Est Sud Ovest]\n\nPf:30/30 Mn:117/117 Mv:7/108>"
 
         m = self.parser.buildModel(text)
         self.assert_(m.map_text is None and m.map_html is None)
+        self.assert_(m.main_text == '\n' + text)
+
+    def testParseRoom3(self):
+        text = "....................*** VIENI RISUCCHIATO NEL PORTALE!! ***" + \
+               ".....................\n La gilda dei Maghi.\n[Uscite: Nessuna]"
+        m = self.parser.buildModel(text)
+        self.assert_(m.map_text is None and m.map_html is None)
+        self.assert_(m.main_text == text)
+
 
 if __name__ == '__main__':
     unittest.main()
