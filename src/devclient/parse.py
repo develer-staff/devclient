@@ -428,6 +428,7 @@ class WildMapParser(Parser):
         if hasattr(self._p._server, 'room_map'):
             room_desc += self._p._server.room_map
 
+        # we try to check if the text contains one or more wild map.
         m = reg.match(text)
         # 'X' in text is a trick. We have some situation when the text contains
         # a string that looks like a wild map. In this fix we control if the
@@ -455,6 +456,7 @@ class WildMapParser(Parser):
                      re.S).match(text):
             model.map_text, model.map_html = None, None
 
+        # we search for an incomplete wild map.
         model.main_text, model.main_html, self._incomplete_map = \
             extractIncompleteMap(text, html)
         return False
