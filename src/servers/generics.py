@@ -28,7 +28,6 @@ class Server(object):
 class DikuServer(Server):
     prompt_reg = 'Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>'
     prompt_sep = '/'
-    right_widget = 'gui_map'
 
 
 class AfkServer(Server):
