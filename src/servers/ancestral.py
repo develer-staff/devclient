@@ -27,7 +27,7 @@ class Ancestral(AfkServer):
     wild_prec_char = '.\n '
     room_end_text = '\nUscite Visibili:'
     gui_width = 1015
-    host = 'ancestralmud.it'
+    host = '81.174.65.202'
     port = 4000
     map_width = 31
     map_height = 21
