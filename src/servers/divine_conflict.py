@@ -21,7 +21,6 @@
 from generics import *
 
 class DivineConflict(Server):
-    right_widget = 'gui_map'
     wild_chars = '\*-\+%\^X\.~\'\sx@=/'
     wild_end_text = '\n<'
     room_end_text = '[Uscite:'
