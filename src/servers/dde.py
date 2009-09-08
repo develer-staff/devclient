@@ -29,7 +29,8 @@ class DdE(DikuServer):
     port = 5000
     host2 = 'dde.homelinux.com'
     port2 = 4000
-
+    map_width = 27
+    map_height = 11
 
 class ADdE(DdE):
     wild_chars = '\^\.xX@\*\s&-\?o'
@@ -37,3 +38,4 @@ class ADdE(DdE):
     port = 5556
     host2 = None
     port2 = None
+

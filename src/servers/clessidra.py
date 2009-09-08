@@ -27,3 +27,6 @@ class Clessidra(DikuServer):
     gui_width = 975
     host = 'mud.clessidra.it'
     port = 4000
+    map_width = 27
+    map_height = 11
+

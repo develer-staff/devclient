@@ -31,3 +31,4 @@ class Ancestral(AfkServer):
     port = 4000
     map_width = 31
     map_height = 21
+

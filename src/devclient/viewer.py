@@ -30,7 +30,9 @@ from PyQt4.QtGui import QWidget, QTextCursor
 
 logger = logging.getLogger('viewer')
 
-def _setRightPanel(widget, widget_name, map_width, map_height):
+def _setRightPanel(widget, server):
+
+    widget_name = server.right_widget
 
     # delete the old widget
     map(delete, widget.rightpanel.children())
@@ -43,9 +45,7 @@ def _setRightPanel(widget, widget_name, map_width, map_height):
             class RightWidget(QWidget, module.Ui_RightWidget):
                 def __init__(self, parent):
                     QWidget.__init__(self, parent)
-                    self.map_width = map_width
-                    self.map_height = map_height
-                    self.setupUi(self)
+                    self.setupUi(self, server)
 
         except ImportError:
             logger.warning('_setRightPanel: Unknown widget %s' % widget_name)
@@ -66,8 +66,7 @@ def _setRightPanel(widget, widget_name, map_width, map_height):
 def getViewer(widget, server, custom_prompt=False):
 
     viewer = TextViewer(widget)
-    if _setRightPanel(widget, server.right_widget, server.map_width,
-                      server.map_height):
+    if _setRightPanel(widget, server):
         if hasattr(server, 'prompt_reg') or custom_prompt:
             viewer = StatusViewer(viewer)
 
@@ -232,7 +231,7 @@ class MapViewer(TextViewer):
         self.v = v
         v.w.rightwidget.text_map.setVisible(True)
         self.map_width = map_width
-        self.map_height= map_height
+        self.map_height = map_height
 
     def _centerMap(self, model, width, height):
         html_list = model.map_html.split('<br>')
@@ -266,3 +265,4 @@ class MapViewer(TextViewer):
     def _resetWidgets(self):
         self.v._resetWidgets()
         self._textEditColors(self.w.rightwidget.text_map)
+

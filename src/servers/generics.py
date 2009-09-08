@@ -21,7 +21,7 @@
 
 class Server(object):
     # Default Server, don't remove it!
-    right_widget = 'gui_prompt'
+    right_widget = 'gui_map'
     cmd_password = 2
 
 
@@ -29,11 +29,10 @@ class DikuServer(Server):
     prompt_reg = 'Pf:\s*(\d+/\d+) Mn:\s*(\d+/\d+) Mv:\s*(\d+/\d+).*?\>'
     prompt_sep = '/'
     right_widget = 'gui_map'
-    map_width = 27
-    map_height = 11
 
 
 class AfkServer(Server):
     prompt_reg = '\[Pf:\s*(\d+-\d+)\] \[Mana:\s*(\d+-\d+)\] ' + \
                  '\[Mv:\s*(\d+-\d+)\] \[Mon:\s*\d+\] \[S:\s*Xp:\s*\d+\]'
     prompt_sep = '-'
+

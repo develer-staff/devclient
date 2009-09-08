@@ -24,7 +24,7 @@ from PyQt4.QtCore import QSize, Qt, QVariant
 
 
 class Ui_RightWidget(object):
-    def setupUi(self, RightWidget):
+    def setupUi(self, RightWidget, server):
         RightWidget.setMinimumHeight(500)
 
         main_layout = QVBoxLayout(RightWidget)
@@ -34,25 +34,28 @@ class Ui_RightWidget(object):
         # We hide all the main elements, to allow the proper viewer to enable
         # (only) the elements that uses.
 
-        self.text_map = QTextEdit()
-        self.text_map.setVisible(False)
-        self.text_map.setFocusPolicy(Qt.NoFocus)
-        self.text_map.setAutoFillBackground(True)
-        self.text_map.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.text_map.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.text_map.setUndoRedoEnabled(False)
-        self.text_map.setReadOnly(True)
-        self.text_map.setStyleSheet("QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}")
-        main_layout.addWidget(self.text_map)
+        if hasattr(server, 'wild_chars'):
+            self.text_map = QTextEdit()
+            self.text_map.setVisible(False)
+            self.text_map.setFocusPolicy(Qt.NoFocus)
+            self.text_map.setAutoFillBackground(True)
+            self.text_map.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.text_map.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            self.text_map.setUndoRedoEnabled(False)
+            self.text_map.setReadOnly(True)
+            self.text_map.setStyleSheet("QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}")
+            main_layout.addWidget(self.text_map)
 
-        # We calculate the map area size using the size of the font used. We
-        # assume that the font is a monospace ones.
-        font_metrics = self.text_map.fontMetrics()
-        self.text_map.setFixedWidth(font_metrics.width('#' * self.map_width))
-        self.text_map.setFixedHeight(font_metrics.height() * self.map_height)
+            # We calculate the map area size using the size of the font used. We
+            # assume that the font is a monospace ones.
+            font_metrics = self.text_map.fontMetrics()
+            self.text_map.setFixedWidth(font_metrics.width('#' * server.map_width))
+            self.text_map.setFixedHeight(font_metrics.height() * server.map_height)
 
-        # The rightwidget width is determined by the map area size
-        RightWidget.setMinimumWidth(self.text_map.width())
+            # The rightwidget width is determined by the map area size
+            RightWidget.setMinimumWidth(self.text_map.width())
+        else:
+            RightWidget.setMinimumWidth(220)
 
         self.box_status = QWidget()
         self.box_status.setVisible(False)
