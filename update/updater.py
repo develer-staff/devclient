@@ -25,7 +25,7 @@ The module to manage auto updating of client.
 __version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
-import sys
+import sys, time
 import tarfile
 import subprocess
 from filecmp import cmp
@@ -94,23 +94,8 @@ def getOnlineVersion(url):
         the url of the file that contains the version.
     """
 
-    try:
-        return getData(url).strip()
-    except UpdaterError:
-        return ''
+    setdefaulttimeout(2)
 
-def getData(url, timeout=2):
-    """
-    Get data from an url.
-
-    :Parameters:
-      url : str
-        the url to download
-      timeout : int
-        second to wait before raising an error
-    """
-
-    setdefaulttimeout(timeout)
     try:
         u = urlopen(url)
     except HTTPError:
@@ -120,7 +105,7 @@ def getData(url, timeout=2):
     except IOError:
         raise UpdaterError('Timeout on download file: %s' % url)
 
-    return u.read()
+    return u.read().strip()
 
 def downloadFile(url, timeout=2):
     """
@@ -133,7 +118,51 @@ def downloadFile(url, timeout=2):
         timeout to wait before raising error
     """
 
-    data = getData(url, timeout)
+    setdefaulttimeout(timeout)
+    try:
+        u = urlopen(url)
+    except HTTPError:
+        raise UpdaterError('Unable to download file: %s' % url)
+    except URLError:
+        raise UpdaterError('Url malformed: %s' % url)
+    except IOError:
+        raise UpdaterError('Timeout on download file: %s' % url)
+
+    length = int(u.info()['content-length'])
+    if length > 524288: # 512 KB
+
+        def format_time(seconds):
+            return time.strftime('%H:%M:%S', time.gmtime(seconds))
+
+        print 'download updates of:', int(u.info()['content-length']) / 1024, \
+            'Kb '
+
+        bar_length = 20
+        chunk = length / 50
+        data = ''
+        start_time = time.time()
+        for i in xrange(50):
+ 
+            completed = int(i / (50.0 / bar_length))
+            missing = bar_length - completed
+            elapsed = time.time() - start_time
+            if completed:            
+                eta = format_time(elapsed * bar_length / completed - elapsed)
+            else:
+                eta = '--:--:--'
+
+            sys.stdout.write("\r[%s%s] %2d%% ETA: %s Time: %s" % 
+                ('#' * completed, '.' * missing, i * 2, eta, format_time(elapsed)))
+            sys.stdout.flush()
+            data += u.read(chunk)
+
+        data += u.read()
+        sys.stdout.write("\r[%s] %2d%% ETA: %s Time: %s\n" % 
+            ('#' * bar_length, 100, eta, format_time(time.time() - start_time)))
+        sys.stdout.flush()
+    else:
+        data = u.read()
+
     filename = basename(url)
     fd = open(filename, 'wb+')
     fd.write(data)
@@ -334,3 +363,4 @@ def updateClient():
 
 def main():
     sys.exit(updateClient())
+
