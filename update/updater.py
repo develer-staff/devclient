@@ -34,7 +34,7 @@ from socket import setdefaulttimeout
 from ConfigParser import SafeConfigParser
 from shutil import copyfile, rmtree, copymode
 from urllib2 import urlopen, HTTPError, URLError
-from os import chdir, walk, getcwd, makedirs, rename, sep
+from os import chdir, walk, getcwd, makedirs, rename, sep, unlink
 from os.path import basename, splitext, split, abspath
 from os.path import exists, join, normpath, dirname
 
@@ -236,14 +236,14 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
             if not exists(join(root_dir, root, d)):
                 makedirs(join(root_dir, root, d))
 
-def update(url, root_dir, ignore_list, timeout=2):
+def update(archive_name, root_dir, ignore_list):
     """
-    Update a source tree, starting from an archive url and the root dir of the
+    Update a source tree, starting from an archive and the root dir of the
     tree.
 
     :Parameters:
-        url : str
-          the url where download the new tree archive
+        archive_name : str
+          the new tree archive
         root_dir : str
           the root directory of the tree
         ignore_list : list
@@ -259,8 +259,7 @@ def update(url, root_dir, ignore_list, timeout=2):
 
     try:
         chdir(_TMP_DIR)
-        downloadFile(url, timeout)
-        base_dir = uncompressFile(basename(url))
+        base_dir = uncompressFile(archive_name)
         replaceOldVersion(root_dir, base_dir, ignore_list)
     except UpdaterError, e:
         print 'ERROR:', e
@@ -309,7 +308,83 @@ def saveVersion(version):
 
     return True
 
-def updateClient():
+def updateFromNet(config):
+    ignore_list = map(normpath, config['files']['ignore'].split(','))
+    local_version = getLocalVersion()
+    updated = False
+    retcode = 0
+
+    client_ver = getOnlineVersion(config['client']['version'])
+    if not client_ver:
+        print 'Unknown online version of client, download it'
+
+    if not client_ver or checkVersion(client_ver, local_version['client']):
+        downloadFile(config['client']['url'])
+        client = abspath(basename(config['client']['url']))
+        if not update(client, _ROOT_DIR, ignore_list):
+            print 'Fatal error while updating', config['client']['url']
+            retcode = 1
+        else:
+            updated = True
+        unlink(client)
+
+    if hasattr(sys, 'frozen') and sys.frozen:
+        pack_ver = getOnlineVersion(config['packages']['version'])
+        if not pack_ver:
+            print 'Unknown online version of the packages, download them'
+
+        if not pack_ver or checkVersion(pack_ver, local_version['packages']):
+            downloadFile(config['packages']['url'], None)
+            packages = abspath(basename(config['packages']['url']))
+            if not update(packages, _ROOT_DIR, ignore_list):
+                print 'Fatal error while updating', config['packages']['url']
+                retcode = 1
+            else:
+                updated = True
+            unlink(packages)
+
+    if updated:
+        if client_ver:
+            local_version['client'] = client_ver
+        if hasattr(sys, 'frozen') and sys.frozen and pack_ver:
+            local_version['packages'] = pack_ver
+        saveVersion(local_version)
+
+    return (retcode, updated)
+
+def updateFromLocal(config):
+
+    updated = False
+    retcode = 0
+    ignore_list = map(normpath, config['files']['ignore'].split(','))
+    client = abspath(basename(config['client']['url']))
+    packages = abspath(basename(config['packages']['url']))
+
+    if exists(client):
+        if not update(client, _ROOT_DIR, ignore_list):
+            print 'Fatal error while updating', client
+            retcode = 1
+        else:
+            updated = True
+
+
+    if hasattr(sys, 'frozen') and sys.frozen:
+        if exists(packages):
+            if not update(packages, _ROOT_DIR, ignore_list):
+                print 'Fatal error while updating', packages
+                retcode = 1
+            else:
+                updated = True
+
+    return (retcode, updated)
+
+def main():
+    parser = OptionParser()
+    parser.add_option('--source', default='net',
+                      help='(local|net) the source used for the updates')
+
+    o, args = parser.parse_args()
+
     cp = SafeConfigParser()
     cp.read(_CONFIG_FILE)
     config = {}
@@ -320,46 +395,10 @@ def updateClient():
         print 'Update disabled!'
         return 0
 
-    ignore_list = map(normpath, config['files']['ignore'].split(','))
+    funcUpdate = updateFromLocal if o.source == 'local' else updateFromNet
+    retcode, updated = funcUpdate(config)
 
-    local_version = getLocalVersion()
-    updated = False
-    retcode = 0
-
-    client_ver = getOnlineVersion(config['client']['version'])
-    if not client_ver:
-        print 'Unknown online version of client, download it'
-
-    if not client_ver or checkVersion(client_ver, local_version['client']):
-        if not update(config['client']['url'], _ROOT_DIR, ignore_list):
-            print 'Fatal error while updating', config['client']['url']
-            retcode = 1
-        else:
-            updated = True
-
-    if hasattr(sys, 'frozen') and sys.frozen:
-        pack_ver = getOnlineVersion(config['packages']['version'])
-        if not pack_ver:
-            print 'Unknown online version of the packages, download them'
-
-        if not pack_ver or checkVersion(pack_ver, local_version['packages']):
-            if not update(config['packages']['url'], _ROOT_DIR, ignore_list, None):
-                print 'Fatal error while updating', config['packages']['url']
-                retcode = 1
-            else:
-                updated = True
-
-    if updated:
-        if client_ver:
-            local_version['client'] = client_ver
-        if hasattr(sys, 'frozen') and sys.frozen and pack_ver:
-            local_version['packages'] = pack_ver
-        saveVersion(local_version)
-
-    if not retcode:
+    if not retcode and updated:
         print 'Update successfully complete!'
-    return retcode
-
-def main():
-    sys.exit(updateClient())
+    sys.exit(retcode)
 
