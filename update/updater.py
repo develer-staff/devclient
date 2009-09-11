@@ -19,7 +19,7 @@
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
 """
-The module to manage auto updating of client.
+The module to manage the auto updating of the client.
 """
 
 __version__ = "$Revision$"[11:-2]
@@ -39,10 +39,10 @@ from os.path import basename, splitext, split, abspath
 from os.path import exists, join, normpath, dirname
 
 _SELF_MODULE = basename(sys.argv[0])
-"""name of the module itself"""
+"""the name of the module itself"""
 
 _SELF_DIR = abspath(dirname(sys.argv[0]))
-"""directory of the module itself"""
+"""the directory of the module itself"""
 
 _LOCAL_VERSION_FILE = abspath(join(_SELF_DIR, 'local.version'))
 """The file where the updater stores the local version"""
@@ -51,7 +51,7 @@ _ROOT_DIR = abspath(join(_SELF_DIR, '..'))
 """the root directory of client"""
 
 _TMP_DIR = abspath(join(_SELF_DIR, 'temp'))
-"""temp directory where store data for the process of updating"""
+"""temp directory where store data for the update"""
 
 _CONFIG_FILE = join(_SELF_DIR, 'updater.cfg')
 """the configuration file"""
@@ -67,6 +67,7 @@ class UpdaterError(Exception):
 
     def __str__(self):
         return self.msg
+
 
 def checkVersion(online_version, local_version):
     """
@@ -309,11 +310,20 @@ def saveVersion(version):
     return True
 
 def updateFromNet(config):
+    """
+    The main function of the update through web. 
+
+    It checks the urls set in the configuration file for a new version, and if 
+    exists it downloads the archive and replaces the old version of the files
+    with the contents of the archive.
+    """
+
     ignore_list = map(normpath, config['files']['ignore'].split(','))
     local_version = getLocalVersion()
     updated = False
     retcode = 0
 
+    ## Update the client
     client_ver = getOnlineVersion(config['client']['version'])
     if not client_ver:
         print 'Unknown online version of client, download it'
@@ -328,6 +338,7 @@ def updateFromNet(config):
             updated = True
         unlink(client)
 
+    ## Update the packages
     if hasattr(sys, 'frozen') and sys.frozen:
         pack_ver = getOnlineVersion(config['packages']['version'])
         if not pack_ver:
@@ -353,6 +364,12 @@ def updateFromNet(config):
     return (retcode, updated)
 
 def updateFromLocal(config):
+    """
+    The main function of the update using local files. 
+
+    It simply replaces the old version of the files with the contents of the 
+    archives (if present).
+    """
 
     updated = False
     retcode = 0
@@ -360,6 +377,7 @@ def updateFromLocal(config):
     client = abspath(basename(config['client']['url']))
     packages = abspath(basename(config['packages']['url']))
 
+    ## Update the client
     if exists(client):
         if not update(client, _ROOT_DIR, ignore_list):
             print 'Fatal error while updating', client
@@ -367,7 +385,7 @@ def updateFromLocal(config):
         else:
             updated = True
 
-
+    ## Update the packages
     if hasattr(sys, 'frozen') and sys.frozen:
         if exists(packages):
             if not update(packages, _ROOT_DIR, ignore_list):
@@ -399,6 +417,6 @@ def main():
     retcode, updated = funcUpdate(config)
 
     if not retcode and updated:
-        print 'Update successfully complete!'
+        print 'Update successfully completed!'
     sys.exit(retcode)
 
