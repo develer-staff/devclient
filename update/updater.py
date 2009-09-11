@@ -142,22 +142,21 @@ def downloadFile(url, timeout=2):
         data = ''
         start_time = time.time()
         for i in xrange(50):
- 
             completed = int(i / (50.0 / bar_length))
             missing = bar_length - completed
             elapsed = time.time() - start_time
-            if completed:            
+            if completed:
                 eta = format_time(elapsed * bar_length / completed - elapsed)
             else:
                 eta = '--:--:--'
 
-            sys.stdout.write("\r[%s%s] %2d%% ETA: %s Time: %s" % 
+            sys.stdout.write("\r[%s%s] %2d%% ETA: %s Time: %s" %
                 ('#' * completed, '.' * missing, i * 2, eta, format_time(elapsed)))
             sys.stdout.flush()
             data += u.read(chunk)
 
         data += u.read()
-        sys.stdout.write("\r[%s] %2d%% ETA: %s Time: %s\n" % 
+        sys.stdout.write("\r[%s] %2d%% ETA: %s Time: %s\n" %
             ('#' * bar_length, 100, eta, format_time(time.time() - start_time)))
         sys.stdout.flush()
     else:
