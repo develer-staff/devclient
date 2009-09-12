@@ -595,10 +595,10 @@ class Ui_option(object):
 
         self.page_container = QStackedLayout()
         self.page_container.setContentsMargins(0, 0, 0, 0)
-        self.populatePages()
         main_layout.addLayout(self.page_container, 0, 1)
-        main_layout.addWidget(self.createLine(), 1, 0, 1, 2)
+        self.populatePages()
 
+        main_layout.addWidget(self.createLine(), 1, 0, 1, 2)
         close_layout = QHBoxLayout()
         close_layout.setContentsMargins(0, 0, 5, 0)
         close_layout.setSpacing(5)
