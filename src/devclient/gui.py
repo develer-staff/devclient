@@ -230,6 +230,9 @@ class AccountManager(object):
         self.cmd_counter = 0
         self._commands = []
 
+    def loginMode(self):
+        return self.cmd_counter <= self._cmd_pwd
+
     def register(self, text):
         self.cmd_counter += 1
 
@@ -282,6 +285,9 @@ class ConnectionManager(QObject):
         self._preferences = storage.preferences()
         self.connect(self._s_core, SIGNAL("readyRead()"), 
                      self._readDataFromCore)
+
+    def loginMode(self):
+        return self._account and self._account.loginMode()
 
     def _checkModifier(self, event, mod):
         """
@@ -671,7 +677,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         self.text_input.addItem('')
         self.text_input.addItems(hist)
         self.text_input.setCurrentIndex(0)
-        if not storage.preferences()[1]:
+        if not storage.preferences()[1] or self._conn_manager.loginMode():
             text = ''
         self.text_input.setItemText(0, text)
         self.text_input.lineEdit().selectAll()
