@@ -29,7 +29,6 @@ class Ui_dev_client(object):
     def setupUi(self, dev_client):
         dev_client.resize(935, 660)
         dev_client.setWindowTitle(QApplication.translate("dev_client", "DevClient"))
-        dev_client.setStyleSheet("QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}")
 
         self.centralwidget = QWidget(dev_client)
         dev_client.setCentralWidget(self.centralwidget)

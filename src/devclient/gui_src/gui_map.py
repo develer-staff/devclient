@@ -36,6 +36,7 @@ class Ui_RightWidget(object):
 
         if hasattr(server, 'wild_chars'):
             self.text_map = QTextEdit()
+            self.text_map.setObjectName('text_map')
             self.text_map.setVisible(False)
             self.text_map.setFocusPolicy(Qt.NoFocus)
             self.text_map.setAutoFillBackground(True)
@@ -43,7 +44,10 @@ class Ui_RightWidget(object):
             self.text_map.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
             self.text_map.setUndoRedoEnabled(False)
             self.text_map.setReadOnly(True)
-            self.text_map.setStyleSheet("QTextEdit { background-color: #000000; font: 13px \"Courier\"; color: #FFFFFF;}")
+            # for some unknown reason, the fontmetrics of the text map is wrong
+            # if the font is set with a global stylesheet, so we set it on the
+            # specific widget.
+            self.text_map.setStyleSheet("QTextEdit { font: 13px \"Courier\";}")
             main_layout.addWidget(self.text_map)
 
             # We calculate the map area size using the size of the font used. We
@@ -72,11 +76,10 @@ class Ui_RightWidget(object):
         status_layout.addWidget(label_health, 0, 0)
 
         self.bar_health = QProgressBar()
+        self.bar_health.setObjectName("bar_health")
         self.bar_health.setFixedHeight(22)
         self.bar_health.setProperty("value", QVariant(100))
         self.bar_health.setTextVisible(False)
-        self.bar_health.setStyleSheet("QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
-        "QProgressBar::chunk {background-color:#FF3333;}")
         status_layout.addWidget(self.bar_health, 0, 1)
 
         label_mana = QLabel()
@@ -85,11 +88,10 @@ class Ui_RightWidget(object):
         status_layout.addWidget(label_mana, 1, 0)
 
         self.bar_mana = QProgressBar()
+        self.bar_mana.setObjectName("bar_mana")
         self.bar_mana.setFixedHeight(22)
         self.bar_mana.setProperty("value", QVariant(100))
         self.bar_mana.setTextVisible(False)
-        self.bar_mana.setStyleSheet("QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
-        "QProgressBar::chunk {background-color:#0066FF}")
         status_layout.addWidget(self.bar_mana, 1, 1)
 
         label_movement = QLabel()
@@ -98,11 +100,10 @@ class Ui_RightWidget(object):
         status_layout.addWidget(label_movement, 2, 0)
 
         self.bar_movement = QProgressBar()
+        self.bar_movement.setObjectName("bar_movement")
         self.bar_movement.setFixedHeight(22)
         self.bar_movement.setProperty("value", QVariant(100))
         self.bar_movement.setTextVisible(False)
-        self.bar_movement.setStyleSheet("QProgressBar { border: 2px solid gray; border-radius: 5px; }\n"
-        "QProgressBar::chunk {background-color:#33CC33;}")
         status_layout.addWidget(self.bar_movement, 2, 1)
 
         main_layout.addStretch()

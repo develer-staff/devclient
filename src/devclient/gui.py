@@ -456,6 +456,10 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self.setupLogger()
         self._translateText()
+        s = {}
+        execfile(join(config['devclient']['path'], 'devclient.style') , s)
+        self.setStyleSheet(s['style'])
+
         self.setupUi(self)
         try:
             self._conn_manager = ConnectionManager(self, cfg_file)

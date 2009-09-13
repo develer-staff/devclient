@@ -584,7 +584,6 @@ class Ui_option(object):
 
     def setupUi(self, option):
         option.setWindowTitle(QApplication.translate("option", "Option"))
-        option.setStyleSheet("QLabel[label_color=\"true\"] { border: 1px solid gray; border-radius: 3px; } QListWidget { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E0E0E0, stop: 1 #FFFFFF); color: #00AAFF;selection-background-color: #C8C8C8;selection-color:#000000;font: bold 10px \"Verdana\";  }")
         main_layout = QGridLayout(option)
         main_layout.setSpacing(5)
         main_layout.setContentsMargins(10, 10, 10, 10)
