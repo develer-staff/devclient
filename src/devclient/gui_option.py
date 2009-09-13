@@ -965,6 +965,7 @@ class GuiOption(QDialog, Ui_option):
         QDialog.__init__(self, parent)
         self._translateText()
         self.setupUi(self)
+        self.setFixedSize(480, 410)
         # the transition widget is added at the end of the page_container stack
         # to keep the real pages indexes in sync with the correspondent items in
         # the listwidget.
