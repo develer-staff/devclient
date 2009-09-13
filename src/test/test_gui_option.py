@@ -565,7 +565,7 @@ class TestFormAccounts(GuiOptionTest):
 
     def testLoad2(self):
         storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveAccount(['john', 'john'], 1, 1)
+        storage.saveAccount(['john', 'john'], 1, 'john')
         form = FormAccounts(GuiOptionAccMock())
         self.assert_(form.w.list_conn_account.count() == 1)
         self.assert_(form.w.list_account.count() == 1)
@@ -577,8 +577,8 @@ class TestFormAccounts(GuiOptionTest):
     def testLoad3(self):
         storage.addConnection([0, 'name', 'host', 4000])
         storage.addConnection([0, 'name2', 'host2', 5000])
-        storage.saveAccount(['john', 'john'], 1, 1)
-        storage.saveAccount(['sarah', 'sarah'], 2, 1)
+        storage.saveAccount(['john', 'john'], 1, 'john')
+        storage.saveAccount(['sarah', 'sarah'], 2, 'sarah')
         form = FormAccounts(GuiOptionAccMock())
         self.assert_(str(form.w.list_conn_account.currentText()) == 'name')
         self.assert_(str(form.w.list_account.currentText()) == 'john')
@@ -586,7 +586,7 @@ class TestFormAccounts(GuiOptionTest):
 
     def testLoad4(self):
         storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveAccount(['john', 'john'], 1, 1)
+        storage.saveAccount(['john', 'john'], 1, 'john')
         storage.savePrompt(1, 'john', 'normal prompt', 'fight prompt')
         form = FormAccounts(GuiOptionAccMock())
         self.assert_(str(form.w.normal_prompt.text()) == 'normal prompt')
@@ -608,7 +608,7 @@ class TestFormAccounts(GuiOptionTest):
 
     def testDeleteAccount(self):
         storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveAccount(['john', 'john'], 1, 1)
+        storage.saveAccount(['john', 'john'], 1, 'john')
         form = FormAccounts(GuiOptionAccMock())
         form.deleteAccount()
         self.assert_(not form.w.delete_account.isEnabled())
@@ -618,8 +618,8 @@ class TestFormAccounts(GuiOptionTest):
 
     def testDeleteAccount2(self):
         storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveAccount(['john', 'john'], 1, 1)
-        storage.saveAccount(['sarah', 'sarah'], 1, 1)
+        storage.saveAccount(['john', 'john'], 1, 'john')
+        storage.saveAccount(['sarah', 'sarah'], 1, 'sarah')
         form = FormAccounts(GuiOptionAccMock())
         form.deleteAccount()
         self.assert_(form.w.delete_account.isEnabled())
@@ -630,7 +630,7 @@ class TestFormAccounts(GuiOptionTest):
 
     def testSavePrompt(self):
         storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveAccount(['john', 'john'], 1, 1)
+        storage.saveAccount(['john', 'john'], 1, 'john')
         form = FormAccounts(GuiOptionAccMock())
         form.w.box_prompt.setVisible(True)
         form.w.normal_prompt.setText('Hp:%h/%H Mn:%m/%M Mv:%v/%V>')
@@ -643,7 +643,7 @@ class TestFormAccounts(GuiOptionTest):
 
     def testSavePrompt2(self):
         storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveAccount(['john', 'john'], 1, 1)
+        storage.saveAccount(['john', 'john'], 1, 'john')
         form = FormAccounts(GuiOptionAccMock())
         form.w.box_prompt.setVisible(True)
         form.w.normal_prompt.setText('normal prompt')

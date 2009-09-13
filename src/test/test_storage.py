@@ -87,7 +87,7 @@ class TestStorage(TestBase):
     def testUpdateConnection2(self):
         conn = [0, 'name', 'host', 111]
         storage.addConnection(conn)
-        storage.saveAccount(['john', 'john'], 1, 1)
+        storage.saveAccount(['john', 'john'], 1, 'john')
 
         conn[1] = 'new_name'
         storage.updateConnection(conn)
@@ -263,30 +263,30 @@ class TestStorage(TestBase):
 
     def testSaveAccounts(self):
         storage.addConnection([0, 'name', 'host', 111])
-        storage.saveAccount(['john', 'john'], 1, 1)
+        storage.saveAccount(['john', 'john'], 1, 'john')
         self.assert_(storage.accounts(1) == ['john'])
 
     def testSaveAccounts2(self):
         storage.addConnection([0, 'name', 'host', 111])
-        storage.saveAccount(['john', 'johnpwd'], 1, 1)
-        storage.saveAccount(['sarah', 'sarahpwd'], 1, 1)
+        storage.saveAccount(['john', 'johnpwd'], 1, 'john')
+        storage.saveAccount(['sarah', 'sarahpwd'], 1, 'sarah')
         self.assert_(storage.accounts(1) == ['john', 'sarah'])
 
     def testSaveAccounts3(self):
         storage.addConnection([0, 'name', 'host', 111])
-        storage.saveAccount(['john', 'pwd'], 1, 1)
+        storage.saveAccount(['john', 'pwd'], 1, 'john')
         self.assert_(storage.accountDetail(1, 'john') == ['john', 'pwd'])
 
     def testSaveAccounts4(self):
         storage.addConnection([0, 'name', 'host', 111])
-        storage.saveAccount(['john', 'pwd'], 1, 1)
-        storage.saveAccount(['john', 'ola'], 1, 1)
+        storage.saveAccount(['john', 'pwd'], 1, 'john')
+        storage.saveAccount(['john', 'ola'], 1, 'john')
         self.assert_(storage.accountDetail(1, 'john') == ['john', 'ola'])
 
     def testDeleteAccount(self):
         storage.addConnection([0, 'name', 'host', 111])
-        storage.saveAccount(['john', 'johnpwd'], 1, 1)
-        storage.saveAccount(['sarah', 'sarahpwd'], 1, 1)
+        storage.saveAccount(['john', 'johnpwd'], 1, 'john')
+        storage.saveAccount(['sarah', 'sarahpwd'], 1, 'sarah')
         storage.deleteAccount(1, 'john')
         self.assert_(storage.accounts(1) == ['sarah'])
 
