@@ -1,45 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="it">
-<defaultcodec></defaultcodec>
+<!DOCTYPE TS>
+<TS version="2.0" language="it">
 <context>
     <name>RightWidget</name>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_prompt.ui" line="19"/>
-        <source>Form</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_src/gui_map.py" line="68"/>
+        <location filename="../../src/devclient/gui_src/gui_map.py" line="71"/>
         <source>Health</source>
         <translation>Vita</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_prompt.ui" line="89"/>
-        <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
-QProgressBar::chunk {background-color:#FF3333;}</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_src/gui_map.py" line="81"/>
+        <location filename="../../src/devclient/gui_src/gui_map.py" line="84"/>
         <source>Mana</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_prompt.ui" line="134"/>
-        <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
-QProgressBar::chunk {background-color:#0066FF}</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_src/gui_map.py" line="94"/>
+        <location filename="../../src/devclient/gui_src/gui_map.py" line="97"/>
         <source>Movement</source>
         <translation>Movimento</translation>
-    </message>
-    <message>
-        <location filename="../../src/devclient/gui_src/gui_prompt.ui" line="179"/>
-        <source>QProgressBar { border: 2px solid gray; border-radius: 5px; }
-QProgressBar::chunk {background-color:#33CC33;}</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -50,7 +27,7 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Connetti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui.py" line="80"/>
+        <location filename="../../src/devclient/gui_src/gui.py" line="79"/>
         <source>Option</source>
         <translation>Opzioni</translation>
     </message>
@@ -95,7 +72,7 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Il client non è connesso</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui.msg" line="19"/>
+        <location filename="../../src/devclient/gui.msg" line="21"/>
         <source>Unable to download updates</source>
         <translation>Impossibile scaricare gli aggiornamenti</translation>
     </message>
@@ -109,16 +86,21 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <source>Account</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="../../src/devclient/gui.msg" line="24"/>
+        <source>Save the account?</source>
+        <translation>Salvare l&apos;account?</translation>
+    </message>
 </context>
 <context>
     <name>option</name>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="575"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="586"/>
         <source>Option</source>
         <translation>Opzioni</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="556"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="557"/>
         <source>Connections</source>
         <translation>Connessioni</translation>
     </message>
@@ -133,7 +115,7 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Porta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="525"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="526"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
@@ -143,12 +125,12 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Crea nuova</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="453"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="454"/>
         <source>Delete</source>
         <translation>Elimina</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="442"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="443"/>
         <source>Connection</source>
         <translation>Connessione</translation>
     </message>
@@ -163,17 +145,17 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Il nome della connessione deve essere unico</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="235"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="236"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="245"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="246"/>
         <source>Label</source>
         <translation>Etichetta</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="255"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="256"/>
         <source>Body</source>
         <translation>Corpo</translation>
     </message>
@@ -189,22 +171,22 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="350"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="351"/>
         <source>Macro</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="351"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="352"/>
         <source>Keys</source>
         <translation>Tasti</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="446"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="447"/>
         <source>Command</source>
         <translation>Comando</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="353"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="354"/>
         <source>Register</source>
         <translation>Registra</translation>
     </message>
@@ -220,47 +202,47 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>La sequenza dei tasti deve essere univoca</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="561"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="562"/>
         <source>Preferences</source>
         <translation>Preferenze</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="501"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="502"/>
         <source>Keep text entered</source>
         <translation>Tieni testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="464"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="465"/>
         <source>Text inserted</source>
         <translation>Testo inserito</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="506"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="507"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="512"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="513"/>
         <source>Save log</source>
         <translation>Salva log</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="557"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="558"/>
         <source>Accounts</source>
         <translation>Account</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="559"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="560"/>
         <source>Macros</source>
         <translation>Macro</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="558"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="559"/>
         <source>Aliases</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="147"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="148"/>
         <source>Account</source>
         <translation></translation>
     </message>
@@ -270,22 +252,22 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Salva account</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="172"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="173"/>
         <source>Prompt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="197"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="198"/>
         <source>Normal</source>
         <translation>Normale</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="204"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="205"/>
         <source>Fight</source>
         <translation>Combattimento</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="160"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="161"/>
         <source>Change Prompt</source>
         <translation>Cambia Prompt</translation>
     </message>
@@ -300,27 +282,27 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>La sequenza dei tasti deve essere diversa dalle scorciatoie</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="596"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="607"/>
         <source>Close</source>
         <translation>Chiudi</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="560"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="561"/>
         <source>Triggers</source>
         <translation>Trigger</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="443"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="444"/>
         <source>Trigger</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="444"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="445"/>
         <source>Pattern</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="445"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="446"/>
         <source>Ignore case</source>
         <translation>Ignora case</translation>
     </message>
@@ -331,17 +313,17 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Crea nuovo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="447"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="448"/>
         <source>Change color to</source>
         <translation>Cambia colori con</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="448"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="449"/>
         <source>Text</source>
         <translation>Testo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="450"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="451"/>
         <source>Background</source>
         <translation>Sfondo</translation>
     </message>
@@ -351,12 +333,12 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>E&apos; necessario specificare almeno uno fra il colore del testo e dello sfondo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="472"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="473"/>
         <source>Echo Color</source>
         <translation>Colore echo</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="483"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="484"/>
         <source>Command separator</source>
         <translation>Separatore comandi</translation>
     </message>
@@ -376,7 +358,7 @@ QProgressBar::chunk {background-color:#33CC33;}</source>
         <translation>Il pattern deve essere univoco</translation>
     </message>
     <message>
-        <location filename="../../src/devclient/gui_src/gui_option.py" line="190"/>
+        <location filename="../../src/devclient/gui_src/gui_option.py" line="191"/>
         <source>&lt;table&gt;
 &lt;tr&gt;&lt;td colspan=3&gt;&lt;b&gt;Prompt format:&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;%h&lt;/td&gt;&lt;td&gt;-&gt;&lt;/td&gt;&lt;td&gt;Current hit points&lt;/td&gt;&lt;/tr&gt;

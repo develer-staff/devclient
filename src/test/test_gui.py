@@ -45,6 +45,8 @@ class GuiMock(object):
         self._warning = None
         self._text = {}
         self._text['FatalError'] = ''
+        self._text['Account'] = ''
+        self._text['SaveAccount'] = ''
         self.text_input = QComboBox()
         self.text_input.setEditable(True)
         self.list_account = QComboBox()
@@ -54,6 +56,9 @@ class GuiMock(object):
 
     def displayWarning(self, title, message):
         self._warning = (title, message)
+
+    def _displayQuestion(self, title, message):
+        return True
 
 
 def fakeStartCore(self, cfg_file):

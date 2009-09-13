@@ -429,7 +429,7 @@ def deleteAccount(id_conn, username):
 
     raise exception.ConnectionNotFound
 
-def saveAccount(commands, id_conn, cmd_user):
+def saveAccount(commands, id_conn, username):
 
     def _saveAccountPwd(conn, user, pwd):
         c =  _config
@@ -445,7 +445,6 @@ def saveAccount(commands, id_conn, cmd_user):
         c['passwords'].write()
         chmod(c['passwords'].filename, 0600)
 
-    username = commands[cmd_user - 1]
     if id_conn:
         for c in _config['connections'].itervalues():
             if c['id'] == id_conn:

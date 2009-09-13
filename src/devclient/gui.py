@@ -244,9 +244,15 @@ class AccountManager(object):
            and self.cmd_counter <= self._cmd_pwd:
             self._commands.append(text)
             if self.cmd_counter == self._cmd_pwd:
-                storage.saveAccount(self._commands, self._id_conn,
-                                    self._cmd_pwd - 1)
-                return True
+                accounts = storage.accounts(self._id_conn)
+                cmd_user = self._cmd_pwd - 1
+                user = self._commands[cmd_user - 1]
+                # ask the permission to save the account only if it isn't already
+                # saved. In that case, we update the account.
+                if user in accounts or self._w._displayQuestion(
+                   self._w._text['Account'], self._w._text['SaveAccount']):
+                    storage.saveAccount(self._commands, self._id_conn, user)
+                    return True
         return False
 
 

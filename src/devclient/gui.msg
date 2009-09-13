@@ -17,3 +17,7 @@ ConnLost = QApplication.translate("dev_client", "Connection lost")
 NotConnected = QApplication.translate("dev_client", "Client is not connected")
 
 UpdateFail = QApplication.translate("dev_client", "Unable to download updates")
+
+Account = QApplication.translate("dev_client", "Account")
+
+SaveAccount = QApplication.translate("dev_client", "Save the account?")
