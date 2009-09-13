@@ -43,6 +43,7 @@ class GuiMock(object):
 
     def __init__(self):
         self._warning = None
+        self._question = None
         self._text = {}
         self._text['FatalError'] = ''
         self._text['Account'] = ''
@@ -58,6 +59,7 @@ class GuiMock(object):
         self._warning = (title, message)
 
     def _displayQuestion(self, title, message):
+        self._question = (title, message)
         return True
 
 
@@ -125,20 +127,24 @@ class TestAccountManager(unittest.TestCase):
 
     def testNoSaveAccount(self):
         conn = (0, 'name', 'host', 111)
+        mock = GuiMock()
         storage.addConnection(list(conn))
-        account = AccountManager(GuiMock(), ServerFake, 1)
+        account = AccountManager(mock, ServerFake, 1)
         account.register("john")
         account.register("johnpwd")
         self.assert_(storage.accounts(1) == [])
+        self.assert_(mock._question is None)
 
     def testSaveAccount(self):
         conn = (0, 'name', 'host', 111)
+        mock = GuiMock()
         storage.setOption('save_account', 1)
         storage.addConnection(list(conn))
-        account = AccountManager(GuiMock(), ServerFake, 1)
+        account = AccountManager(mock, ServerFake, 1)
         account.register("john")
         account.register("johnpwd")
         self.assert_(storage.accounts(1) == ["john"])
+        self.assert_(mock._question is not None)
 
     def testSaveAccount2(self):
         conn = (0, 'name', 'host', 111)
@@ -148,6 +154,18 @@ class TestAccountManager(unittest.TestCase):
         account.register("john")
         account.register("johnpwd")
         self.assert_(storage.accountDetail(1, "john") == ["john", "johnpwd"])
+
+    def testUpdateAccount(self):
+        conn = (0, 'name', 'host', 111)
+        mock = GuiMock()
+        storage.setOption('save_account', 1)
+        storage.addConnection(list(conn))
+        storage.saveAccount(['john', 'pwd'], 1, 'john')
+        account = AccountManager(mock, ServerFake, 1)
+        account.register("john")
+        account.register("johnpwd")
+        self.assert_(storage.accountDetail(1, 'john') == ['john', 'johnpwd'])
+        self.assert_(mock._question is None)
 
     def testDefaultAccount(self):
         conn = (0, 'name', 'host', 111)
