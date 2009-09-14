@@ -456,15 +456,19 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 
         self._installTranslator()
         QtGui.QMainWindow.__init__(self)
-        resources = ('gui.rcc', 'gui_option.rcc')
-        for res in resources:
-            QtCore.QResource.registerResource(join(resources_path, res))
 
         self.setupLogger()
         self._translateText()
         s = {}
-        execfile(join(config['devclient']['path'], 'devclient.style') , s)
+
+        skin_dir = join(config['resources']['path'], 'skins',
+                        config['devclient']['skin'])
+        execfile(join(skin_dir, 'devclient.style') , s)
         self.setStyleSheet(s['style'])
+
+        resources = ('gui.rcc', 'gui_option.rcc')
+        for res in resources:
+            QtCore.QResource.registerResource(join(skin_dir, res))
 
         self.setupUi(self)
         try:
