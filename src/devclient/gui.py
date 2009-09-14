@@ -452,7 +452,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
 .. _Qt-designer: http://doc.trolltech.com/4.5/designer-manual.html
     """
 
-    def __init__(self, cfg_file, resources_path):
+    def __init__(self, cfg_file):
 
         self._installTranslator()
         QtGui.QMainWindow.__init__(self)

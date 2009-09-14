@@ -102,7 +102,7 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
         app = QApplication([])
         app.setStyle(QStyleFactory.create("Cleanlooks"))
 
-        gui = Gui(cfg_file, config['resources']['path'])
+        gui = Gui(cfg_file)
         if not update:
             gui.displayWarning(PROJECT_NAME, gui._text['UpdateFail'])
         gui.show()
