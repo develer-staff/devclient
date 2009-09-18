@@ -5,6 +5,8 @@ QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar#bar_health::chunk { background-color:#FF3333; }
 QProgressBar#bar_mana::chunk { background-color:#0066FF; }
 QProgressBar#bar_movement::chunk { background-color:#33CC33; }
-QLabel[label_color=\"true\"] { border: 1px solid gray; border-radius: 3px; } 
-QListWidget { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E0E0E0, stop: 1 #FFFFFF); color: #00AAFF;selection-background-color: #C8C8C8;selection-color:#000000;font: bold 10px \"Verdana\"; }
+QLabel[label_color="true"] { border: 1px solid gray; border-radius: 3px; } 
+QListWidget { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E0E0E0, stop: 1 #FFFFFF); 
+color: #00AAFF;selection-background-color: #C8C8C8;selection-color:#000000;font: bold 10px "Verdana"; }
+QToolTip { border: 2px solid lightslategray; padding: 5px; border-radius: 5px; background-color: powderblue; }
 """
