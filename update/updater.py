@@ -201,7 +201,7 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
         base_dir : str
           the base directory of the new version
         ignore_list : list
-          the list of files to be skipped
+          the list of files to skip
     """
 
     chdir(base_dir)
@@ -252,9 +252,6 @@ def update(archive_name, root_dir, ignore_list):
           the root directory of the tree
         ignore_list : list
           the list of files to be skipped
-        timeout : int
-          the timeout (in second) of the newtwork operation. None means no
-          timeout.
     """
 
     retvalue = False
