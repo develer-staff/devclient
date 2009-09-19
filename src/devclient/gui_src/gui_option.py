@@ -64,6 +64,11 @@ class Ui_option(object):
     def createConnPage(self):
         self.conn_page = QWidget()
         self.conn_page.setObjectName("conn_page")
+        self.conn_page.setToolTip(QApplication.translate("option", 
+            "<b>Add/Modify/Delete a connection for a MUD server.</b>"
+            "<p>Set the IP or hostname and the port of the MUD server.<br/>"
+            "You have to define a connection to use all the functionality "
+            "related (accounts, aliases, macros and triggers).</p>"))
 
         page_layout = QGridLayout(self.conn_page)
         page_layout.setSpacing(7)
@@ -128,6 +133,14 @@ class Ui_option(object):
     def createAccountPage(self):
         self.account_page = QWidget()
         self.account_page.setObjectName("account_page")
+        self.account_page.setToolTip(QApplication.translate("option", 
+            "<b>Manage the accounts.</b>"
+            "<p>Set the Save account flag to activate/disactivate the automatic "
+            "saving of the accounts during the connection phase.<br/>After that "
+            "the account has been created, you can use it for auto-login by "
+            "simply selecting the account in the main window.<br/>You can "
+            "also erase an already saved account, or define a custom prompt "
+            "(see the relative help box).</p>"))
 
         page_layout = QGridLayout(self.account_page)
         page_layout.setSpacing(10)
@@ -171,23 +184,23 @@ class Ui_option(object):
 
         self.box_prompt = QGroupBox()
         self.box_prompt.setTitle(QApplication.translate("option", "Prompt"))
-        self.box_prompt.setToolTip(QApplication.translate("option", "<table>\n"
-        "<tr><td colspan=3><b>Prompt format:</b></td></tr>\n"
-        "<tr><td>%h</td><td>-></td><td>Current hit points</td></tr>\n"
-        "<tr><td>%H</td><td>-></td><td>Maximum hit points</td></tr>\n"
-        "<tr><td>%m</td><td>-></td><td>Current mana</td></tr>\n"
-        "<tr><td>%M</td><td>-></td><td>Maximum mana</td></tr>\n"
-        "<tr><td>%v</td><td>-></td><td>Current moves</td></tr>\n"
-        "<tr><td>%V</td><td>-></td><td>Maximum moves</td></tr>\n"
-        "<tr><td>*<td>-></td><td>Represent any char, repeated</td></tr>\n"
-        "<tr><td colspan=2>&nbsp;</td><td>zero or more times</td></tr>\n"
-        "<tr><td colspan=3>&nbsp;</td></tr>\n"
-        "</table>\n"
-        "<table>\n"
-        "<tr><td colspan=3><b>Example:</b></td></tr>\n"
-        "<tr><td colspan=3>[  %h/%Hhp %m/%Mmn %v/%Vmv *] ></td></tr>\n"
-        "<tr><td colspan=3>is a valid representation for:</td></tr>\n"
-        "<tr><td colspan=3>[  111/111hp 100/100mn 500/500mv 1000tnl] ></td></tr>\n"
+        self.box_prompt.setToolTip(QApplication.translate("option", "<table>"
+        "<tr><td colspan=3><b>Prompt format:</b></td></tr>"
+        "<tr><td>%h</td><td>-></td><td>Current hit points</td></tr>"
+        "<tr><td>%H</td><td>-></td><td>Maximum hit points</td></tr>"
+        "<tr><td>%m</td><td>-></td><td>Current mana</td></tr>"
+        "<tr><td>%M</td><td>-></td><td>Maximum mana</td></tr>"
+        "<tr><td>%v</td><td>-></td><td>Current moves</td></tr>"
+        "<tr><td>%V</td><td>-></td><td>Maximum moves</td></tr>"
+        "<tr><td>*<td>-></td><td>Represent any char, repeated</td></tr>"
+        "<tr><td colspan=2>&nbsp;</td><td>zero or more times</td></tr>"
+        "<tr><td colspan=3>&nbsp;</td></tr>"
+        "</table>"
+        "<table>"
+        "<tr><td><b>Example:</b></td></tr>"
+        "<tr><td>[  %h/%Hhp %m/%Mmn %v/%Vmv *] ></td></tr>"
+        "<tr><td>is a valid representation for:</td></tr>"
+        "<tr><td>[  111/111hp 100/100mn 500/500mv 1000tnl] ></td></tr>"
         "</table>"))
 
         prompt_layout = QGridLayout(self.box_prompt)
@@ -221,6 +234,11 @@ class Ui_option(object):
     def createAliasPage(self):
         self.alias_page = QWidget()
         self.alias_page.setObjectName("alias_page")
+        self.alias_page.setToolTip(QApplication.translate("option", 
+            "<b>Add/Modify/Delete an alias.</b>"
+            "<p>An alias is a textual shortcut that you can use to increase "
+            "the typing speed. <br/>Thus, when you enter the text of the "
+            "label you actually send to the server the text of the body.</p>"))
 
         page_layout = QGridLayout(self.alias_page)
         page_layout.setSpacing(7)
@@ -286,6 +304,13 @@ class Ui_option(object):
     def createMacroPage(self):
         self.macro_page = QWidget()
         self.macro_page.setObjectName("macro_page")
+        self.macro_page.setToolTip(QApplication.translate("option", 
+            "<b>Add/Modify/Delete a macro.</b>"
+            "<p>A macro is a key-based shortcut to send some text to the server."
+            "<br/>You can define a key (or a combination of keys, likes CTRL+A) "
+            "that if pressed during the game fires the macro, which sends the "
+            "command to the server.</p><p><b>NOTE:</b> You cannot use for a "
+            "macro a key already used for a standard shortcut.</p>"))
 
         page_layout = QGridLayout(self.macro_page)
         page_layout.setSpacing(7)
@@ -358,6 +383,12 @@ class Ui_option(object):
     def createTriggerPage(self):
         self.trigger_page = QWidget()
         self.trigger_page.setObjectName("trigger_page")
+        self.trigger_page.setToolTip(QApplication.translate("option",
+            "<b>Add/Modify/Delete a trigger.</b>"
+            "<p>A trigger is an event that happen when some text came from "
+            "server.<br/>After has been received a text that match with the "
+            "pattern (see the relative help box), the trigger can send another "
+            "text to the server or highlight the incoming one.</p>"))
 
         page_layout = QGridLayout(self.trigger_page)
         page_layout.setSpacing(7)
@@ -375,10 +406,33 @@ class Ui_option(object):
         self.list_trigger = QComboBox()
         page_layout.addWidget(self.list_trigger, 3, 1, 1, 1)
 
+        tooltip_pattern_trigger = QApplication.translate("option", 
+        "<table width=\"350\">"
+        "<tr><td colspan=3><b>Pattern special characters:</b></td></tr>"
+        "<tr><td>*</td><td>-></td><td width=\"250\">A sequence of any chars</td></tr>"
+        "<tr><td>?</td><td>-></td><td width=\"250\">Any single character</td></tr>"
+        "<tr><td>%w</td><td>-></td><td width=\"250\">A sequence of alphanumeric chars</td></tr>"
+        "<tr><td>%d</td><td>-></td><td width=\"250\">A sequence of numeric characters</td></tr>"
+        "<tr><td colspan=3>Every time that you use the special chars %w or %d "
+        "you can also put the relative extracted text in the command using the "
+        "sintax %number where number represents the positional order of the "
+        "special char.</td></tr>"
+        "</table><br/>"
+        "<table width=\"350\">"
+        "<tr><td colspan=2><b>Example:</b></td></tr>"
+        "<tr><td>Pattern:</td><td width=\"250\">%w the ogre is fighting against %w</td></tr>"
+        "<tr><td>Command:</td><td width=\"250\">kill %2</td></tr>"
+        "<tr><td colspan=2>The trigger will fire when an ogre will fight "
+        "against an unknown enemy, and as reaction you will fight with the "
+        "ogre against his enemy.</td></tr>"
+        "</table>")
+
         self.label_pattern_trigger = QLabel()
+        self.label_pattern_trigger.setToolTip(tooltip_pattern_trigger)
         page_layout.addWidget(self.label_pattern_trigger, 4, 0, 1, 1)
 
         self.pattern_trigger = QLineEdit()
+        self.pattern_trigger.setToolTip(tooltip_pattern_trigger)
         page_layout.addWidget(self.pattern_trigger, 4, 1, 1, 1)
 
         self.case_trigger = QCheckBox()
