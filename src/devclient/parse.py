@@ -33,7 +33,7 @@ def getParser(server, prompt):
 
     :Parameters:
         server : class
-          the class of server connected
+          the class of the server connected
         prompt : tuple
           the custom prompt
     """
@@ -51,7 +51,9 @@ def getParser(server, prompt):
 
 class Parser(object):
     """
-    The Parser class build a `Model` of data received.
+    The Parser class build a `Model` of data received, translating the raw 
+    input from the server (that can contain ansi codes) into a texual and html
+    representation of it.
     """
 
     _normal_color = ('000000', 'aa0000', '00aa00', 'aaaa00', '0000aa',
@@ -148,7 +150,7 @@ class Parser(object):
         """
         Replace ansi color code with equivalent html color.
 
-        The following table show the conversion rules between ansi and html
+        The following table shows the conversion rules between ansi and html
         color code:
 
         ================  ======  ======== ================  ======  ========
@@ -289,7 +291,7 @@ class WildMapParser(Parser):
     """
     Parse data and build a model for wild.
 
-    This class is a subclass of Parser that get an instance of it
+    This class is a subclass of Parser that gets an instance of it
     as argument on __init__ (see `decorator pattern`_)
 
 .. _decorator pattern: http://en.wikipedia.org/wiki/Decorator_pattern
@@ -361,6 +363,10 @@ class WildMapParser(Parser):
         return html_parts
 
     def _parseWild(self, model):
+        """
+        Parse the model searching for a map or an incomplete version of it.
+        Return True if a complete map was found.
+        """
 
         def endswith(text, end):
             """Check if text finishes with 'end' string or a part of it"""
@@ -466,6 +472,11 @@ class WildMapParser(Parser):
 
     def buildModel(self, data):
         model = self._p.buildModel(data)
+
+        # we loop while we found a complete map in the text in order to handle
+        # correctly if the text contains more than one map (or a map and an
+        # incomplete one).
         while self._parseWild(model):
             pass
         return model
+
