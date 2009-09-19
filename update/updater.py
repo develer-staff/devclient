@@ -44,8 +44,11 @@ _SELF_MODULE = basename(sys.argv[0])
 _SELF_DIR = abspath(dirname(sys.argv[0]))
 """the directory of the module itself"""
 
-_LOCAL_VERSION_FILE = abspath(join(_SELF_DIR, 'local.version'))
-"""The file where the updater stores the local version"""
+_DEVCLIENT_VERSION_FILE = abspath(join(_SELF_DIR, 'devclient.version'))
+"""The file where the updater stores the local version of the devclient"""
+
+_PACKAGES_VERSION_FILE = abspath(join(_SELF_DIR, 'packages.version'))
+"""The file where the updater stores the local version of the packages"""
 
 _ROOT_DIR = abspath(join(_SELF_DIR, '..'))
 """the root directory of client"""
@@ -271,43 +274,45 @@ def update(archive_name, root_dir, ignore_list):
         rmtree(_TMP_DIR)
     return retvalue
 
-def getLocalVersion():
-    """
-    Read and return the local version (as a dictionary).
-    """
-
-    cp = SafeConfigParser()
-    cp.read(_LOCAL_VERSION_FILE)
-    # if no local version is found, force the download of the new version
-    versions = {'client' : '0.0.00', 'packages' : '0.0.00'}
-    if cp.has_section('versions'):
-        versions.update(dict(cp.items('versions')))
-    return versions
-
-def saveVersion(version):
-    """
-    Update the file that contains the local version. Return False if errors
-    occurred.
-
-    :Parameters:
-        version : dict
-          the dictionary containing the version to save into the file.
-    """
-
-    cp = SafeConfigParser()
-    cp.read(_LOCAL_VERSION_FILE)
-
-    if not cp.has_section('versions'):
-        cp.add_section('versions')
-    for key, value in version.iteritems():
-        cp.set('versions', key, value)
+def getDevclientVersion():
+    """Read and return the local version of the devclient"""
 
     try:
-        cp.write(open(_LOCAL_VERSION_FILE, 'w'))
+        fd = open(_DEVCLIENT_VERSION_FILE)
     except IOError:
-        return False
+        # if no local version is found, force the download of the new version
+        return '0.0.00'
 
-    return True
+    data = fd.read().strip()
+    fd.close()
+    return data
+
+def getPackagesVersion():
+    """Read and return the local version of the packages"""
+
+    try:
+        fd = open(_PACKAGES_VERSION_FILE)
+    except IOError:
+        # if no local version is found, force the download of the new version
+        return '0.0.00'
+
+    data = fd.read().strip()
+    fd.close()
+    return data
+
+def saveDevclientVersion(version):
+    """Save the new version of the devclient to disk"""
+
+    fd = open(_DEVCLIENT_VERSION_FILE, 'w+')
+    fd.write(version)
+    fd.close()
+
+def savePackagesVersion(version):
+    """Save the new version of the packages to disk"""
+
+    fd = open(_PACKAGES_VERSION_FILE, 'w+')
+    fd.write(version)
+    fd.close()
 
 def updateFromNet(config):
     """
@@ -319,16 +324,17 @@ def updateFromNet(config):
     """
 
     ignore_list = map(normpath, config['files']['ignore'].split(','))
-    local_version = getLocalVersion()
+    devclient_version = getDevclientVersion()
+    packages_version = getPackagesVersion()
     updated = False
     retcode = 0
 
     ## Update the client
     client_ver = getOnlineVersion(config['client']['version'])
     if not client_ver:
-        print 'Unknown online version of client, download it'
+        print 'Unknown online version of client, skip'
 
-    if not client_ver or checkVersion(client_ver, local_version['client']):
+    if client_ver and checkVersion(client_ver, devclient_version):
         downloadFile(config['client']['url'])
         client = abspath(basename(config['client']['url']))
         if not update(client, _ROOT_DIR, ignore_list):
@@ -336,15 +342,16 @@ def updateFromNet(config):
             retcode = 1
         else:
             updated = True
+            saveDevclientVersion(client_ver)
         unlink(client)
 
     ## Update the packages
     if hasattr(sys, 'frozen') and sys.frozen:
         pack_ver = getOnlineVersion(config['packages']['version'])
         if not pack_ver:
-            print 'Unknown online version of the packages, download them'
+            print 'Unknown online version of the packages, skip'
 
-        if not pack_ver or checkVersion(pack_ver, local_version['packages']):
+        if pack_ver and checkVersion(pack_ver, packages_version):
             downloadFile(config['packages']['url'], None)
             packages = abspath(basename(config['packages']['url']))
             if not update(packages, _ROOT_DIR, ignore_list):
@@ -352,14 +359,8 @@ def updateFromNet(config):
                 retcode = 1
             else:
                 updated = True
+                savePackagesVersion(pack_ver)
             unlink(packages)
-
-    if updated:
-        if client_ver:
-            local_version['client'] = client_ver
-        if hasattr(sys, 'frozen') and sys.frozen and pack_ver:
-            local_version['packages'] = pack_ver
-        saveVersion(local_version)
 
     return (retcode, updated)
 

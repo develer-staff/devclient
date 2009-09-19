@@ -1,7 +1,0 @@
-# The svn version is always up to date.
-# To update you have to run the svn up command.
-
-[versions]
-client = 0.8.00
-packages = 0.8.00
-
