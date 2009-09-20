@@ -72,7 +72,7 @@ Filename: "{app}\devclient.exe"; Description: "{cm:LaunchProgram,DevClient}"; Fl
 
 [Code]
 
-// In order to make the update procedure most explicit, the first download of the packages are done here.
+// In order to make the update procedure most explicit, the first download of the updates are done here.
 
 procedure InitializeWizard();
 begin
@@ -91,12 +91,15 @@ begin
     tmpDir := ExpandConstant('{tmp}');
     updateDir := ExpandConstant('{app}\update');
     
-    // Move the packages archive in the update directory of the client, and run the updater in the '--source=local' modality
+    // Move the archives in the update directory of the client, and run the updater in the '--source=local' modality
     RenameFile(tmpDir + '\devclient_packages.tar.bz2', updateDir + '\devclient_packages.tar.bz2');
+    RenameFile(tmpDir + '\devclient.tar.bz2', updateDir + '\devclient.tar.bz2');
     ShellExec('open', updateDir + '\startupdater.exe', '--source=local', updateDir, SW_HIDE, ewWaitUntilTerminated, errorCode);
     DeleteFile(updateDir + '\devclient_packages.tar.bz2');
-    // Finally, update the version file of the packages with the version downloaded.
+    DeleteFile(updateDir + '\devclient.tar.bz2');
+    // Finally, update the local version files.
     RenameFile(tmpDir + '\devclient_packages.version', updateDir + '\packages.version');
+    RenameFile(tmpDir + '\devclient.version', updateDir + '\devclient.version');
   end;
 end;
 
@@ -107,6 +110,8 @@ begin
     // We have to download in {tmp} because in the wpReady page the directory {app} doesn't exists.
     itd_addfile('{#BASE_URL}/devclient_packages.tar.bz2', ExpandConstant('{tmp}\') + 'devclient_packages.tar.bz2');
     itd_addfile('{#BASE_URL}/devclient_packages.version', ExpandConstant('{tmp}\') + 'devclient_packages.version');
+    itd_addfile('{#BASE_URL}/devclient.tar.bz2', ExpandConstant('{tmp}\') + 'devclient.tar.bz2');
+    itd_addfile('{#BASE_URL}/devclient.version', ExpandConstant('{tmp}\') + 'devclient.version');
     itd_downloadafter(wpReady);
   end;
   Result := True;
