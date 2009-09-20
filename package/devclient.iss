@@ -116,3 +116,22 @@ begin
   end;
   Result := True;
 end;
+
+// The standard procedure to remove safety the installation directory doesn't work with DevClient, because
+// the DevClient setup is only a 'straightforward way' to obtain the last version of the client (so, only few files
+// are put inside the setup, and only these can be removed by the standard uninstall).
+// Thus, we remove by code the directory of installation but before we ask to the user for a confirmation
+// (because the user can choose a directory like C:\Windows or something like that..).
+procedure CurUninstallStepChanged(CurUninstallStep : TUninstallStep);
+var question : String;
+begin
+  if CurUninstallStep = usUninstall then
+  begin
+    question := 'Do you want to delete the directory ';
+    if ActiveLanguage() = 'italian' then
+      question := 'Vuoi eliminare la directory ';
+
+    if MsgBox(question + ExpandConstant('"{app}"?'), mbConfirmation, MB_YESNO) = IDYES then
+      DelTree(ExpandConstant('{app}'), True, True, True);
+  end;
+end;
