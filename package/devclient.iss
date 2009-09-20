@@ -15,6 +15,14 @@
 ;
 ; Author: Gianni Valdambrini gvaldambrini@develer.com
 
+
+; The base url for download all files (without the trailing slash)
+#define BASE_URL "http://devclient.develer.com/download"
+
+; The include for the itd_* functions (used to add download functionalities)
+#include <it_download.iss>
+
+
 [Setup]
 AppId={{2AFF7E77-E12D-42F7-880D-A52E2372B3E8}
 AppName=DevClient
@@ -26,9 +34,12 @@ AppUpdatesURL=http://devclient.develer.com
 DefaultDirName={pf}\devclient
 DefaultGroupName=DevClient
 AllowNoIcons=yes
-OutputBaseFilename=DevClient Setup
-Compression=lzma
+OutputBaseFilename=DevClient-Setup
+OutputDir=.
 SolidCompression=yes
+Compression=lzma
+WizardImageFile=compiler:WizModernImage-IS.bmp
+WizardSmallImageFile=compiler:WizModernSmallImage-IS.bmp
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -39,8 +50,6 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-; The updater is run in hidden mode during the installation. In this way, we can
-; exclude devclient.pkg and startcore.pkg from the innosetup package.
 Source: "..\devclient.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\src\devclient\startcore.exe"; DestDir: "{app}\src\devclient"; Flags: ignoreversion
 Source: "..\update\startupdater.exe"; DestDir: "{app}\update"; Flags: ignoreversion
@@ -59,6 +68,46 @@ english.ReadyLabel2a=Click Install to continue with the installation, or click B
 italian.ReadyLabel2a=Premere Installa per continuare con l'installazione, o Indietro per rivedere o modificare le impostazioni.%n%nATTENZIONE: La procedura può durare alcuni minuti e richiede una connessione a internet.
 
 [Run]
-Filename: "{app}\update\startupdater.exe"; Flags: runhidden
 Filename: "{app}\devclient.exe"; Description: "{cm:LaunchProgram,DevClient}"; Flags: nowait postinstall skipifsilent
 
+[Code]
+
+// In order to make the update procedure most explicit, the first download of the packages are done here.
+
+procedure InitializeWizard();
+begin
+  itd_init();
+end;
+
+procedure CurStepChanged(CurStep : TSetupStep);
+var
+  errorCode : Integer;
+  tmpDir : String;
+  updateDir : String;
+begin
+  // We have to wait after the installation because before, the {app} dir doesn't exists.
+  if CurStep = ssPostInstall then
+  begin
+    tmpDir := ExpandConstant('{tmp}');
+    updateDir := ExpandConstant('{app}\update');
+    
+    // Move the packages archive in the update directory of the client, and run the updater in the '--source=local' modality
+    RenameFile(tmpDir + '\devclient_packages.tar.bz2', updateDir + '\devclient_packages.tar.bz2');
+    ShellExec('open', updateDir + '\startupdater.exe', '--source=local', updateDir, SW_HIDE, ewWaitUntilTerminated, errorCode);
+    DeleteFile(updateDir + '\devclient_packages.tar.bz2');
+    // Finally, update the version file of the packages with the version downloaded.
+    RenameFile(tmpDir + '\devclient_packages.version', updateDir + '\packages.version');
+  end;
+end;
+
+function NextButtonClick(CurPageID : Integer): Boolean;
+begin
+  if CurPageID = wpReady then
+  begin
+    // We have to download in {tmp} because in the wpReady page the directory {app} doesn't exists.
+    itd_addfile('{#BASE_URL}/devclient_packages.tar.bz2', ExpandConstant('{tmp}\') + 'devclient_packages.tar.bz2');
+    itd_addfile('{#BASE_URL}/devclient_packages.version', ExpandConstant('{tmp}\') + 'devclient_packages.version');
+    itd_downloadafter(wpReady);
+  end;
+  Result := True;
+end;
