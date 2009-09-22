@@ -1,6 +1,6 @@
 
 style = """
-QTextEdit { background-color: #000000; font: 13px "Courier"; color: #FFFFFF; }
+QPlainTextEdit { background-color: #000000; font: 13px "Courier"; color: #FFFFFF; }
 QProgressBar { border: 2px solid gray; border-radius: 5px; }
 QProgressBar#bar_health::chunk { background-color:#FF3333; }
 QProgressBar#bar_mana::chunk { background-color:#0066FF; }

@@ -158,7 +158,7 @@ class TextViewer(object):
     def _textEditColors(self, text_edit):
 
         style = unicode(text_edit.styleSheet())
-        m = re.search('QTextEdit\s*{(.*)}', style)
+        m = re.search('QPlainTextEdit\s*{(.*)}', style)
         if m:
             oldstyle = m.group(1)
             tmp = [el.split(':') for el in oldstyle.split(';') if el]
@@ -174,7 +174,7 @@ class TextViewer(object):
         if oldstyle:
             text_edit.setStyleSheet(style.replace(oldstyle, newstyle))
         else:
-            text_edit.setStyleSheet('QTextEdit {%s}' % newstyle)
+            text_edit.setStyleSheet('QPlainTextEdit {%s}' % newstyle)
 
     def process(self, model):
         self.appendHtml(model.main_html)

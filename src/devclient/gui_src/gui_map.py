@@ -19,7 +19,7 @@
 # Author: Gianni Valdambrini gvaldambrini@develer.com
 
 from PyQt4.QtGui import QVBoxLayout, QGridLayout, QApplication, QLabel
-from PyQt4.QtGui import QProgressBar, QTextEdit, QWidget
+from PyQt4.QtGui import QProgressBar, QPlainTextEdit, QWidget
 from PyQt4.QtCore import QSize, Qt, QVariant
 
 
@@ -35,7 +35,7 @@ class Ui_RightWidget(object):
         # (only) the elements that uses.
 
         if hasattr(server, 'wild_chars'):
-            self.text_map = QTextEdit()
+            self.text_map = QPlainTextEdit()
             self.text_map.setObjectName('text_map')
             self.text_map.setVisible(False)
             self.text_map.setFocusPolicy(Qt.NoFocus)
@@ -47,7 +47,7 @@ class Ui_RightWidget(object):
             # for some unknown reason, the fontmetrics of the text map is wrong
             # if the font is set with a global stylesheet, so we set it on the
             # specific widget.
-            self.text_map.setStyleSheet("QTextEdit { font: 13px \"Courier\";}")
+            self.text_map.setStyleSheet("QPlainTextEdit { font: 13px \"Courier\";}")
             main_layout.addWidget(self.text_map)
 
             # We calculate the map area size using the size of the font used. We

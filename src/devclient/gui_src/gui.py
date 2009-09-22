@@ -21,8 +21,8 @@
 from PyQt4.QtCore import Qt, QRect, QSize
 from PyQt4.QtGui import QApplication, QWidget, QGridLayout, QIcon
 from PyQt4.QtGui import QHBoxLayout, QSpacerItem, QSizePolicy, QLabel
-from PyQt4.QtGui import QComboBox, QPushButton, QTextEdit, QSplitter
-from PyQt4.QtGui import QVBoxLayout
+from PyQt4.QtGui import QComboBox, QPushButton, QSplitter
+from PyQt4.QtGui import QVBoxLayout, QPlainTextEdit
 
 
 class Ui_dev_client(object):
@@ -93,14 +93,14 @@ class Ui_dev_client(object):
         self.output_splitter.setHandleWidth(3)
         self.output_splitter.setChildrenCollapsible(False)
 
-        self.text_output = QTextEdit(self.output_splitter)
+        self.text_output = QPlainTextEdit(self.output_splitter)
         self.text_output.setMinimumWidth(690)
         self.text_output.setFocusPolicy(Qt.NoFocus)
         self.text_output.setAutoFillBackground(True)
         self.text_output.setUndoRedoEnabled(False)
         self.text_output.setReadOnly(True)
 
-        self.text_output_noscroll = QTextEdit(self.output_splitter)
+        self.text_output_noscroll = QPlainTextEdit(self.output_splitter)
         self.text_output_noscroll.setMinimumWidth(690)
         self.text_output_noscroll.setFocusPolicy(Qt.NoFocus)
         self.text_output_noscroll.setAutoFillBackground(True)
