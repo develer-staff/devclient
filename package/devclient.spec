@@ -24,6 +24,7 @@ encs = set(os.path.splitext(n)[0]
     for n in os.listdir(os.path.dirname(encodings.__file__)))
 encs -= set(['__init__', 'aliases', 'utf_8', 'latin_1', 'cp850', 'idna', 'ascii'])
 
+# devclient
 a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'),
               os.path.join(HOMEPATH,'support/useUnicode.py'),
               '../devclient.py'],
@@ -41,3 +42,42 @@ exe = EXE(pyz,
           upx=True,
           console=1,
           append_pkg=False)
+
+# startcore
+a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'),
+              os.path.join(HOMEPATH,'support/useUnicode.py'),
+              '../src/devclient/startcore.py'],
+             pathex=['.'],
+             excludes=map('encodings.'.__add__, encs))
+
+pyz = PYZ(a.pure - [el for el in a.pure if 'devclient' in el[1]])
+exe = EXE(pyz,
+          a.scripts,
+          a.binaries,
+          a.zipfiles,
+          name=os.path.join('dist', 'startcore.exe' if sys.platform == 'win32' else 'startcore'),
+          debug=False,
+          strip=False,
+          upx=True,
+          console=1,
+          append_pkg=False)
+
+# startupdater
+a = Analysis([os.path.join(HOMEPATH,'support/_mountzlib.py'),
+              os.path.join(HOMEPATH,'support/useUnicode.py'),
+              '../update/startupdater.py'],
+             pathex=['.'],
+             excludes=map('encodings.'.__add__, encs))
+
+pyz = PYZ(a.pure - [el for el in a.pure if 'update' in el[1]])
+exe = EXE(pyz,
+          a.scripts,
+          a.binaries,
+          a.zipfiles,
+          name=os.path.join('dist', 'startupdater.exe' if sys.platform == 'win32' else 'startupdater'),
+          debug=False,
+          strip=False,
+          upx=True,
+          console=1,
+          append_pkg=False)
+
