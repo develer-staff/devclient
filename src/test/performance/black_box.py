@@ -31,13 +31,15 @@ from os.path import basename, abspath, normpath, join, dirname, exists
 
 from PyQt4.QtTest import QTest
 from PyQt4.QtCore import QTimer, Qt
+from PyQt4.QtGui import QApplication
 
 # FIX
 path.append(join(dirname(abspath(argv[0])), '../..'))
 path.append(join(dirname(abspath(argv[0])), '../../configobj'))
 
 import devclient.storage as storage
-import devclient.exception as exception
+#import devclient.exception as exception
+#import devclient.messages as messages
 from devclient.utils import terminateProcess
 from devclient.conf import loadConfiguration, config
 
@@ -94,13 +96,14 @@ def main(cfg_file=cfg_file):
     chdir(join(getcwd(), dirname(argv[0]), dirname(cfg_file)))
     cfg_file = join(getcwd(), basename(cfg_file))
     loadConfiguration(cfg_file)
-    storage.loadStorage()
+    storage.init(config['storage']['path'])
     conn = [0, 'black_box_test', 'localhost', 6666]
     storage.addConnection(conn)
     default_conn = storage.option('default_connection')
     storage.setOption('default_connection', conn[0])
     path.append(config['servers']['path'])
     path.append(config['resources']['path'])
+    path.append(config['devclient']['path'])
 
     chdir(old_dir)
     if exists(join(o.test, 'localhost_server.py')):
@@ -110,6 +113,7 @@ def main(cfg_file=cfg_file):
     from devclient.gui import Gui
 
     try:
+        app = QApplication([])
         gui = Gui(cfg_file)
         cwd = dirname(argv[0]) if dirname(argv[0]) else None
         cmd = ['python', '-u', 'server_test.py']
@@ -126,14 +130,13 @@ def main(cfg_file=cfg_file):
 
         Gui.startAction = startAction
         QTimer.singleShot(2000, gui.startAction)
-        gui.mainLoop()
+        gui.show()
+        app.exec_()
     except exception.IPCError:
-        if not o.core_port:
-            terminateProcess(gui.p.pid)
+        terminateProcess(gui.p.pid)
     except Exception, e:
         print 'Fatal Exception:', e
-        if not o.core_port:
-            terminateProcess(gui.p.pid)
+        terminateProcess(gui.p.pid)
     finally:
         storage.deleteConnection(conn)
         storage.setOption('default_connection', default_conn)
