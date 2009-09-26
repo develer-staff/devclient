@@ -393,6 +393,9 @@ class WildMapParser(Parser):
 
             _text, _map = text, ''
             m = compile('(.*?)(\s[%s]*)$' % wild_chars, re.S).match(text)
+
+            # string[-1:] is the last character of string or the char '' if the
+            # string is empty.
             if m and precChar(m.group(1)[-1:]):
                 _text, _map = m.group(1), text[len(m.group(1)):]
             else:
@@ -457,6 +460,8 @@ class WildMapParser(Parser):
             model.main_html = parts[0] + parts[2]
             return True
 
+        # We check if the player move from the wild to a room, and if true we
+        # turn off the map 
         elif not model.map_text and \
              compile('.*?[%s]*?%s' % (room_desc, escape(room_end)),
                      re.S).match(text):
