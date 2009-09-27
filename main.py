@@ -32,7 +32,7 @@ from os.path import dirname, join, abspath
 
 
 def main():
-    curr_dir = abspath(dirname(sys.argv[0]))
+    curr_dir = abspath(dirname(__file__))
     script_dir = join(curr_dir, 'update')
     if hasattr(sys, 'frozen') and sys.frozen:
         retcode = call([join(script_dir, 'startupdater' +

@@ -27,7 +27,7 @@ from os import makedirs, chdir, getcwd, walk
 from os.path import exists, abspath, dirname, join
 from os.path import normpath, splitext, isfile, isdir
 
-_SELF_DIR = dirname(sys.argv[0])
+_SELF_DIR = dirname(__file__)
 """directory of the module itself"""
 
 _ROOT_DIR = abspath(join(getcwd(), _SELF_DIR, '..'))

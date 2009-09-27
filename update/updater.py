@@ -38,10 +38,10 @@ from os import chdir, walk, getcwd, makedirs, rename, sep, unlink
 from os.path import basename, splitext, split, abspath
 from os.path import exists, join, normpath, dirname
 
-_SELF_MODULE = basename(sys.argv[0])
+_SELF_MODULE = basename(__file__)
 """the name of the module itself"""
 
-_SELF_DIR = abspath(dirname(sys.argv[0]))
+_SELF_DIR = abspath(dirname(__file__))
 """the directory of the module itself"""
 
 _DEVCLIENT_VERSION_FILE = abspath(join(_SELF_DIR, 'devclient.version'))
