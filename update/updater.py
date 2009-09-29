@@ -33,7 +33,7 @@ from optparse import OptionParser
 from socket import setdefaulttimeout
 from ConfigParser import SafeConfigParser
 from shutil import copyfile, rmtree, copymode
-from urllib2 import urlopen, HTTPError, URLError
+from urllib2 import urlopen, HTTPError, URLError, Request
 from os import chdir, walk, getcwd, makedirs, rename, sep, unlink
 from os.path import basename, splitext, split, abspath
 from os.path import exists, join, normpath, dirname
@@ -58,6 +58,10 @@ _TMP_DIR = abspath(join(_SELF_DIR, 'temp'))
 
 _CONFIG_FILE = join(_SELF_DIR, 'updater.cfg')
 """the configuration file"""
+
+type_str = ('source', 'binaries')[hasattr(sys, 'frozen') and sys.frozen]
+_DEVCLIENT_AGENT = "DevClient [%s][%s]" % (sys.platform, type_str)
+"""the agent used to perform network requests"""
 
 
 class UpdaterError(Exception):
@@ -101,7 +105,8 @@ def getOnlineVersion(url):
     setdefaulttimeout(2)
 
     try:
-        u = urlopen(url)
+        req = Request(url, None, {'User-agent': _DEVCLIENT_AGENT})
+        u = urlopen(req)
     except HTTPError:
         raise UpdaterError('Unable to download file: %s' % url)
     except URLError:
@@ -124,7 +129,8 @@ def downloadFile(url, timeout=2):
 
     setdefaulttimeout(timeout)
     try:
-        u = urlopen(url)
+        req = Request(url, None, {'User-agent': _DEVCLIENT_AGENT})
+        u = urlopen(req)
     except HTTPError:
         raise UpdaterError('Unable to download file: %s' % url)
     except URLError:
