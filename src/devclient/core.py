@@ -259,6 +259,7 @@ class SocketToGui(object):
     def __init__(self, port=7890, timeout=.2):
         self._timeout = timeout
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._s.settimeout(None)
         self._s.connect(('localhost', port))
         self._s.settimeout(self._timeout)
 

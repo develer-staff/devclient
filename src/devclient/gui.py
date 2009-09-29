@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -93,7 +93,7 @@ class SocketToCore(QObject):
         self._pid = p.pid
 
         # waiting for connection from core...
-        if not self._server.waitForNewConnection(2000)[0]:
+        if not self._server.waitForNewConnection(-1)[0]:
             logger.error('SocketToCore: ' + self._server.errorString())
             self._w.displayWarning(PROJECT_NAME, self._w._text['FatalError'])
             raise exception.IPCError()
