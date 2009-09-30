@@ -392,20 +392,14 @@ class WildMapParser(Parser):
             """Return text, html and the incomplete wild map if exist."""
 
             _text, _map = text, ''
-            m = compile('(.*?)(\s[%s]*)$' % wild_chars, re.S).match(text)
+            subs = [escape(wild_end[:i+1]) for i in xrange(len(wild_end))]
+            # An incomplete map can be a map or a part of it followed a substring
+            # of the marker wild end. 
+            m = compile('(.*?)(\s[%s]*)(%s)?$' % (wild_chars, '|'.join(subs)),
+                        re.S).match(text)
 
-            # string[-1:] is the last character of string or the char '' if the
-            # string is empty.
             if m and precChar(m.group(1)[-1:]):
                 _text, _map = m.group(1), text[len(m.group(1)):]
-            else:
-                patt = '(.*?)(\s[%s]{8,})' % wild_chars
-                m = compile(patt, re.S).match(text)
-                if m and m.group(2).strip() and precChar(m.group(1)[-1:]) and \
-                   endswith(text, wild_end):
-                    _text, _map = m.group(1), text[len(m.group(1)):]
-
-            if _map:
                 parts = self._getHtmlFromText(html, (_text, _map))
                 return (_text, parts[0], [_map, parts[1]])
 
@@ -428,6 +422,9 @@ class WildMapParser(Parser):
             html = self._incomplete_map[1] + html
             self._incomplete_map = []
 
+        # A complete map is a group of chars that can be in the wild, 
+        # followed by the marker of wild end text (a string that normally follow
+        # the map).
         # wild end text must contain at least one char that not is contained
         # into room description.
         room_desc = '\w\s\.\'",:;\(\)'
