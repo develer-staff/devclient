@@ -368,19 +368,6 @@ class WildMapParser(Parser):
         Return True if a complete map was found.
         """
 
-        def endswith(text, end):
-            """Check if text finishes with 'end' string or a part of it"""
-
-            if not text:
-                return True
-
-            t = text[-len(end):]
-            while t:
-                if end.startswith(t):
-                    return True
-                t = t[1:]
-            return False
-
         def precChar(c):
             """Check if the char is a char that might be come before wild"""
             if hasattr(self._p._server, 'wild_prec_char'):
