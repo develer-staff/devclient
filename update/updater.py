@@ -38,8 +38,6 @@ from os import chdir, walk, getcwd, makedirs, rename, sep, unlink
 from os.path import basename, splitext, split, abspath
 from os.path import exists, join, normpath, dirname
 
-_SELF_MODULE = basename(__file__)
-"""the name of the module itself"""
 
 _SELF_DIR = abspath(dirname(__file__))
 """the directory of the module itself"""
@@ -59,7 +57,7 @@ _TMP_DIR = abspath(join(_SELF_DIR, 'temp'))
 _CONFIG_FILE = join(_SELF_DIR, 'updater.cfg')
 """the configuration file"""
 
-type_str = ('source', 'binaries')[hasattr(sys, 'frozen') and sys.frozen]
+type_str = ('sources', 'binaries')[hasattr(sys, 'frozen') and sys.frozen]
 _DEVCLIENT_AGENT = "DevClient [%s][%s]" % (sys.platform, type_str)
 """the agent used to perform network requests"""
 
@@ -226,14 +224,7 @@ def replaceOldVersion(root_dir, base_dir, ignore_list):
                 if exists(dest) and cmp(source, dest):
                     continue
 
-                # FIX: this check should be done from the root dir of client
-                if basename(source) == _SELF_MODULE:
-                    d, f = split(dest)
-                    name, ext = splitext(f)
-                    rename(dest, join(d, name + '_old' + ext))
-                    print 'replace file: %s (old version backupped)' % source
-                else:
-                    print '%s file:' % ('add', 'replace')[exists(dest)], source
+                print '%s file:' % ('add', 'replace')[exists(dest)], source
 
             if not exists(dirname(dest)):
                 print 'create directory:', dirname(dest)
