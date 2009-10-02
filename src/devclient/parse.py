@@ -368,13 +368,6 @@ class WildMapParser(Parser):
         Return True if a complete map was found.
         """
 
-        def precChar(c):
-            """Check if the char is a char that might be come before wild"""
-            if hasattr(self._p._server, 'wild_prec_char'):
-                return c in self._p._server.wild_prec_char
-
-            return True
-
         def extractIncompleteMap(text, html):
             """Return text, html and the incomplete wild map if exist."""
 
@@ -385,7 +378,7 @@ class WildMapParser(Parser):
             m = compile('(.*?)(\s[%s]*)(%s)?$' % (wild_chars, '|'.join(subs)),
                         re.S).match(text)
 
-            if m and precChar(m.group(1)[-1:]):
+            if m:
                 _text, _map = m.group(1), text[len(m.group(1)):]
                 parts = self._getHtmlFromText(html, (_text, _map))
                 return (_text, parts[0], [_map, parts[1]])

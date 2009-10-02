@@ -23,11 +23,10 @@ from generics import *
 class Ancestral(AfkServer):
     wild_chars = '\$#\^~\.:@A=X\*\s\+%\?'
     wild_end_text = '\nViaggiando sul continente.'
-    wild_prec_char = '.\n '
     room_end_text = '\nUscite Visibili:'
     gui_width = 1015
     host = '81.174.65.202'
     port = 4000
-    map_width = 31
-    map_height = 21
+    map_width = 34
+    map_height = 22
 

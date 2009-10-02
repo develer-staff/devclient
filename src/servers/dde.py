@@ -23,7 +23,6 @@ from generics import *
 class DdE(DikuServer):
     wild_chars = '\^\.xX@\*\s&-\?'
     wild_end_text = '\n[Uscite:'
-    wild_prec_char = '123456789'
     room_map = '|\-#?@'
     host = 'dde.homelinux.com'
     port = 5000
