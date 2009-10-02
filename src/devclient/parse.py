@@ -371,19 +371,20 @@ class WildMapParser(Parser):
         def extractIncompleteMap(text, html):
             """Return text, html and the incomplete wild map if exist."""
 
-            _text, _map = text, ''
+            incomplete_map = []
             subs = [escape(wild_end[:i+1]) for i in xrange(len(wild_end))]
             # An incomplete map can be a map or a part of it followed a substring
             # of the marker wild end. 
             m = compile('(.*?)(\s[%s]*)(%s)?$' % (wild_chars, '|'.join(subs)),
                         re.S).match(text)
-
             if m:
-                _text, _map = m.group(1), text[len(m.group(1)):]
-                parts = self._getHtmlFromText(html, (_text, _map))
-                return (_text, parts[0], [_map, parts[1]])
+                _map = text[len(m.group(1)):]
+                text = m.group(1) 
+                parts = self._getHtmlFromText(html, (text, _map))
+                incomplete_map = [_map, parts[1]]
+                html = parts[0]
 
-            return (text, html, [])
+            return (text, html, incomplete_map)
 
         # to save readability
         text, html = model.main_text, model.main_html
