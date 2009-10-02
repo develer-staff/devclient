@@ -412,8 +412,9 @@ class WildMapParser(Parser):
         reg = compile('(.*?\s)([%s]{8,})[%s]*?%s' %
                       (wild_chars, room_desc, escape(wild_end)), re.S)
 
+        room_map = ''
         if hasattr(self._p._server, 'room_map'):
-            room_desc += self._p._server.room_map
+            room_map = self._p._server.room_map
 
         # we try to check if the text contains one or more wild map.
         m = reg.match(text)
@@ -438,10 +439,9 @@ class WildMapParser(Parser):
             model.main_html = parts[0] + parts[2]
             return True
 
-        # We check if the player move from the wild to a room, and if true we
-        # turn off the map 
+        # We turn off the map if the player move from the wild to a romm
         elif not model.map_text and \
-             compile('.*?[%s]*?%s' % (room_desc, escape(room_end)),
+             compile('.*?[%s%s]*?%s' % (room_desc, room_map, escape(room_end)),
                      re.S).match(text):
             model.map_text, model.map_html = None, None
 
