@@ -434,6 +434,7 @@ class ConnectionManager(QObject):
             elif cmd == messages.CONN_ESTABLISHED:
                 self._connEstablished(msg[0])
             elif cmd == messages.CONN_LOST:
+                self._w.text_input.clear()
                 self._w.displayWarning(self._w._text['Connect'],
                                        self._w._text['ConnLost'])
                 self.conn_name = None
