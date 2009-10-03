@@ -403,44 +403,44 @@ class WildMapParser(Parser):
             html = self._incomplete_map[1] + html
             self._incomplete_map = []
 
+        room_map = ''
+        if hasattr(self._p._server, 'room_map'):
+            room_map = self._p._server.room_map
+
         # A complete map is a group of chars that can be in the wild, 
         # followed by the marker of wild end text (a string that normally follow
         # the map).
         # wild end text must contain at least one char that not is contained
         # into room description.
         room_desc = '\w\s\.\'",:;\(\)'
-        reg = compile('(.*?\s)([%s]{8,})[%s]*?%s' %
-                      (wild_chars, room_desc, escape(wild_end)), re.S)
+        if wild_end in text:
+            reg = compile('(.*?\s)([%s]{8,})[%s]*?%s' %
+                          (wild_chars, room_desc, escape(wild_end)), re.S)
+            m = reg.match(text)
 
-        room_map = ''
-        if hasattr(self._p._server, 'room_map'):
-            room_map = self._p._server.room_map
+            # 'X' in text is a trick. We have some situation when the text 
+            # contains a string that looks like a wild map. In this fix we 
+            # control if the text contains a string that looks like.. AND if
+            # the player character (that is always X) is in the text.
+            if m and 'X' in text:
+                groups = list(m.groups())
+                if groups[0][-1:] == ' ':
+                    groups[1] = ' ' + groups[1]  # to save alignment
+                    groups[0] = groups[0][:-1]
 
-        # we try to check if the text contains one or more wild map.
-        m = reg.match(text)
-        # 'X' in text is a trick. We have some situation when the text contains
-        # a string that looks like a wild map. In this fix we control if the
-        # text contains a string that looks like.. AND if the player character
-        # (that is always X) is in the text.
-        if m and 'X' in text:
-            groups = list(m.groups())
-            if groups[0][-1:] == ' ':
-                groups[1] = ' ' + groups[1]  # to save alignment
-                groups[0] = groups[0][:-1]
+                model.map_text = groups[1]
+                pos_start = len(groups[0])
+                pos_end = pos_start + len(groups[1])
+                parts = self._getHtmlFromText(html, groups)
+                model.map_html = parts[1]
 
-            model.map_text = groups[1]
-            pos_start = len(groups[0])
-            pos_end = pos_start + len(groups[1])
-            parts = self._getHtmlFromText(html, groups)
-            model.map_html = parts[1]
-
-            # extract wild map from main text
-            model.main_text = text[:pos_start] + text[pos_end:]
-            model.main_html = parts[0] + parts[2]
-            return True
+                # extract wild map from main text
+                model.main_text = text[:pos_start] + text[pos_end:]
+                model.main_html = parts[0] + parts[2]
+                return True
 
         # We turn off the map if the player move from the wild to a romm
-        elif not model.map_text and \
+        if not model.map_text and \
              compile('.*?[%s%s]*?%s' % (room_desc, room_map, escape(room_end)),
                      re.S).match(text):
             model.map_text, model.map_html = None, None
@@ -461,5 +461,6 @@ class WildMapParser(Parser):
         # incomplete one).
         while self._parseWild(model):
             pass
+
         return model
 
