@@ -23,6 +23,7 @@ class Server(object):
     # Default Server, don't remove it!
     right_widget = 'gui_map'
     cmd_password = 2
+    cmd_new_player = ''
 
 
 class DikuServer(Server):

@@ -24,6 +24,7 @@ class DivineConflict(Server):
     wild_chars = '\*-\+%\^X\.~\'\sx@=/'
     wild_end_text = '\n<'
     room_end_text = '[Uscite:'
+    cmd_new_player = 'nuovo'
     host = 'divineconflict.mud.it'
     port = 4030
     map_width = 27

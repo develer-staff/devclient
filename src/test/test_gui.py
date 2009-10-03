@@ -86,6 +86,7 @@ class TestSocketToCore(unittest.TestCase, communication.TestSocket):
 
 class ServerFake:
     cmd_password = 2
+    cmd_new_player = 'new'
 
 
 class TestAccountManager(unittest.TestCase):
@@ -96,6 +97,7 @@ class TestAccountManager(unittest.TestCase):
             self.app = QApplication([])
 
         self.test_dir = '../../data/storage/test_dir'
+        self.cmd_password = ServerFake.cmd_password
 
     def setUp(self):
         if os.path.exists(self.test_dir):
@@ -111,27 +113,17 @@ class TestAccountManager(unittest.TestCase):
         conn = (0, 'name', 'host', 111)
         storage.setOption('save_account', 1)
         storage.addConnection(list(conn))
-        account = AccountManager(GuiMock(), ServerFake, 1)
+        account = AccountManager(GuiMock(), self.cmd_password, 1)
         self.assert_(storage.accounts(1) == [])
-
-    def testEchoMode(self):
-        conn = (0, 'name', 'host', 111)
-        storage.addConnection(list(conn))
-        mock = GuiMock()
-        account = AccountManager(mock, ServerFake, 1)
-        self.assert_(mock.text_input.lineEdit().echoMode() == QLineEdit.Normal)
-        account.register("john")
-        self.assert_(mock.text_input.lineEdit().echoMode() == QLineEdit.Password)
-        account.register("johnpwd")
-        self.assert_(mock.text_input.lineEdit().echoMode() == QLineEdit.Normal)
 
     def testNoSaveAccount(self):
         conn = (0, 'name', 'host', 111)
         mock = GuiMock()
         storage.addConnection(list(conn))
-        account = AccountManager(mock, ServerFake, 1)
-        account.register("john")
-        account.register("johnpwd")
+        account = AccountManager(mock, self.cmd_password, 1)
+        account.commands.append("john")
+        account.commands.append("johnpwd")
+        account.save()
         self.assert_(storage.accounts(1) == [])
         self.assert_(mock._question is None)
 
@@ -140,9 +132,10 @@ class TestAccountManager(unittest.TestCase):
         mock = GuiMock()
         storage.setOption('save_account', 1)
         storage.addConnection(list(conn))
-        account = AccountManager(mock, ServerFake, 1)
-        account.register("john")
-        account.register("johnpwd")
+        account = AccountManager(mock, self.cmd_password, 1)
+        account.commands.append("john")
+        account.commands.append("johnpwd")
+        account.save()
         self.assert_(storage.accounts(1) == ["john"])
         self.assert_(mock._question is not None)
 
@@ -150,9 +143,10 @@ class TestAccountManager(unittest.TestCase):
         conn = (0, 'name', 'host', 111)
         storage.setOption('save_account', 1)
         storage.addConnection(list(conn))
-        account = AccountManager(GuiMock(), ServerFake, 1)
-        account.register("john")
-        account.register("johnpwd")
+        account = AccountManager(GuiMock(), self.cmd_password, 1)
+        account.commands.append("john")
+        account.commands.append("johnpwd")
+        account.save()
         self.assert_(storage.accountDetail(1, "john") == ["john", "johnpwd"])
 
     def testUpdateAccount(self):
@@ -161,9 +155,10 @@ class TestAccountManager(unittest.TestCase):
         storage.setOption('save_account', 1)
         storage.addConnection(list(conn))
         storage.saveAccount(['john', 'pwd'], 1, 'john')
-        account = AccountManager(mock, ServerFake, 1)
-        account.register("john")
-        account.register("johnpwd")
+        account = AccountManager(mock, self.cmd_password, 1)
+        account.commands.append("john")
+        account.commands.append("johnpwd")
+        account.save()
         self.assert_(storage.accountDetail(1, 'john') == ['john', 'johnpwd'])
         self.assert_(mock._question is None)
 
@@ -174,7 +169,7 @@ class TestAccountManager(unittest.TestCase):
         self.assert_(storage.option('default_account', 1) == '')
         mock = GuiMock()
         mock.list_account.addItem('john')
-        account = AccountManager(mock, ServerFake, 1)
+        account = AccountManager(mock, self.cmd_password, 1)
         self.assert_(storage.option('default_account', 1) == 'john')
 
 
@@ -200,6 +195,7 @@ class TestConnectionManager(unittest.TestCase):
         if not QApplication.instance():
             self.app = QApplication([])
         self.test_dir = '../../data/storage/test_dir'
+        self.cmd_password = ServerFake.cmd_password
 
     def setUp(self):
         if os.path.exists(self.test_dir):
@@ -218,11 +214,34 @@ class TestConnectionManager(unittest.TestCase):
             storage.saveAliases(conn[1], aliases)
         ConnectionManager._appendEcho = fakeAppendEcho
         c = ConnectionManager(GuiMock(), '')
-        c._account = AccountManager(GuiMock(), ServerFake, 1)
+        c._account = AccountManager(GuiMock(), self.cmd_password, 1)
+        c._server = ServerFake
         c.conn_name = conn[1]
         c.reloadConnData(conn[1])
         c._s_core._messages = []
         return c
+
+    def testEchoMode(self):
+        c = self.buildConnManager()
+        line_edit = c._w.text_input.lineEdit()
+        self.assert_(line_edit.echoMode() == QLineEdit.Normal)
+        c.sendText("john")
+        c._manageLineInput()
+        self.assert_(line_edit.echoMode() == QLineEdit.Password)
+        c.sendText("johnpwd")
+        c._manageLineInput()
+        self.assert_(line_edit.echoMode() == QLineEdit.Normal)
+
+    def testEchoMode2(self):
+        c = self.buildConnManager()
+        line_edit = c._w.text_input.lineEdit()
+        self.assert_(line_edit.echoMode() == QLineEdit.Normal)
+        c.sendText("new")
+        c._manageLineInput()
+        self.assert_(line_edit.echoMode() == QLineEdit.Normal)
+        c.sendText("fakepwd")
+        c._manageLineInput()
+        self.assert_(line_edit.echoMode() == QLineEdit.Normal)
 
     def testSendText(self):
         c = self.buildConnManager()

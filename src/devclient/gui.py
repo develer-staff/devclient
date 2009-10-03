@@ -219,43 +219,38 @@ class GameLogger(object):
 
 
 class AccountManager(object):
+    """
+    This class manage the saving of new accounts (if enabled) and register
+    the commands sent to the server until the password.
+    """
 
-    def __init__(self, widget, server, id_conn):
+    def __init__(self, widget, cmd_password, id_conn):
         self._w = widget
         self.user = unicode(widget.list_account.currentText())
         storage.setOption('default_account', self.user, id_conn)
         self._save_account = storage.option('save_account')
-        self._cmd_pwd = server.cmd_password
+        self._cmd_password = cmd_password
         self._id_conn = id_conn
-        self.cmd_counter = 0
-        self._commands = []
+        self.commands = [] # The list of the commands registered
 
-    def loginMode(self):
-        return self.cmd_counter <= self._cmd_pwd
+    def currentUser(self):
+        # We assume that the username is always the previous command 
+        # of the password.
+        cmd_user = self._cmd_password - 1
+        if cmd_user <= len(self.commands):
+            return self.commands[cmd_user - 1]
+        return ''
 
-    def register(self, text):
-        self.cmd_counter += 1
-
-        if self.cmd_counter == self._cmd_pwd - 1:
-            echo_mode = QLineEdit.Password
-        else:
-            echo_mode = QLineEdit.Normal
-
-        self._w.text_input.lineEdit().setEchoMode(echo_mode)
-
-        if not self.user and self._save_account \
-           and self.cmd_counter <= self._cmd_pwd:
-            self._commands.append(text)
-            if self.cmd_counter == self._cmd_pwd:
-                accounts = storage.accounts(self._id_conn)
-                cmd_user = self._cmd_pwd - 1
-                user = self._commands[cmd_user - 1]
-                # ask the permission to save the account only if it isn't already
-                # saved. In that case, we update the account.
-                if user in accounts or self._w._displayQuestion(
-                   self._w._text['Account'], self._w._text['SaveAccount']):
-                    storage.saveAccount(self._commands, self._id_conn, user)
-                    return True
+    def save(self):
+        if not self.user and self._save_account:
+            accounts = storage.accounts(self._id_conn)
+            user = self.currentUser()
+            # ask the permission to save the account only if it isn't already
+            # saved. In that case, we update the account.
+            if user in accounts or self._w._displayQuestion(
+               self._w._text['Account'], self._w._text['SaveAccount']):
+                storage.saveAccount(self.commands, self._id_conn, user)
+                return True
         return False
 
 
@@ -282,12 +277,14 @@ class ConnectionManager(QObject):
         self._trigger = None
         self._alias = None
 
+        self._server = None
+        self._cmd_counter = 0
         self._preferences = storage.preferences()
         self.connect(self._s_core, SIGNAL("readyRead()"), 
                      self._readDataFromCore)
 
     def loginMode(self):
-        return self._account and self._account.loginMode()
+        return self._cmd_counter <= self._server.cmd_password
 
     def _checkModifier(self, event, mod):
         """
@@ -337,8 +334,9 @@ class ConnectionManager(QObject):
     def startConnection(self, id_conn):
         conn = [el for el in storage.connections() if el[0] == id_conn][0]
 
+        self._server = getServer(*conn[2:4])
         # AccountManager is built here to get the custom prompt from the user
-        self._account = AccountManager(self._w, getServer(*conn[2:4]), id_conn)
+        self._account = AccountManager(self._w, self._server.cmd_password, id_conn)
         msg = conn[1:4] + storage.prompt(conn[0], self._account.user)
         self._s_core.write(messages.CONNECT, msg)
 
@@ -358,14 +356,14 @@ class ConnectionManager(QObject):
 
     def _connEstablished(self, conn_name):
         self.conn_name = conn_name
+        self._cmd_counter = 0
         conn = storage.connection(conn_name)
-        server = getServer(*conn[2:4])
         self._history.clear()
         self._alias = Alias(conn_name)
         self._trigger = Trigger(conn_name)
         custom_prompt = [p for p in storage.prompt(conn[0], self._account.user)
                          if p]
-        self._viewer = getViewer(self._w, server, custom_prompt)
+        self._viewer = getViewer(self._w, self._server, custom_prompt)
         self._macros = storage.macros(conn_name)
         self._game_logger = GameLogger(conn_name, self._preferences)
         storage.setOption('default_connection', conn[0])
@@ -374,13 +372,22 @@ class ConnectionManager(QObject):
             commands = storage.accountDetail(conn[0], self._account.user)
 
             for cmd in commands:
-                self._account.cmd_counter += 1
-                self._s_core.write(messages.MSG, cmd)
+                self._sendText(cmd)
+                self._manageLineInput()
 
     def disconnect(self):
         self.conn_name = None
         self._s_core.write(messages.END_APP, "")
         self._s_core.disconnect()
+
+    def _manageLineInput(self):
+        if self._cmd_counter == self._server.cmd_password - 1 and \
+           self._account.currentUser() != self._server.cmd_new_player:
+            echo_mode = QLineEdit.Password
+        else:
+            echo_mode = QLineEdit.Normal
+
+        self._w.text_input.lineEdit().setEchoMode(echo_mode)
 
     def _appendEcho(self, text):
         if not self._preferences[0]:
@@ -397,9 +404,16 @@ class ConnectionManager(QObject):
         if self._w.text_input.lineEdit().echoMode() == QLineEdit.Normal:
             self._appendEcho(text)
             self._history.add(text)
-        return self._account.register(text)
+
+        if self._cmd_counter <= self._server.cmd_password:
+            self._account.commands.append(text)
+            if self._cmd_counter == self._server.cmd_password and \
+               self._account.currentUser() != self._server.cmd_new_player:
+                return self._account.save()
+        return False
 
     def _sendText(self, text):
+        self._cmd_counter += 1
         to_send = self._alias.check(text)
         separator = self._preferences[3]
         if separator and separator in to_send:
@@ -686,6 +700,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             text = ''
         self.text_input.setItemText(0, text)
         self.text_input.lineEdit().selectAll()
+        self._conn_manager._manageLineInput()
 
     def _displayQuestion(self, title, message):
         b = QMessageBox.question(self, title, message,

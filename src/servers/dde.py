@@ -24,6 +24,7 @@ class DdE(DikuServer):
     wild_chars = '\^\.xX@\*\s&-\?'
     wild_end_text = '\n[Uscite:'
     room_map = '|\-#?@'
+    cmd_new_player = 'nuovo'
     host = 'dde.homelinux.com'
     port = 5000
     host2 = 'dde.homelinux.com'
