@@ -368,21 +368,36 @@ class WildMapParser(Parser):
         Return True if a complete map was found.
         """
 
+        def endswith(text, end):
+            """Check if text finishes with 'end' string or a part of it"""
+
+            if not text:
+                return True
+
+            t = text[-len(end):]
+            while t:
+                if end.startswith(t):
+                    return True
+                t = t[1:]
+            return False
+
         def extractIncompleteMap(text, html):
             """Return text, html and the incomplete wild map if exist."""
 
             incomplete_map = []
-            subs = [escape(wild_end[:i+1]) for i in xrange(len(wild_end))]
-            # An incomplete map can be a map or a part of it followed a substring
-            # of the marker wild end. 
-            m = compile('(.*?)(\s[%s]*)(%s)?$' % (wild_chars, '|'.join(subs)),
-                        re.S).match(text)
-            if m:
-                _map = text[len(m.group(1)):]
-                text = m.group(1) 
-                parts = self._getHtmlFromText(html, (text, _map))
-                incomplete_map = [_map, parts[1]]
-                html = parts[0]
+            # NOTE: this check is done to optimize the performance
+            if endswith(text, wild_end): 
+                subs = [escape(wild_end[:i+1]) for i in xrange(len(wild_end))]
+                # An incomplete map can be a map or a part of it followed a 
+                # substring of the marker wild end. 
+                m = compile('(.*?)(\s[%s]*)(%s)?$' % (wild_chars, '|'.join(subs)),
+                            re.S).match(text)
+                if m:
+                    _map = text[len(m.group(1)):]
+                    text = m.group(1) 
+                    parts = self._getHtmlFromText(html, (text, _map))
+                    incomplete_map = [_map, parts[1]]
+                    html = parts[0]
 
             return (text, html, incomplete_map)
 
@@ -413,6 +428,7 @@ class WildMapParser(Parser):
         # wild end text must contain at least one char that not is contained
         # into room description.
         room_desc = '\w\s\.\'",:;\(\)'
+        # NOTE: this check is done to optimize the performance
         if wild_end in text:
             reg = compile('(.*?\s)([%s]{8,})[%s]*?%s' %
                           (wild_chars, room_desc, escape(wild_end)), re.S)
