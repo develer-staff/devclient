@@ -339,6 +339,9 @@ class ConnectionManager(QObject):
                                    Qt.Key_Alt):
 
                 # Check the shortcuts
+                # NOTE: the order is important! Shortcuts must be checked after
+                # the keypad, because some keypad keys are both in the keypad
+                # and in the normal keys (ex: the key "Up"). 
                 keycode = self._getCompleteKeyCode(event)
                 for keyseq, callback in self._w._shortcuts.iteritems():
                     if keyseq == QKeySequence(keycode):
