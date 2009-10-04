@@ -310,24 +310,49 @@ class ConnectionManager(QObject):
         c = self._checkModifier(event, Qt.ControlModifier)
         return (s, a, c, event.key())
 
+    def _getCompleteKeyCode(self, event):
+        """
+        Return the complete key code, that includes the modifiers.
+        """
+        keycode = event.key()
+        if self._checkModifier(event, Qt.ShiftModifier):
+            keycode += Qt.SHIFT
+        if self._checkModifier(event, Qt.AltModifier):
+            keycode += Qt.ALT
+        if self._checkModifier(event, Qt.ControlModifier):
+            keycode += Qt.CTRL
+        return keycode
+
     def eventFilter(self, event):
-        if event.type() == QEvent.KeyPress and self.conn_name:
-            for k, v in keypad_codes.iteritems():
-                if v == event.nativeScanCode():
-                    action = storage.keypad(self.conn_name)[k]
-                    if action:
-                        self._s_core.write(messages.MSG, action)
-                        self._appendEcho(action)
-                    return True
+        if event.type() == QEvent.KeyPress:
+            if self.conn_name:
+                # Check the keypad
+                for k, v in keypad_codes.iteritems():
+                    if v == event.nativeScanCode():
+                        action = storage.keypad(self.conn_name)[k]
+                        if action:
+                            self._s_core.write(messages.MSG, action)
+                            self._appendEcho(action)
+                        return True
 
             if event.key() not in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Meta,
                                    Qt.Key_Alt):
-                key_seq = self._getKeySeq(event)
-                for m in self._macros:
-                    if m[1:] == key_seq:
-                        self._s_core.write(messages.MSG, m[0])
-                        self._appendEcho(m[0])
+
+                # Check the shortcuts
+                keycode = self._getCompleteKeyCode(event)
+                for keyseq, callback in self._w._shortcuts.iteritems():
+                    if keyseq == QKeySequence(keycode):
+                        callback()
                         return True
+
+                if self.conn_name:
+                    # Check the macros
+                    key_seq = self._getKeySeq(event)
+                    for m in self._macros:
+                        if m[1:] == key_seq:
+                            self._s_core.write(messages.MSG, m[0])
+                            self._appendEcho(m[0])
+                            return True
 
                 # Ctrl-C is used to copy the selected text of text_output to
                 # the clipboard
@@ -575,13 +600,15 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         def kseq(action):
             return QKeySequence(storage.shortcut(action))
 
-        # TODO: fix asap!!
-        #QShortcut(kseq('history_prev'), self, self._historyPrev)
-        #QShortcut(kseq('history_next'), self, self._historyNext)
+        # We can't use the standard Qt shortcuts, because we have to distinguish
+        # between 'normal' keys and 'keypad' keys
+        self._shortcuts = {}
+        self._shortcuts[kseq('history_prev')] = self._historyPrev
+        self._shortcuts[kseq('history_next')] = self._historyNext
 
-        QShortcut(kseq('quit'), self, self.close)
-        self.button_connect.setShortcut(kseq('connect'))
-        self.button_option.setShortcut(kseq('option'))
+        self._shortcuts[kseq('quit')] = self.close
+        self._shortcuts[kseq('connect')] = self.button_connect.click
+        self._shortcuts[kseq('option')] = self.button_option.click
 
     def _setupSignal(self):
         clicked = SIGNAL("clicked()")
