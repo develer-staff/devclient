@@ -362,7 +362,7 @@ class ConnectionManager(QObject):
                 if self._checkModifier(event, Qt.ControlModifier) and \
                    not self._checkModifier(event, Qt.ShiftModifier) and \
                    not self._checkModifier(event, Qt.AltModifier) and \
-                   event.key() == Qt.Key_C:
+                   event.key() == Qt.Key_C and self._viewer:
                     self._viewer.copySelectedText()
                     return True
 

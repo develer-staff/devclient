@@ -109,16 +109,19 @@ class TextViewer(object):
         Copy the selected text from the text_output widget to clipboard.
         """
 
+        def copyAndClean(widget):
+            widget.copy()
+            cursor = widget.textCursor()
+            cursor.clearSelection()
+            widget.setTextCursor(cursor)
+
         no_scroll = self.w.text_output_noscroll
         if no_scroll.textCursor().hasSelection() and no_scroll.isVisible():
-            widget = no_scroll
-        else:
-            widget = self.w.text_output
-
-        widget.copy()
-        cursor = widget.textCursor()
-        cursor.clearSelection()
-        widget.setTextCursor(cursor)
+            copyAndClean(no_scroll)
+        elif self.w.text_output.textCursor().hasSelection():
+            copyAndClean(self.w.text_output)
+        elif self.w.text_input.lineEdit().hasSelectedText():
+            self.w.text_input.lineEdit().copy()
 
     def appendHtml(self, html):
         new_html = html.split('<br>')
