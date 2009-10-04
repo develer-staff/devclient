@@ -49,7 +49,19 @@ connection_spec = {'id': 'integer',
                    'triggers': { '__many__': {'ignore_case': 'integer(0, 1)',
                                               'command': "string(default='')",
                                               'bg_color': "string(default='')",
-                                              'fg_color': "string(default='')"}}
+                                              'fg_color': "string(default='')"}},
+                   'keypad': {'7': "string(default='')",
+                              '8': "string(default='')",
+                              '9': "string(default='')",
+                              '4': "string(default='')",
+                              '5': "string(default='')",
+                              '6': "string(default='')",
+                              '1': "string(default='')",
+                              '2': "string(default='')",
+                              '3': "string(default='')",
+                              '0': "string(default='')",
+                              '.': "string(default='')"
+                              },
                   }
 
 general_spec = {'echo_color': "string(max=7, default='')",
@@ -70,7 +82,7 @@ shortcuts_spec = {'history_prev': 'string(default="Up")',
                  }
 
 _config = {'connections': {}}
-"""The dict that contain the ConfigObj objs for connections and general pref"""
+"""The dict that contains the ConfigObj objs for connections and general pref"""
 
 _storage_path = None
 
@@ -216,6 +228,21 @@ def saveAliases(conn_name, aliases):
         c['aliases'][alias[0]] = alias[1]
     c.write()
 
+def keypad(conn_name):
+    if conn_name not in _config['connections']:
+        raise exception.ConnectionNotFound
+
+    c = _config['connections'][conn_name]
+    return c['keypad']
+
+def saveKeypad(conn_name, keypad):
+    if conn_name not in _config['connections']:
+        raise exception.ConnectionNotFound
+
+    c = _config['connections'][conn_name]
+    c['keypad'] = keypad
+    c.write()
+
 def macros(conn_name):
     """
     Load the list of macro for a connection.
@@ -259,7 +286,7 @@ def connections():
 
 def addConnection(conn):
     """
-    Add a new connection at list of connections.
+    Add a new connection to the list of connections.
 
     :Parameters:
       conn : list

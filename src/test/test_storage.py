@@ -362,6 +362,41 @@ class TestStorage(TestBase):
         storage.saveTriggers(conn_name, triggers)
         self.assert_(storage.triggers(conn_name) == triggers)
 
+    def testEmptyKeypad(self):
+        self.assertRaises(exception.ConnectionNotFound,
+                          storage.keypad,
+                          'conn_name')
+
+    def testEmptyKeypad2(self):
+        storage.addConnection([0, 'name', 'host', 111])
+        empty_keypad = {'.': ''}
+        for i in xrange(10):
+            empty_keypad[str(i)] = ''
+
+        self.assert_(storage.keypad('name') == empty_keypad)
+
+    def testSaveKeypad(self):
+        conn_name = 'conn'
+        keypad = {'.': -1}
+        for i in xrange(10):
+            keypad[str(i)] = i
+
+        self.assertRaises(exception.ConnectionNotFound,
+                          storage.saveKeypad,
+                          conn_name, keypad)
+
+    def testSaveKeypad2(self):
+        conn_name = 'conn'
+        conn = [0, conn_name, 'host', 111]
+        storage.addConnection(conn)
+
+        keypad = {'.': -1}
+        for i in xrange(10):
+            keypad[str(i)] = i
+
+        storage.saveKeypad(conn_name, keypad)
+        self.assert_(storage.keypad(conn_name) == keypad)
+
 
 class TestStorage2(TestBase):
 

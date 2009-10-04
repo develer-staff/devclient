@@ -30,3 +30,5 @@ Trigger = QApplication.translate("option", "Trigger")
 Pattern = QApplication.translate("option", "Pattern")
 UniquePattern = QApplication.translate("option", "The pattern must be unique")
 ReqColors = QApplication.translate("option", "At least one between text and background color is required")
+
+NoKeypad = QApplication.translate("option", "The keypad controls are not available on your O.S. due to a limitation of the underlying platform.")

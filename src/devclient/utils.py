@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__version__ = "$Revision:$"[11:-2]
+__version__ = "$Revision$"[11:-2]
 __docformat__ = 'restructuredtext'
 
 import os
@@ -25,6 +25,28 @@ import ctypes
 import signal
 import subprocess
 from sys import platform
+
+
+# Keypad codes for Windows platforms
+_keypad_win_codes = {'7': 71, '8': 72, '9': 73,
+                     '4': 75, '5': 76, '6': 77,
+                     '1': 79, '2': 80, '3': 81,
+                     '0': 82, '.': 83
+                     }
+
+# Keypad codes for Linux platforms
+_keypad_linux_codes = {'7': 79, '8': 80, '9': 81,
+                        '4': 83, '5': 84, '6': 85,
+                        '1': 87, '2': 88, '3': 89,
+                        '0': 90, '.': 91
+                    }
+
+# no keypad codes for Mac OSX (due to a limitation of the underlying platform)
+keypad_codes = {}
+if platform == 'win32':
+    keypad_codes = _keypad_win_codes
+elif platform == 'linux2':
+    keypad_codes = _keypad_linux_codes
 
 
 def terminateProcess(pid):

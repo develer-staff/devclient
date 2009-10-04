@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -47,9 +47,10 @@ from trigger import Trigger
 from history import History
 from viewer import getViewer
 from servers import getServer
-from utils import terminateProcess, startProcess
+from utils import terminateProcess, startProcess, keypad_codes
 from gui_src.gui import Ui_dev_client
 from constants import PUBLIC_VERSION, PROJECT_NAME
+
 
 logger = logging.getLogger('gui')
 
@@ -310,24 +311,32 @@ class ConnectionManager(QObject):
         return (s, a, c, event.key())
 
     def eventFilter(self, event):
-        if event.type() == QEvent.KeyPress and self.conn_name and \
-           event.key() not in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Meta,
-                               Qt.Key_Alt):
-
-            key_seq = self._getKeySeq(event)
-            for m in self._macros:
-                if m[1:] == key_seq:
-                    self._s_core.write(messages.MSG, m[0])
-                    self._appendEcho(m[0])
+        if event.type() == QEvent.KeyPress and self.conn_name:
+            for k, v in keypad_codes.iteritems():
+                if v == event.nativeScanCode():
+                    action = storage.keypad(self.conn_name)[k]
+                    if action:
+                        self._s_core.write(messages.MSG, action)
+                        self._appendEcho(action)
                     return True
 
-            # Ctrl-C is used to copy selected text of text_output to clipboard
-            if self._checkModifier(event, Qt.ControlModifier) and \
-               not self._checkModifier(event, Qt.ShiftModifier) and \
-               not self._checkModifier(event, Qt.AltModifier) and \
-               event.key() == Qt.Key_C:
-                self._viewer.copySelectedText()
-                return True
+            if event.key() not in (Qt.Key_Shift, Qt.Key_Control, Qt.Key_Meta,
+                                   Qt.Key_Alt):
+                key_seq = self._getKeySeq(event)
+                for m in self._macros:
+                    if m[1:] == key_seq:
+                        self._s_core.write(messages.MSG, m[0])
+                        self._appendEcho(m[0])
+                        return True
+
+                # Ctrl-C is used to copy the selected text of text_output to
+                # the clipboard
+                if self._checkModifier(event, Qt.ControlModifier) and \
+                   not self._checkModifier(event, Qt.ShiftModifier) and \
+                   not self._checkModifier(event, Qt.AltModifier) and \
+                   event.key() == Qt.Key_C:
+                    self._viewer.copySelectedText()
+                    return True
 
         return False
 
@@ -566,8 +575,9 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         def kseq(action):
             return QKeySequence(storage.shortcut(action))
 
-        QShortcut(kseq('history_prev'), self, self._historyPrev)
-        QShortcut(kseq('history_next'), self, self._historyNext)
+        # TODO: fix asap!!
+        #QShortcut(kseq('history_prev'), self, self._historyPrev)
+        #QShortcut(kseq('history_next'), self, self._historyNext)
 
         QShortcut(kseq('quit'), self, self.close)
         self.button_connect.setShortcut(kseq('connect'))

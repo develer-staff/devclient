@@ -128,7 +128,7 @@ class Ui_option(object):
 
         page_layout.addLayout(buttons_box, 5, 0, 1, 3, Qt.AlignRight)
         self.addVerticalStretch(page_layout)
-        self.page_container.addWidget(self.conn_page)
+        return self.conn_page
 
     def createAccountPage(self):
         self.account_page = QWidget()
@@ -229,7 +229,7 @@ class Ui_option(object):
         page_layout.addWidget(self.box_prompt, 6, 0, 1, 2)
 
         self.addVerticalStretch(page_layout)
-        self.page_container.addWidget(self.account_page)
+        return self.account_page
 
     def createAliasPage(self):
         self.alias_page = QWidget()
@@ -299,7 +299,7 @@ class Ui_option(object):
         page_layout.addLayout(buttons_layout, 7, 0, 1, 3, Qt.AlignRight)
 
         self.addVerticalStretch(page_layout)
-        self.page_container.addWidget(self.alias_page)
+        return self.alias_page
 
     def createMacroPage(self):
         self.macro_page = QWidget()
@@ -323,37 +323,37 @@ class Ui_option(object):
         self.createConnSection(page_layout, self.label_conn_macro, self.list_conn_macro, 3)
 
         self.label_macro_macro = QLabel()
-        page_layout.addWidget(self.label_macro_macro, 4, 0)
+        page_layout.addWidget(self.label_macro_macro, 3, 0)
 
         horiz_spacer = QSpacerItem(20, 20, QSizePolicy.Fixed,QSizePolicy.Minimum)
-        page_layout.addItem(horiz_spacer, 4, 1)
+        page_layout.addItem(horiz_spacer, 3, 1)
 
         self.list_macro = QComboBox()
         self.list_macro.setEnabled(False)
-        page_layout.addWidget(self.list_macro,4, 2)
+        page_layout.addWidget(self.list_macro, 3, 2)
 
         self.label_keys_macro = QLabel()
-        page_layout.addWidget(self.label_keys_macro, 5, 0)
+        page_layout.addWidget(self.label_keys_macro, 4, 0)
 
         self.register_macro = QPushButton()
         self.register_macro.setEnabled(False)
         self.register_macro.setFixedHeight(28)
-        page_layout.addWidget(self.register_macro, 5, 1)
+        page_layout.addWidget(self.register_macro, 4, 1)
 
         self.keys_macro = QLineEdit()
         self.keys_macro.setEnabled(False)
         self.keys_macro.setProperty("highlight_color",QVariant("#C8C8C8"))
-        page_layout.addWidget(self.keys_macro, 5, 2)
+        page_layout.addWidget(self.keys_macro, 4, 2)
 
         self.label_command_macro = QLabel()
-        page_layout.addWidget(self.label_command_macro, 6, 0)
+        page_layout.addWidget(self.label_command_macro, 5, 0)
 
         self.command_macro = QLineEdit()
         self.command_macro.setEnabled(False)
-        page_layout.addWidget(self.command_macro, 6, 1, 1, 2)
+        page_layout.addWidget(self.command_macro, 5, 1, 1, 2)
 
         vert_spacer = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Fixed)
-        page_layout.addItem(vert_spacer, 7, 0, 1, 3)
+        page_layout.addItem(vert_spacer, 6, 0, 1, 3)
 
         buttons_layout = QHBoxLayout()
         buttons_layout.setSpacing(5)
@@ -368,9 +368,8 @@ class Ui_option(object):
         self.delete_macro.setFixedHeight(28)
         self.delete_macro.setIcon(QIcon(":/images/button-cancel.png"))
         buttons_layout.addWidget(self.delete_macro)
-        page_layout.addLayout(buttons_layout, 8, 0, 1, 3, Qt.AlignRight)
+        page_layout.addLayout(buttons_layout, 7, 0, 1, 3, Qt.AlignRight)
         self.addVerticalStretch(page_layout)
-        self.page_container.addWidget(self.macro_page)
 
         self.label_conn_macro.setText(QApplication.translate("option", "Connection"))
         self.label_macro_macro.setText(QApplication.translate("option", "Macro"))
@@ -379,6 +378,65 @@ class Ui_option(object):
         self.register_macro.setText(QApplication.translate("option", "Register"))
         self.save_macro.setText(QApplication.translate("option", "Save"))
         self.delete_macro.setText(QApplication.translate("option", "Delete"))
+        return self.macro_page
+
+    def createKeyPad(self):
+        def createKey(text, size):
+            layout = QVBoxLayout()
+            layout.addStretch(1)
+            label = QLabel(text)
+            label.setAlignment(Qt.AlignHCenter)
+            layout.addWidget(label)
+            line_input = QLineEdit()
+            if size != -1:
+                line_input.setFixedWidth(size)
+            self.keypad_fields[text] = line_input
+            layout.addWidget(line_input)
+            return layout
+
+        keypad = QWidget()
+        self.keypad_fields = {}
+        layout = QGridLayout(keypad)
+        layout.setHorizontalSpacing(30)
+        layout.setVerticalSpacing(15)
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.addLayout(createKey('7', 60), 0, 0)
+        layout.addLayout(createKey('8', 60), 0, 1)
+        layout.addLayout(createKey('9', 60), 0, 2)
+
+        layout.addLayout(createKey('4', 60), 1, 0)
+        layout.addLayout(createKey('5', 60), 1, 1)
+        layout.addLayout(createKey('6', 60), 1, 2)
+
+        layout.addLayout(createKey('1', 60), 2, 0)
+        layout.addLayout(createKey('2', 60), 2, 1)
+        layout.addLayout(createKey('3', 60), 2, 2)
+
+        layout.addLayout(createKey('0', -1), 3, 0, 1, 2)
+        layout.addLayout(createKey('.', 60), 3, 2)
+        return keypad
+
+    def createKeypadPage(self):
+        self.keypad_page = QWidget()
+        self.keypad_page.setObjectName("keypad_page")
+        page_layout = QGridLayout(self.keypad_page)
+        page_layout.setSpacing(7)
+        page_layout.setContentsMargins(10, 20, 0, 10)
+        page_layout.setColumnMinimumWidth(0, 80)
+
+        self.label_conn_keypad = QLabel()
+        self.list_conn_keypad = QComboBox()
+        self.createConnSection(page_layout, self.label_conn_keypad, self.list_conn_keypad, 1)
+        page_layout.addWidget(self.createKeyPad(), 3, 0, 1, 1, Qt.AlignRight)
+        self.addVerticalStretch(page_layout)
+
+        self.save_keypad = QPushButton()
+        self.save_keypad.setFixedHeight(28)
+        self.save_keypad.setIcon(QIcon(":/images/button-save.png"))
+        self.save_keypad.setText(QApplication.translate("option", "Save"))
+        page_layout.addWidget(self.save_keypad, 4, 0, 1, 1, Qt.AlignRight)
+        self.label_conn_keypad.setText(QApplication.translate("option", "Connection"))
+        return self.keypad_page
 
     def createTriggerPage(self):
         self.trigger_page = QWidget()
@@ -492,7 +550,6 @@ class Ui_option(object):
         self.delete_trigger.setIcon(QIcon(":/images/button-cancel.png"))
         buttons_layout.addWidget(self.delete_trigger)
         page_layout.addLayout(buttons_layout, 10, 0, 1, 2, Qt.AlignRight)
-        self.page_container.addWidget(self.trigger_page)
 
         self.label_conn_trigger.setText(QApplication.translate("option", "Connection"))
         self.label_trigger.setText(QApplication.translate("option", "Trigger"))
@@ -506,6 +563,7 @@ class Ui_option(object):
         self.bg_color_trigger.setProperty("label_color", QVariant(True))
         self.save_trigger.setText(QApplication.translate("option", "Save"))
         self.delete_trigger.setText(QApplication.translate("option", "Delete"))
+        return self.trigger_page
 
     def createPrefPage(self):
         self.pref_page = QWidget()
@@ -579,15 +637,16 @@ class Ui_option(object):
         self.save_preferences.setIcon(QIcon(":/images/button-save.png"))
         self.save_preferences.setText(QApplication.translate("option", "Save"))
         page_layout.addWidget(self.save_preferences, 0, Qt.AlignRight)
-        self.page_container.addWidget(self.pref_page)
+        return self.pref_page
 
     def populatePages(self):
-        self.createConnPage()
-        self.createAccountPage()
-        self.createAliasPage()
-        self.createMacroPage()
-        self.createTriggerPage()
-        self.createPrefPage()
+        self.page_container.addWidget(self.createConnPage())
+        self.page_container.addWidget(self.createAccountPage())
+        self.page_container.addWidget(self.createAliasPage())
+        self.page_container.addWidget(self.createMacroPage())
+        self.page_container.addWidget(self.createKeypadPage())
+        self.page_container.addWidget(self.createTriggerPage())
+        self.page_container.addWidget(self.createPrefPage())
 
     def createListOption(self):
         def addItem(label, icon_pixmap, width, height):
@@ -612,6 +671,7 @@ class Ui_option(object):
         items.append((QApplication.translate("option", "Accounts"), "accounts.png"))
         items.append((QApplication.translate("option", "Aliases"), "aliases.png"))
         items.append((QApplication.translate("option", "Macros"), "macros.png"))
+        items.append((QApplication.translate("option", "Keypad"), "keypad.png"))
         items.append((QApplication.translate("option", "Triggers"), "triggers.png"))
         items.append((QApplication.translate("option", "Preferences"), "preferences.png"))
 

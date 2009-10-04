@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -27,10 +27,11 @@ from os.path import join
 from PyQt4 import QtGui
 from PyQt4.QtCore import SIGNAL, Qt, QVariant, QTimeLine, QPoint
 from PyQt4.QtGui import QDialog, QColorDialog, QMessageBox
-from PyQt4.QtGui import QPixmap, QWidget, QPainter
+from PyQt4.QtGui import QPixmap, QWidget, QPainter, QLabel, QVBoxLayout
 
 import storage
 from conf import config
+from utils import keypad_codes
 from gui_src.gui_option import Ui_option
 
 
@@ -272,7 +273,7 @@ class FormOption(object):
 
     def _getComboboxConnection(self):
         return None
-    
+
     def disableSignal(self, disable):
         pass
 
@@ -523,6 +524,74 @@ class FormMacro(FormOption):
             self.w.keys_macro.setText(self.getKeyDescr(*self.key_seq))
             self.w.keys_macro.setStyleSheet('')
             self.start_reg = False
+
+
+class FakeFormKeypad(FormOption):
+    """
+    A courtesy page for the platforms that don't support the keypad.
+    """
+
+    def __init__(self, widget):
+        fake_page = QWidget()
+        self._replacePage(widget.page_container, widget.keypad_page, fake_page)
+        layout = QVBoxLayout(fake_page)
+        layout.addSpacing(10)
+        label = QLabel(widget._text['NoKeypad'])
+        label.setWordWrap(True)
+        layout.addWidget(label)
+        layout.addStretch(1)
+
+    def _replacePage(self, container, oldpage, newpage):
+        index = container.indexOf(oldpage)
+        container.removeWidget(oldpage)
+        del oldpage
+        container.insertWidget(index, newpage)
+
+    def loadForm(self):
+        pass
+
+
+class FormKeypad(FormOption):
+    """
+    Manage the keypad part of gui option.
+    """
+
+    def _setupSignal(self):
+        self.w.connect(self.w.save_keypad, _CLICKED, self._saveKeypad)
+        self.w.connect(self.w.list_conn_keypad,
+                      SIGNAL("currentIndexChanged(QString)"),
+                      self._loadKeypad)
+
+    def _getComboboxConnection(self):
+        return self.w.list_conn_keypad
+
+    def loadForm(self):
+        self.w.list_conn_keypad.clear()
+        self.w.list_conn_keypad.addItems([c[1] for c in storage.connections()])
+        conn_name = self._updateConnection()
+        self.keypad = {}
+        self._loadKeypad(conn_name)
+
+    def _loadKeypad(self, conn_name):
+        for f in self.w.keypad_fields.itervalues():
+            f.setEnabled(bool(conn_name))
+
+        if conn_name:
+            self.keypad = storage.keypad(unicode(conn_name))
+            for k, v in self.keypad.iteritems():
+                self.w.keypad_fields[k].setText(v)
+
+    def _saveKeypad(self):
+        conn_name = self.w.list_conn_keypad.currentText()
+        if conn_name:
+            keypad = {}
+            for k, f in self.w.keypad_fields.iteritems():
+                keypad[k] = unicode(f.text())
+
+            storage.saveKeypad(unicode(conn_name), keypad)
+
+    def disableSignal(self, disable):
+        self.w.list_conn_keypad.blockSignals(disable)
 
 
 class FormPreferences(FormOption):
@@ -957,7 +1026,7 @@ class GuiOption(QDialog, Ui_option):
         QDialog.__init__(self, parent)
         self._translateText()
         self.setupUi(self)
-        self.setFixedSize(480, 410)
+        self.setFixedSize(480, 450)
         # the transition widget is added at the end of the page_container stack
         # to keep the real pages indexes in sync with the correspondent items in
         # the listwidget.
@@ -973,6 +1042,8 @@ class GuiOption(QDialog, Ui_option):
 
         self.macro = FormMacro(self)
         """the `FormMacro` instance, used to manage form of macros."""
+
+        self.keypad = FormKeypad(self) if keypad_codes else FakeFormKeypad(self)
 
         self.preferences = FormPreferences(self)
         """the `FormPreferences` instance, used to manage form of preferences."""
@@ -1024,6 +1095,7 @@ class GuiOption(QDialog, Ui_option):
 
         objs = {'alias_page': self.alias,
                 'macro_page': self.macro,
+                'keypad_page': self.keypad,
                 'account_page': self.accounts,
                 'trigger_page': self.trigger}
 
