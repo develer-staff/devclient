@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -33,6 +33,8 @@ import storage
 from conf import config
 from gui_src.gui_option import Ui_option
 
+
+_CLICKED = SIGNAL("clicked()")
 
 def _setLabelColor(label, color):
     """
@@ -137,9 +139,8 @@ class FormConnection(object):
         self._text = self.w._text
 
     def _setupSignal(self):
-        clicked = SIGNAL("clicked()")
-        self.w.connect(self.w.save_conn, clicked, self.save)
-        self.w.connect(self.w.delete_conn, clicked, self.delete)
+        self.w.connect(self.w.save_conn, _CLICKED, self.save)
+        self.w.connect(self.w.delete_conn, _CLICKED, self.delete)
         self.w.connect(self.w.list_conn, SIGNAL("currentIndexChanged(QString)"),
                        self.load)
 
@@ -252,23 +253,63 @@ class FormConnection(object):
         del self.connections[index]
 
 
-class FormMacro(object):
+class FormOption(object):
+    def __init__(self, widget):
+        self.w = widget
+        self._text = self.w._text
+        self._conn_combobox = self._getComboboxConnection()
+        self.loadForm()
+        # To propagate who is the current connection selected
+        if self._conn_combobox:
+            self.w.connect(self._conn_combobox,
+                           SIGNAL("currentIndexChanged(QString)"),
+                           self.w, SIGNAL("currentConnChanged(QString)"))
+
+        self._setupSignal()
+
+    def loadForm(self):
+        raise NotImplementedError()
+
+    def _getComboboxConnection(self):
+        return None
+    
+    def disableSignal(self, disable):
+        pass
+
+    def _setupSignal(self):
+        pass
+
+    def _updateConnection(self):
+        """
+        Change the connection selected in the combobox argument and return
+        the connection name (or None if there aren't connections defined).
+        """
+
+        if not self._conn_combobox.count():
+            return None
+
+        if _changeItemSelected(self._conn_combobox, self.w._lazy_conn):
+            return self.w._lazy_conn
+
+        return unicode(self._conn_combobox.currentText())
+
+
+class FormMacro(FormOption):
     """
     Manage the macro part of gui option.
     """
 
     def __init__(self, widget):
-        self.w = widget
-        self._text = self.w._text
-
         self._key_descr = {}
         for k, v in Qt.__dict__.iteritems():
             if k.startswith('Key_'):
                 self._key_descr[v] = k[4:]
 
-        self.loadForm()
         self.start_reg = False
-        self._setupSignal()
+        FormOption.__init__(self, widget)
+
+    def _getComboboxConnection(self):
+        return self.w.list_conn_macro
 
     def loadForm(self):
         connections = storage.connections()
@@ -279,14 +320,7 @@ class FormMacro(object):
                   self.w.register_macro):
             o.setEnabled(bool(self.w.list_conn_macro.count()))
 
-        if self.w.list_conn_macro.count():
-            if _changeItemSelected(self.w.list_conn_macro, self.w._lazy_conn):
-                conn_name = self.w._lazy_conn
-            else:
-                conn_name = unicode(self.w.list_conn_macro.currentText())
-        else:
-            conn_name = None
-
+        conn_name = self._updateConnection()
         self.loadMacros(conn_name, True)
 
     def disableSignal(self, disable):
@@ -294,19 +328,15 @@ class FormMacro(object):
         self.w.list_conn_macro.blockSignals(disable)
 
     def _setupSignal(self):
-        clicked = SIGNAL("clicked()")
-        self.w.connect(self.w.register_macro, clicked, self._register)
-        self.w.connect(self.w.save_macro, clicked, self.save)
-        self.w.connect(self.w.delete_macro, clicked, self.delete)
+        self.w.connect(self.w.register_macro, _CLICKED, self._register)
+        self.w.connect(self.w.save_macro, _CLICKED, self.save)
+        self.w.connect(self.w.delete_macro, _CLICKED, self.delete)
         self.w.connect(self.w.list_conn_macro,
                        SIGNAL("currentIndexChanged(QString)"),
                        self.loadMacros)
         self.w.connect(self.w.list_macro,
                        SIGNAL("currentIndexChanged(int)"),
                        self.load)
-        self.w.connect(self.w.list_conn_macro,
-                      SIGNAL("currentIndexChanged(QString)"),
-                      self.w, SIGNAL("currentConnChanged(QString)"))
 
     def loadMacros(self, conn, signal=False):
         """
@@ -388,7 +418,6 @@ class FormMacro(object):
         return True
 
     def save(self):
-
         if not self._checkFields():
             return
 
@@ -496,27 +525,21 @@ class FormMacro(object):
             self.start_reg = False
 
 
-class FormPreferences(object):
+class FormPreferences(FormOption):
     """
     Manage the preferences part of gui option.
     """
 
-    def __init__(self, widget):
-        self.w = widget
-        self._loadForm()
-        self._setupSignal()
-
     def _setupSignal(self):
-        clicked = SIGNAL("clicked()")
-        self.w.connect(self.w.echo_color_button, clicked, self._getEchoColor)
-        self.w.connect(self.w.save_preferences, clicked, self.save)
+        self.w.connect(self.w.echo_color_button, _CLICKED, self._getEchoColor)
+        self.w.connect(self.w.save_preferences, _CLICKED, self.save)
 
     def _getEchoColor(self):
         c = QColorDialog.getColor()
         self._echo_color = unicode(c.name()) if c.isValid() else ''
         _setLabelColor(self.w.echo_color, self._echo_color)
 
-    def _loadForm(self):
+    def loadForm(self):
         preferences = storage.preferences()
         if preferences:
             self._echo_color = preferences[0]
@@ -537,16 +560,13 @@ class FormPreferences(object):
         self.w.emit(SIGNAL('reloadPreferences()'))
 
 
-class FormAccounts(object):
+class FormAccounts(FormOption):
     """
     Manage the accounts part of gui option.
     """
 
-    def __init__(self, widget):
-        self.w = widget
-        self.loadForm()
-        self._text = self.w._text
-        self._setupSignal()
+    def _getComboboxConnection(self):
+        return self.w.list_conn_account
 
     def loadForm(self):
         connections = storage.connections()
@@ -566,18 +586,14 @@ class FormAccounts(object):
         self.w.box_prompt.setVisible(False)
 
     def _setupSignal(self):
-        clicked = SIGNAL("clicked()")
         change_idx = SIGNAL("currentIndexChanged(int)")
         self.w.connect(self.w.list_conn_account, change_idx, self._loadAccounts)
-        self.w.connect(self.w.delete_account, clicked, self.deleteAccount)
+        self.w.connect(self.w.delete_account, _CLICKED, self.deleteAccount)
         self.w.connect(self.w.save_account, SIGNAL('stateChanged(int)'),
                        self._saveAccounts)
-        self.w.connect(self.w.change_prompt, clicked, self._togglePrompt)
-        self.w.connect(self.w.save_prompt, clicked, self._savePrompt)
+        self.w.connect(self.w.change_prompt, _CLICKED, self._togglePrompt)
+        self.w.connect(self.w.save_prompt, _CLICKED, self._savePrompt)
         self.w.connect(self.w.list_account, change_idx, self._loadAccount)
-        self.w.connect(self.w.list_conn_account,
-                      SIGNAL("currentIndexChanged(QString)"),
-                      self.w, SIGNAL("currentConnChanged(QString)"))
 
     def _togglePrompt(self):
         self.w.box_prompt.setVisible(not self.w.box_prompt.isVisible())
@@ -643,30 +659,23 @@ class FormAccounts(object):
         self.w.box_prompt.setVisible(False)
 
 
-class FormAliases(object):
+class FormAliases(FormOption):
     """
     Manage the aliases part of gui option.
     """
 
-    def __init__(self, widget):
-        self.w = widget
-        self._text = self.w._text
-        self.loadForm()
-        self._setupSignal()
+    def _getComboboxConnection(self):
+        return self.w.list_conn_alias
 
     def _setupSignal(self):
-        clicked = SIGNAL("clicked()")
-        self.w.connect(self.w.save_alias, clicked, self._saveAlias)
-        self.w.connect(self.w.delete_alias, clicked, self._deleteAlias)
+        self.w.connect(self.w.save_alias, _CLICKED, self._saveAlias)
+        self.w.connect(self.w.delete_alias, _CLICKED, self._deleteAlias)
         self.w.connect(self.w.list_conn_alias,
                       SIGNAL("currentIndexChanged(QString)"),
                       self._loadAliases)
         self.w.connect(self.w.list_alias,
                       SIGNAL("currentIndexChanged(int)"),
                       self._loadAlias)
-        self.w.connect(self.w.list_conn_alias,
-                      SIGNAL("currentIndexChanged(QString)"),
-                      self.w, SIGNAL("currentConnChanged(QString)"))
 
     def disableSignal(self, disable):
         self.w.list_alias.blockSignals(disable)
@@ -677,10 +686,7 @@ class FormAliases(object):
         self.w.list_conn_alias.addItems([c[1] for c in storage.connections()])
 
         if self.w.list_conn_alias.count():
-            if _changeItemSelected(self.w.list_conn_alias, self.w._lazy_conn):
-                conn_name = self.w._lazy_conn
-            else:
-                conn_name = unicode(self.w.list_conn_alias.currentText())
+            conn_name = self._updateConnection()
             self._loadAliases(conn_name)
 
         for o in (self.w.list_alias, self.w.label_alias, self.w.body_alias):
@@ -734,7 +740,6 @@ class FormAliases(object):
         return True
 
     def _saveAlias(self):
-
         if not self._checkAliasFields():
             return
 
@@ -768,34 +773,27 @@ class FormAliases(object):
         self.w.emit(SIGNAL('reloadConnData(QString)'), conn_name)
 
 
-class FormTriggers(object):
+class FormTriggers(FormOption):
     """
     Manage the triggers part of gui option.
     """
 
-    def __init__(self, widget):
-        self.w = widget
-        self._text = self.w._text
-        self.loadForm()
-        self._setupSignal()
+    def _getComboboxConnection(self):
+        return self.w.list_conn_trigger
 
     def _setupSignal(self):
-        clicked = SIGNAL("clicked()")
-        self.w.connect(self.w.save_trigger, clicked, self._saveTrigger)
-        self.w.connect(self.w.delete_trigger, clicked, self._deleteTrigger)
+        self.w.connect(self.w.save_trigger, _CLICKED, self._saveTrigger)
+        self.w.connect(self.w.delete_trigger, _CLICKED, self._deleteTrigger)
         self.w.connect(self.w.list_conn_trigger,
                       SIGNAL("currentIndexChanged(QString)"), self._loadTriggers)
         self.w.connect(self.w.list_trigger,
                       SIGNAL("currentIndexChanged(int)"), self._loadTrigger)
         self.w.connect(self.w.radio_command_trigger,
                        SIGNAL("toggled(bool)"), self._toggleChoice)
-        self.w.connect(self.w.text_color_trigger_button, clicked,
+        self.w.connect(self.w.text_color_trigger_button, _CLICKED,
                        self._getTextColor)
-        self.w.connect(self.w.bg_color_trigger_button, clicked,
+        self.w.connect(self.w.bg_color_trigger_button, _CLICKED,
                        self._getBgColor)
-        self.w.connect(self.w.list_conn_trigger,
-                      SIGNAL("currentIndexChanged(QString)"),
-                      self.w, SIGNAL("currentConnChanged(QString)"))
 
     def _getTextColor(self):
         c = QColorDialog.getColor()
@@ -842,11 +840,7 @@ class FormTriggers(object):
         self.w.list_conn_trigger.addItems([c[1] for c in storage.connections()])
 
         if self.w.list_conn_trigger.count():
-            if _changeItemSelected(self.w.list_conn_trigger, self.w._lazy_conn):
-                conn_name = self.w._lazy_conn
-            else:
-                conn_name = unicode(self.w.list_conn_trigger.currentText())
-
+            conn_name = self._updateConnection()
             self._loadTriggers(conn_name)
 
         for o in (self.w.list_trigger, self.w.pattern_trigger,
@@ -919,7 +913,6 @@ class FormTriggers(object):
         return True
 
     def _saveTrigger(self):
-
         if not self._checkTriggerFields():
             return
 
@@ -944,7 +937,6 @@ class FormTriggers(object):
         self._loadTrigger(0)
 
     def _deleteTrigger(self):
-
         list_idx = self.w.list_trigger.currentIndex()
         if list_idx <= 0:
             return
