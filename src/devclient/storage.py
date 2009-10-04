@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
 # Copyright (C) 2007 Gianni Valdambrini, Develer S.r.l (http://www.develer.com)
@@ -39,18 +39,18 @@ if not logger.handlers:
 
 _STORAGE_EXT = 'save'
 
-server_spec = {'id': 'integer',
-               'port': 'integer',
-               'macros': { '__many__': {'shift': 'integer(0, 1)',
-                                        'alt': 'integer(0, 1)',
-                                        'ctrl': 'integer(0, 1)',
-                                        'keycode': 'integer'}},
-               'default_account': "string(default='')",
-               'triggers': { '__many__': {'ignore_case': 'integer(0, 1)',
-                                          'command': "string(default='')",
-                                          'bg_color': "string(default='')",
-                                          'fg_color': "string(default='')"}}
-              }
+connection_spec = {'id': 'integer',
+                   'port': 'integer',
+                   'macros': { '__many__': {'shift': 'integer(0, 1)',
+                                            'alt': 'integer(0, 1)',
+                                            'ctrl': 'integer(0, 1)',
+                                            'keycode': 'integer'}},
+                   'default_account': "string(default='')",
+                   'triggers': { '__many__': {'ignore_case': 'integer(0, 1)',
+                                              'command': "string(default='')",
+                                              'bg_color': "string(default='')",
+                                              'fg_color': "string(default='')"}}
+                  }
 
 general_spec = {'echo_color': "string(max=7, default='')",
                 'keep_text': 'integer(0, 1, default=0)',
@@ -100,7 +100,7 @@ def init(storage_path):
             _config['passwords'] = ConfigObj(f, options={'indent_type': '  '})
 
         elif basename(f) != 'general.' + _STORAGE_EXT:
-            c = _readStorageFile(f, server_spec)
+            c = _readStorageFile(f, connection_spec)
             if c:
                 if 'name' in c:
                     _config['connections'][c['name']] = c
@@ -271,7 +271,7 @@ def addConnection(conn):
     for v in _config['connections'].itervalues():
         m = max(v['id'], m)
 
-    c = ConfigObj(options={'indent_type': '  '}, configspec=server_spec)
+    c = ConfigObj(options={'indent_type': '  '}, configspec=connection_spec)
     c.validate(Validator())
     c['id'] = conn[0] = m + 1
     c['name'], c['host'], c['port'] = conn[1:]
@@ -492,4 +492,3 @@ def savePrompt(id_conn, username, normal, fight):
                 return
 
     raise exception.ConnectionNotFound
-
