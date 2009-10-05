@@ -219,6 +219,7 @@ class StatusViewer(TextViewer):
     def _resetWidgets(self):
         self.v._resetWidgets()
 
+
 class MapViewer(TextViewer):
     """
     Build the visualization of a map from model.
@@ -239,6 +240,14 @@ class MapViewer(TextViewer):
     def _centerMap(self, model, width, height):
         html_list = model.map_html.split('<br>')
         text_list = model.map_text.split('\n')
+
+        if len(text_list) > height:
+            logger.warning('Map height: %d fixed height: %d' % 
+                           (len(text_list), height))
+
+        if max(map(len, text_list)) > width:
+            logger.warning('Map width: %d fixed width: %d' % 
+                           (max(map(len, text_list)), width))
 
         text, html = [], []
         for i, p in enumerate(text_list):
