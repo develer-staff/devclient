@@ -21,7 +21,7 @@
 from generics import *
 
 class Ancestral(AfkServer):
-    wild_chars = '\$#\^~\.:@A=X\*\s\+%\?'
+    wild_chars = '\$#\^~\.:@A=Xx\*\s\+%\?'
     wild_end_text = '\nViaggiando sul continente.'
     room_end_text = '\nUscite Visibili:'
     cmd_new_player = 'nuovo'
