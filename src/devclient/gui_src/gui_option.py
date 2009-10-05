@@ -419,6 +419,11 @@ class Ui_option(object):
     def createKeypadPage(self):
         self.keypad_page = QWidget()
         self.keypad_page.setObjectName("keypad_page")
+        self.keypad_page.setToolTip(QApplication.translate("option", 
+            "<b>Connect the keypad keys with custom actions</b>"
+            "<p>Enter the text in the spaces to connect the correspondent key "
+            "in order to use as a shortcut to send the text to the server.</p>"))
+
         page_layout = QGridLayout(self.keypad_page)
         page_layout.setSpacing(7)
         page_layout.setContentsMargins(10, 20, 0, 10)

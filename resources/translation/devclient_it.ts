@@ -324,5 +324,9 @@
         <source>Keypad</source>
         <translation></translation>
     </message>
+    <message>
+        <source>&lt;b&gt;Connect the keypad keys with custom actions&lt;/b&gt;&lt;p&gt;Enter the text in the spaces to connect the correspondent key in order to use as a shortcut to send the text to the server.&lt;/p&gt;</source>
+        <translation>&lt;b&gt;Associa i tasti del keypad con azioni custom&lt;/b&gt;&lt;p&gt;Inserisci il testo negli appositi spazi per utilizzare il tasto corrispondente come scorciatoia per inviare il testo al server.&lt;/p&gt;</translation>
+    </message>
 </context>
 </TS>
