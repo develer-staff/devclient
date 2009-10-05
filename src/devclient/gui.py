@@ -534,9 +534,6 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
             self._loadShortcuts()
             self._setupSignal()
         except Exception, e:
-            # NOTE: I can't explain why the ConnectionManager destructor isn't
-            # called if an exception happened after its creation.
-            del self._conn_manager
             raise e
 
     def _loadConnections(self):

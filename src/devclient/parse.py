@@ -420,11 +420,7 @@ class WildMapParser(Parser):
                           (wild_chars, room_desc, escape(wild_end)), re.S)
             m = reg.match(text)
 
-            # 'X' in text is a trick. We have some situation when the text 
-            # contains a string that looks like a wild map. In this fix we 
-            # control if the text contains a string that looks like.. AND if
-            # the player character (that is always X) is in the text.
-            if m and 'X' in text:
+            if m:
                 groups = list(m.groups())
                 if groups[0][-1:] == ' ':
                     groups[1] = ' ' + groups[1]  # to save alignment
