@@ -225,7 +225,7 @@
     </message>
     <message>
         <source>Key sequence must be different from all the shortcut keys</source>
-        <translation>La sequenza dei tasti deve essere diversa dalle scorciatoie</translation>
+        <translation>La combinazione dei tasti per una macro non può essere una scorciatoia</translation>
     </message>
     <message>
         <source>Close</source>
@@ -327,6 +327,10 @@
     <message>
         <source>&lt;b&gt;Connect the keypad keys with custom actions&lt;/b&gt;&lt;p&gt;Enter the text in the spaces to connect the correspondent key in order to use as a shortcut to send the text to the server.&lt;/p&gt;</source>
         <translation>&lt;b&gt;Associa i tasti del keypad con azioni custom&lt;/b&gt;&lt;p&gt;Inserisci il testo negli appositi spazi per utilizzare il tasto corrispondente come scorciatoia per inviare il testo al server.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Cannot use keypad keys as the key sequence</source>
+        <translation>Non è possibile utilizzare il tastierino numerico come tasto per una macro</translation>
     </message>
 </context>
 </TS>

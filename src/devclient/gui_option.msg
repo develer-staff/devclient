@@ -15,6 +15,7 @@ Macro = QApplication.translate("option", "Macro")
 Keys = QApplication.translate("option", "Keys")
 UniqueKeys = QApplication.translate("option", "Key sequence must be unique")
 ShortcutKeys = QApplication.translate("option", "Key sequence must be different from all the shortcut keys")
+KeypadKeys = QApplication.translate("option", "Cannot use keypad keys as the key sequence")
 
 Accounts = QApplication.translate("option", "Accounts")
 BadPrompt = QApplication.translate("option", "Bad format on prompt")

@@ -465,6 +465,7 @@ class FormMacro(FormOption):
 
         self.w.grabKeyboard()
         self.w.keys_macro.setText('')
+        self.key_seq = None
         color = self.w.keys_macro.property('highlight_color').toString()
         self.w.keys_macro.setStyleSheet('background-color: %s' % color)
         self.start_reg = True
@@ -519,9 +520,14 @@ class FormMacro(FormOption):
            keyEvent.key() not in (Qt.Key_Shift, Qt.Key_Control,
                                   Qt.Key_Meta, Qt.Key_Alt):
 
-            self.key_seq = self._getKeySeq(keyEvent)
+            if keyEvent.nativeScanCode() in keypad_codes.values():
+                self.w._displayWarning(self._text['Macro'], 
+                                       self._text['KeypadKeys'])
+            else:
+                self.key_seq = self._getKeySeq(keyEvent)
+                self.w.keys_macro.setText(self.getKeyDescr(*self.key_seq))
+ 
             self.w.releaseKeyboard()
-            self.w.keys_macro.setText(self.getKeyDescr(*self.key_seq))
             self.w.keys_macro.setStyleSheet('')
             self.start_reg = False
 
