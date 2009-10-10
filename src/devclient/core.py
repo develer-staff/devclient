@@ -336,6 +336,7 @@ class Core(object):
         self.parser = None
         """the `Parser` instance, used to parse data from server"""
 
+        self._sock_watched = [self.s_gui]
         self.setupLogger()
 
     def setupLogger(self):
@@ -367,18 +368,12 @@ class Core(object):
 
         logging.debug('*** START %s ***' % constants.PROJECT_NAME.upper())
 
-    def _readDataFromGui(self, sock_watched):
+    def _readDataFromGui(self, cmd, msg):
         """
-        Read data from `Gui`
-
-        :Parameters:
-          sock_watched : list
-            the list of sockets watched for events
-
+        Read data from the `Gui`.
         :return: a boolean equal to False when client must exit.
         """
 
-        cmd, msg = self.s_gui.read()
         if cmd == messages.MSG and self.s_server.connected:
             self.s_server.write(msg)
         elif cmd == messages.CUSTOM_PROMPT:
@@ -387,7 +382,7 @@ class Core(object):
             return False
         elif cmd == messages.CONNECT:
             if self.s_server.connected:
-                sock_watched.remove(self.s_server)
+                self._sock_watched.remove(self.s_server)
                 self.s_gui.write(messages.CONN_CLOSED, '')
                 self.s_server.disconnect()
             try:
@@ -395,7 +390,7 @@ class Core(object):
             except exception.ConnectionRefused:
                 self.s_gui.write(messages.CONN_REFUSED, "")
             else:
-                sock_watched.append(self.s_server)
+                self._sock_watched.append(self.s_server)
                 self.s_gui.write(messages.CONN_ESTABLISHED, msg[:3])
 
             self.parser = getParser(getServer(*msg[1:3]), msg[3:])
@@ -404,18 +399,20 @@ class Core(object):
 
         return True
 
-    def _readDataFromServer(self, sock_watched):
+    def _readDataFromServer(self):
         try:
             data = self.s_server.read()
         except exception.ConnectionLost:
-            sock_watched.remove(self.s_server)
+            self._sock_watched.remove(self.s_server)
             self.s_gui.write(messages.CONN_LOST, '')
             self.s_server.disconnect()
+            return False
         else:
             if data:
                 self.s_gui.write(messages.MODEL, self.parser.buildModel(data))
+            return True
 
-    def mainLoop(self):
+    def mainLoop(self, exit_on_close=False):
         """
         Realize the main loop of core.
 
@@ -423,19 +420,20 @@ class Core(object):
         with the `Gui` part via `SocketToGui` instance object.
         """
 
-        sock_watched = [self.s_gui]
-
         while 1:
             try:
-                r, w, e = select.select(sock_watched, [], [])
+                r, w, e = select.select(self._sock_watched, [], [])
             except (select.error, socket.error):
                 break
 
             for s in r:
                 if s == self.s_server:
-                    self._readDataFromServer(sock_watched)
-                elif not self._readDataFromGui(sock_watched):
-                    return
+                    if not self._readDataFromServer() and exit_on_close:
+                        return
+                else:
+                    cmd, msg = self.s_gui.read()
+                    if not self._readDataFromGui(cmd, msg):
+                        return
 
 
 def main():
@@ -446,7 +444,7 @@ def main():
     parser = OptionParser()
     parser.add_option('-c', '--config', help='the configuration file')
     parser.add_option('-p', '--port', type='int', default=7890,
-                      help='the port listen for connection (default %default)')
+                      help='the port used to connect to the ui (default %default)')
     o, args = parser.parse_args()
     if len(sys.argv) < 2:
         parser.error("No arguments supplied")
@@ -455,3 +453,4 @@ def main():
     sys.path.append(conf.config['servers']['path'])
     core = Core(o.port)
     core.mainLoop()
+
