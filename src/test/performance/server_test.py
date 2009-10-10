@@ -26,28 +26,39 @@ import time
 import socket
 import optparse
 
-if len(sys.argv) < 2:
-    print 'Usage: python server_test.py [-p port] [-d delay] <datafile>'
-    exit(1)
 
-parser = optparse.OptionParser()
-parser.add_option('-p', '--port', type='int', default=6666)
-parser.add_option('-d', '--delay', type='int', default=1)
-o, args = parser.parse_args()
+def main():
+    parser = optparse.OptionParser()
+    parser.add_option('-p', '--port', type='int', default=6666)
+    parser.add_option('-d', '--delay', type='int', default=1)
+    parser.add_option('-f', '--datafile', default='', dest='datafile')
+    o, args = parser.parse_args()
 
-f = open(sys.argv[-1])
-data = f.read()
-f.close()
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind(("localhost", o.port))
+    s.listen(1)
+    print 'READY'
+    conn, addr = s.accept()
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind(("localhost", o.port))
-s.listen(1)
-print 'READY'
-conn, addr = s.accept()
+    if o.datafile:
+        f = open(o.datafile)
+        data = f.read()
+        f.close()
 
-while data:
-    conn.send(data[:1024])
-    data = data[1024:]
-    time.sleep(o.delay / 100.0)
-conn.close()
+        while data:
+            conn.send(data[:1024])
+            data = data[1024:]
+            time.sleep(o.delay / 100.0)
+    else:
+        while 1:
+            data = conn.recv(1024)
+            if not data: 
+                break
+
+    conn.close()
+
+
+if __name__ == '__main__':
+    main()
+
