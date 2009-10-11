@@ -179,7 +179,6 @@ class SocketToServer(object):
             new_data = self._d.decompress(self._rawbuf) + self._d.unused_data
             if self._d.unused_data:
                 self._msg('END OF COMPRESSED STREAM (MCCP v%d)', self._mccp_ver)
-                self._mccp_ver = None
                 self._compress = 0
                 self._d = None
         else:
