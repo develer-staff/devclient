@@ -539,12 +539,13 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
     def _loadConnections(self):
         connections = storage.connections()
         def_conn = storage.option('default_connection')
+        selected = -1
         for i, el in enumerate(connections):
             self.list_conn.addItem(el[1], QVariant(el[0]))
             if el[0] == def_conn:
                 selected = i
-                break
-        else: # if the default connections doesn't exists.
+
+        if selected == -1: # if the default connections doesn't exists.
             selected = 0
             storage.setOption('default_connection', selected)
             def_conn = None
