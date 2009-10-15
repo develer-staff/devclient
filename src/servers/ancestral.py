@@ -24,6 +24,7 @@ class Ancestral(AfkServer):
     wild_chars = '\$#\^~\.:@A=Xx\*\s\+%\?'
     wild_end_text = '\nViaggiando sul continente.'
     room_end_text = '\nUscite Visibili:'
+    player_char = 'X'
     cmd_new_player = 'nuovo'
     gui_width = 1015
     host = '81.174.65.202'

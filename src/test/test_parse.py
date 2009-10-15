@@ -324,6 +324,7 @@ class TestWildMapParser(unittest.TestCase):
     def setUp(self):
         Server.wild_chars = '\^\.xX@\*\n\s'
         Server.wild_end_text = '\n[Uscite:'
+        Server.player_char = 'X'
         self.parser = WildMapParser(Parser(Server))
 
     def testEmptyParsing(self):

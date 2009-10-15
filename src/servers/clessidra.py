@@ -24,10 +24,11 @@ class Clessidra(DikuServer):
     prompt_reg = '\| PF (\d+/\d+) MN (\d+/\d+) MV (\d+/\d+).*?\|'
     wild_chars = '-_~\^\|\.:xX@\*\s#&\+/\\§'
     wild_end_text = '[Uscite:'
+    player_char = 'X'
     cmd_new_player = 'nuovo'
     gui_width = 975
     host = 'mud.clessidra.it'
     port = 4000
     map_width = 27
-    map_height = 11
+    map_height = 12
 

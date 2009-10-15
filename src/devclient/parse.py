@@ -415,7 +415,7 @@ class WildMapParser(Parser):
         # into room description.
 
         # NOTE: this check is done for performance reason
-        if wild_end in text:
+        if wild_end in text and self._p._server.player_char in text:
             reg = compile('(.*?\s)([%s]{8,})[%s]*?%s' %
                           (wild_chars, room_desc, escape(wild_end)), re.S)
             m = reg.match(text)
