@@ -24,7 +24,10 @@ class LocalhostServer(DikuServer):
     right_widget = 'gui_map'
     wild_chars = '\^\.xX@\*\s&-\?'
     wild_end_text = '\n[Uscite:'
-    wild_prec_char = '123456789'
+    player_char = 'X'
     room_map = '|\-#?@'
+    map_width = 27
+    map_height = 11
     host = 'localhost'
     port = 6666
+
