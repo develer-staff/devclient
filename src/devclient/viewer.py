@@ -86,7 +86,7 @@ class TextViewer(object):
     """
 
     MAX_ROWS = 1000
-    """The max number of rows displayed in textEdit field"""
+    """The max number of rows displayed in the TextEdit field"""
 
     _ROW_BLOCK = 20
     """The max number of rows per block"""
@@ -97,6 +97,12 @@ class TextViewer(object):
         doc.setMaximumBlockCount(self.MAX_ROWS / self._ROW_BLOCK)
         self.w.text_output_noscroll.document().setMaximumBlockCount(40)
         self._cur_rows = 0
+        self._no_scroll_text = []
+        self._no_scroll_maxlen = 30
+
+    def toggleSplitter(self):
+        if self.w.text_output_noscroll.isVisible():
+            self._appendToNoScroll()
 
     def _resetWidgets(self):
         self._textEditColors(self.w.text_output_noscroll)
@@ -147,16 +153,27 @@ class TextViewer(object):
         if not self.w.text_output_noscroll.isVisible():
             self.w.text_output.setTextCursor(cursor)
 
-        new_html = html.split('<br>')
+        self._no_scroll_text += list(html.split('<br>'))
+        # the buffer cache has a max length of self._no_scroll_maxlen
+        self._no_scroll_text = self._no_scroll_text[-self._no_scroll_maxlen:]
+
+        # For performance reasons, the widget self.w.text_output_noscroll is 
+        # updated only if it is visible. Otherwise, its data is stored in the
+        # cache self._no_scroll_text and it is updated only when became visible.
+        if self.w.text_output_noscroll.isVisible():
+            self._appendToNoScroll()
+
+    def _appendToNoScroll(self):
         cursor = self.w.text_output_noscroll.textCursor()
         cursor.beginEditBlock()
         cursor.movePosition(QTextCursor.End)
-        for i, row in enumerate(new_html):
+        for i, row in enumerate(self._no_scroll_text):
             if i:
                 cursor.insertBlock()
             cursor.insertHtml(row)
         cursor.endEditBlock()
         self.w.text_output_noscroll.setTextCursor(cursor)
+        self._no_scroll_text = []
 
     def _textEditColors(self, text_edit):
 
@@ -199,6 +216,9 @@ class StatusViewer(TextViewer):
         v.w.rightwidget.box_status.setVisible(True)
         self._last_values = {'Hp': None, 'Mn': None, 'Mv': None}
 
+    def toggleSplitter(self):
+        self.v.toggleSplitter()
+
     def process(self, model):
         self.v.process(model)
 
@@ -236,6 +256,9 @@ class MapViewer(TextViewer):
         v.w.rightwidget.text_map.setVisible(True)
         self.map_width = map_width
         self.map_height = map_height
+
+    def toggleSplitter(self):
+        self.v.toggleSplitter()
 
     def _centerMap(self, model, width, height):
         html_list = model.map_html.split('<br>')

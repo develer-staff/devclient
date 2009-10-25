@@ -426,6 +426,10 @@ class ConnectionManager(QObject):
 
         self._w.text_input.lineEdit().setEchoMode(echo_mode)
 
+    def toggleSplitter(self):
+        if self._viewer:
+            self._viewer.toggleSplitter()
+
     def _appendEcho(self, text):
         if not self._preferences[0]:
             text = '<br>'
@@ -643,6 +647,7 @@ class Gui(QtGui.QMainWindow, Ui_dev_client):
         cursor = self.text_output.textCursor()
         cursor.movePosition(QTextCursor.End)
         self.text_output.setTextCursor(cursor)
+        self._conn_manager.toggleSplitter()
 
     def eventFilter(self, target, event):
         return self._conn_manager.eventFilter(event)
