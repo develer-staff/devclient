@@ -863,8 +863,6 @@ class FormTriggers(FormOption):
                       SIGNAL("currentIndexChanged(QString)"), self._loadTriggers)
         self.w.connect(self.w.list_trigger,
                       SIGNAL("currentIndexChanged(int)"), self._loadTrigger)
-        self.w.connect(self.w.radio_command_trigger,
-                       SIGNAL("toggled(bool)"), self._toggleChoice)
         self.w.connect(self.w.text_color_trigger_button, _CLICKED,
                        self._getTextColor)
         self.w.connect(self.w.bg_color_trigger_button, _CLICKED,
@@ -883,32 +881,6 @@ class FormTriggers(FormOption):
     def disableSignal(self, disable):
         self.w.list_trigger.blockSignals(disable)
         self.w.list_conn_trigger.blockSignals(disable)
-
-    def _toggleChoice(self):
-        """
-        Toggle the choice between action and highlight trigger
-        """
-
-        t_items = [self.w.command_trigger]
-        h_items = [self.w.text_color_trigger_button,
-                   self.w.text_color_trigger,
-                   self.w.bg_color_trigger_button,
-                   self.w.bg_color_trigger]
-
-        radio_enabled = self.w.radio_command_trigger.isChecked()
-
-        for i in t_items:
-            i.setEnabled(radio_enabled)
-
-        for i in h_items:
-            i.setEnabled(not radio_enabled)
-
-        if radio_enabled:
-            self._text_color, self._bg_color = '', ''
-            _clearLabelColor(self.w.text_color_trigger)
-            _clearLabelColor(self.w.bg_color_trigger)
-        else:
-            self.w.command_trigger.setText('')
 
     def loadForm(self):
         self.w.list_conn_trigger.clear()
@@ -947,10 +919,6 @@ class FormTriggers(FormOption):
         self._bg_color = bg
         _setLabelColor(self.w.text_color_trigger, self._text_color)
         _setLabelColor(self.w.bg_color_trigger, self._bg_color)
-        if bool(bg or fg):
-            self.w.radio_color_trigger.setChecked(True)
-        else:
-            self.w.radio_command_trigger.setChecked(True)
 
     def _checkTriggerFields(self):
         """
@@ -961,21 +929,15 @@ class FormTriggers(FormOption):
 
         trigger_fields = {self._text['Pattern']: self.w.pattern_trigger}
 
-        if self.w.radio_command_trigger.isChecked():
-            trigger_fields[self._text['Command']] = self.w.command_trigger
-        else:
-            if not self._text_color and not self._bg_color:
-                self.w._displayWarning(self._text['Trigger'],
-                                       self._text['ReqColors']);
-                return False
+        if not self.w.pattern_trigger.text():
+            self.w._displayWarning(self._text['Trigger'], 
+                                   self._text['ReqPattern'])
+            return False
 
-        for text, field in trigger_fields.iteritems():
-            if not field.text():
-                msg.append(unicode(text))
-
-        if msg:
+        if not self._text_color and not self._bg_color and \
+           not self.w.command_trigger.text():
             self.w._displayWarning(self._text['Trigger'],
-                "%s:\n%s" % (self._text['ReqFields'], '\n'.join(msg)))
+                                   self._text['ReqFields'])
             return False
 
         if [el[0] for el in self.triggers if

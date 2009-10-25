@@ -501,15 +501,16 @@ class Ui_option(object):
         self.case_trigger = QCheckBox()
         page_layout.addWidget(self.case_trigger, 5, 0, 1, 2, Qt.AlignLeft)
 
-        self.radio_command_trigger = QRadioButton()
-        self.radio_command_trigger.setChecked(True)
-        page_layout.addWidget(self.radio_command_trigger, 6, 0)
+        self.label_command_trigger = QLabel()
+        self.label_command_trigger.setText(QApplication.translate("option", "Command"))
+        page_layout.addWidget(self.label_command_trigger, 6, 0)
 
         self.command_trigger = QLineEdit()
         page_layout.addWidget(self.command_trigger, 6, 1)
 
-        self.radio_color_trigger = QRadioButton()
-        page_layout.addWidget(self.radio_color_trigger, 7, 0)
+        self.label_color_trigger = QLabel()
+        self.label_color_trigger.setText(QApplication.translate("option", "Change color to"))
+        page_layout.addWidget(self.label_color_trigger, 7, 0)
 
         horiz_spacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         page_layout.addItem(horiz_spacer, 7, 1)
@@ -519,7 +520,6 @@ class Ui_option(object):
 
         self.text_color_trigger_button = QPushButton()
         self.text_color_trigger_button.setFixedHeight(28)
-        self.text_color_trigger_button.setEnabled(False)
         self.text_color_trigger_button.setIcon(QIcon(":/images/button-color.png"))
         colors_layout.addWidget(self.text_color_trigger_button)
 
@@ -530,7 +530,6 @@ class Ui_option(object):
         colors_layout.addItem(colors_spacer)
 
         self.bg_color_trigger_button = QPushButton()
-        self.bg_color_trigger_button.setEnabled(False)
         self.bg_color_trigger_button.setFixedHeight(28)
         self.bg_color_trigger_button.setIcon(QIcon(":/images/button-color.png"))
         colors_layout.addWidget(self.bg_color_trigger_button)
@@ -560,8 +559,7 @@ class Ui_option(object):
         self.label_trigger.setText(QApplication.translate("option", "Trigger"))
         self.label_pattern_trigger.setText(QApplication.translate("option", "Pattern"))
         self.case_trigger.setText(QApplication.translate("option", "Ignore case"))
-        self.radio_command_trigger.setText(QApplication.translate("option", "Command"))
-        self.radio_color_trigger.setText(QApplication.translate("option", "Change color to"))
+
         self.text_color_trigger_button.setText(QApplication.translate("option", "Text"))
         self.text_color_trigger.setProperty("label_color", QVariant(True))
         self.bg_color_trigger_button.setText(QApplication.translate("option", "Background"))

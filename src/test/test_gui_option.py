@@ -853,7 +853,6 @@ class TestFormTriggers(GuiOptionTest):
         self.assert_(not form.w.pattern_trigger.text())
         self.assert_(not form.w.command_trigger.text())
         self.assert_(form.w.case_trigger.checkState() == Qt.Unchecked)
-        self.assert_(form.w.radio_command_trigger.isChecked())
         self.assert_(not form._text_color)
         self.assert_(not form._bg_color)
 
@@ -865,33 +864,22 @@ class TestFormTriggers(GuiOptionTest):
         self.assert_(not form.w.pattern_trigger.text())
         self.assert_(not form.w.command_trigger.text())
         self.assert_(form.w.case_trigger.checkState() == Qt.Unchecked)
-        self.assert_(form.w.radio_command_trigger.isChecked())
+        self.assert_(not form._text_color)
+        self.assert_(not form._bg_color)
 
     def testLoad3(self):
         storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveTriggers('name', [('* dwarf *', 0, 'bow dwarf', '', '')])
+        storage.saveTriggers('name', [('* dwarf *', 0, 'bow dwarf', '#FFFF00', '')])
         form = FormTriggers(GuiOptionTriggerMock())
         form.w.list_trigger.setCurrentIndex(1)
         form._loadTrigger(1)
         self.assert_(form.w.pattern_trigger.text() == '* dwarf *')
         self.assert_(form.w.command_trigger.text() == 'bow dwarf')
         self.assert_(form.w.case_trigger.checkState() == Qt.Unchecked)
-        self.assert_(form.w.radio_command_trigger.isChecked())
+        self.assert_(form._bg_color == '#FFFF00')
+        self.assert_(not form._text_color)
 
     def testLoad4(self):
-        storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveTriggers('name', [('* dwarf *', 0, '', '#FFFF00', '#000000')])
-        form = FormTriggers(GuiOptionTriggerMock())
-        form.w.list_trigger.setCurrentIndex(1)
-        form._loadTrigger(1)
-        self.assert_(form.w.pattern_trigger.text() == '* dwarf *')
-        self.assert_(not form.w.command_trigger.text())
-        self.assert_(form.w.case_trigger.checkState() == Qt.Unchecked)
-        self.assert_(form.w.radio_color_trigger.isChecked())
-        self.assert_(form._text_color == '#000000')
-        self.assert_(form._bg_color == '#FFFF00')
-
-    def testLoad5(self):
         storage.addConnection([0, 'name', 'host', 4000])
         storage.saveTriggers('name', [('fake', 0, 'fake', '', ''),
                                       ('* dwarf *', 1, 'bow dwarf', '', ''),
@@ -903,63 +891,20 @@ class TestFormTriggers(GuiOptionTest):
         self.assert_(form.w.command_trigger.text() == 'bow dwarf')
         self.assert_(form.w.case_trigger.checkState() == Qt.Checked)
 
-    def testLoad6(self):
-        storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveTriggers('name', [('* dwarf *', 0, 'bow dwarf', '', '')])
-        form = FormTriggers(GuiOptionTriggerMock())
-        form.w.list_trigger.setCurrentIndex(1)
-        form._loadTrigger(1)
-        form.w.radio_color_trigger.setChecked(True)
-        form._toggleChoice()
-        self.assert_(form.w.pattern_trigger.text() == '* dwarf *')
-        self.assert_(not form.w.command_trigger.text())
-        self.assert_(form.w.case_trigger.checkState() == Qt.Unchecked)
-        self.assert_(not form.w.radio_command_trigger.isChecked())
-
-    def testLoad7(self):
-        storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveTriggers('name', [('* dwarf *', 0, '', '#FF0000', '#000000')])
-        form = FormTriggers(GuiOptionTriggerMock())
-        form.w.list_trigger.setCurrentIndex(1)
-        form._loadTrigger(1)
-        form.w.radio_command_trigger.setChecked(True)
-        form._toggleChoice()
-        self.assert_(form.w.pattern_trigger.text() == '* dwarf *')
-        self.assert_(not form._text_color)
-        self.assert_(not form._bg_color)
-        self.assert_(form.w.case_trigger.checkState() == Qt.Unchecked)
-        self.assert_(form.w.radio_command_trigger.isChecked())
-
-    def testLoad8(self):
+    def testLoad5(self):
         storage.addConnection([0, 'name', 'host', 4000])
         storage.saveTriggers('name', [('fake', 0, 'fake', '', ''),
-                                      ('* dwarf *', 1, '', '#FF0000', '#000000'),
+                                      ('* dwarf *', 1, 'bow dwarf', '#FF0000', '#000000'),
                                       ('fake2', 1, 'fake2', '', '')])
         form = FormTriggers(GuiOptionTriggerMock())
         form.w.list_trigger.setCurrentIndex(1)
         form._loadTrigger(1)
-        self.assert_(form.w.radio_command_trigger.isChecked())
         form.w.list_trigger.setCurrentIndex(2)
         form._loadTrigger(2)
         self.assert_(form.w.pattern_trigger.text() == '* dwarf *')
-        self.assert_(form.w.radio_color_trigger.isChecked())
+        self.assert_(form.w.command_trigger.text() == 'bow dwarf')
         self.assert_(form._text_color == '#000000')
         self.assert_(form._bg_color == '#FF0000')
-
-    def testLoad9(self):
-        storage.addConnection([0, 'name', 'host', 4000])
-        storage.saveTriggers('name', [('fake', 0, 'fakecmd', '', ''),
-                                      ('* dwarf *', 1, '', '#FF0000', '#000000'),
-                                      ('fake2', 1, 'fake2', '', '')])
-        form = FormTriggers(GuiOptionTriggerMock())
-        form.w.list_trigger.setCurrentIndex(2)
-        form._loadTrigger(2)
-        self.assert_(form.w.radio_color_trigger.isChecked())
-        form.w.list_trigger.setCurrentIndex(1)
-        form._loadTrigger(1)
-        self.assert_(form.w.pattern_trigger.text() == 'fake')
-        self.assert_(form.w.command_trigger.text() == 'fakecmd')
-        self.assert_(form.w.radio_command_trigger.isChecked())
 
     def testDelete1(self):
         storage.addConnection([0, 'name', 'host', 4000])

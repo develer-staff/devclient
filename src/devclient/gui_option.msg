@@ -1,8 +1,5 @@
 from PyQt4.QtGui import QApplication
 
-ReqFields = QApplication.translate("option", "The following fields are required")
-Command = QApplication.translate("option", "Command")
-
 Name = QApplication.translate("option", "Name")
 Host = QApplication.translate("option", "Host")
 Port = QApplication.translate("option", "Port")
@@ -30,6 +27,8 @@ NewTrigger = QApplication.translate("option", "Create New", "trigger")
 Trigger = QApplication.translate("option", "Trigger")
 Pattern = QApplication.translate("option", "Pattern")
 UniquePattern = QApplication.translate("option", "The pattern must be unique")
-ReqColors = QApplication.translate("option", "At least one between text and background color is required")
+ReqPattern = QApplication.translate("option", "You have to specify the pattern")
+ReqFields = QApplication.translate("option", "You have to specify a command or a color")
+Command = QApplication.translate("option", "Command")
 
 NoKeypad = QApplication.translate("option", "The keypad controls are not available on your O.S. due to a limitation of the underlying platform.")

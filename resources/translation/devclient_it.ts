@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<!DOCTYPE TS><TS>
 <context>
     <name>RightWidget</name>
     <message>
@@ -108,10 +106,6 @@
     <message>
         <source>Connection</source>
         <translation>Connessione</translation>
-    </message>
-    <message>
-        <source>The following fields are required</source>
-        <translation>E&apos; necessario specificare i campi</translation>
     </message>
     <message>
         <source>Connection name must be unique</source>
@@ -265,10 +259,6 @@
         <translation>Sfondo</translation>
     </message>
     <message>
-        <source>At least one between text and background color is required</source>
-        <translation>E&apos; necessario specificare almeno uno fra il colore del testo e dello sfondo</translation>
-    </message>
-    <message>
         <source>Echo Color</source>
         <translation>Colore echo</translation>
     </message>
@@ -331,6 +321,14 @@
     <message>
         <source>Cannot use keypad keys as the key sequence</source>
         <translation>Non è possibile utilizzare il tastierino numerico come tasto per una macro</translation>
+    </message>
+    <message>
+        <source>You have to specify the pattern</source>
+        <translation>E&apos; necessario specificare il pattern</translation>
+    </message>
+    <message>
+        <source>You have to specify a command or a color</source>
+        <translation>E&apos; necessario specificare un comando o un colore</translation>
     </message>
 </context>
 </TS>

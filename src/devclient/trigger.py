@@ -43,7 +43,7 @@ class Trigger(object):
             reg = compile(p, re.I if ignore_case else 0)
             if command:
                 self._triggers.append((reg, command))
-            else:
+            if bg_color or fg_color:
                 self._highlights.append((reg, bg_color, fg_color))
 
     def getActions(self, main_text):
@@ -133,3 +133,4 @@ class Trigger(object):
                         html_row[end:]
 
         model.main_html = '<br>'.join(html)
+
