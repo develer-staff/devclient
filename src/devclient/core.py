@@ -273,23 +273,31 @@ class SocketToGui(object):
         """
         Read a message.
 
-        :return: a tuple of the form (<message type>, <message>)
+        :return: a tuple of the form (<message type>, <message>) or None if
+          the connection with the gui is lost.
         """
 
         size = self._s.recv(struct.calcsize("L"))
+        if not size:
+            return None
+
         try:
-            size = struct.unpack('>l', size)[0]
+            msg_size = struct.unpack('>l', size)[0]
         except struct.error:
             return (messages.UNKNOWN, '')
 
-        if size < 0:
+        if msg_size < 0:
             return (messages.UNKNOWN, '')
 
         data = []
         try:
-            while size > 0:
-                data.append(self._s.recv(min(4096, size)))
-                size -= len(data[-1])
+            while msg_size > 0:
+                msg = self._s.recv(min(4096, msg_size))
+                if not msg:
+                    return None
+
+                data.append(msg)
+                msg_size -= len(msg)
 
             return cPickle.loads(''.join(data))
 
@@ -430,7 +438,12 @@ class Core(object):
                     if not self._readDataFromServer() and exit_on_close:
                         return
                 else:
-                    cmd, msg = self.s_gui.read()
+                    data = self.s_gui.read()
+                    if not data:
+                        logger.warning('Core: exit because of Gui connection lost')
+                        return
+
+                    cmd, msg = data
                     if not self._readDataFromGui(cmd, msg):
                         return
 
