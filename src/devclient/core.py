@@ -40,6 +40,7 @@ import constants
 from conf import config
 from parse import getParser
 from servers import getServer
+from utils import getExceptionInfo
 
 logger = logging.getLogger('core')
 
@@ -464,5 +465,12 @@ def main():
     conf.loadConfiguration(os.path.basename(o.config))
     sys.path.append(conf.config['servers']['path'])
     core = Core(o.port)
-    core.mainLoop()
+    try:
+        core.mainLoop()
+    except Exception, e:
+        print 'Fatal Exception:', e
+        fd = open('exception.txt', 'a+')
+        fd.write(getExceptionInfo())
+        fd.close()
+        
 

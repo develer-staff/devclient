@@ -25,7 +25,9 @@ import ctypes
 import signal
 import subprocess
 from sys import platform
-
+from time import strftime
+from traceback import format_exc
+from sys import exc_info
 
 # Keypad codes for Windows platforms
 _keypad_win_codes = {'7': 71, '8': 72, '9': 73,
@@ -82,3 +84,46 @@ def startProcess(cmd):
         startupinfo = None
 
     return subprocess.Popen(cmd, startupinfo=startupinfo)
+
+
+def getExceptionInfo():
+    """
+    Return a detailed traceback of a fatal exception.
+    """
+
+    def extract_stack():
+        tb = exc_info()[2]
+        while tb.tb_next:
+            tb = tb.tb_next
+
+        stack = []
+        f = tb.tb_frame
+        while f:
+            stack.append(f)
+            f = f.f_back
+        stack.reverse()
+
+        return stack
+
+    info = ["%s FATAL EXCEPTION %s %s" % 
+                ('*' * 23, strftime("%Y-%m-%d %H:%M"), '*' * 23)]
+    info.append(format_exc())
+    info.append("%s" % ('+' * 80, ))
+    stack = extract_stack()
+
+    for frame in stack:
+        info.append('')
+        info.append("Frame %s in %s at line %s" % (frame.f_code.co_name,
+                                                   frame.f_code.co_filename,
+                                                   frame.f_lineno))
+        for key, value in frame.f_locals.items():
+            if key not in ('__doc__', '__docformat__', '__builtins__'):
+                try:
+                    info.append("%s = %s" % (key, value))
+                except:
+                    info.append("%s = <UNKNOWN VALUE>" % key)
+
+    info.append("%s" % ('*' * 80, ))
+    info.append('')
+    return '\n'.join(info)
+

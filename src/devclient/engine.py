@@ -23,61 +23,17 @@ __docformat__ = 'restructuredtext'
 
 import os
 import os.path
-from time import strftime
-from traceback import print_exc
-from sys import path, argv, exc_info, exit
+from sys import path, argv, exit
 from os.path import dirname, join, abspath, normpath
 
-import exception
 from constants import PROJECT_NAME
+from utils import getExceptionInfo
 from conf import loadConfiguration, config
 
 from PyQt4.QtGui import QApplication, QStyleFactory
 
-
 cfg_file = normpath(dirname(abspath(__file__)) + "/../../etc/devclient.cfg")
 
-
-def save_exception():
-    """
-    Save a detailed traceback of a fatal exception.
-    """
-
-    def extract_stack():
-        tb = exc_info()[2]
-        while tb.tb_next:
-            tb = tb.tb_next
-
-        stack = []
-        f = tb.tb_frame
-        while f:
-            stack.append(f)
-            f = f.f_back
-        stack.reverse()
-
-        return stack
-
-    fd = open('exception.txt', 'a+')
-    fd.write("%s FATAL EXCEPTION %s %s\n" % ('*' * 23,
-                                             strftime("%Y-%m-%d %H:%M"),
-                                             '*' * 23))
-    print_exc(file=fd)
-    fd.write("\n%s\n" % ('+' * 80, ))
-    stack = extract_stack()
-
-    for frame in stack:
-        fd.write("\nFrame %s in %s at line %s\n" % (frame.f_code.co_name,
-                                                    frame.f_code.co_filename,
-                                                    frame.f_lineno))
-        for key, value in frame.f_locals.items():
-            if key not in ('__doc__', '__docformat__', '__builtins__'):
-                try:
-                    fd.write("%s = %s\n" % (key, value))
-                except:
-                    fd.write("%s = <UNKNOWN VALUE>\n" % key)
-
-    fd.write("%s\n" % ('*' * 80, ))
-    fd.close()
 
 def main(argv=argv, cfg_file=cfg_file, update=1):
     """
@@ -108,10 +64,10 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
         gui.show()
         exit(app.exec_())
 
-    except exception.IPCError:
-        save_exception()
     except Exception, e:
         print 'Fatal Exception:', e
-        save_exception()
+        fd = open('exception.txt', 'a+')
+        fd.write(getExceptionInfo())
+        fd.close()
 
 
