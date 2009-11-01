@@ -40,7 +40,7 @@ import constants
 from conf import config
 from parse import getParser
 from servers import getServer
-from utils import getExceptionInfo
+from utils import getExceptionInfo, sendMail
 
 logger = logging.getLogger('core')
 
@@ -469,8 +469,15 @@ def main():
         core.mainLoop()
     except Exception, e:
         print 'Fatal Exception:', e
-        fd = open('exception.txt', 'a+')
-        fd.write(getExceptionInfo())
+        info = getExceptionInfo()
+        fd = open(join(config['exceptions']['save_path'], 'exception.txt'), 'a+')
+        fd.write(info)
         fd.close()
         
+        if config['exceptions']['send_email']:
+            try:
+                sendMail("DevClient fatal exception: %s" % e, info)
+            except Exception, e:
+                print 'Error while sending email:', e
+
 

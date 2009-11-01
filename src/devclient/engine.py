@@ -27,7 +27,7 @@ from sys import path, argv, exit
 from os.path import dirname, join, abspath, normpath
 
 from constants import PROJECT_NAME
-from utils import getExceptionInfo
+from utils import getExceptionInfo, sendMail
 from conf import loadConfiguration, config
 
 from PyQt4.QtGui import QApplication, QStyleFactory
@@ -66,8 +66,15 @@ def main(argv=argv, cfg_file=cfg_file, update=1):
 
     except Exception, e:
         print 'Fatal Exception:', e
-        fd = open('exception.txt', 'a+')
-        fd.write(getExceptionInfo())
+        info = getExceptionInfo()
+        fd = open(join(config['exceptions']['save_path'], 'exception.txt'), 'a+')
+        fd.write(info)
         fd.close()
+
+        if config['exceptions']['send_email']:
+            try:
+                sendMail("DevClient fatal exception: %s" % e, info)
+            except Exception, e:
+                print 'Error while sending email:', e
 
 

@@ -23,11 +23,20 @@ __docformat__ = 'restructuredtext'
 import os
 import ctypes
 import signal
+import smtplib
 import subprocess
 from sys import platform
 from time import strftime
 from traceback import format_exc
 from sys import exc_info
+from email.mime.text import MIMEText
+
+
+# the smtp server used to send email
+SMTP_SERVER = "smtp.develer.com"
+
+EMAIL_FROM = "devclient@develer.com"
+EMAIL_TO = "aleister@develer.com"
 
 # Keypad codes for Windows platforms
 _keypad_win_codes = {'7': 71, '8': 72, '9': 73,
@@ -126,4 +135,26 @@ def getExceptionInfo():
     info.append("%s" % ('*' * 80, ))
     info.append('')
     return '\n'.join(info)
+
+
+def sendMail(subject, body):
+    """
+    Send a textual email.
+
+    :Parameters:
+      subject : string
+        the subject of the email.
+
+      body : string
+        the body of the email.
+    """
+
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = EMAIL_FROM
+    msg['To'] = EMAIL_TO
+    server = smtplib.SMTP(SMTP_SERVER)
+    server.sendmail(EMAIL_FROM, EMAIL_TO, msg.as_string())
+    server.quit()
+
 
