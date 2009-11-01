@@ -41,6 +41,7 @@ dev_exe = EXE(dev_pyz,
               strip=False,
               upx=True,
               console=1,
+              icon='develer.ico',
               append_pkg=False)
 
 # startcore
@@ -60,6 +61,7 @@ core_exe = EXE(core_pyz,
                strip=False,
                upx=True,
                console=1,
+               icon='develer.ico',
                append_pkg=False)
 
 # startupdater
@@ -79,5 +81,6 @@ upd_exe = EXE(upd_pyz,
               strip=False,
               upx=True,
               console=1,
+              icon='develer.ico',
               append_pkg=False)
 
